@@ -13,7 +13,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 13.x
-    - name: yarn install, build, and test
+    - name: yarn install; build & test
       working-directory: ./web-client
       run: |
         yarn install
@@ -21,3 +21,8 @@ jobs:
         yarn test
       env:
         CI: true
+    - name: lint & typecheck
+      working-directory: ./web-client
+      run: |
+        yarn lint
+        yarn tsc
