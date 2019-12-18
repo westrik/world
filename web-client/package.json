@@ -6,12 +6,19 @@
   "scripts": {
     "start": "yarn parcel src/index.html",
     "build": "yarn parcel build src/index.html",
-    "lint": "yarn tslint src/*.ts{,x} src/**/*.ts{,x}"
+    "lint": "yarn tslint src/*.ts{,x} src/**/*.ts{,x}",
+    "test": "yarn mocha -r ts-node/register tests/**/*.ts{,x}"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.7",
+    "@types/mocha": "^5.2.7",
     "@types/react": "^16.9.16",
     "@types/react-dom": "^16.9.4",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2",
     "parcel-bundler": "^1.12.4",
+    "sinon": "^7.5.0",
+    "ts-node": "^8.5.4",
     "tslint": "^5.20.1",
     "typescript": "^3.7.3"
   },

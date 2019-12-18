@@ -1,0 +1,23 @@
+name: web
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: set up node.js 13.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 13.x
+    - name: yarn install, build, and test
+      working-directory: ./web-client
+      run: |
+        yarn install
+        yarn build
+        yarn test
+      env:
+        CI: true
