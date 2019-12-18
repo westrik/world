@@ -1,0 +1,29 @@
+name: rust
+
+on: [push]
+
+jobs:
+  build:
+    name: build & test all crates
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install libpq-dev
+      run: sudo apt-get install libpq-dev
+    - name: Build
+      working-directory: ./server
+      run: cargo build --verbose
+    - name: Run tests
+      working-directory: ./server
+      run: cargo test --verbose
+
+  clippy:
+    name: run clippy
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Run clippy
+      working-directory: ./server
+      run: cargo clippy
