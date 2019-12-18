@@ -1,0 +1,4 @@
+- [ ] deployment cron job and systemd service
+- [ ] deploy front-end to netlify
+- [ ] DNS + nginx config
+- [ ] users & authentication
