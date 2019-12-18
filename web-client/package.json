@@ -1,0 +1,22 @@
+{
+  "name": "timeline",
+  "version": "0.1.0",
+  "main": "index.tsx",
+  "license": "MIT",
+  "scripts": {
+    "start": "yarn parcel src/index.html",
+    "build": "yarn parcel build src/index.html",
+    "lint": "yarn tslint src/*.ts{,x} src/**/*.ts{,x}"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.16",
+    "@types/react-dom": "^16.9.4",
+    "parcel-bundler": "^1.12.4",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.3"
+  },
+  "dependencies": {
+    "react": "^16.0.0",
+    "react-dom": "^16.12.0"
+  }
+}
