@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {render} from 'react-dom';
-import Dashboard from './Dashboard';
+import { render } from 'react-dom';
+import Dashboard from './Dashboard.tsx';
 
-const App: React.SFC = () => <Dashboard />;
+const App: React.FC = Dashboard;
 
 render(<App />, document.getElementById('root'));
 
