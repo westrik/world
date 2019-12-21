@@ -3,9 +3,11 @@ import * as React from 'react';
 import './style/SignInForm.scss';
 
 const SignInForm: React.FC = () => (
-  <div className="form-container">
+  <div className="form-container text-center">
     <form className="form-signin">
-      <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
+      <h1 className="h3 mb-3 font-weight-normal">
+        Sign in to <em>Timeline</em>
+      </h1>
       <label htmlFor="inputEmail" className="sr-only">
         Email address
       </label>
