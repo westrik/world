@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { render } from 'react-dom';
-import Dashboard from './Dashboard.tsx';
+import Dashboard from './Dashboard';
 
 const App: React.FC = Dashboard;
 
