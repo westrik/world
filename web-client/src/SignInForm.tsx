@@ -50,7 +50,8 @@ const SignInForm: React.FC<IProps> = props => {
             <input
               type="checkbox"
               value="remember-me"
-              onClick={(e: React.ChangeEvent<HTMLInputElement>) =>
+              onClick={(e: React.MouseEvent<HTMLInputElement>) =>
+                // @ts-ignore: not sure the types are correct?
                 setRemember(e.target.checked)
               }
             />
