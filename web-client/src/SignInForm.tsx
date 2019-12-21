@@ -2,7 +2,11 @@ import * as React from 'react';
 
 import './style/SignInForm.scss';
 
-const SignInForm: React.FC = () => (
+interface IProps {
+  onSignIn: () => void;
+}
+
+const SignInForm: React.FC<IProps> = props => (
   <div className="form-container text-center">
     <form className="form-signin">
       <h1 className="h3 mb-3 font-weight-normal">
@@ -34,7 +38,11 @@ const SignInForm: React.FC = () => (
           <input type="checkbox" value="remember-me" /> Remember me
         </label>
       </div>
-      <button className="btn btn-lg btn-primary btn-block" type="submit">
+      <button
+        onClick={props.onSignIn}
+        className="btn btn-lg btn-primary btn-block"
+        type="submit"
+      >
         Sign in
       </button>
     </form>

@@ -9,7 +9,7 @@ const App: React.FC = () => {
   if (loggedIn) {
     return <Dashboard />;
   } else {
-    return <SignInForm />;
+    return <SignInForm onSignIn={() => setLoggedIn(true)} />;
   }
 };
 
