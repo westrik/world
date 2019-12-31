@@ -29,10 +29,24 @@ pub struct NewUser {
     pub password: String,
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct UiUser {
+    pub email_address: String,
+    pub full_name: Option<String>,
+}
+
+impl From<User> for UiUser {
+    fn from(user: User) -> Self {
+        UiUser {
+            email_address: user.email_address,
+            full_name: user.full_name,
+        }
+    }
+}
+
 #[derive(Debug)]
 pub enum UserQueryError {
-    IncorrectPassword,
-    UnknownEmailAddress,
+    UserNotFound,
     DatabaseError(diesel::result::Error),
 }
 
@@ -46,8 +60,18 @@ impl User {
         new_user.insert(conn)
     }
 
-    //    pub fn find_user(email_address: String, password: String) -> Result<User, UserQueryError> {
-    //    }
+    pub fn find(
+        email_address: &str,
+        password: &str,
+        conn: &PgConnection,
+    ) -> Result<UiUser, UserQueryError> {
+        let user: User = all_users
+            .filter(users::email_address.eq(email_address))
+            .filter(users::password_hash.eq(password))
+            .first(conn)
+            .map_err(|_| UserQueryError::UserNotFound)?;
+        Ok(UiUser::from(user))
+    }
 
     pub fn delete_for_id(id: i32, conn: &PgConnection) -> QueryResult<usize> {
         diesel::delete(all_users.find(id)).execute(conn)

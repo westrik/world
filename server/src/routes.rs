@@ -1,6 +1,6 @@
 use crate::db;
 use crate::db::get_conn;
-use crate::models::user::{NewUser, User};
+use crate::models::user::{NewUser, UiUser, User};
 use actix_web::{error, web, Error, HttpResponse, Responder};
 
 pub async fn sign_up(
@@ -11,14 +11,34 @@ pub async fn sign_up(
     let user = web::block(move || User::create(user.into_inner(), &get_conn(&pool).unwrap()))
         .await
         .map_err(|_| Error::from(HttpResponse::InternalServerError()))?;
+    Ok(HttpResponse::Ok().json(UiUser::from(user)))
+}
+
+#[derive(Deserialize)]
+pub struct SignInRequest {
+    email_address: String,
+    password: String,
+}
+
+pub async fn sign_in(
+    creds: web::Json<SignInRequest>,
+    pool: web::Data<db::PgPool>,
+) -> Result<HttpResponse, Error> {
+    let user: UiUser = web::block(move || {
+        User::find(
+            creds.email_address.as_str(),
+            creds.password.as_str(),
+            &get_conn(&pool).unwrap(),
+        )
+    })
+    .await
+    .map_err(|_| Error::from(HttpResponse::BadRequest()))?;
     Ok(HttpResponse::Ok().json(user))
 }
 
-pub async fn sign_in() -> impl Responder {
-    HttpResponse::Ok().body("Hello world again!")
-}
-
-pub async fn delete_users(pool: web::Data<db::PgPool>) -> impl Responder {
-    User::delete_all(&get_conn(&pool).unwrap());
-    HttpResponse::Ok().body("all users deleted")
+pub async fn delete_users(pool: web::Data<db::PgPool>) -> Result<HttpResponse, Error> {
+    web::block(move || User::delete_all(&get_conn(&pool).unwrap()))
+        .await
+        .map_err(|_| Error::from(HttpResponse::InternalServerError()))?;
+    Ok(HttpResponse::Ok().body("all users deleted"))
 }
