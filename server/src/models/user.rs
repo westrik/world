@@ -62,7 +62,7 @@ impl DbNewUser {
             .get_result(conn);
         match res {
             Ok(new_user) => Ok(new_user),
-            Err(oops) => Err(UserQueryError::DatabaseError(oops))
+            Err(oops) => Err(UserQueryError::DatabaseError(oops)),
         }
     }
 }

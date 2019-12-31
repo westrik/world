@@ -5,9 +5,9 @@ use actix_web::{web, App, HttpServer};
 use dotenv::dotenv;
 use std::env;
 
+use actix_web::middleware::Logger;
 use timeline_server::db;
 use timeline_server::routes::*;
-use actix_web::middleware::Logger;
 
 /*
 TODO(next):
@@ -25,7 +25,6 @@ async fn main() -> std::io::Result<()> {
 
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let pool = db::init_pool(&database_url).expect("Failed to create pool");
-
 
     HttpServer::new(move || {
         App::new()
