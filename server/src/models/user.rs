@@ -46,6 +46,9 @@ impl User {
         new_user.insert(conn)
     }
 
+    //    pub fn find_user(email_address: String, password: String) -> Result<User, UserQueryError> {
+    //    }
+
     pub fn delete_for_id(id: i32, conn: &PgConnection) -> QueryResult<usize> {
         diesel::delete(all_users.find(id)).execute(conn)
     }
