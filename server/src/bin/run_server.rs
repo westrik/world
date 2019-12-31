@@ -1,9 +1,10 @@
 extern crate log;
 
-use actix_web::{web, App, HttpServer};
+use actix_web::{http, web, App, HttpServer};
 use dotenv::dotenv;
 use std::env;
 
+use actix_cors::Cors;
 use actix_web::middleware::Logger;
 use timeline_server::db;
 use timeline_server::routes::*;
@@ -20,6 +21,15 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .data(pool.clone())
             .wrap(Logger::default())
+            .wrap(
+                Cors::new()
+                    .allowed_origin("http://westrik.world:1234")
+                    .allowed_methods(vec!["GET", "POST"])
+                    .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+                    .allowed_header(http::header::CONTENT_TYPE)
+                    .max_age(3600)
+                    .finish(),
+            )
             .route("/sign-up", web::post().to(sign_up))
             .route("/sign-in", web::post().to(sign_in))
             .route("/delete-users", web::delete().to(delete_users))
