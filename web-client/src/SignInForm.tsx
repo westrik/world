@@ -12,6 +12,7 @@ const SignInForm: React.FC<IProps> = props => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   return (
     <div className="form-container text-center">
@@ -53,19 +54,28 @@ const SignInForm: React.FC<IProps> = props => {
                 // @ts-ignore: not sure the types are correct?
                 setRemember(e.target.checked)
               }
-            />
+            />{' '}
             Remember me
           </label>
         </div>
         <button
           onClick={() => {
-            props.onSignIn(remember);
+            setLoading(true);
+            // props.onSignIn(remember);
             // tslint:disable-next-line:no-console
             console.log({ email, password, remember });
           }}
           className="btn btn-lg btn-primary btn-block"
           type="submit"
+          disabled={isLoading}
         >
+          {isLoading ? (
+            <span
+              className="spinner-grow spinner-grow-sm"
+              role="status"
+              aria-hidden="true"
+            />
+          ) : null}{' '}
           Sign in
         </button>
       </form>
