@@ -8,11 +8,16 @@ import './style/dashboard.css';
 //    - timeline
 // - add an Icon component that uses the feather-icon SVGs
 
-const Dashboard: React.FC = () => (
+interface IProps {
+  siteName: string;
+  onSignOut: () => void;
+}
+
+const Dashboard: React.FC<IProps> = props => (
   <div>
     <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
       <a className="navbar-brand col-sm-3 col-md-2 mr-0" href="#">
-        timeline
+        {props.siteName}
       </a>
       <input
         className="form-control form-control-dark w-100"
@@ -22,7 +27,13 @@ const Dashboard: React.FC = () => (
       />
       <ul className="navbar-nav px-3">
         <li className="nav-item text-nowrap">
-          <a className="nav-link" href="#">
+          <a
+            className="nav-link"
+            href="#"
+            onClick={() => {
+              props.onSignOut();
+            }}
+          >
             Sign out
           </a>
         </li>
