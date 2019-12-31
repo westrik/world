@@ -5,8 +5,8 @@ authors = ["Matt Westrik <m@ttwestrik.com>"]
 edition = "2018"
 
 [dependencies]
-async-std = { version = "1.4.0", features = [ "attributes" ] }
-tide = "0.5.1"
+actix-web = "2.0"
+actix-rt = "1.0"
 chrono = { version = "0.4", features = ["serde"] }
 diesel = { features = ["postgres", "r2d2", "chrono"], version = "1.3.2" }
 dotenv = "^0.14"
