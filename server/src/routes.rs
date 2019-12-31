@@ -33,6 +33,7 @@ pub async fn sign_in(
     })
     .await
     .map_err(|_| Error::from(HttpResponse::BadRequest()))?;
+    // TODO: generate token and include with response
     Ok(HttpResponse::Ok().json(UiUser::from(user)))
 }
 
