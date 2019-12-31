@@ -64,13 +64,13 @@ impl User {
         email_address: &str,
         password: &str,
         conn: &PgConnection,
-    ) -> Result<UiUser, UserQueryError> {
+    ) -> Result<User, UserQueryError> {
         let user: User = all_users
             .filter(users::email_address.eq(email_address))
             .filter(users::password_hash.eq(password))
             .first(conn)
             .map_err(|_| UserQueryError::UserNotFound)?;
-        Ok(UiUser::from(user))
+        Ok(user)
     }
 
     pub fn delete_for_id(id: i32, conn: &PgConnection) -> QueryResult<usize> {

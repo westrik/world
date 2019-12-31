@@ -24,7 +24,7 @@ pub async fn sign_in(
     creds: web::Json<SignInRequest>,
     pool: web::Data<db::PgPool>,
 ) -> Result<HttpResponse, Error> {
-    let user: UiUser = web::block(move || {
+    let user: User = web::block(move || {
         User::find(
             creds.email_address.as_str(),
             creds.password.as_str(),
@@ -33,7 +33,7 @@ pub async fn sign_in(
     })
     .await
     .map_err(|_| Error::from(HttpResponse::BadRequest()))?;
-    Ok(HttpResponse::Ok().json(user))
+    Ok(HttpResponse::Ok().json(UiUser::from(user)))
 }
 
 pub async fn delete_users(pool: web::Data<db::PgPool>) -> Result<HttpResponse, Error> {
