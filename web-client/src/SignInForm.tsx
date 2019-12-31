@@ -4,7 +4,8 @@ import { useState } from 'react';
 import './style/SignInForm.scss';
 
 interface IProps {
-  onSignIn: () => void;
+  siteName: string;
+  onSignIn: (persistLogin: boolean) => void;
 }
 
 const SignInForm: React.FC<IProps> = props => {
@@ -15,9 +16,7 @@ const SignInForm: React.FC<IProps> = props => {
   return (
     <div className="form-container text-center">
       <form className="form-signin">
-        <h1 className="h3 mb-3 font-weight-normal">
-          Sign in to <em>Timeline</em>
-        </h1>
+        <h1 className="h3 mb-3 font-weight-normal">{props.siteName}</h1>
         <label htmlFor="inputEmail" className="sr-only">
           Email address
         </label>
@@ -59,7 +58,11 @@ const SignInForm: React.FC<IProps> = props => {
           </label>
         </div>
         <button
-          onClick={props.onSignIn}
+          onClick={() => {
+            props.onSignIn(remember);
+            // tslint:disable-next-line:no-console
+            console.log({ email, password, remember });
+          }}
           className="btn btn-lg btn-primary btn-block"
           type="submit"
         >
