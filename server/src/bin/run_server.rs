@@ -8,15 +8,6 @@ use actix_web::middleware::Logger;
 use timeline_server::db;
 use timeline_server::routes::*;
 
-/*
-TODO(next):
- - add methods for password hashing + authenticating
- - hook up sign-in endpoint
- - 4XX/5XX status pages
-DONE:
- - add user model
-*/
-
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
