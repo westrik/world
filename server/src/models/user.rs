@@ -1,8 +1,10 @@
 use crate::schema::{users, users::dsl::users as all_users};
 
+use argon2rs::verifier::Encoded;
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use diesel::{PgConnection, QueryResult};
+use std::{env, str};
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize)]
 pub struct User {
@@ -50,12 +52,20 @@ pub enum UserQueryError {
     DatabaseError(diesel::result::Error),
 }
 
+fn hash_password(password: String) -> String {
+    let salt = env::var("PASSWORD_HASH_SALT").expect("PASSWORD_HASH_SALT must be set");
+
+    str::from_utf8(&Encoded::default2i(password.as_ref(), salt.as_ref(), b"key", b"").to_u8())
+        .unwrap()
+        .to_string()
+}
+
 impl User {
     pub fn create(new_user: NewUser, conn: &PgConnection) -> Result<User, UserQueryError> {
         let new_user = DbNewUser {
             email_address: new_user.email_address,
             full_name: new_user.full_name,
-            password_hash: new_user.password,
+            password_hash: hash_password(new_user.password),
         };
         new_user.insert(conn)
     }
@@ -67,7 +77,7 @@ impl User {
     ) -> Result<User, UserQueryError> {
         let user: User = all_users
             .filter(users::email_address.eq(email_address))
-            .filter(users::password_hash.eq(password))
+            .filter(users::password_hash.eq(hash_password(password.to_string())))
             .first(conn)
             .map_err(|_| UserQueryError::UserNotFound)?;
         Ok(user)
@@ -84,12 +94,9 @@ impl User {
 
 impl DbNewUser {
     pub fn insert(&self, conn: &PgConnection) -> Result<User, UserQueryError> {
-        let res = diesel::insert_into(users::table)
+        Ok(diesel::insert_into(users::table)
             .values(self)
-            .get_result(conn);
-        match res {
-            Ok(new_user) => Ok(new_user),
-            Err(oops) => Err(UserQueryError::DatabaseError(oops)),
-        }
+            .get_result(conn)
+            .map_err(|err| UserQueryError::DatabaseError(err))?)
     }
 }

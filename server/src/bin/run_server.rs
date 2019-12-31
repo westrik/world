@@ -1,4 +1,3 @@
-#[macro_use]
 extern crate log;
 
 use actix_web::{web, App, HttpServer};

@@ -1,7 +1,7 @@
 use crate::db;
 use crate::db::get_conn;
 use crate::models::user::{NewUser, UiUser, User};
-use actix_web::{error, web, Error, HttpResponse, Responder};
+use actix_web::{web, Error, HttpResponse};
 
 pub async fn sign_up(
     user: web::Json<NewUser>,
