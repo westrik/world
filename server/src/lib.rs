@@ -1,8 +1,10 @@
-#[macro_use]
-extern crate serde_derive;
+extern crate argon2rs;
 #[macro_use]
 extern crate diesel;
-extern crate argon2rs;
+#[macro_use]
+extern crate lazy_static;
+#[macro_use]
+extern crate serde_derive;
 
 pub mod db;
 pub mod models;

@@ -52,10 +52,12 @@ pub enum UserQueryError {
     DatabaseError(diesel::result::Error),
 }
 
+lazy_static! {
+    static ref HASH_SALT: String =
+        env::var("PASSWORD_HASH_SALT").expect("PASSWORD_HASH_SALT must be set");
+}
 fn hash_password(password: String) -> String {
-    let salt = env::var("PASSWORD_HASH_SALT").expect("PASSWORD_HASH_SALT must be set");
-
-    str::from_utf8(&Encoded::default2i(password.as_ref(), salt.as_ref(), b"key", b"").to_u8())
+    str::from_utf8(&Encoded::default2i(password.as_ref(), HASH_SALT.as_ref(), b"key", b"").to_u8())
         .unwrap()
         .to_string()
 }
