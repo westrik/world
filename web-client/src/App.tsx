@@ -10,11 +10,18 @@ const SITE_PROPS = { siteName: 'westrikworld' };
 const TOKEN_KEY = 'access_token';
 const EXPIRATION_KEY = 'access_expiration';
 
-export const DEV_HOST = 'http://api.westrik.world:6874';
-// eslint-disable-next-line no-unused-vars
-export const STAGE_HOST = 'https://api.stage.westrikworld.com';
-// eslint-disable-next-line no-unused-vars
-export const PROD_HOST = 'https://api.westrikworld.com';
+const API_HOSTS = {
+  local: 'http://api.westrik.world:6874',
+  production: 'https://api.westrikworld.com',
+  staging: 'https://api.staging.westrikworld.com',
+};
+const env = process.env.NODE_ENV;
+export const API_HOST =
+  env === 'staging'
+    ? API_HOSTS.staging
+    : env === 'production'
+    ? API_HOSTS.production
+    : API_HOSTS.local;
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);

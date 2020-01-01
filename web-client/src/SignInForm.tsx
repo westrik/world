@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 
-import { DEV_HOST } from './App';
+import { API_HOST } from './App';
 // @ts-ignore: picked up by parcel, but tsc doesn't like it
 import logo from './static/img/logo.png';
 import './style/SignInForm.scss';
@@ -12,7 +12,7 @@ interface IProps {
 }
 
 async function authenticate(emailAddress: string, password: string) {
-  const response = await fetch(`${DEV_HOST}/sign-in`, {
+  const response = await fetch(`${API_HOST}/sign-in`, {
     body: JSON.stringify({ email_address: emailAddress, password }),
     // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
     // credentials: 'same-origin', // include, *same-origin, omit

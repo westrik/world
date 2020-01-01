@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useEffect, useState } from 'react';
-import { DEV_HOST } from './App';
+import { API_HOST } from './App';
 import './style/dashboard.css';
 
 // TODO:
@@ -26,7 +26,7 @@ interface IGetItemsResponse {
 }
 
 async function createItem(token: string, content: string) {
-  const response = await fetch(`${DEV_HOST}/item`, {
+  const response = await fetch(`${API_HOST}/item`, {
     body: JSON.stringify({ content }),
     // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
     // credentials: 'same-origin', // include, *same-origin, omit
@@ -49,7 +49,7 @@ const Dashboard: React.FC<IProps> = props => {
   const [items, setItems] = useState([] as IItem[]);
 
   async function getItems(token: string) {
-    const response = await fetch(`${DEV_HOST}/item`, {
+    const response = await fetch(`${API_HOST}/item`, {
       // body: JSON.stringify({ }),
       // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
       // credentials: 'same-origin', // include, *same-origin, omit

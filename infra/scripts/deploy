@@ -1,0 +1,25 @@
+#/usr/bin/env sh
+
+
+if [ "$1" == "--staging" ]; then
+   PROJECT_PATH="/home/matt/src/world"
+   # TODO: check for dependencies
+   cd "$PROJECT_PATH";
+   cd server;
+   git stash;
+   git fetch origin master;
+   git checkout origin/master;
+   diesel migration run;
+   cd -;
+   NODE_ENV=staging make;
+   sudo systemctl stop westrikworld_server
+   sudo cp "$PROJECT_PATH/server/target/release/run_server" /usr/bin/run_server
+   sudo chmod +x /usr/bin/run_server
+   sudo systemctl start westrikworld_server
+   sudo rm -rf /var/www/westrikworld;
+   sudo cp -r "$PROJECT_PATH/web-client/dist" /var/www/westrikworld
+elif [ "$1" == "--prod" ]; then
+   echo "TODO: compile for prod"
+else
+   echo "supply --staging or --prod"
+fi
