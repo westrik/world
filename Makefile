@@ -1,6 +1,6 @@
 all:
 	cd server && cargo build --release
-	cd web-client && yarn build
+	cd web-client && yarn && yarn build
 
 check:
 	cd server && cargo check && cargo clippy
