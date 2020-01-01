@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import { useEffect, useState } from 'react';
 import { DEV_HOST } from './App';
 import './style/dashboard.css';
 
@@ -15,23 +16,13 @@ interface IProps {
   onSignOut: () => void;
 }
 
-async function getItems(token: string) {
-  const response = await fetch(`${DEV_HOST}/item`, {
-    // body: JSON.stringify({ }),
-    // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    // credentials: 'same-origin', // include, *same-origin, omit
-    headers: {
-      Authorization: token,
-      'Content-Type': 'application/json',
-    },
-    method: 'GET', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    // redirect: 'follow', // manual, *follow, error
-    // referrerPolicy: 'no-referrer', // no-referrer, *client
-  });
-  const res = await response.json();
-  // tslint:disable-next-line:no-console
-  console.log(res);
+interface IItem {
+  content: string;
+}
+
+interface IGetItemsResponse {
+  error: string | null;
+  items: IItem[];
 }
 
 async function createItem(token: string, content: string) {
@@ -54,8 +45,43 @@ async function createItem(token: string, content: string) {
 }
 
 const Dashboard: React.FC<IProps> = props => {
-  const fetch = async () => await getItems(props.apiToken);
-  fetch();
+  const [newItemContent, setNewItemContent] = useState('');
+  const [items, setItems] = useState([] as IItem[]);
+
+  async function getItems(token: string) {
+    const response = await fetch(`${DEV_HOST}/item`, {
+      // body: JSON.stringify({ }),
+      // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      // credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        Authorization: token,
+        'Content-Type': 'application/json',
+      },
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      // redirect: 'follow', // manual, *follow, error
+      // referrerPolicy: 'no-referrer', // no-referrer, *client
+    });
+    const resp = (await response.json()) as IGetItemsResponse;
+    // tslint:disable-next-line:no-console
+    console.log(resp);
+    if (resp.items) {
+      setItems(resp.items);
+    }
+    // TODO: handle error
+  }
+
+  useEffect(() => {
+    if (!items.length) {
+      const fetch = async () => {
+        // tslint:disable-next-line:no-console
+        console.log('running getItems');
+        await getItems(props.apiToken);
+      };
+      fetch();
+    }
+  });
+
   return (
     <div>
       <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
@@ -138,6 +164,12 @@ const Dashboard: React.FC<IProps> = props => {
                 </button>
               </div>
             </div>
+
+            <ul>
+              {items.map((item, key) => {
+                return <li key={key}>{item.content}</li>;
+              })}
+            </ul>
           </main>
         </div>
       </div>
@@ -165,7 +197,18 @@ const Dashboard: React.FC<IProps> = props => {
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div className="modal-body">TODO: create task form</div>
+            <div className="modal-body">
+              <input
+                type="text"
+                id="inputContent"
+                className="form-control"
+                placeholder="Description"
+                required
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setNewItemContent(e.target.value)
+                }
+              />
+            </div>
             <div className="modal-footer">
               <button
                 type="button"
@@ -178,7 +221,7 @@ const Dashboard: React.FC<IProps> = props => {
                 type="button"
                 className="btn btn-primary"
                 onClick={() => {
-                  createItem(props.apiToken, 'NEW ITEM');
+                  createItem(props.apiToken, newItemContent);
                 }}
               >
                 Create

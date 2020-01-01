@@ -5,7 +5,11 @@
     "target": "es6",
     "moduleResolution": "node",
     "baseUrl": "./",
-    "outDir": "./out"
+    "outDir": "./out",
+    "lib": [
+      "es6",
+      "dom"
+    ]
   },
   "include": [
     "src/**/*"

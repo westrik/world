@@ -4,10 +4,9 @@
 - [ ] Cloudfront + DNS + nginx + SSL config
 - [x] user + session models
 - [x] sign-in UI with token stored in sessionStorage or localStorage
-- [ ] use bearer token to query for user id (return 401 if session expired / not found)
-- [ ] create item model
-- [ ] create task UI
-	- [ ] modal to specify description and due date (optional)
+- [x] use bearer token to query for user id (return 401 if session expired / not found)
+- [x] create item model
+- [x] create task UI (basic)
 - [ ] sort tasks
 - [ ] complete task
 - [ ] convert task to bookmark
