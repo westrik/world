@@ -7,10 +7,14 @@ import './style/SignInForm.scss';
 
 interface IProps {
   siteName: string;
-  onSignIn: (persistLogin: boolean) => void;
+  onSignIn: (persistLogin: boolean, user: IUser, session: ISession) => void;
 }
 
 const DEV_HOST = 'http://api.westrik.world:6874';
+// eslint-disable-next-line no-unused-vars
+const STAGE_HOST = 'https://api.stage.westrikworld.com';
+// eslint-disable-next-line no-unused-vars
+const PROD_HOST = 'https://api.westrikworld.com';
 
 async function authenticate(emailAddress: string, password: string) {
   const response = await fetch(`${DEV_HOST}/sign-in`, {
@@ -25,7 +29,22 @@ async function authenticate(emailAddress: string, password: string) {
     // redirect: 'follow', // manual, *follow, error
     // referrerPolicy: 'no-referrer', // no-referrer, *client
   });
-  return await response.json();
+  return (await response.json()) as ISignInResponse;
+}
+
+export interface IUser {
+  email_address: string;
+  full_name: string;
+}
+
+export interface ISession {
+  token: string;
+  expires_at: string;
+}
+
+interface ISignInResponse {
+  user: IUser;
+  session: ISession;
 }
 
 const SignInForm: React.FC<IProps> = props => {
@@ -38,7 +57,9 @@ const SignInForm: React.FC<IProps> = props => {
   return (
     <div className="form-container text-center">
       <form className="form-signin">
-        <h1 className="h3 mb-3 font-weight-normal">
+        <h1
+          className={`h3 font-weight-normal ${!errorMessage ? 'mb-3' : null}`}
+        >
           {<img src={logo} className="mb-3 img-fluid" alt={props.siteName} />}
         </h1>
         {errorMessage ? (
@@ -89,20 +110,15 @@ const SignInForm: React.FC<IProps> = props => {
         <button
           onClick={async event => {
             event.preventDefault();
-
             setLoading(true);
-            let res;
+            let res: ISignInResponse | null = null;
             try {
               res = await authenticate(email, password);
+              props.onSignIn(remember, res.user, res.session);
             } catch {
               setErrorMessage('Invalid username or password');
+              setLoading(false);
             }
-            // tslint:disable-next-line:no-console
-            console.log(res);
-            setLoading(false);
-            // props.onSignIn(remember);
-            // tslint:disable-next-line:no-console
-            console.log({remember});
           }}
           className="btn btn-lg btn-primary btn-block"
           type="submit"

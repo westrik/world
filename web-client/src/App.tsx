@@ -3,15 +3,17 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { render } from 'react-dom';
 import Dashboard from './Dashboard';
-import SignInForm from './SignInForm';
+// eslint-disable-next-line no-unused-vars
+import SignInForm, { ISession as Session, IUser as User } from './SignInForm';
 
 const SITE_PROPS = { siteName: 'westrikworld' };
 
 const App: React.FC = () => {
   const [loggedIn, setLoggedIn] = useState(false);
+  const [bearerToken, setBearerToken] = useState(''); // TODO: load from sessionStorage / localStorage
   useEffect(() => {
-    if (!loggedIn) {
-      // TODO: load from sessionStorage / localStorage
+    if (!loggedIn && bearerToken) {
+      setLoggedIn(true);
     }
   });
   if (loggedIn) {
@@ -20,6 +22,7 @@ const App: React.FC = () => {
         {...SITE_PROPS}
         onSignOut={() => {
           setLoggedIn(false);
+          setBearerToken('');
           // TODO: clear sessionStorage & localStorage
         }}
       />
@@ -28,8 +31,13 @@ const App: React.FC = () => {
     return (
       <SignInForm
         {...SITE_PROPS}
-        onSignIn={(persistLogin: boolean) => {
+        onSignIn={(persistLogin: boolean, user: User, session: Session) => {
           setLoggedIn(true);
+          setBearerToken(session.token);
+          // tslint:disable-next-line:no-console
+          console.log(user);
+          // tslint:disable-next-line:no-console
+          console.log(session);
           if (persistLogin) {
             // TODO: set localStorage
           } else {

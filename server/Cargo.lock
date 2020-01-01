@@ -1456,6 +1456,7 @@ dependencies = [
  "env_logger",
  "lazy_static",
  "log",
+ "rand",
  "serde",
  "serde_derive",
  "serde_json",

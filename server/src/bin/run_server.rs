@@ -20,7 +20,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .data(pool.clone())
-            .wrap(Logger::default())
+            .wrap(Logger::default()) // TODO: fix info!() logging?
             .wrap(
                 Cors::new()
                     .allowed_origin("http://westrik.world:1234")

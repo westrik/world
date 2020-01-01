@@ -1,4 +1,13 @@
 table! {
+    sessions (token) {
+        user_id -> Int4,
+        token -> Text,
+        created_at -> Timestamptz,
+        expires_at -> Timestamptz,
+    }
+}
+
+table! {
     users (id) {
         id -> Int4,
         email_address -> Text,
@@ -8,3 +17,7 @@ table! {
         updated_at -> Timestamptz,
     }
 }
+
+joinable!(sessions -> users (user_id));
+
+allow_tables_to_appear_in_same_query!(sessions, users,);
