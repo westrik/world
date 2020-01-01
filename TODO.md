@@ -1,4 +1,20 @@
+- [ ] host config (ansible + terraform)
 - [ ] deployment cron job and systemd service
-- [ ] deploy front-end to netlify
-- [ ] DNS + nginx config
-- [ ] users & authentication
+- [ ] deploy front-end to S3
+- [ ] Cloudfront + DNS + nginx + SSL config
+- [x] user + session models
+- [x] sign-in UI with token stored in sessionStorage or localStorage
+- [ ] use bearer token to query for user id (return 403 if session expired / not found)
+- [ ] create item model
+- [ ] create task UI
+	- [ ] modal to specify description and due date (optional)
+- [ ] sort tasks
+- [ ] complete task
+- [ ] convert task to bookmark
+- [ ] convert task to document
+- [ ] bookmark preview fetching
+- [ ] basic search
+
+- [ ] keyboard shortcuts
+	- alt-l: focus on omnibar
+	- alt-n: new task|bookmark|document
