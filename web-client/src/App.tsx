@@ -10,9 +10,14 @@ const SITE_PROPS = { siteName: 'westrikworld' };
 const TOKEN_KEY = 'access_token';
 const EXPIRATION_KEY = 'access_expiration';
 
+export const DEV_HOST = 'http://api.westrik.world:6874';
+// eslint-disable-next-line no-unused-vars
+export const STAGE_HOST = 'https://api.stage.westrikworld.com';
+// eslint-disable-next-line no-unused-vars
+export const PROD_HOST = 'https://api.westrikworld.com';
+
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
-  const [loggedIn, setLoggedIn] = useState(false);
   const [bearerToken, setBearerToken] = useState(
     sessionStorage.getItem(TOKEN_KEY) || localStorage.getItem(TOKEN_KEY)
   );
@@ -20,18 +25,15 @@ const App: React.FC = () => {
     if (loading) {
       setLoading(false);
     }
-    if (!loggedIn && bearerToken) {
-      setLoggedIn(true);
-    }
   });
   if (loading) {
     return null;
-  } else if (loggedIn) {
+  } else if (bearerToken) {
     return (
       <Dashboard
         {...SITE_PROPS}
+        apiToken={bearerToken}
         onSignOut={() => {
-          setLoggedIn(false);
           setBearerToken('');
           sessionStorage.clear();
           localStorage.clear();
@@ -43,7 +45,6 @@ const App: React.FC = () => {
       <SignInForm
         {...SITE_PROPS}
         onSignIn={(persistLogin: boolean, user: User, session: Session) => {
-          setLoggedIn(true);
           setBearerToken(session.token);
           const storage = persistLogin ? localStorage : sessionStorage;
           storage.setItem(TOKEN_KEY, session.token);

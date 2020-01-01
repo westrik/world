@@ -1,13 +1,10 @@
-use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
-use crate::schema::{users, users::dsl::users as all_users};
-
 use argon2rs::verifier::Encoded;
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use diesel::{PgConnection, QueryResult};
-use rand::distributions::Alphanumeric;
-use rand::{thread_rng, Rng};
 use std::{env, str};
+
+use crate::schema::{users, users::dsl::users as all_users};
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize)]
 pub struct User {
@@ -96,51 +93,11 @@ impl User {
         diesel::delete(all_users.find(id)).execute(conn)
     }
 
-    pub fn delete_all(conn: &PgConnection) -> QueryResult<usize> {
-        diesel::delete(all_users).execute(conn)
-    }
-
     pub fn hash_password(password: String) -> String {
         str::from_utf8(
             &Encoded::default2i(password.as_ref(), HASH_SALT.as_ref(), b"key", b"").to_u8(),
         )
         .unwrap()
         .to_string()
-    }
-}
-
-#[derive(Associations, Identifiable, Queryable, Serialize, Deserialize)]
-#[primary_key(token)]
-#[belongs_to(User)]
-pub struct Session {
-    pub user_id: i32,
-    pub token: String,
-    pub created_at: DateTime<Utc>,
-    pub expires_at: DateTime<Utc>,
-}
-
-impl Session {
-    pub fn create(conn: &PgConnection, user: &User) -> Result<Session, UserQueryError> {
-        let token: String = thread_rng().sample_iter(&Alphanumeric).take(32).collect();
-        // TODO: retry on token collision
-        Ok(diesel::insert_into(sessions::table)
-            .values((sessions::token.eq(token), sessions::user_id.eq(user.id)))
-            .get_result(conn)
-            .map_err(|err| UserQueryError::DatabaseError(err))?)
-    }
-}
-
-#[derive(Serialize)]
-pub struct UiSession {
-    pub token: String,
-    pub expires_at: DateTime<Utc>,
-}
-
-impl From<Session> for UiSession {
-    fn from(session: Session) -> Self {
-        UiSession {
-            token: session.token,
-            expires_at: session.expires_at,
-        }
     }
 }

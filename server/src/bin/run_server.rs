@@ -1,6 +1,6 @@
 extern crate log;
 
-use actix_web::{http, web, App, HttpServer};
+use actix_web::{http, middleware, web, App, HttpServer};
 use dotenv::dotenv;
 use std::env;
 
@@ -20,6 +20,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .data(pool.clone())
+            .wrap(middleware::DefaultHeaders::new().header("X-Version", "0.1"))
             .wrap(Logger::default()) // TODO: fix info!() logging?
             .wrap(
                 Cors::new()
@@ -32,7 +33,7 @@ async fn main() -> std::io::Result<()> {
             )
             .route("/sign-up", web::post().to(sign_up))
             .route("/sign-in", web::post().to(sign_in))
-            .route("/delete-users", web::delete().to(delete_users))
+            .route("/item", web::post().to(get_items))
     })
     .bind("127.0.0.1:8080")?
     .run()

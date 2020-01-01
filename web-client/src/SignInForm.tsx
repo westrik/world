@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 
+import { DEV_HOST } from './App';
 // @ts-ignore: picked up by parcel, but tsc doesn't like it
 import logo from './static/img/logo.png';
 import './style/SignInForm.scss';
@@ -9,12 +10,6 @@ interface IProps {
   siteName: string;
   onSignIn: (persistLogin: boolean, user: IUser, session: ISession) => void;
 }
-
-const DEV_HOST = 'http://api.westrik.world:6874';
-// eslint-disable-next-line no-unused-vars
-const STAGE_HOST = 'https://api.stage.westrikworld.com';
-// eslint-disable-next-line no-unused-vars
-const PROD_HOST = 'https://api.westrikworld.com';
 
 async function authenticate(emailAddress: string, password: string) {
   const response = await fetch(`${DEV_HOST}/sign-in`, {
