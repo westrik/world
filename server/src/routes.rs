@@ -1,6 +1,6 @@
 use crate::db;
 use crate::db::get_conn;
-use crate::models::item::Item;
+use crate::models::item::{Item, ItemQueryError};
 use crate::models::session::{Session, UiSession};
 use crate::models::user::{NewUser, UiUser, User, UserQueryError};
 use actix_web::http::header::AUTHORIZATION;
@@ -58,19 +58,32 @@ pub struct GetItemResponse {
     items: Option<Vec<Item>>,
 }
 
-pub async fn get_items(req: HttpRequest) -> Result<HttpResponse, Error> {
-    let headers = req.headers();
-    if let Some(auth_header) = headers.get(AUTHORIZATION) {
-        // TODO: query for items using auth header to lookup user ID
+fn run_get_items(token: String, pool: &db::PgPool) -> Result<Vec<Item>, ItemQueryError> {
+    Ok(Item::find_all_for_user(
+        &get_conn(&pool).unwrap(),
+        token.to_string(),
+    )?)
+}
 
+pub async fn get_items(
+    req: HttpRequest,
+    pool: web::Data<db::PgPool>,
+) -> Result<HttpResponse, Error> {
+    if let Some(auth_header) = req.headers().get(AUTHORIZATION) {
+        let token = String::from(
+            auth_header
+                .clone()
+                .to_str()
+                .map_err(|_| HttpResponse::BadRequest().body("bad token"))?,
+        );
+        let items: Vec<Item> = web::block(move || run_get_items(token, &pool))
+            .await
+            .map_err(|_| HttpResponse::BadRequest().body("failed to find items"))?;
         Ok(HttpResponse::Ok().json(GetItemResponse {
             error: None,
-            items: None,
+            items: Some(items),
         }))
     } else {
-        Ok(HttpResponse::Unauthorized().json(GetItemResponse {
-            error: Some("no token".to_string()),
-            items: None,
-        }))
+        Ok(HttpResponse::BadRequest().body("no token"))
     }
 }

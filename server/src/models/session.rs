@@ -7,7 +7,7 @@ use rand::{thread_rng, Rng};
 use crate::models::user::{User, UserQueryError};
 use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
 
-#[derive(Associations, Identifiable, Queryable, Serialize, Deserialize)]
+#[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[primary_key(token)]
 #[belongs_to(User)]
 pub struct Session {

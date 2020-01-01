@@ -21,10 +21,11 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .data(pool.clone())
             .wrap(middleware::DefaultHeaders::new().header("X-Version", "0.1"))
-            .wrap(Logger::default()) // TODO: fix info!() logging?
+            .wrap(Logger::default())
             .wrap(
                 Cors::new()
                     .allowed_origin("http://westrik.world:1234")
+                    .allowed_origin("https://westrikworld.com")
                     .allowed_methods(vec!["GET", "POST"])
                     .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
                     .allowed_header(http::header::CONTENT_TYPE)
