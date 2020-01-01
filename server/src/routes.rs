@@ -1,5 +1,6 @@
 use crate::db;
 use crate::db::get_conn;
+use crate::models::item::Item;
 use crate::models::session::{Session, UiSession};
 use crate::models::user::{NewUser, UiUser, User, UserQueryError};
 use actix_web::http::header::AUTHORIZATION;
@@ -49,11 +50,6 @@ pub async fn sign_in(
         .await
         .map_err(|_| HttpResponse::BadRequest().body("failed to login"))?;
     Ok(HttpResponse::Ok().json(resp))
-}
-
-#[derive(Serialize)]
-pub struct Item {
-    pub id: i32,
 }
 
 #[derive(Serialize)]

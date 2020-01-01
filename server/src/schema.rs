@@ -1,4 +1,14 @@
 table! {
+    items (id) {
+        id -> Int4,
+        user_id -> Int4,
+        content -> Text,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
+    }
+}
+
+table! {
     sessions (token) {
         user_id -> Int4,
         token -> Text,
@@ -18,6 +28,7 @@ table! {
     }
 }
 
+joinable!(items -> users (user_id));
 joinable!(sessions -> users (user_id));
 
-allow_tables_to_appear_in_same_query!(sessions, users,);
+allow_tables_to_appear_in_same_query!(items, sessions, users,);

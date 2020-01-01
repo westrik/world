@@ -1,6 +1,6 @@
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
-use diesel::{PgConnection, RunQueryDsl};
+use diesel::PgConnection;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 

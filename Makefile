@@ -13,4 +13,4 @@ format:
 	cd web-client && yarn cute
 
 preflight:
-	make && make check && make format
+	make check && make format
