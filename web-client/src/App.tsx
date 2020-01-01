@@ -7,23 +7,34 @@ import Dashboard from './Dashboard';
 import SignInForm, { ISession as Session, IUser as User } from './SignInForm';
 
 const SITE_PROPS = { siteName: 'westrikworld' };
+const TOKEN_KEY = 'access_token';
+const EXPIRATION_KEY = 'access_expiration';
 
 const App: React.FC = () => {
+  const [loading, setLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [bearerToken, setBearerToken] = useState(''); // TODO: load from sessionStorage / localStorage
+  const [bearerToken, setBearerToken] = useState(
+    sessionStorage.getItem(TOKEN_KEY) || localStorage.getItem(TOKEN_KEY)
+  );
   useEffect(() => {
+    if (loading) {
+      setLoading(false);
+    }
     if (!loggedIn && bearerToken) {
       setLoggedIn(true);
     }
   });
-  if (loggedIn) {
+  if (loading) {
+    return null;
+  } else if (loggedIn) {
     return (
       <Dashboard
         {...SITE_PROPS}
         onSignOut={() => {
           setLoggedIn(false);
           setBearerToken('');
-          // TODO: clear sessionStorage & localStorage
+          sessionStorage.clear();
+          localStorage.clear();
         }}
       />
     );
@@ -34,15 +45,9 @@ const App: React.FC = () => {
         onSignIn={(persistLogin: boolean, user: User, session: Session) => {
           setLoggedIn(true);
           setBearerToken(session.token);
-          // tslint:disable-next-line:no-console
-          console.log(user);
-          // tslint:disable-next-line:no-console
-          console.log(session);
-          if (persistLogin) {
-            // TODO: set localStorage
-          } else {
-            // TODO: set sessionStorage
-          }
+          const storage = persistLogin ? localStorage : sessionStorage;
+          storage.setItem(TOKEN_KEY, session.token);
+          storage.setItem(EXPIRATION_KEY, session.expires_at);
         }}
       />
     );
