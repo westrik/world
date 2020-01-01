@@ -1443,26 +1443,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "timeline-server"
-version = "0.1.0"
-dependencies = [
- "actix-cors",
- "actix-rt",
- "actix-web",
- "argon2rs",
- "chrono",
- "diesel",
- "dotenv",
- "env_logger",
- "lazy_static",
- "log",
- "rand",
- "serde",
- "serde_derive",
- "serde_json",
-]
-
-[[package]]
 name = "tokio"
 version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1588,6 +1568,26 @@ name = "wasi"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b89c3ce4ce14bdc6fb6beaf9ec7928ca331de5df7e5ea278375642a2f478570d"
+
+[[package]]
+name = "westrikworld-server"
+version = "0.1.0"
+dependencies = [
+ "actix-cors",
+ "actix-rt",
+ "actix-web",
+ "argon2rs",
+ "chrono",
+ "diesel",
+ "dotenv",
+ "env_logger",
+ "lazy_static",
+ "log",
+ "rand",
+ "serde",
+ "serde_derive",
+ "serde_json",
+]
 
 [[package]]
 name = "widestring"

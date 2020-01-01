@@ -6,8 +6,8 @@ use std::env;
 
 use actix_cors::Cors;
 use actix_web::middleware::Logger;
-use timeline_server::db;
-use timeline_server::routes::*;
+use westrikworld_server::db;
+use westrikworld_server::routes::*;
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
