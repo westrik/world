@@ -18,6 +18,23 @@ pub struct Item {
     pub updated_at: DateTime<Utc>,
 }
 
+#[derive(Insertable, Debug)]
+#[table_name = "items"]
+pub struct NewItem {
+    pub user_id: i32,
+    pub content: String,
+}
+
+impl NewItem {
+    pub fn insert(&self, conn: &PgConnection) -> Result<Item, ItemQueryError> {
+        info!("{:?}", self);
+        Ok(diesel::insert_into(items::table)
+            .values(self)
+            .get_result(conn)
+            .map_err(|err| ItemQueryError::DatabaseError(err))?)
+    }
+}
+
 #[derive(Debug)]
 pub enum ItemQueryError {
     ItemNotFound,
@@ -35,10 +52,28 @@ impl Item {
             .filter(sessions::expires_at.gt(now))
             .first(conn)
             .map_err(|_| ItemQueryError::ItemNotFound)?;
+        let items: Vec<Item> = all_items
+            .filter(items::user_id.eq(session.user_id))
+            .load(conn)
+            .map_err(|_| ItemQueryError::ItemNotFound)?;
+        Ok(items)
+    }
 
-        info!("{:?}", session);
-
-        Ok(Vec::new())
+    pub fn create(
+        conn: &PgConnection,
+        token: String,
+        content: String,
+    ) -> Result<Item, ItemQueryError> {
+        let session: Session = all_sessions
+            .filter(sessions::token.eq(token))
+            .filter(sessions::expires_at.gt(now))
+            .first(conn)
+            .map_err(|_| ItemQueryError::InvalidToken)?;
+        let new_user = NewItem {
+            user_id: session.user_id,
+            content: content,
+        };
+        new_user.insert(conn)
     }
 }
 

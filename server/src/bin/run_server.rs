@@ -34,7 +34,8 @@ async fn main() -> std::io::Result<()> {
             )
             .route("/sign-up", web::post().to(sign_up))
             .route("/sign-in", web::post().to(sign_in))
-            .route("/item", web::post().to(get_items))
+            .route("/item", web::post().to(create_item))
+            .route("/item", web::get().to(get_items))
     })
     .bind("127.0.0.1:8080")?
     .run()

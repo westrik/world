@@ -87,3 +87,51 @@ pub async fn get_items(
         Ok(HttpResponse::BadRequest().body("no token"))
     }
 }
+
+#[derive(Deserialize)]
+pub struct NewItem {
+    content: String,
+}
+
+#[derive(Serialize)]
+pub struct CreateItemResponse {
+    error: Option<String>,
+    item: Option<Item>,
+}
+
+fn run_create_item(
+    token: String,
+    content: String,
+    pool: &db::PgPool,
+) -> Result<Item, ItemQueryError> {
+    Ok(Item::create(
+        &get_conn(&pool).unwrap(),
+        token.to_string(),
+        content.to_string(),
+    )?)
+}
+
+pub async fn create_item(
+    req: HttpRequest,
+    item: Json<NewItem>,
+    pool: web::Data<db::PgPool>,
+) -> Result<HttpResponse, Error> {
+    let content = String::from(&item.content);
+    if let Some(auth_header) = req.headers().get(AUTHORIZATION) {
+        let token = String::from(
+            auth_header
+                .clone()
+                .to_str()
+                .map_err(|_| HttpResponse::BadRequest().body("bad token"))?,
+        );
+        let item: Item = web::block(move || run_create_item(token, content, &pool))
+            .await
+            .map_err(|_| HttpResponse::BadRequest().body("failed to create item"))?;
+        Ok(HttpResponse::Ok().json(CreateItemResponse {
+            error: None,
+            item: Some(item),
+        }))
+    } else {
+        Ok(HttpResponse::BadRequest().body("no token"))
+    }
+}

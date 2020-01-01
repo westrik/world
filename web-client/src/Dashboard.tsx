@@ -24,6 +24,25 @@ async function getItems(token: string) {
       Authorization: token,
       'Content-Type': 'application/json',
     },
+    method: 'GET', // *GET, POST, PUT, DELETE, etc.
+    mode: 'cors', // no-cors, *cors, same-origin
+    // redirect: 'follow', // manual, *follow, error
+    // referrerPolicy: 'no-referrer', // no-referrer, *client
+  });
+  const res = await response.json();
+  // tslint:disable-next-line:no-console
+  console.log(res);
+}
+
+async function createItem(token: string, content: string) {
+  const response = await fetch(`${DEV_HOST}/item`, {
+    body: JSON.stringify({ content }),
+    // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    // credentials: 'same-origin', // include, *same-origin, omit
+    headers: {
+      Authorization: token,
+      'Content-Type': 'application/json',
+    },
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
     // redirect: 'follow', // manual, *follow, error
@@ -158,7 +177,9 @@ const Dashboard: React.FC<IProps> = props => {
               <button
                 type="button"
                 className="btn btn-primary"
-                data-dismiss="modal"
+                onClick={() => {
+                  createItem(props.apiToken, 'NEW ITEM');
+                }}
               >
                 Create
               </button>
