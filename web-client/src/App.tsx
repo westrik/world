@@ -20,8 +20,8 @@ export const API_HOST =
   env === 'staging'
     ? API_HOSTS.staging
     : env === 'production'
-    ? API_HOSTS.production
-    : API_HOSTS.local;
+      ? API_HOSTS.production
+      : API_HOSTS.local;
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
