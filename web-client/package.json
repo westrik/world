@@ -34,9 +34,11 @@
     "typescript": "^3.7.3"
   },
   "dependencies": {
+    "@xstate/react": "^0.8.1",
     "babel-polyfill": "^6.26.0",
     "react": "^16.0.0",
     "react-dom": "^16.12.0",
-    "static": "^2.0.0"
+    "static": "^2.0.0",
+    "xstate": "^4.7.5"
   }
 }

@@ -49,11 +49,12 @@
         }
     },
     "overrides": [{
-      "files": ["**/*.tsx"],
+      "files": ["**/*.ts","**/*.tsx"],
       "rules": {
         "react/prop-types": "off",
         "@typescript-eslint/ban-ts-ignore": "off",
-        "@typescript-eslint/camelcase": "off"
+        "@typescript-eslint/camelcase": "off",
+        "@typescript-eslint/no-non-null-assertion": "off"
       }}
     ]
 }
