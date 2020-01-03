@@ -10,22 +10,22 @@ import './style/dashboard.css';
 //    - timeline
 // - add an Icon component that uses the feather-icon SVGs
 
-interface IProps {
+interface Props {
   siteName: string;
   apiToken: string;
   onSignOut: () => void;
 }
 
-interface IItem {
+interface Item {
   content: string;
 }
 
-interface IGetItemsResponse {
+interface GetItemsResponse {
   error: string | null;
-  items: IItem[];
+  items: Item[];
 }
 
-async function createItem(token: string, content: string) {
+async function createItem(token: string, content: string): Promise<void> {
   const response = await fetch(`${API_HOST}/item`, {
     body: JSON.stringify({ content }),
     // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -44,11 +44,11 @@ async function createItem(token: string, content: string) {
   console.log(res);
 }
 
-const Dashboard: React.FC<IProps> = props => {
+const Dashboard: React.FC<Props> = props => {
   const [newItemContent, setNewItemContent] = useState('');
-  const [items, setItems] = useState([] as IItem[]);
+  const [items, setItems] = useState([] as Item[]);
 
-  async function getItems(token: string) {
+  async function getItems(token: string): Promise<void> {
     const response = await fetch(`${API_HOST}/item`, {
       // body: JSON.stringify({ }),
       // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -62,7 +62,7 @@ const Dashboard: React.FC<IProps> = props => {
       // redirect: 'follow', // manual, *follow, error
       // referrerPolicy: 'no-referrer', // no-referrer, *client
     });
-    const resp = (await response.json()) as IGetItemsResponse;
+    const resp = (await response.json()) as GetItemsResponse;
     // tslint:disable-next-line:no-console
     console.log(resp);
     if (resp.items) {
@@ -73,7 +73,7 @@ const Dashboard: React.FC<IProps> = props => {
 
   useEffect(() => {
     if (!items.length) {
-      const fetch = async () => {
+      const fetch = async (): Promise<void> => {
         // tslint:disable-next-line:no-console
         console.log('running getItems');
         await getItems(props.apiToken);
@@ -99,7 +99,7 @@ const Dashboard: React.FC<IProps> = props => {
             <a
               className="nav-link"
               href="#"
-              onClick={() => {
+              onClick={(): void => {
                 props.onSignOut();
               }}
             >
@@ -204,7 +204,7 @@ const Dashboard: React.FC<IProps> = props => {
                 className="form-control"
                 placeholder="Description"
                 required
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
                   setNewItemContent(e.target.value)
                 }
               />
@@ -220,7 +220,7 @@ const Dashboard: React.FC<IProps> = props => {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={() => {
+                onClick={(): void => {
                   createItem(props.apiToken, newItemContent);
                 }}
               >

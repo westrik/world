@@ -2,16 +2,16 @@ import * as React from 'react';
 import { useState } from 'react';
 
 import { API_HOST } from './App';
-// @ts-ignore: picked up by parcel, but tsc doesn't like it
+// @ts-ignore
 import logo from './static/img/logo.png';
 import './style/SignInForm.scss';
 
-interface IProps {
+interface Props {
   siteName: string;
-  onSignIn: (persistLogin: boolean, user: IUser, session: ISession) => void;
+  onSignIn: (persistLogin: boolean, user: User, session: Session) => void;
 }
 
-async function authenticate(emailAddress: string, password: string) {
+async function authenticate(emailAddress: string, password: string): Promise<SignInResponse> {
   const response = await fetch(`${API_HOST}/sign-in`, {
     body: JSON.stringify({ email_address: emailAddress, password }),
     // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -24,25 +24,25 @@ async function authenticate(emailAddress: string, password: string) {
     // redirect: 'follow', // manual, *follow, error
     // referrerPolicy: 'no-referrer', // no-referrer, *client
   });
-  return (await response.json()) as ISignInResponse;
+  return await response.json();
 }
 
-export interface IUser {
+export interface User {
   email_address: string;
   full_name: string;
 }
 
-export interface ISession {
+export interface Session {
   token: string;
   expires_at: string;
 }
 
-interface ISignInResponse {
-  user: IUser;
-  session: ISession;
+interface SignInResponse {
+  user: User;
+  session: Session;
 }
 
-const SignInForm: React.FC<IProps> = props => {
+const SignInForm: React.FC<Props> = props => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(false);
@@ -72,7 +72,7 @@ const SignInForm: React.FC<IProps> = props => {
           placeholder="Email address"
           required
           autoFocus
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
             setEmail(e.target.value)
           }
         />
@@ -85,7 +85,7 @@ const SignInForm: React.FC<IProps> = props => {
           className="form-control"
           placeholder="Password"
           required
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
             setPassword(e.target.value)
           }
         />
@@ -94,19 +94,18 @@ const SignInForm: React.FC<IProps> = props => {
             <input
               type="checkbox"
               value="remember-me"
-              onClick={(e: React.MouseEvent<HTMLInputElement>) =>
-                // @ts-ignore: not sure the types are correct?
-                setRemember(e.target.checked)
+              onClick={(e: React.MouseEvent<HTMLInputElement>): void =>
+                setRemember((e.target as HTMLInputElement).checked)
               }
             />{' '}
             Remember me
           </label>
         </div>
         <button
-          onClick={async event => {
+          onClick={async (event): Promise<void> => {
             event.preventDefault();
             setLoading(true);
-            let res: ISignInResponse | null = null;
+            let res: SignInResponse | null = null;
             try {
               res = await authenticate(email, password);
               props.onSignIn(remember, res.user, res.session);

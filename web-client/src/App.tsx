@@ -3,8 +3,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { render } from 'react-dom';
 import Dashboard from './Dashboard';
-// eslint-disable-next-line no-unused-vars
-import SignInForm, { ISession as Session, IUser as User } from './SignInForm';
+import SignInForm, { Session, User } from './SignInForm';
 
 const SITE_PROPS = { siteName: 'westrikworld' };
 const TOKEN_KEY = 'access_token';
@@ -40,7 +39,7 @@ const App: React.FC = () => {
       <Dashboard
         {...SITE_PROPS}
         apiToken={bearerToken}
-        onSignOut={() => {
+        onSignOut={(): void => {
           setBearerToken('');
           sessionStorage.clear();
           localStorage.clear();
@@ -51,7 +50,7 @@ const App: React.FC = () => {
     return (
       <SignInForm
         {...SITE_PROPS}
-        onSignIn={(persistLogin: boolean, user: User, session: Session) => {
+        onSignIn={(persistLogin: boolean, user: User, session: Session): void => {
           setBearerToken(session.token);
           const storage = persistLogin ? localStorage : sessionStorage;
           storage.setItem(TOKEN_KEY, session.token);
