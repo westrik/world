@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useEffect, useState } from 'react';
-import { API_HOST } from './App';
+import { API_HOST } from './config';
 import './style/dashboard.css';
 
 // TODO:

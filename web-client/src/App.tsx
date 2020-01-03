@@ -1,48 +1,23 @@
+import { useMachine } from '@xstate/react';
 import 'babel-polyfill';
 import * as React from 'react';
-import { useEffect, useState } from 'react';
 import { render } from 'react-dom';
+import { SITE_PROPS } from './config';
 import Dashboard from './Dashboard';
-import SignInForm, { Session, User } from './SignInForm';
-
-const SITE_PROPS = { siteName: 'westrikworld' };
-const TOKEN_KEY = 'access_token';
-const EXPIRATION_KEY = 'access_expiration';
-
-const API_HOSTS = {
-  local: 'http://api.westrik.world:6874',
-  production: 'https://api.westrikworld.com',
-  staging: 'https://api.staging.westrikworld.com',
-};
-const env = process.env.NODE_ENV;
-export const API_HOST =
-  env === 'staging'
-    ? API_HOSTS.staging
-    : env === 'production'
-      ? API_HOSTS.production
-      : API_HOSTS.local;
+import { appMachine, SESSION_KEY } from './machines/App';
+import SignInForm, { Session } from './SignInForm';
 
 const App: React.FC = () => {
-  const [loading, setLoading] = useState(true);
-  const [bearerToken, setBearerToken] = useState(
-    sessionStorage.getItem(TOKEN_KEY) || localStorage.getItem(TOKEN_KEY)
-  );
-  useEffect(() => {
-    if (loading) {
-      setLoading(false);
-    }
-  });
-  if (loading) {
+  const [current, send] = useMachine(appMachine);
+  if (current.matches('loading')) {
     return null;
-  } else if (bearerToken) {
+  } else if (current.matches('signedIn')) {
     return (
       <Dashboard
         {...SITE_PROPS}
-        apiToken={bearerToken}
+        apiToken={current.context.session!.token} // TODO: access from global store
         onSignOut={(): void => {
-          setBearerToken('');
-          sessionStorage.clear();
-          localStorage.clear();
+          send('SIGN_OUT');
         }}
       />
     );
@@ -50,11 +25,12 @@ const App: React.FC = () => {
     return (
       <SignInForm
         {...SITE_PROPS}
-        onSignIn={(persistLogin: boolean, user: User, session: Session): void => {
-          setBearerToken(session.token);
-          const storage = persistLogin ? localStorage : sessionStorage;
-          storage.setItem(TOKEN_KEY, session.token);
-          storage.setItem(EXPIRATION_KEY, session.expires_at);
+        onSignIn={(persistLogin: boolean, session: Session): void => {
+          (persistLogin ? localStorage : sessionStorage).setItem(
+            SESSION_KEY,
+            JSON.stringify(session)
+          );
+          send('SIGN_IN');
         }}
       />
     );

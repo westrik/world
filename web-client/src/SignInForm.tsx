@@ -1,17 +1,20 @@
 import * as React from 'react';
 import { useState } from 'react';
 
-import { API_HOST } from './App';
+import { API_HOST } from './config';
 // @ts-ignore
 import logo from './static/img/logo.png';
 import './style/SignInForm.scss';
 
 interface Props {
   siteName: string;
-  onSignIn: (persistLogin: boolean, user: User, session: Session) => void;
+  onSignIn: (persistLogin: boolean, session: Session) => void;
 }
 
-async function authenticate(emailAddress: string, password: string): Promise<SignInResponse> {
+async function authenticate(
+  emailAddress: string,
+  password: string
+): Promise<SignInResponse> {
   const response = await fetch(`${API_HOST}/sign-in`, {
     body: JSON.stringify({ email_address: emailAddress, password }),
     // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -108,7 +111,7 @@ const SignInForm: React.FC<Props> = props => {
             let res: SignInResponse | null = null;
             try {
               res = await authenticate(email, password);
-              props.onSignIn(remember, res.user, res.session);
+              props.onSignIn(remember, res.session);
             } catch {
               setErrorMessage('Invalid username or password');
               setLoading(false);
