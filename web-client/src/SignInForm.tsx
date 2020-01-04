@@ -11,7 +11,10 @@ interface Props {
   onSignIn: (persistLogin: boolean, user: User, session: Session) => void;
 }
 
-async function authenticate(emailAddress: string, password: string): Promise<SignInResponse> {
+async function authenticate(
+  emailAddress: string,
+  password: string
+): Promise<SignInResponse> {
   const response = await fetch(`${API_HOST}/sign-in`, {
     body: JSON.stringify({ email_address: emailAddress, password }),
     // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached

@@ -1,4 +1,3 @@
-import 'babel-polyfill';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { render } from 'react-dom';
@@ -50,7 +49,11 @@ const App: React.FC = () => {
     return (
       <SignInForm
         {...SITE_PROPS}
-        onSignIn={(persistLogin: boolean, user: User, session: Session): void => {
+        onSignIn={(
+          persistLogin: boolean,
+          user: User,
+          session: Session
+        ): void => {
           setBearerToken(session.token);
           const storage = persistLogin ? localStorage : sessionStorage;
           storage.setItem(TOKEN_KEY, session.token);
