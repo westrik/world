@@ -10,7 +10,7 @@ check:
 
 format:
 	cd server && cargo fmt
-	cd web-client && yarn cute
+	cd web-client && yarn fix
 
-preflight:
-	make check && make format
+prepush:
+	make format && make check

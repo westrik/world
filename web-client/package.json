@@ -9,7 +9,7 @@
     "lint": "yarn lint:ts && yarn lint:es",
     "lint:ts": "yarn tslint src/*.ts{,x} src/**/*.ts{,x} tests/**/*.ts{,x}",
     "lint:es": "yarn eslint . --ext .ts,.tsx",
-    "cute": "yarn prettier --single-quote --trailing-comma es5 --write \"{src,tests}/**/*.{ts{,x},html,{s,}css,json}\"",
+    "fix": "yarn lint:es --fix",
     "test": "yarn mocha -r ts-node/register tests/**/*.ts{,x}"
   },
   "devDependencies": {
@@ -22,6 +22,8 @@
     "@typescript-eslint/parser": "^2.12.0",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.17.0",
     "mocha": "^6.2.2",
     "parcel-bundler": "^1.12.4",
@@ -34,9 +36,12 @@
     "typescript": "^3.7.3"
   },
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
-    "react": "^16.0.0",
-    "react-dom": "^16.12.0",
+    "preact": "^10.1.1",
     "static": "^2.0.0"
+  },
+  "alias": {
+    "react": "preact/compat",
+    "react-dom/test-utils": "preact/test-utils",
+    "react-dom": "preact/compat"
   }
 }
