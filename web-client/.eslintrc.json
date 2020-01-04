@@ -6,8 +6,10 @@
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended",
+        "plugin:prettier/recommended",
         "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "prettier/@typescript-eslint"
     ],
     "globals": {
         "Atomics": "readonly",
@@ -25,35 +27,32 @@
         "react",
         "@typescript-eslint"
     ],
+    "settings": {
+        "react": {
+            "pragma": "h",
+            "version": "latest"
+        }
+    },
     "rules": {
-        "indent": [
-            "error",
-            2
-        ],
         "linebreak-style": [
             "error",
             "unix"
         ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ]
-    },
-    "settings": {
-        "react": {
-            "version": "detect"
-        }
+        "react/jsx-no-bind": ["error", {
+            "allowArrowFunctions": true,
+            "allowBind": false,
+            "ignoreRefs": true
+        }],
+        "react/no-did-update-set-state": "error",
+        "react/react-in-jsx-scope": "error"
     },
     "overrides": [{
       "files": ["**/*.tsx"],
       "rules": {
         "react/prop-types": "off",
         "@typescript-eslint/ban-ts-ignore": "off",
-        "@typescript-eslint/camelcase": "off"
+        "@typescript-eslint/camelcase": "off",
+        "@typescript-eslint/no-non-null-assertion": "off"
       }}
     ]
 }
