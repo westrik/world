@@ -24,23 +24,16 @@ interface GetItemsResponse {
     items: Item[];
 }
 
-async function createItem(token: string, content: string): Promise<void> {
+async function createItem(token: string, content: string): Promise<Item> {
     const response = await fetch(`${API_HOST}/item`, {
         body: JSON.stringify({ content }),
-        // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        // credentials: 'same-origin', // include, *same-origin, omit
         headers: {
             Authorization: token,
             'Content-Type': 'application/json',
         },
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        // redirect: 'follow', // manual, *follow, error
-        // referrerPolicy: 'no-referrer', // no-referrer, *client
+        method: 'POST',
     });
-    const res = await response.json();
-    // tslint:disable-next-line:no-console
-    console.log(res);
+    return await response.json();
 }
 
 function Dashboard(props: Props): h.JSX.Element {

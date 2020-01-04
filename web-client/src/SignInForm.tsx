@@ -14,15 +14,10 @@ interface Props {
 async function authenticate(emailAddress: string, password: string): Promise<SignInResponse> {
     const response = await fetch(`${API_HOST}/sign-in`, {
         body: JSON.stringify({ email_address: emailAddress, password }),
-        // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        // credentials: 'same-origin', // include, *same-origin, omit
         headers: {
             'Content-Type': 'application/json',
         },
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        // redirect: 'follow', // manual, *follow, error
-        // referrerPolicy: 'no-referrer', // no-referrer, *client
+        method: 'POST',
     });
     return await response.json();
 }
