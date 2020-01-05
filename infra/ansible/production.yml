@@ -13,10 +13,10 @@
         update_cache: yes
 
     - name: Install service apt dependencies
-      import_tasks: dependencies/buster/service.yml
+      import_tasks: dependencies/service.yml
 
     - name: Set up firewall
       import_tasks: config/ufw.yml
 
     - name: Configure nginx
-      import_tasks: config/nginx/nginx.yml
+      import_tasks: config/nginx.yml

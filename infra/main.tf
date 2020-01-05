@@ -125,17 +125,17 @@ resource "aws_instance" "web" {
   # We run a remote provisioner on the instance after creating it.
   # In this case, we just install nginx and start it. By default,
   # this should be on port 80
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt-get -y update",
-      "sudo ufw default deny incoming",
-      "sudo ufw default allow outgoing",
-      "sudo ufw allow ssh",
-      "sudo ufw allow 'Nginx Full'",
-      "yes | sudo ufw enable",
-      "sudo service nginx start",
-    ]
-  }
+//  provisioner "remote-exec" {
+//    inline = [
+//      "sudo apt-get -y update",
+//      "sudo ufw default deny incoming",
+//      "sudo ufw default allow outgoing",
+//      "sudo ufw allow ssh",
+//      "sudo ufw allow 'Nginx Full'",
+//      "yes | sudo ufw enable",
+//      "sudo service nginx start",
+//    ]
+//  }
 }
 
 resource "aws_eip" "lb" {

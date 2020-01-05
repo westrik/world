@@ -5,7 +5,7 @@
 
 - name: Copy nginx config file
   copy:
-    src: ./westrikworld_api.conf
+    src: ../../nginx/westrikworld_api.conf
     dest: /etc/nginx/sites-available/westrikworld_api.conf
 
 - name: Symlink config to sites-enabled
