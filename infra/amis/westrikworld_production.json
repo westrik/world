@@ -7,15 +7,15 @@
     "source_ami_filter": {
       "filters": {
         "virtualization-type": "hvm",
-        "name": "debian-stretch-hvm-x86_64*",
+        "name": "debian-10-amd64*",
         "root-device-type": "ebs"
       },
-      "owners": ["379101102735"],
+      "owners": ["136693071363"],
       "most_recent": true
     },
     "instance_type": "t3a.micro",
     "ssh_username": "admin",
-    "ami_name": "westrikworld {{timestamp}}"
+    "ami_name": "westrikworld_production {{timestamp}}"
   }],
   "provisioners": [{
     "type": "ansible",

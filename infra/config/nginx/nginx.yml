@@ -1,0 +1,20 @@
+- name: Start nginx
+  service:
+    name: nginx
+    enabled: yes
+
+- name: Copy nginx config file
+  copy:
+    src: ./westrikworld_api.conf
+    dest: /etc/nginx/sites-available/westrikworld_api.conf
+
+- name: Symlink config to sites-enabled
+  file:
+    src: /etc/nginx/sites-available/westrikworld_api.conf
+    dest: /etc/nginx/sites-enabled/default
+    state: link
+
+- name: Restart nginx
+  service:
+    name: nginx
+    state: restarted
