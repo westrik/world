@@ -1,0 +1,26 @@
+# sudo apt-get update
+# sudo apt-get install -y ufw nginx postgresql
+# wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
+# sudo dpkg -i erlang-solutions_1.0_all.deb
+# sudo apt-get update
+# sudo apt-get install -y erlang
+
+---
+- name: Configure Debian AMI for westrikworld production
+  hosts: all
+  become: true
+
+  module_defaults:
+    apt:
+      force_apt_get: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install service apt dependencies
+      import_tasks: dependencies/buster/service.yml
+
+    - name: Set up firewall
+      import_tasks: config/ufw.yml
