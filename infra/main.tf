@@ -1,6 +1,8 @@
+// Tested with Terraform v0.12.18 (as of 2020-01-05)
+
 /*
 TODO:
-  - set up NLB with Elastic IP, point at EC2 box
+  - point R53 DNS at NLB
 
   - set up RDS
   - set up IAM roles so things can talk properly
@@ -10,6 +12,7 @@ TODO:
   - provision ACM private cert to use with NLB
   - set up new IAM role for scripted use (i.e. not root account)
   - handle IPv6
+  - split up into separate, reusable files
 */
 
 provider "aws" {
@@ -139,13 +142,63 @@ module "acm" {
   zone_id     = data.aws_route53_zone.ww_prod_app.id
 }
 
-//resource "aws_eip" "lb" {
-//  instance = "${aws_instance.web.id}"
-//  vpc      = true
-//}
+resource "aws_lb" "ww_prod_app" {
+  name               = "ww-prod-app-nlb"
+  load_balancer_type = "network"
+  subnets            = [aws_subnet.ww_prod_app.id]
 
-// domain_name = "${var.api_domain_name}"
-// domain_name = "${var.frontend_domain_name}"
+  //  TODO: set up access log bucket
+  //    access_logs = {
+  //      bucket = module.log_bucket.this_s3_bucket_id
+  //    }
+
+  tags = {
+    Environment = "production"
+  }
+}
+
+resource "aws_lb_target_group" "ww_prod_app" {
+  name     = "ww-prod-app-lb-target-group"
+  port     = 80
+  protocol = "TCP"
+  vpc_id   = aws_vpc.ww_prod_app.id
+
+  # work-around for https://github.com/terraform-providers/terraform-provider-aws/issues/9093
+  stickiness {
+    enabled = false
+    type    = "lb_cookie"
+  }
+  //  health_check {
+  //    path = "/health"
+  //    protocol = "HTTP"
+  //    #    matcher = "200"
+  //  }
+}
+
+resource "aws_lb_listener" "ww_prod_app_https" {
+  load_balancer_arn = aws_lb.ww_prod_app.arn
+  port              = "443"
+  protocol          = "TLS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = module.acm.this_acm_certificate_arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ww_prod_app.arn
+  }
+}
+
+resource "aws_lb_listener" "ww_prod_app_http" {
+  load_balancer_arn = aws_lb.ww_prod_app.arn
+  port              = "80"
+  protocol          = "TCP"
+
+  // TODO: send 301 on http from nginx
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ww_prod_app.arn
+  }
+}
 
 /*
 ---------------------------------------------------------------------
