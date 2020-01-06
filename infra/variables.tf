@@ -16,6 +16,6 @@ variable "frontend_domain_name" {
 
 # Set to "true" to provision everything except instances that rely on AMIs that haven't been built yet
 variable "no_ami" {
-  type    = "string"
-  default = "false"
+  type    = bool
+  default = false
 }

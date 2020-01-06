@@ -13,7 +13,7 @@ TODO:
 */
 
 provider "aws" {
-  region = "${var.aws_region}"
+  region = var.aws_region
 }
 
 /*
@@ -35,7 +35,7 @@ resource "aws_vpc" "ww_prod_app" {
 resource "aws_security_group" "ww_prod_app" {
   name        = "ww_prod_app_sg"
   description = "Primary westrikworld production VPC"
-  vpc_id      = "${aws_vpc.ww_prod_app.id}"
+  vpc_id      = aws_vpc.ww_prod_app.id
 
   # HTTP access from the VPC
   ingress {
@@ -71,18 +71,18 @@ resource "aws_security_group" "ww_prod_app" {
 }
 
 resource "aws_internet_gateway" "ww_prod_app" {
-  vpc_id = "${aws_vpc.ww_prod_app.id}"
+  vpc_id = aws_vpc.ww_prod_app.id
 }
 
 resource "aws_route" "ww_prod_app_internet_access" {
-  route_table_id         = "${aws_vpc.ww_prod_app.main_route_table_id}"
+  route_table_id         = aws_vpc.ww_prod_app.main_route_table_id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = "${aws_internet_gateway.ww_prod_app.id}"
+  gateway_id             = aws_internet_gateway.ww_prod_app.id
 }
 
 resource "aws_subnet" "ww_prod_app" {
-  availability_zone = "${var.aws_az}"
-  vpc_id            = "${aws_vpc.ww_prod_app.id}"
+  availability_zone = var.aws_az
+  vpc_id            = aws_vpc.ww_prod_app.id
   cidr_block        = "10.0.1.0/24"
 
   tags = {
@@ -93,7 +93,7 @@ resource "aws_subnet" "ww_prod_app" {
 data "aws_ami" "westrikworld" {
   most_recent = true
   owners      = ["self"]
-  count       = "${var.no_ami == "true" ? 0 : 1}"
+  count       = var.no_ami ? 0 : 1
 
   filter {
     name   = "name"
@@ -112,20 +112,32 @@ data "aws_ami" "westrikworld" {
 }
 
 resource "aws_instance" "ww_prod_app" {
-  instance_type          = "t3a.micro"
-  ami                    = "${data.aws_ami.westrikworld.id}"
-  vpc_security_group_ids = ["${aws_security_group.ww_prod_app.id}"]
-  subnet_id              = "${aws_subnet.ww_prod_app.id}"
-  count                  = "${var.no_ami == "true" ? 0 : 1}"
-
   # TODO: change default login and SSH config for AMI (no password)
   # TODO: configure with a stored keypair to allow login via bastion
 
-  tags {
+  instance_type          = "t3a.micro"
+  ami                    = data.aws_ami.westrikworld[0].id
+  vpc_security_group_ids = [aws_security_group.ww_prod_app.id]
+  subnet_id              = aws_subnet.ww_prod_app.id
+  count                  = (var.no_ami ? 0 : 1)
+
+  tags = {
     Name        = "ww_prod_app_instance"
     Environment = "production"
   }
 }
+
+//data "aws_route53_zone" "ww_prod_app" {
+//  name = var.api_domain_name
+//}
+
+//module "acm" {
+//  source  = "terraform-aws-modules/acm/aws"
+//  version = "~> 2.0"
+//
+//  domain_name = var.api_domain_name #local.domain_name # trimsuffix(data.aws_route53_zone.this.name, ".") # Terraform >= 0.12.17
+//  zone_id     = data.aws_route53_zone.ww_prod_app.id
+//}
 
 //resource "aws_eip" "lb" {
 //  instance = "${aws_instance.web.id}"
@@ -152,7 +164,7 @@ resource "aws_vpc" "packer_build" {
 resource "aws_security_group" "packer_build" {
   name        = "packer_build_sg"
   description = "security group for building AMIs with packer"
-  vpc_id      = "${aws_vpc.packer_build.id}"
+  vpc_id      = aws_vpc.packer_build.id
 
   # SSH access from anywhere
   # TODO: lock down when using CodeBuild for AMI builds
@@ -192,18 +204,18 @@ resource "aws_security_group" "packer_build" {
 }
 
 resource "aws_internet_gateway" "packer_build" {
-  vpc_id = "${aws_vpc.packer_build.id}"
+  vpc_id = aws_vpc.packer_build.id
 }
 
 resource "aws_route" "packer_build_internet_access" {
-  route_table_id         = "${aws_vpc.packer_build.main_route_table_id}"
+  route_table_id         = aws_vpc.packer_build.main_route_table_id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = "${aws_internet_gateway.packer_build.id}"
+  gateway_id             = aws_internet_gateway.packer_build.id
 }
 
 resource "aws_subnet" "packer_build" {
-  availability_zone       = "${var.aws_az}"
-  vpc_id                  = "${aws_vpc.packer_build.id}"
+  availability_zone       = var.aws_az
+  vpc_id                  = aws_vpc.packer_build.id
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
 
