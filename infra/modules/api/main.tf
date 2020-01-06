@@ -5,25 +5,7 @@
 // - Point Route 53 DNS at the LB
 
 /*
-TODO:
-  - [ ] split current tf code up into something more manageable
-  - [ ] create S3 deploy zip bucket
-  - [ ] upload a release zip to S3 manually
-  - [ ] set up CodeDeploy app that pulls from S3
-  - [ ] set up CodeDeploy agent correctly on instances (Q: how to authenticate?)
-  - [ ] set up logging to S3 for NLB and applications
-  - [ ] set up RDS
-  - [ ] securely provide RDS creds to EC2 instances
-  - [ ] handle migrations at app start-up with [`run_pending_migrations`](https://docs.rs/diesel_migrations/1.4.0/diesel_migrations/fn.run_pending_migrations.html)
-  - [ ] set up S3 bucket for statically hosted files
-  - [ ] set up CloudFront to point to S3
-  - [ ] point [westrikworld.com](https://westrikworld.com) at CloudFront
-  - [ ] verify that app works at [westrikworld.com](https://westrikworld.com)
-  - [ ] serve static error when no backends are responding
-  - [ ] double-check healthchecks are working (spin up 3 instances, kill 2 - should have no 500s)
-  - [ ] set up CodePipeline to pull from S3 and trigger CodeDeploy automatically
-
-later:
+TODO(later):
   - [ ] handle IPv6
   - [ ] provision ACM private cert to use with NLB
 */
@@ -85,8 +67,8 @@ resource "aws_internet_gateway" "ww_prod_app" {
 
 resource "aws_route" "ww_prod_app_internet_access" {
   route_table_id         = aws_vpc.ww_prod_app.main_route_table_id
+  egress_only_gateway_id = aws_internet_gateway.ww_prod_app.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.ww_prod_app.id
 }
 
 resource "aws_subnet" "ww_prod_app_az1" {
@@ -109,7 +91,7 @@ resource "aws_subnet" "ww_prod_app_az2" {
   }
 }
 
-data "aws_ami" "westrikworld" {
+data "aws_ami" "ww_prod_app" {
   most_recent = true
   owners      = ["self"]
 
@@ -130,16 +112,16 @@ data "aws_ami" "westrikworld" {
 }
 
 resource "aws_instance" "ww_prod_app" {
-  # TODO: change default login and SSH config for AMI (no password)
-  # TODO: configure with a stored keypair to allow login via bastion
+  # TODO: [harden] change default login and SSH config for AMI (no password)
+  # TODO?: configure with a stored keypair to allow login via bastion
 
   instance_type          = "t3a.micro"
-  ami                    = data.aws_ami.westrikworld.id
+  ami                    = data.aws_ami.ww_prod_app.id
   vpc_security_group_ids = [aws_security_group.ww_prod_app.id]
   subnet_id              = aws_subnet.ww_prod_app_az1.id
 
   tags = {
-    Name        = "ww_prod_app_instance"
+    Name        = "ww_prod_app"
     Environment = "production"
   }
 }

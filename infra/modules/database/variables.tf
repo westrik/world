@@ -3,9 +3,9 @@ variable "db_username" {
   default = "westrikworld_user"
 }
 
-variable "db_password" {
+variable "db_default_password" {
   type    = string
-  default = "6pwNab23u2wUg" # TODO: don't put this here
+  default = "6pwNab23u2wUg" # TODO: load at runtime
 }
 
 # output from module.api

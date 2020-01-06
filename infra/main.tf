@@ -11,6 +11,9 @@ module "build_resources" {
   aws_region = var.aws_region
 }
 
+// TODO: create module.network and move VPC, SG, etc. config from module.api
+// TODO: create module.iam
+
 module "api" {
   source = "./modules/api"
 

@@ -2,12 +2,6 @@
 
 /*
 TODO:
-  - set up user on RDS PG that authenticates with IAM token (probably with a Lambda?)
-      ```
-      CREATE USER {dbusername};
-      GRANT rds_iam to {dbusername};
-      ```
-  - create IAM role with AmazonRDSFullAccess (or create new IAM policy with fewer privileges)
   - create IAM policy mapping database user to IAM role
   - attach IAM role to EC2 instance(s)
 
@@ -26,13 +20,15 @@ resource "aws_db_instance" "ww_prod_app" {
   engine               = "postgres"
   engine_version       = "11.5"
   instance_class       = "db.t2.micro"
-  identifier           = "ww_prod_app_db"
+  identifier           = "ww-prod-app-db"
   name                 = "westrikworld_prod_app"
   username             = var.db_username
-  password             = var.db_password
+  password             = var.db_default_password
   parameter_group_name = "default.postgres11"
 
-  db_subnet_group_name = aws_db_subnet_group.default.name
+  skip_final_snapshot = true # TODO: remove and set final_snapshot_identifier
+
+  db_subnet_group_name                = aws_db_subnet_group.default.name
   iam_database_authentication_enabled = true
 
   //  storage_encrypted = true
@@ -63,6 +59,51 @@ resource "aws_db_subnet_group" "default" {
     Environment = "production"
   }
 }
+
+// TODO: create IAM role granting access to RDS (AmazonRDSFullAccess for now)
+// TODO: configure security group & subnets for lambdas
+
+// TODO: set up lambda handler
+//resource "aws_lambda_function" "ww_prod_app_lambda_rotate_db_password" {
+//  function_name = "rotate_db_password"
+//  handler = ""
+//  role = ""
+//  runtime = "python3.8"
+//  vpc_config {
+//    security_group_ids = []
+//    subnet_ids = []
+//  }
+//}
+//
+/*
+TODO: set up lambda handler
+  - set up user on RDS PG that authenticates with IAM token (probably with a Lambda?)
+  ```
+  CREATE USER {dbusername};
+  GRANT rds_iam to {dbusername};
+  ```
+*/
+//resource "aws_lambda_function" "ww_prod_app_lambda_create_db_user_with_iam_role" {
+//  function_name = "create_db_user_with_iam_role"
+//  handler = ""
+//  role = ""
+//  runtime = "python3.8"
+//  vpc_config {
+//    security_group_ids = []
+//    subnet_ids = []
+//  }
+//}
+//
+//resource "aws_secretsmanager_secret" "ww_prod_app_db_password" {
+//  name             = "ww_prod_app_db_password"
+//  description      = "Password for root RDS account"
+//
+//  rotation_rules {
+//    automatically_after_days = 7
+//  }
+//  rotation_lambda_arn = aws_lambda_function.ww_prod_app_lambda_rotate_db_password.arn
+//}
+//
 
 //data "aws_iam_policy_document" "example" {
 //  statement {
