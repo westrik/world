@@ -14,6 +14,12 @@ Resources:
 - https://github.com/assembl/assembl/blob/531123115bb12a2dbb090b9910d375a67905d775/assembl/scripts/lambda_create_db_aws_user.py
 */
 
+resource "random_password" "password" {
+  length = 16
+  special = true
+  override_special = "_%@"
+}
+
 resource "aws_db_instance" "ww_prod_app" {
   allocated_storage    = 5
   storage_type         = "gp2"
@@ -23,7 +29,7 @@ resource "aws_db_instance" "ww_prod_app" {
   identifier           = "ww-prod-app-db"
   name                 = "westrikworld_prod_app"
   username             = var.db_username
-  password             = var.db_default_password
+  password             = random_password.password.result
   parameter_group_name = "default.postgres11"
 
   skip_final_snapshot = true # TODO: remove and set final_snapshot_identifier
@@ -75,6 +81,10 @@ resource "aws_db_subnet_group" "default" {
 //  }
 //}
 //
+
+// TODO: use terraform to invoke the DB rotate lambda (providing the random password as env var)
+// see https://www.terraform.io/docs/providers/aws/d/lambda_invocation.html
+
 /*
 TODO: set up lambda handler
   - set up user on RDS PG that authenticates with IAM token (probably with a Lambda?)
