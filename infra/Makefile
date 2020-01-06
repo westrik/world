@@ -14,4 +14,3 @@ apply:
 check:
 	packer validate amis/westrikworld_production.json
 	terraform plan
-

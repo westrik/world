@@ -27,4 +27,3 @@ terraform apply -var 'no_ami=true' -var 'aws_region=us-west-2' -var 'aws_az=us-w
 packer build -var 'aws_region=us-west-2' amis/westrikworld_production.json
 terraform apply -var 'aws_region=us-west-2' -var 'aws_az=us-west-2a'
 ```
-
