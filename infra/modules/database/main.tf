@@ -66,25 +66,6 @@ resource "aws_db_subnet_group" "default" {
   }
 }
 
-// TODO: create IAM role granting access to RDS (AmazonRDSFullAccess for now)
-// TODO: configure security group & subnets for lambdas
-
-// TODO: set up lambda handler
-//resource "aws_lambda_function" "ww_prod_app_lambda_rotate_db_password" {
-//  function_name = "rotate_db_password"
-//  handler = ""
-//  role = ""
-//  runtime = "python3.8"
-//  vpc_config {
-//    security_group_ids = []
-//    subnet_ids = []
-//  }
-//}
-//
-
-// TODO: use terraform to invoke the DB rotate lambda (providing the random password as env var)
-// see https://www.terraform.io/docs/providers/aws/d/lambda_invocation.html
-
 /*
 TODO: set up lambda handler
   - set up user on RDS PG that authenticates with IAM token (probably with a Lambda?)
@@ -94,7 +75,10 @@ TODO: set up lambda handler
   ```
   - tf lambda docs: https://www.terraform.io/docs/providers/aws/r/lambda_function.html
   - tf iam docs: https://www.terraform.io/docs/providers/aws/r/iam_role_policy_attachment.html
+  - create IAM role granting access to RDS (AmazonRDSFullAccess for now)
+  - configure security group & subnets for lambdas
 */
+
 //resource "aws_lambda_function" "ww_prod_app_lambda_create_db_user_with_iam_role" {
 //  function_name = "create_db_user_with_iam_role"
 //  handler = ""
@@ -104,16 +88,6 @@ TODO: set up lambda handler
 //    security_group_ids = []
 //    subnet_ids = []
 //  }
-//}
-//
-//resource "aws_secretsmanager_secret" "ww_prod_app_db_password" {
-//  name             = "ww_prod_app_db_password"
-//  description      = "Password for root RDS account"
-//
-//  rotation_rules {
-//    automatically_after_days = 7
-//  }
-//  rotation_lambda_arn = aws_lambda_function.ww_prod_app_lambda_rotate_db_password.arn
 //}
 //
 
