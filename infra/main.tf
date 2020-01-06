@@ -22,6 +22,6 @@ module "api" {
 }
 
 module "database" {
-  source     = "./modules/database"
+  source      = "./modules/database"
   app_subnets = module.api.app_subnets
 }
