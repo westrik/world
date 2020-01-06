@@ -127,17 +127,17 @@ resource "aws_instance" "ww_prod_app" {
   }
 }
 
-//data "aws_route53_zone" "ww_prod_app" {
-//  name = var.api_domain_name
-//}
+data "aws_route53_zone" "ww_prod_app" {
+  name = "${var.frontend_domain_name}."
+}
 
-//module "acm" {
-//  source  = "terraform-aws-modules/acm/aws"
-//  version = "~> 2.0"
-//
-//  domain_name = var.api_domain_name #local.domain_name # trimsuffix(data.aws_route53_zone.this.name, ".") # Terraform >= 0.12.17
-//  zone_id     = data.aws_route53_zone.ww_prod_app.id
-//}
+module "acm" {
+  source  = "terraform-aws-modules/acm/aws"
+  version = "~> 2.0"
+
+  domain_name = var.api_domain_name
+  zone_id     = data.aws_route53_zone.ww_prod_app.id
+}
 
 //resource "aws_eip" "lb" {
 //  instance = "${aws_instance.web.id}"

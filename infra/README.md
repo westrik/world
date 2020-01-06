@@ -3,6 +3,7 @@
 ## Assumptions
 
 - valid `$AWS_ACCESS_KEY_ID`  and `$AWS_SECRET_ACCESS_KEY` are set
+- Route 53 zone exists for `frontend_domain_name` (in `variables.tf`)
 
 ## Usage
 
