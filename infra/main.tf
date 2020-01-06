@@ -82,8 +82,8 @@ resource "aws_route" "ww_prod_app_internet_access" {
 
 resource "aws_subnet" "ww_prod_app" {
   availability_zone = "${var.aws_az}"
-  vpc_id                  = "${aws_vpc.ww_prod_app.id}"
-  cidr_block              = "10.0.1.0/24"
+  vpc_id            = "${aws_vpc.ww_prod_app.id}"
+  cidr_block        = "10.0.1.0/24"
 
   tags = {
     "Name" = "ww_prod_app",
@@ -91,8 +91,9 @@ resource "aws_subnet" "ww_prod_app" {
 }
 
 data "aws_ami" "westrikworld" {
-  most_recent      = true
-  owners           = ["self"]
+  most_recent = true
+  owners      = ["self"]
+  count       = "${var.setup_only == "true" ? 0 : 1}"
 
   filter {
     name   = "name"
@@ -109,10 +110,11 @@ data "aws_ami" "westrikworld" {
 }
 
 resource "aws_instance" "ww_prod_app" {
-  instance_type = "t3a.micro"
-  ami = "${data.aws_ami.westrikworld.id}"
+  instance_type          = "t3a.micro"
+  ami                    = "${data.aws_ami.westrikworld.id}"
   vpc_security_group_ids = ["${aws_security_group.ww_prod_app.id}"]
-  subnet_id = "${aws_subnet.ww_prod_app.id}"
+  subnet_id              = "${aws_subnet.ww_prod_app.id}"
+  count                  = "${var.setup_only == "true" ? 0 : 1}"
 
   # TODO: change default login and SSH config for AMI (no password)
   # TODO: configure with a stored keypair to allow login via bastion
