@@ -168,11 +168,6 @@ resource "aws_lb_target_group" "ww_prod_app" {
     enabled = false
     type    = "lb_cookie"
   }
-  //  health_check {
-  //    path = "/health"
-  //    protocol = "HTTP"
-  //    #    matcher = "200"
-  //  }
 }
 
 resource "aws_lb_listener" "ww_prod_app_https" {
@@ -197,6 +192,18 @@ resource "aws_lb_listener" "ww_prod_app_http" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.ww_prod_app.arn
+  }
+}
+
+resource "aws_route53_record" "ww_prod_app" {
+  zone_id = data.aws_route53_zone.ww_prod_app.id
+  name    = var.api_domain_name
+  type    = "A"
+
+  alias {
+    name                   = aws_lb.ww_prod_app.dns_name
+    zone_id                = aws_lb.ww_prod_app.zone_id
+    evaluate_target_health = false
   }
 }
 
