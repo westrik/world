@@ -12,18 +12,17 @@
 
 ```sh
 terraform init
-# Run TF to provision VPCs, security groups, and subnets
-make apply_no_ami
-# Run Packer to build AMI (in one of our new VPCs)
+# Set up required infra, then build AMI with Packer
+make apply_packer_infra
 make ami
-# Run TF to provision instances that use the AMI
+# Provision everything else
 make apply
 ```
 
 To deploy in a different AZ, e.g. `us-west-2a`:
 
 ```
-terraform apply -var 'no_ami=true' -var 'aws_region=us-west-2' -var 'aws_az=us-west-2a'
+terraform apply -target=module.build_resources -var 'aws_region=us-west-2' -var 'aws_az=us-west-2a'
 packer build -var 'aws_region=us-west-2' amis/westrikworld_production.json
 terraform apply -var 'aws_region=us-west-2' -var 'aws_az=us-west-2a'
 ```

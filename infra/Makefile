@@ -5,12 +5,12 @@ ami:
 	# add back default key
 	ssh-add
 
-apply_no_ami:
-	terraform apply -var 'no_ami=true'
+apply_packer_infra:
+	terraform apply -target=module.build_resources
 
 apply:
 	terraform apply
 
 check:
 	packer validate amis/westrikworld_production.json
-	terraform plan
+	terraform validate
