@@ -131,7 +131,7 @@ resource "aws_instance" "ww_prod_app" {
 }
 
 data "aws_route53_zone" "ww_prod_app" {
-  name = "${var.frontend_domain_name}."
+  name = "${var.root_domain_name}."
 }
 
 module "acm" {

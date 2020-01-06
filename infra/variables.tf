@@ -10,11 +10,11 @@ variable "api_domain_name" {
   default = "api.westrikworld.com"
 }
 
-variable "frontend_domain_name" {
+variable "root_domain_name" {
   default = "westrikworld.com"
 }
 
-# Set to "true" to provision everything except instances that rely on AMIs that haven't been built yet
+# Set to `true` to provision everything except instances that rely on custom AMIs
 variable "no_ami" {
   type    = bool
   default = false
