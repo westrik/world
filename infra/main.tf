@@ -26,7 +26,7 @@ resource "aws_vpc" "ww_prod_app" {
   cidr_block = "10.0.0.0/16"
 
   tags = {
-    Name = "ww_prod_app_vpc"
+    Name        = "ww_prod_app_vpc"
     Environment = "production"
   }
 }
@@ -86,7 +86,7 @@ resource "aws_subnet" "ww_prod_app" {
   cidr_block        = "10.0.1.0/24"
 
   tags = {
-    "Name" = "ww_prod_app",
+    "Name" = "ww_prod_app"
   }
 }
 
@@ -99,10 +99,12 @@ data "aws_ami" "westrikworld" {
     name   = "name"
     values = ["westrikworld *"]
   }
+
   filter {
     name   = "tag:Environment"
     values = ["production"]
   }
+
   filter {
     name   = "tag:OS_Version"
     values = ["Debian 10"]
@@ -120,7 +122,7 @@ resource "aws_instance" "ww_prod_app" {
   # TODO: configure with a stored keypair to allow login via bastion
 
   tags {
-    Name = "ww_prod_app_instance",
+    Name        = "ww_prod_app_instance"
     Environment = "production"
   }
 }
@@ -132,8 +134,6 @@ resource "aws_instance" "ww_prod_app" {
 
 // domain_name = "${var.api_domain_name}"
 // domain_name = "${var.frontend_domain_name}"
-
-
 
 /*
 ---------------------------------------------------------------------
@@ -208,7 +208,7 @@ resource "aws_subnet" "packer_build" {
   map_public_ip_on_launch = true
 
   tags = {
-    "Name" = "packer_build",
-    "Network Type" = "Public",
+    "Name"         = "packer_build"
+    "Network Type" = "Public"
   }
 }
