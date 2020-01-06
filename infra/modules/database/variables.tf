@@ -5,10 +5,10 @@ variable "db_username" {
 
 variable "db_password" {
   type    = string
-  default = "6p%wNab23u@2@w_:!IUg" # TODO: don't put this here
+  default = "6pwNab23u2wUg" # TODO: don't put this here
 }
 
 # output from module.api
-variable "app_subnet" {
-  type = string
+variable "app_subnets" {
+  type = list(string)
 }

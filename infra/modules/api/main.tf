@@ -89,10 +89,20 @@ resource "aws_route" "ww_prod_app_internet_access" {
   gateway_id             = aws_internet_gateway.ww_prod_app.id
 }
 
-resource "aws_subnet" "ww_prod_app" {
-  availability_zone = var.aws_az
+resource "aws_subnet" "ww_prod_app_az1" {
+  availability_zone = var.aws_az1
   vpc_id            = aws_vpc.ww_prod_app.id
   cidr_block        = "10.0.1.0/24"
+
+  tags = {
+    "Name" = "ww_prod_app"
+  }
+}
+
+resource "aws_subnet" "ww_prod_app_az2" {
+  availability_zone = var.aws_az2
+  vpc_id            = aws_vpc.ww_prod_app.id
+  cidr_block        = "10.0.2.0/24"
 
   tags = {
     "Name" = "ww_prod_app"
@@ -126,7 +136,7 @@ resource "aws_instance" "ww_prod_app" {
   instance_type          = "t3a.micro"
   ami                    = data.aws_ami.westrikworld.id
   vpc_security_group_ids = [aws_security_group.ww_prod_app.id]
-  subnet_id              = aws_subnet.ww_prod_app.id
+  subnet_id              = aws_subnet.ww_prod_app_az1.id
 
   tags = {
     Name        = "ww_prod_app_instance"
@@ -149,7 +159,7 @@ module "acm" {
 resource "aws_lb" "ww_prod_app" {
   name               = "ww-prod-app-nlb"
   load_balancer_type = "network"
-  subnets            = [aws_subnet.ww_prod_app.id]
+  subnets            = [aws_subnet.ww_prod_app_az1.id]
 
   //  TODO: set up access log bucket
   //    access_logs = {

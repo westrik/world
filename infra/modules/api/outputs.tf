@@ -1,3 +1,3 @@
-output "app_subnet" {
-  value = aws_subnet.ww_prod_app.id
+output "app_subnets" {
+  value = [aws_subnet.ww_prod_app_az1.id, aws_subnet.ww_prod_app_az2.id]
 }

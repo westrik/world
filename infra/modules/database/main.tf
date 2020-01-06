@@ -2,7 +2,7 @@
 
 resource "aws_db_subnet_group" "default" {
   name       = "ww_prod_app_db_subnet_group"
-  subnet_ids = [var.app_subnet]
+  subnet_ids = var.app_subnets
 
   tags = {
     Name        = "ww_prod_app_db_subnet_group"

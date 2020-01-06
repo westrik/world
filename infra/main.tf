@@ -7,14 +7,15 @@ provider "aws" {
 module "build_resources" {
   source = "./modules/build_resources"
 
-  aws_az     = var.aws_az
+  aws_az     = var.aws_az1
   aws_region = var.aws_region
 }
 
 module "api" {
   source = "./modules/api"
 
-  aws_az           = var.aws_az
+  aws_az1          = var.aws_az1
+  aws_az2          = var.aws_az2
   aws_region       = var.aws_region
   api_domain_name  = var.api_domain_name
   root_domain_name = var.root_domain_name
@@ -22,5 +23,5 @@ module "api" {
 
 module "database" {
   source     = "./modules/database"
-  app_subnet = module.api.app_subnet
+  app_subnets = module.api.app_subnets
 }
