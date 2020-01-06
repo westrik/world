@@ -92,6 +92,8 @@ TODO: set up lambda handler
   CREATE USER {dbusername};
   GRANT rds_iam to {dbusername};
   ```
+  - tf lambda docs: https://www.terraform.io/docs/providers/aws/r/lambda_function.html
+  - tf iam docs: https://www.terraform.io/docs/providers/aws/r/iam_role_policy_attachment.html
 */
 //resource "aws_lambda_function" "ww_prod_app_lambda_create_db_user_with_iam_role" {
 //  function_name = "create_db_user_with_iam_role"
