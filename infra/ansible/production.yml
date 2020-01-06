@@ -2,6 +2,8 @@
 - name: Configure Debian AMI for westrikworld production
   hosts: all
   become: true
+  vars:
+    aws_region: "us-east-1"
 
   module_defaults:
     apt:
@@ -20,3 +22,6 @@
 
     - name: Configure nginx
       import_tasks: config/nginx.yml
+
+    - name: Install CodeDeploy
+      import_tasks: dependencies/codedeploy.yml

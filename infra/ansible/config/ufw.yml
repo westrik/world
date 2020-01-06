@@ -12,6 +12,12 @@
     policy: deny
     direction: outgoing
 
+- name: Allow outbound DNS
+  ufw:
+    rule: allow
+    port: 53
+    direction: out
+
 - name: Allow ssh
   ufw:
     rule: allow
@@ -28,6 +34,11 @@
   ufw:
     rule: allow
     port: http
+
+- name: Allow https
+  ufw:
+    rule: allow
+    port: https
 
 - name: Start ufw now and at boot
   ufw:

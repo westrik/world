@@ -15,7 +15,18 @@
     },
     "instance_type": "t3a.micro",
     "ssh_username": "admin",
-    "ami_name": "westrikworld_production {{timestamp}}"
+    "ami_name": "westrikworld_production {{timestamp}}",
+    "vpc_filter": {
+      "filters": {
+        "tag:Name": "packer_build"
+      }
+    },
+    "subnet_filter": {
+      "filters": {
+        "tag:Name": "packer_build",
+        "tag:Network Type": "Public"
+      }
+    }
   }],
   "provisioners": [{
     "type": "ansible",

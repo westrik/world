@@ -1,42 +1,113 @@
-# a lot of this is stolen from: https://github.com/terraform-providers/terraform-provider-aws/tree/master/examples/two-tier
+/*
+TODO:
+  - create a VPC + security group (just IPv4 for now)
+  - set up EC2 instance
+  - set up NLB with Elastic IP, point at EC2 box
+  - security group should allow port http in and https out (for CodeDeploy)
+
+  - set up RDS
+  - set up IAM roles so things can talk properly
+  - set up CodeDeploy to EC2 instances
+  - set up S3
+  - set up CloudFront
+  - provision ACM private cert to use with NLB
+  - set up new IAM role for scripted use (i.e. not root account)
+*/
 
 provider "aws" {
-  region = "us-east-1"
+  region = "${var.aws_region}"
 }
 
-# Create a VPC to launch our instances into
-resource "aws_vpc" "default" {
+// TODO: IPv6
+resource "aws_vpc" "ww_prod_app" {
   cidr_block = "10.0.0.0/16"
+
+  tags = {
+    Name = "ww_prod_app_vpc"
+    Environment = "production"
+  }
 }
 
-# Create an internet gateway to give our subnet access to the outside world
-resource "aws_internet_gateway" "default" {
-  vpc_id = "${aws_vpc.default.id}"
+# security group for our app instances
+resource "aws_security_group" "ww_prod_app" {
+  name        = "ww_prod_app_sg"
+  description = "Primary westrikworld production VPC"
+  vpc_id      = "${aws_vpc.ww_prod_app.id}"
+
+  # HTTP access from the VPC
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  # HTTPS access from the VPC
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  # SSH access from the VPC
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  # Outbound HTTPS access (for CodeDeploy)
+  egress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # TODO: specify CIDR for CodeDeploy?
+  }
 }
 
-# Grant the VPC internet access on its main route table
-resource "aws_route" "internet_access" {
-  route_table_id         = "${aws_vpc.default.main_route_table_id}"
+resource "aws_internet_gateway" "ww_prod_app" {
+  vpc_id = "${aws_vpc.ww_prod_app.id}"
+}
+
+resource "aws_route" "ww_prod_app_internet_access" {
+  route_table_id         = "${aws_vpc.ww_prod_app.main_route_table_id}"
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = "${aws_internet_gateway.default.id}"
+  gateway_id             = "${aws_internet_gateway.ww_prod_app.id}"
 }
 
-# Create a subnet to launch our instances into
-resource "aws_subnet" "default" {
+resource "aws_subnet" "ww_prod_app" {
   availability_zone = "us-east-1a"
-  vpc_id                  = "${aws_vpc.default.id}"
+  vpc_id                  = "${aws_vpc.ww_prod_app.id}"
   cidr_block              = "10.0.1.0/24"
-  map_public_ip_on_launch = true
+//  map_public_ip_on_launch = true
+  // (don't think we'll need public IPs since we're using an NLB)
 }
 
-# Our default security group to access
-# the instances over SSH and HTTP
-resource "aws_security_group" "default" {
-  name        = "tf_example"
-  description = "bad, evil security group"
-  vpc_id      = "${aws_vpc.default.id}"
 
-  # SSH access from anywhere
+
+
+/* ------------------------------
+    Configure a VPC, security group, and subnet to build AMIs with
+   ------------------------------ */
+
+resource "aws_vpc" "packer_build" {
+  cidr_block = "10.0.0.0/16"
+  enable_dns_support = true
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "packer_build"
+  }
+}
+
+resource "aws_security_group" "packer_build" {
+  name        = "packer_build_sg"
+  description = "security group for building AMIs with packer"
+  vpc_id      = "${aws_vpc.packer_build.id}"
+
+  # SSH access from anywhere (TODO: lock down when using CodeBuild for AMI builds)
   ingress {
     from_port   = 22
     to_port     = 22
@@ -44,31 +115,74 @@ resource "aws_security_group" "default" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # HTTP access from anywhere
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    # TODO: add an ELB and change cidr_blocks to ["10.0.0.0/16"]
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
+  # Outbound HTTPS access (for installing packages)
+  egress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    # TODO: add an ELB and change cidr_blocks to ["10.0.0.0/16"]
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"] # TODO: specify IP for internal package managers?
   }
 
-  # outbound internet access
+  # Outbound DNS (TCP)
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 53
+    to_port     = 53
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # TODO: specify IP for internal DNS
+  }
+
+  # Outbound DNS (UDP)
+  egress {
+    from_port   = 53
+    to_port     = 53
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"] # TODO: specify IP for internal DNS
   }
 }
+
+resource "aws_internet_gateway" "packer_build" {
+  vpc_id = "${aws_vpc.packer_build.id}"
+}
+
+resource "aws_route" "packer_build_internet_access" {
+  route_table_id         = "${aws_vpc.packer_build.main_route_table_id}"
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = "${aws_internet_gateway.packer_build.id}"
+}
+
+resource "aws_subnet" "packer_build" {
+  availability_zone       = "us-east-1a"
+  vpc_id                  = "${aws_vpc.packer_build.id}"
+  cidr_block              = "10.0.1.0/24"
+  map_public_ip_on_launch = true
+
+  tags = {
+    "Name" = "packer_build",
+    "Network Type" = "Public",
+  }
+}
+
+/*
+# Create an internet gateway to give our subnet access to the outside world
+resource "aws_internet_gateway" "ww_prod" {
+  vpc_id = "${aws_vpc.ww_prod.id}"
+}
+
+# Grant the VPC internet access on its main route table
+resource "aws_route" "internet_access" {
+  route_table_id         = "${aws_vpc.ww_prod.main_route_table_id}"
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = "${aws_internet_gateway.ww_prod.id}"
+}
+
+# Create a subnet to launch our instances into
+resource "aws_subnet" "default" {
+  availability_zone = "us-east-1a"
+  vpc_id                  = "${aws_vpc.ww_prod.id}"
+  cidr_block              = "10.0.1.0/24"
+  map_public_ip_on_launch = true
+}
+
 
 # from https://www.terraform.io/docs/providers/tls/r/private_key.html:
 # > Important Security Notice
@@ -118,27 +232,13 @@ resource "aws_instance" "web" {
   key_name = "${aws_key_pair.generated_key.key_name}"
 
   # Our Security group to allow HTTP and SSH access
-  vpc_security_group_ids = ["${aws_security_group.default.id}"]
+  vpc_security_group_ids = ["${aws_security_group.ww_prod.id}"]
 
   subnet_id = "${aws_subnet.default.id}"
-
-  # We run a remote provisioner on the instance after creating it.
-  # In this case, we just install nginx and start it. By default,
-  # this should be on port 80
-//  provisioner "remote-exec" {
-//    inline = [
-//      "sudo apt-get -y update",
-//      "sudo ufw default deny incoming",
-//      "sudo ufw default allow outgoing",
-//      "sudo ufw allow ssh",
-//      "sudo ufw allow 'Nginx Full'",
-//      "yes | sudo ufw enable",
-//      "sudo service nginx start",
-//    ]
-//  }
 }
 
 resource "aws_eip" "lb" {
   instance = "${aws_instance.web.id}"
   vpc      = true
 }
+*/
