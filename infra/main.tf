@@ -24,7 +24,7 @@ module "api" {
   root_domain_name = var.root_domain_name
 }
 
-module "database" {
-  source      = "./modules/database"
-  app_subnets = module.api.app_subnets
-}
+//module "database" {
+//  source      = "./modules/database"
+//  app_subnets = module.api.app_subnets
+//}

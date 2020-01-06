@@ -67,7 +67,7 @@ resource "aws_internet_gateway" "ww_prod_app" {
 
 resource "aws_route" "ww_prod_app_internet_access" {
   route_table_id         = aws_vpc.ww_prod_app.main_route_table_id
-  egress_only_gateway_id = aws_internet_gateway.ww_prod_app.id
+  gateway_id             = aws_internet_gateway.ww_prod_app.id
   destination_cidr_block = "0.0.0.0/0"
 }
 
