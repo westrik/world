@@ -107,7 +107,8 @@ resource "aws_security_group" "packer_build" {
   description = "security group for building AMIs with packer"
   vpc_id      = "${aws_vpc.packer_build.id}"
 
-  # SSH access from anywhere (TODO: lock down when using CodeBuild for AMI builds)
+  # SSH access from anywhere
+  # TODO: lock down when using CodeBuild for AMI builds
   ingress {
     from_port   = 22
     to_port     = 22
@@ -116,22 +117,25 @@ resource "aws_security_group" "packer_build" {
   }
 
   # Outbound HTTPS access (for installing packages)
+  # TODO?: specify CIDR block for internal package manager(s)
   egress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # TODO: specify IP for internal package managers?
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   # Outbound DNS (TCP)
+  # TODO?: specify CIDR block for internal DNS server
   egress {
     from_port   = 53
     to_port     = 53
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # TODO: specify IP for internal DNS
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   # Outbound DNS (UDP)
+  # TODO?: specify CIDR block for internal DNS server
   egress {
     from_port   = 53
     to_port     = 53
