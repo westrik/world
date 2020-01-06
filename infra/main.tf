@@ -14,8 +14,13 @@ module "build_resources" {
 module "api" {
   source = "./modules/api"
 
-  aws_az     = var.aws_az
-  aws_region = var.aws_region
-  api_domain_name = var.api_domain_name
+  aws_az           = var.aws_az
+  aws_region       = var.aws_region
+  api_domain_name  = var.api_domain_name
   root_domain_name = var.root_domain_name
+}
+
+module "database" {
+  source     = "./modules/database"
+  app_subnet = module.api.app_subnet
 }

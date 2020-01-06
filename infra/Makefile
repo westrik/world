@@ -14,3 +14,9 @@ apply:
 check:
 	packer validate amis/westrikworld_production.json
 	terraform validate
+
+fmt:
+	terraform fmt
+	terraform fmt modules/build_resources
+	terraform fmt modules/api
+	terraform fmt modules/database
