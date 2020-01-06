@@ -1,9 +1,17 @@
 {
   "builders": [{
     "type": "amazon-ebs",
+    "region": "us-east-1",
+    "instance_type": "t3a.micro",
     "access_key": "{{user `aws_access_key`}}",
     "secret_key": "{{user `aws_secret_key`}}",
-    "region": "us-east-1",
+    "ssh_username": "admin",
+    "ami_name": "westrikworld {{timestamp}}",
+    "tags": {
+      "OS_Version": "Debian 10",
+      "Base_AMI_Name": "{{ .SourceAMIName }}",
+      "Environment": "production"
+    },
     "source_ami_filter": {
       "filters": {
         "virtualization-type": "hvm",
@@ -13,9 +21,6 @@
       "owners": ["136693071363"],
       "most_recent": true
     },
-    "instance_type": "t3a.micro",
-    "ssh_username": "admin",
-    "ami_name": "westrikworld_production {{timestamp}}",
     "vpc_filter": {
       "filters": {
         "tag:Name": "packer_build"

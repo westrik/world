@@ -9,31 +9,31 @@
 - name: Allow outbound DNS
   ufw:
     rule: allow
-    port: 53
+    port: '53'
     direction: out
 
 - name: Allow inbound ssh
   ufw:
     rule: allow
-    port: ssh
+    port: '22'
     direction: in
 # todo: limit to only VPC
 
 - name: Limit brute-force ssh connections
   ufw:
     rule: limit
-    port: ssh
+    port: '22'
     proto: tcp
 
 - name: Allow http
   ufw:
     rule: allow
-    port: 80
+    port: '80'
 
 - name: Allow https
   ufw:
     rule: allow
-    port: 443
+    port: '443'
 
 - name: Start ufw now and at boot
   ufw:
