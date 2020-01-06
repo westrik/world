@@ -93,7 +93,7 @@ resource "aws_subnet" "ww_prod_app" {
 data "aws_ami" "westrikworld" {
   most_recent = true
   owners      = ["self"]
-  count       = "${var.setup_only == "true" ? 0 : 1}"
+  count       = "${var.no_ami == "true" ? 0 : 1}"
 
   filter {
     name   = "name"
@@ -116,7 +116,7 @@ resource "aws_instance" "ww_prod_app" {
   ami                    = "${data.aws_ami.westrikworld.id}"
   vpc_security_group_ids = ["${aws_security_group.ww_prod_app.id}"]
   subnet_id              = "${aws_subnet.ww_prod_app.id}"
-  count                  = "${var.setup_only == "true" ? 0 : 1}"
+  count                  = "${var.no_ami == "true" ? 0 : 1}"
 
   # TODO: change default login and SSH config for AMI (no password)
   # TODO: configure with a stored keypair to allow login via bastion
