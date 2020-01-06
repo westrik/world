@@ -19,12 +19,11 @@ make ami
 make apply
 ```
 
-To deploy in a different region, e.g. `us-west-2`:
+To deploy in a different AZ, e.g. `us-west-2a`:
 
 ```
-# first, change aws_region and aws_az in variables.tf, then:
-make provision_networking
+terraform apply -var 'setup_only=true' -var 'aws_region=us-west-2' -var 'aws_az=us-west-2a'
 packer build -var 'aws_region=us-west-2' amis/westrikworld_production.json
-make apply
+terraform apply -var 'aws_region=us-west-2' -var 'aws_az=us-west-2a'
 ```
 
