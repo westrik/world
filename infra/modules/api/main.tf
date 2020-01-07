@@ -67,6 +67,14 @@ resource "aws_security_group" "app" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"] # TODO: specify CIDR for RDS
   }
+
+  # Outbound DNS access
+  egress {
+    from_port   = 53
+    to_port     = 53
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # TODO: specify CIDR for DNS
+  }
 }
 
 resource "aws_internet_gateway" "app" {
