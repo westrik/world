@@ -78,8 +78,9 @@ Since RDS is closed to outside connections, the easiest way to create the DB use
 */
 resource "aws_lambda_function" "create_db_user_with_iam_role" {
   function_name = "create_db_user_with_iam_role"
-  handler       = "../../lambda/create_db_user_with_iam_role.zip"
   role          = aws_iam_role.lambda_create_db_user_with_iam_role.arn
+  filename      = "./lambda/create_db_user_with_iam_role.zip"
+  handler       = "create_db_user_with_iam_role.lambda_handler"
   runtime       = "python3.7"
 
   vpc_config {
@@ -109,23 +110,45 @@ resource "aws_lambda_function" "create_db_user_with_iam_role" {
 //  value       = data.aws_lambda_invocation.create_db_user_with_iam_role.result
 //}
 
-data "aws_iam_policy_document" "lambda_create_db_user_with_iam_role" {
+data "aws_iam_policy_document" "grant_rds_role" {
   statement {
     sid = "1"
 
     actions = [
-      "rds:AmazonRDSFullAccess",
+      "rds:*",
+    ]
+
+    resources = [aws_db_instance.ww_prod_app.arn]
+  }
+}
+
+resource "aws_iam_policy" "grant_rds_role" {
+  policy = data.aws_iam_policy_document.grant_rds_role.json
+}
+
+data "aws_iam_policy_document" "lambda_assume_rds_role" {
+  statement {
+    sid = "1"
+
+    actions = [
+      "sts:AssumeRole",
     ]
 
     principals {
-      identifiers = [aws_db_instance.ww_prod_app.arn]
-      type        = "AWS"
+      identifiers = ["lambda.amazonaws.com"]
+      type        = "Service"
     }
   }
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_create_db_user_with_iam_role" {
+  role       = aws_iam_role.lambda_create_db_user_with_iam_role.name
+  policy_arn = aws_iam_policy.grant_rds_role.arn
 }
 
 resource "aws_iam_role" "lambda_create_db_user_with_iam_role" {
   name               = "lambda_create_db_user_with_iam_role"
   path               = "/"
-  assume_role_policy = data.aws_iam_policy_document.lambda_create_db_user_with_iam_role.json
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_rds_role.json
 }
+
