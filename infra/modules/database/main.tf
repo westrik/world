@@ -22,14 +22,14 @@ resource "random_password" "password" {
   override_special = "_%@"
 }
 
-resource "aws_db_instance" "ww_prod_app" {
+resource "aws_db_instance" "app" {
   allocated_storage    = 5
   storage_type         = "gp2"
   engine               = "postgres"
   engine_version       = "11.5"
   instance_class       = "db.t2.micro"
-  identifier           = "ww-prod-app-db"
-  name                 = "westrikworld_prod_app"
+  identifier           = "${var.project_name}-prod-app"
+  name                 = "${var.project_name}_prod_app"
   username             = var.db_username
   password             = random_password.password.result
   parameter_group_name = "default.postgres11"
@@ -53,17 +53,18 @@ resource "aws_db_instance" "ww_prod_app" {
   backup_retention_period = 0 # TODO: disable after testing
 
   tags = {
-    Name        = "ww_prod_app_db_instance"
+    Name        = "app_db"
     Environment = "production"
+    Project     = var.project_name
   }
 }
 
 resource "aws_db_subnet_group" "default" {
-  name       = "ww_prod_app_db_subnet_group"
+  name       = "app_db_subnet_group"
   subnet_ids = var.app_subnets
 
   tags = {
-    Name        = "ww_prod_app_db_subnet_group"
+    Name        = "app_db_subnet_group"
     Environment = "production"
   }
 }
@@ -89,26 +90,26 @@ resource "aws_lambda_function" "create_db_user_with_iam_role" {
   }
 }
 
-//data "aws_lambda_invocation" "create_db_user_with_iam_role" {
-//  function_name = aws_lambda_function.create_db_user_with_iam_role.function_name
-//  depends_on = aws_lambda_function.create_db_user_with_iam_role
-//
-//  // TODO: change host to the real one?
-//  input = <<JSON
-//{
-//  "host": "${aws_db_instance.ww_prod_app.name}",
-//  "port": "5432",
-//  "database": "${aws_db_instance.ww_prod_app.name}",
-//  "username": "${var.db_username}",
-//  "password": "${random_password.password.result}"
-//}
-//JSON
-//}
+data "aws_lambda_invocation" "create_db_user_with_iam_role" {
+  function_name = aws_lambda_function.create_db_user_with_iam_role.function_name
+  depends_on    = [aws_lambda_function.create_db_user_with_iam_role]
 
-//output "lambda_result_create_db_user_with_iam_role" {
-//  description = "Lambda result: create IAM DB user"
-//  value       = data.aws_lambda_invocation.create_db_user_with_iam_role.result
-//}
+  input = <<JSON
+{
+  "host": "${aws_db_instance.app.address}",
+  "port": "${aws_db_instance.app.port}",
+  "database": "${aws_db_instance.app.name}",
+  "username": "${var.db_username}",
+  "password": "${random_password.password.result}"
+}
+JSON
+}
+
+output "lambda_result_create_db_user_with_iam_role" {
+  description = "Lambda result: create IAM DB user"
+  value       = data.aws_lambda_invocation.create_db_user_with_iam_role.result
+  depends_on  = [aws_lambda_function.create_db_user_with_iam_role, aws_db_instance.app]
+}
 
 data "aws_iam_policy_document" "lambda_assume_roles" {
   statement {
@@ -139,7 +140,7 @@ data "aws_iam_policy_document" "grant_rds_role" {
       "rds:*",
     ]
 
-    resources = [aws_db_instance.ww_prod_app.arn]
+    resources = [aws_db_instance.app.arn]
   }
 }
 

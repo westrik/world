@@ -1,3 +1,8 @@
+variable "project_name" {
+  type    = string
+  default = "westrikworld"
+}
+
 variable "db_username" {
   type    = string
   default = "westrikworld_admin"

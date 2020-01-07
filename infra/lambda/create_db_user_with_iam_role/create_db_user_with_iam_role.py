@@ -13,18 +13,17 @@ def lambda_handler(event, context):
     #     info = base64.b64decode(response['SecretBinary'])
     # for now, get secret from env. TODO: get from secretsmanager
 
-    info = json.loads(event)
-    database = info['database']
+    database = event['database']
     conn = pg8000.core.Connection(
         application_name='lambda-create_db_user_with_iam_role',
-        user=info['username'],
-        host=info['host'],
-        port=int(info['port']),
+        user=event['username'],
+        host=event['host'],
+        port=int(event['port']),
         database=database,
-        password=info['password'],
+        password=event['password'],
         ssl=False,
         unix_sock=None,
-        timeout=1000,
+        timeout=1,
         max_prepared_statements=100,
         tcp_keepalive=True
     )

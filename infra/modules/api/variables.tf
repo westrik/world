@@ -1,3 +1,8 @@
+variable "project_name" {
+  type    = string
+  default = "westrikworld"
+}
+
 variable "aws_region" {
   type = string
 }
