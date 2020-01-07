@@ -110,6 +110,27 @@ resource "aws_lambda_function" "create_db_user_with_iam_role" {
 //  value       = data.aws_lambda_invocation.create_db_user_with_iam_role.result
 //}
 
+data "aws_iam_policy_document" "lambda_assume_roles" {
+  statement {
+    sid = "1"
+
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    principals {
+      identifiers = ["lambda.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+}
+
+resource "aws_iam_role" "lambda_create_db_user_with_iam_role" {
+  name               = "lambda_create_db_user_with_iam_role"
+  path               = "/"
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_roles.json
+}
+
 data "aws_iam_policy_document" "grant_rds_role" {
   statement {
     sid = "1"
@@ -126,29 +147,13 @@ resource "aws_iam_policy" "grant_rds_role" {
   policy = data.aws_iam_policy_document.grant_rds_role.json
 }
 
-data "aws_iam_policy_document" "lambda_assume_rds_role" {
-  statement {
-    sid = "1"
-
-    actions = [
-      "sts:AssumeRole",
-    ]
-
-    principals {
-      identifiers = ["lambda.amazonaws.com"]
-      type        = "Service"
-    }
-  }
-}
-
-resource "aws_iam_role_policy_attachment" "lambda_create_db_user_with_iam_role" {
+resource "aws_iam_role_policy_attachment" "lambda_create_db_user_with_iam_role_rds" {
   role       = aws_iam_role.lambda_create_db_user_with_iam_role.name
   policy_arn = aws_iam_policy.grant_rds_role.arn
 }
 
-resource "aws_iam_role" "lambda_create_db_user_with_iam_role" {
-  name               = "lambda_create_db_user_with_iam_role"
-  path               = "/"
-  assume_role_policy = data.aws_iam_policy_document.lambda_assume_rds_role.json
+resource "aws_iam_role_policy_attachment" "role_attach_lambdavpc" {
+  role       = aws_iam_role.lambda_create_db_user_with_iam_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
