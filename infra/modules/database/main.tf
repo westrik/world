@@ -2,18 +2,20 @@
 
 /*
 TODO:
+  - configure security group & subnets for lambdas
+  - create IAM role granting access to RDS (AmazonRDSFullAccess for now)
   - create IAM policy mapping database user to IAM role
-  - attach IAM role to EC2 instance(s)
 
 LATER:
   - add custom security group to RDS instance
 
 Resources:
+- tf iam docs: https://www.terraform.io/docs/providers/aws/r/iam_role_policy_attachment.html
 - https://www.terraform.io/docs/providers/postgresql/r/postgresql_role.html
 - https://aws.amazon.com/premiumsupport/knowledge-center/users-connect-rds-iam/
-- https://github.com/assembl/assembl/blob/531123115bb12a2dbb090b9910d375a67905d775/assembl/scripts/lambda_create_db_aws_user.py
 */
 
+// TODO: replace this with a Lambda to rotate password from Secrets Manager
 resource "random_password" "password" {
   length = 16
   special = true
@@ -67,79 +69,63 @@ resource "aws_db_subnet_group" "default" {
 }
 
 /*
-TODO: set up lambda handler
-  - set up user on RDS PG that authenticates with IAM token (probably with a Lambda?)
-  ```
-  CREATE USER {dbusername};
-  GRANT rds_iam to {dbusername};
-  ```
-  - tf lambda docs: https://www.terraform.io/docs/providers/aws/r/lambda_function.html
-  - tf iam docs: https://www.terraform.io/docs/providers/aws/r/iam_role_policy_attachment.html
-  - create IAM role granting access to RDS (AmazonRDSFullAccess for now)
-  - configure security group & subnets for lambdas
+To allow our app EC2 instances to communicate with RDS, we need to create a DB user with the `rds_iam` role.
+Once we have the appropriate IAM policy in place to allow RDS<>EC2 communication, Postgres will use an IAM token
+to auto-authenticate connections. This token will be rotated every 15 minutes, so there is no need to revoke it.
+Using this approach lets us avoid having to store and rotate DB passwords on app hosts.
+
+Since RDS is closed to outside connections, the easiest way to create the DB user is with a Lambda running in our VPC.
 */
+resource "aws_lambda_function" "create_db_user_with_iam_role" {
+  function_name = "create_db_user_with_iam_role"
+  handler = "../../lambda/create_db_user_with_iam_role.zip"
+  role = aws_iam_role.lambda_create_db_user_with_iam_role.arn
+  runtime = "python3.7"
 
-//resource "aws_lambda_function" "ww_prod_app_lambda_create_db_user_with_iam_role" {
-//  function_name = "create_db_user_with_iam_role"
-//  handler = ""
-//  role = ""
-//  runtime = "python3.8"
-//  vpc_config {
-//    security_group_ids = []
-//    subnet_ids = []
-//  }
-//}
-//
+  vpc_config {
+    security_group_ids = var.app_security_groups
+    subnet_ids = var.app_subnets
+  }
+}
 
-//data "aws_iam_policy_document" "example" {
-//  statement {
-//    sid = "1"
+//data "aws_lambda_invocation" "create_db_user_with_iam_role" {
+//  function_name = aws_lambda_function.create_db_user_with_iam_role.function_name
+//  depends_on = aws_lambda_function.create_db_user_with_iam_role
 //
-//    actions = [
-//      "s3:ListAllMyBuckets",
-//      "s3:GetBucketLocation",
-//    ]
-//
-//    resources = [
-//      "arn:aws:s3:::*",
-//    ]
-//  }
-//
-//  statement {
-//    actions = [
-//      "s3:ListBucket",
-//    ]
-//
-//    resources = [
-//      "arn:aws:s3:::${var.s3_bucket_name}",
-//    ]
-//
-//    condition {
-//      test     = "StringLike"
-//      variable = "s3:prefix"
-//
-//      values = [
-//        "",
-//        "home/",
-//        "home/&{aws:username}/",
-//      ]
-//    }
-//  }
-//
-//  statement {
-//    actions = [
-//      "s3:*",
-//    ]
-//
-//    resources = [
-//      "arn:aws:s3:::${var.s3_bucket_name}/home/&{aws:username}",
-//      "arn:aws:s3:::${var.s3_bucket_name}/home/&{aws:username}/*",
-//    ]
-//  }
+//  // TODO: change host to the real one?
+//  input = <<JSON
+//{
+//  "host": "${aws_db_instance.ww_prod_app.name}",
+//  "port": "5432",
+//  "database": "${aws_db_instance.ww_prod_app.name}",
+//  "username": "${var.db_username}",
+//  "password": "${random_password.password.result}"
 //}
-//
-//resource "aws_iam_policy" "example" {
-//  name   = "example_policy"
-//  path   = "/"
-//  policy = "${data.aws_iam_policy_document.example.json}"
+//JSON
 //}
+
+//output "lambda_result_create_db_user_with_iam_role" {
+//  description = "Lambda result: create IAM DB user"
+//  value       = data.aws_lambda_invocation.create_db_user_with_iam_role.result
+//}
+
+data "aws_iam_policy_document" "lambda_create_db_user_with_iam_role" {
+  statement {
+    sid = "1"
+
+    actions = [
+      "rds:AmazonRDSFullAccess",
+    ]
+
+    principals {
+      identifiers = [aws_db_instance.ww_prod_app.arn]
+      type = "AWS"
+    }
+  }
+}
+
+resource "aws_iam_role" "lambda_create_db_user_with_iam_role" {
+  name   = "lambda_create_db_user_with_iam_role"
+  path   = "/"
+  assume_role_policy = data.aws_iam_policy_document.lambda_create_db_user_with_iam_role.json
+}
