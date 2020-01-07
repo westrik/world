@@ -17,8 +17,8 @@ Resources:
 
 // TODO: replace this with a Lambda to rotate password from Secrets Manager
 resource "random_password" "password" {
-  length = 16
-  special = true
+  length           = 16
+  special          = true
   override_special = "_%@"
 }
 
@@ -78,13 +78,13 @@ Since RDS is closed to outside connections, the easiest way to create the DB use
 */
 resource "aws_lambda_function" "create_db_user_with_iam_role" {
   function_name = "create_db_user_with_iam_role"
-  handler = "../../lambda/create_db_user_with_iam_role.zip"
-  role = aws_iam_role.lambda_create_db_user_with_iam_role.arn
-  runtime = "python3.7"
+  handler       = "../../lambda/create_db_user_with_iam_role.zip"
+  role          = aws_iam_role.lambda_create_db_user_with_iam_role.arn
+  runtime       = "python3.7"
 
   vpc_config {
     security_group_ids = var.app_security_groups
-    subnet_ids = var.app_subnets
+    subnet_ids         = var.app_subnets
   }
 }
 
@@ -119,13 +119,13 @@ data "aws_iam_policy_document" "lambda_create_db_user_with_iam_role" {
 
     principals {
       identifiers = [aws_db_instance.ww_prod_app.arn]
-      type = "AWS"
+      type        = "AWS"
     }
   }
 }
 
 resource "aws_iam_role" "lambda_create_db_user_with_iam_role" {
-  name   = "lambda_create_db_user_with_iam_role"
-  path   = "/"
+  name               = "lambda_create_db_user_with_iam_role"
+  path               = "/"
   assume_role_policy = data.aws_iam_policy_document.lambda_create_db_user_with_iam_role.json
 }
