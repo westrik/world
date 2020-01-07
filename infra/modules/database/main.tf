@@ -7,7 +7,7 @@ TODO:
   - create IAM policy mapping database user to IAM role
 
 LATER:
-  - add custom security group to RDS instance
+  - add custom security group for RDS instance(s) - now is wide open
 
 Resources:
 - tf iam docs: https://www.terraform.io/docs/providers/aws/r/iam_role_policy_attachment.html
@@ -104,6 +104,18 @@ data "aws_lambda_invocation" "create_db_user_with_iam_role" {
 }
 JSON
 }
+
+//output "sensitive" {
+//  value = <<JSON
+//{
+//  "host": "${aws_db_instance.app.address}",
+//  "port": "${aws_db_instance.app.port}",
+//  "database": "${aws_db_instance.app.name}",
+//  "username": "${var.db_username}",
+//  "password": "${random_password.password.result}"
+//}
+//JSON
+//}
 
 output "lambda_result_create_db_user_with_iam_role" {
   description = "Lambda result: create IAM DB user"

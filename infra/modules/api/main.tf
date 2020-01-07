@@ -59,6 +59,14 @@ resource "aws_security_group" "app" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"] # TODO: specify CIDR for CodeDeploy?
   }
+
+  # Outbound access on 5432 for RDS
+  egress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # TODO: specify CIDR for RDS
+  }
 }
 
 resource "aws_internet_gateway" "app" {
