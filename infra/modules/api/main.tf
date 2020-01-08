@@ -137,7 +137,7 @@ resource "aws_instance" "app" {
   ami                    = data.aws_ami.app.id
   vpc_security_group_ids = [aws_security_group.app.id]
   subnet_id              = aws_subnet.app_az1.id
-  iam_instance_profile   = aws_iam_instance_profile.app_rds.name
+  iam_instance_profile   = aws_iam_instance_profile.app_host.name
 
   tags = {
     Name        = "app"
@@ -146,18 +146,22 @@ resource "aws_instance" "app" {
 }
 
 // Grant EC2 access to RDS
-resource "aws_iam_instance_profile" "app_rds" {
-  name = "app_rds"
-  role = aws_iam_role.app_rds.name
+resource "aws_iam_instance_profile" "app_host" {
+  name = "app_host"
+  role = aws_iam_role.app_host.name
 }
-resource "aws_iam_role" "app_rds" {
-  name               = "ec2_app_rds"
+resource "aws_iam_role" "app_host" {
+  name               = "ec2_app_host"
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.app_rds.json
 }
 resource "aws_iam_role_policy_attachment" "app_rds" {
-  role       = aws_iam_role.app_rds.name
+  role       = aws_iam_role.app_host.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
+}
+resource "aws_iam_role_policy_attachment" "app_code_deploy" {
+  role       = aws_iam_role.app_host.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy"
 }
 data "aws_iam_policy_document" "app_rds" {
   statement {

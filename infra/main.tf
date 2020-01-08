@@ -1,4 +1,13 @@
 // Tested with Terraform v0.12.18 (as of 2020-01-05)
+/*
+TODO:
+
+- create S3 bucket for statically hosted files
+- set up CloudFront to point to S3
+- point westrikworld.com at CloudFront (docs)
+- verify that app works at westrikworld.com
+
+*/
 
 provider "aws" {
   region = var.aws_region
@@ -12,7 +21,6 @@ module "build_resources" {
 }
 
 // TODO: create module.network and move VPC, SG, etc. config from module.api
-// TODO: create module.iam
 
 module "api" {
   source = "./modules/api"
@@ -29,4 +37,10 @@ module "database" {
   app_subnets         = module.api.app_subnets
   app_security_groups = module.api.app_security_groups
   app_vpc             = module.api.app_vpc
+}
+
+module "deploy" {
+  source           = "./modules/deploy"
+  app_deploy_hosts = module.api.app_deploy_hosts
+  aws_region       = var.aws_region
 }

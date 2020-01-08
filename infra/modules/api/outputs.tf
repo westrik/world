@@ -9,3 +9,7 @@ output "app_security_groups" {
 output "app_vpc" {
   value = aws_vpc.app.id
 }
+
+output "app_deploy_hosts" {
+  value = [aws_instance.app.id]
+}
