@@ -84,11 +84,6 @@ CodePipeline
 --------------------------------
 */
 
-resource "aws_s3_bucket" "codepipeline_bucket" {
-  bucket = "test-bucket"
-  acl    = "private"
-}
-
 resource "aws_iam_role" "codepipeline_role" {
   name = "test-role"
 
@@ -110,7 +105,7 @@ EOF
 
 resource "aws_iam_role_policy" "codepipeline_policy" {
   name = "codepipeline_policy"
-  role = "${aws_iam_role.codepipeline_role.id}"
+  role = aws_iam_role.codepipeline_role.id
 
   policy = <<EOF
 {
@@ -125,8 +120,8 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
         "s3:PutObject"
       ],
       "Resource": [
-        "${aws_s3_bucket.codepipeline_bucket.arn}",
-        "${aws_s3_bucket.codepipeline_bucket.arn}/*"
+        "${aws_s3_bucket.app_deploy.arn}",
+        "${aws_s3_bucket.app_deploy.arn}/*"
       ]
     },
     {
@@ -142,30 +137,19 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
 EOF
 }
 
-// TODO: do we need KMS?
-data "aws_kms_alias" "s3kmskey" {
-  name = "alias/myKmsKey"
-}
-
 // docs: https://www.terraform.io/docs/providers/aws/r/codepipeline.html
 resource "aws_codepipeline" "codepipeline" {
   name     = "tf-test-pipeline"
-  role_arn = "${aws_iam_role.codepipeline_role.arn}"
+  role_arn = aws_iam_role.codepipeline_role.arn
 
   // TODO: use CloudWatch S3 events for change detection (requires a CloudTrail and a CloudWatch Events rule)
   // https://docs.aws.amazon.com/codepipeline/latest/userguide/trigger-S3-migration-cwe.html
   // https://www.terraform.io/docs/providers/aws/r/cloudtrail.html
   // https://www.terraform.io/docs/providers/aws/r/cloudwatch_event_rule.html
 
-  // TODO: why do we need an artifact store?
   artifact_store {
-    location = "${aws_s3_bucket.codepipeline_bucket.bucket}"
+    location = aws_s3_bucket.app_deploy.bucket
     type     = "S3"
-
-    encryption_key {
-      id   = "${data.aws_kms_alias.s3kmskey.arn}"
-      type = "KMS"
-    }
   }
 
   stage {
@@ -174,20 +158,15 @@ resource "aws_codepipeline" "codepipeline" {
     action {
       name             = "Source"
       category         = "Source"
-      owner            = "ThirdParty"
-      provider         = "GitHub" // TODO: change to S3
+      owner            = "Custom"
+      provider         = "S3"
       version          = "1"
-      output_artifacts = ["source_output"]
-
-      configuration = {
-        Owner  = "my-organization"
-        Repo   = "test"
-        Branch = "master"
-      }
+      input_artifacts = ["run_server.zip"]
     }
   }
 
-  // TODO: add Build stage that triggers CodeBuild
+  // TODO: change Source to pull from GitHub & add Build stage that triggers CodeBuild
+  // TODO: add a Test stage
 
   stage {
     name = "Deploy"
@@ -196,8 +175,7 @@ resource "aws_codepipeline" "codepipeline" {
       name            = "Deploy"
       category        = "Deploy"
       owner           = "AWS"
-      provider        = "CloudFormation" // TODO: change to CodeDeploy
-      input_artifacts = ["build_output"]
+      provider        = "CodeDeploy"
       version         = "1"
 
       configuration = {
