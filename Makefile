@@ -9,7 +9,7 @@ check:
 	cd web-client && yarn test
 	cd infra && terraform validate
 
-format:
+fmt:
 	cd server && cargo fmt
 	cd web-client && yarn fix
 	cd infra && make fmt
