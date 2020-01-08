@@ -28,15 +28,17 @@ resource "aws_db_instance" "app" {
   engine               = "postgres"
   engine_version       = "11.5"
   instance_class       = "db.t2.micro"
-  identifier           = "${var.project_name}-prod-app"
-  name                 = "${var.project_name}_prod_app"
+  identifier           = "${var.project_name}-app"
+  name                 = "${var.project_name}_app"
   username             = var.db_username
   password             = random_password.password.result
   parameter_group_name = "default.postgres11"
 
   skip_final_snapshot = true # TODO: remove and set final_snapshot_identifier
 
-  db_subnet_group_name                = aws_db_subnet_group.default.name
+  db_subnet_group_name   = aws_db_subnet_group.app.name
+  vpc_security_group_ids = [aws_security_group.app.id]
+
   iam_database_authentication_enabled = true
 
   //  storage_encrypted = true
@@ -59,13 +61,26 @@ resource "aws_db_instance" "app" {
   }
 }
 
-resource "aws_db_subnet_group" "default" {
+resource "aws_db_subnet_group" "app" {
   name       = "app_db_subnet_group"
   subnet_ids = var.app_subnets
 
   tags = {
     Name        = "app_db_subnet_group"
     Environment = "production"
+  }
+}
+
+resource "aws_security_group" "app" {
+  name        = "app_db_sg"
+  description = "${var.project_name}_app_db"
+  vpc_id      = var.app_vpc
+
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
   }
 }
 
@@ -105,12 +120,6 @@ data "aws_lambda_invocation" "create_db_user_with_iam_role" {
 JSON
 }
 
-output "lambda_result_create_db_user_with_iam_role" {
-  description = "Lambda result: create IAM DB user"
-  value       = data.aws_lambda_invocation.create_db_user_with_iam_role.result
-  depends_on  = [aws_lambda_function.create_db_user_with_iam_role, aws_db_instance.app]
-}
-
 data "aws_iam_policy_document" "lambda_assume_roles" {
   statement {
     sid = "1"
@@ -136,7 +145,6 @@ resource "aws_iam_role_policy_attachment" "role_attach_lambda_vpc" {
   role       = aws_iam_role.lambda_create_db_user_with_iam_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
-
 
 resource "aws_iam_role_policy_attachment" "role_attach_lambda_rds" {
   role       = aws_iam_role.lambda_create_db_user_with_iam_role.name

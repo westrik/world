@@ -28,53 +28,53 @@ resource "aws_security_group" "app" {
   description = "Primary ${var.project_name} production VPC"
   vpc_id      = aws_vpc.app.id
 
-  # HTTP access from the VPC
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
-  }
+  //  # HTTP access from the VPC (not sure if needed)
+  //  ingress {
+  //    from_port   = 80
+  //    to_port     = 80
+  //    protocol    = "tcp"
+  //    cidr_blocks = ["10.0.0.0/16"]
+  //  }
+  //
+  //  # HTTPS access from the VPC (not sure if needed)
+  //  ingress {
+  //    from_port   = 443
+  //    to_port     = 443
+  //    protocol    = "tcp"
+  //    cidr_blocks = ["10.0.0.0/16"]
+  //  }
+  //
+  //  # SSH access from the VPC (not sure if needed)
+  //  ingress {
+  //    from_port   = 22
+  //    to_port     = 22
+  //    protocol    = "tcp"
+  //    cidr_blocks = ["10.0.0.0/16"]
+  //  }
 
-  # HTTPS access from the VPC
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
-  }
+  //  # Outbound HTTPS access (for CodeDeploy)
+  //  egress {
+  //    from_port   = 443
+  //    to_port     = 443
+  //    protocol    = "tcp"
+  //    cidr_blocks = ["0.0.0.0/0"] # TODO: specify CIDR for CodeDeploy?
+  //  }
 
-  # SSH access from the VPC
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
-  }
-
-  # Outbound HTTPS access (for CodeDeploy)
-  egress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # TODO: specify CIDR for CodeDeploy?
-  }
-
-  # Outbound access on 5432 for RDS
+  # RDS (not sure if needed)
   egress {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # TODO: specify CIDR for RDS
+    cidr_blocks = ["10.0.0.0/16"]
   }
 
-  # Outbound DNS access
-  egress {
-    from_port   = 53
-    to_port     = 53
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # TODO: specify CIDR for DNS
-  }
+  //  # Outbound DNS access
+  //  egress {
+  //    from_port   = 53
+  //    to_port     = 53
+  //    protocol    = "tcp"
+  //    cidr_blocks = ["0.0.0.0/0"] # TODO: specify CIDR for DNS
+  //  }
 }
 
 resource "aws_internet_gateway" "app" {

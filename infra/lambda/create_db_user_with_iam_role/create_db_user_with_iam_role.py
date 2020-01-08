@@ -31,7 +31,7 @@ def lambda_handler(event, context):
     try:
         cursor.execute("SELECT 1 FROM pg_user WHERE usename = 'westrikworld_app'")
         if len(list(cursor)):
-            return "exists"
+            return {"status":"exists"}
         else:
             cursor.execute("CREATE USER westrikworld_app with login createdb")
             conn.commit()
@@ -39,6 +39,6 @@ def lambda_handler(event, context):
             conn.commit()
             cursor.execute("ALTER DATABASE %s OWNER TO westrikworld_app" % database)
             conn.commit()
-            return "created"
+            return {"status":"created"}
     finally:
         conn.close()

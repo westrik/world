@@ -17,3 +17,8 @@ variable "app_subnets" {
 variable "app_security_groups" {
   type = list(string)
 }
+
+# output from module.api
+variable "app_vpc" {
+  type = string
+}

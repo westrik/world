@@ -30,4 +30,5 @@ module "database" {
   source              = "./modules/database"
   app_subnets         = module.api.app_subnets
   app_security_groups = module.api.app_security_groups
+  app_vpc             = module.api.app_vpc
 }
