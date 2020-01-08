@@ -1,7 +1,5 @@
 // Tested with Terraform v0.12.18 (as of 2020-01-05)
 
-// TODO: clean up naming scheme to move "ww_prod" to tags generated from variables
-
 provider "aws" {
   region = var.aws_region
 }
