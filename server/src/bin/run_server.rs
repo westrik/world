@@ -23,7 +23,7 @@ async fn main() -> std::io::Result<()> {
     let pool = db::init_pool(&database_url).expect("Failed to create pool");
 
     let conn = db::get_conn(&pool).unwrap();
-    embedded_migrations::run_with_output(&conn, &mut std::io::stdout());
+    embedded_migrations::run_with_output(&conn, &mut std::io::stdout()).unwrap();
 
     HttpServer::new(move || {
         App::new()

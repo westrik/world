@@ -29,7 +29,7 @@ impl DbNewUser {
         Ok(diesel::insert_into(users::table)
             .values(self)
             .get_result(conn)
-            .map_err(|err| UserQueryError::DatabaseError(err))?)
+            .map_err(UserQueryError::DatabaseError)?)
     }
 }
 
