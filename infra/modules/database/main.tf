@@ -1,20 +1,5 @@
 // Provision an RDS database
 
-/*
-TODO:
-  - configure security group & subnets for lambdas
-  - create IAM role granting access to RDS (AmazonRDSFullAccess for now)
-  - create IAM policy mapping database user to IAM role
-
-LATER:
-  - add custom security group for RDS instance(s) - now is wide open
-
-Resources:
-- tf iam docs: https://www.terraform.io/docs/providers/aws/r/iam_role_policy_attachment.html
-- https://www.terraform.io/docs/providers/postgresql/r/postgresql_role.html
-- https://aws.amazon.com/premiumsupport/knowledge-center/users-connect-rds-iam/
-*/
-
 // TODO: replace this with a Lambda to rotate password from Secrets Manager
 resource "random_password" "password" {
   length           = 16

@@ -137,10 +137,40 @@ resource "aws_instance" "app" {
   ami                    = data.aws_ami.app.id
   vpc_security_group_ids = [aws_security_group.app.id]
   subnet_id              = aws_subnet.app_az1.id
+  iam_instance_profile   = aws_iam_instance_profile.app_rds.name
 
   tags = {
     Name        = "app"
     Environment = "production"
+  }
+}
+
+// Grant EC2 access to RDS
+resource "aws_iam_instance_profile" "app_rds" {
+  name = "app_rds"
+  role = aws_iam_role.app_rds.name
+}
+resource "aws_iam_role" "app_rds" {
+  name               = "ec2_app_rds"
+  path               = "/"
+  assume_role_policy = data.aws_iam_policy_document.app_rds.json
+}
+resource "aws_iam_role_policy_attachment" "app_rds" {
+  role       = aws_iam_role.app_rds.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
+}
+data "aws_iam_policy_document" "app_rds" {
+  statement {
+    sid = "1"
+
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    principals {
+      identifiers = ["ec2.amazonaws.com"]
+      type        = "Service"
+    }
   }
 }
 
