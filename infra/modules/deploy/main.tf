@@ -51,6 +51,11 @@ resource "aws_s3_bucket" "app_deploy" {
   acl    = "private"
 }
 
+resource "aws_s3_bucket" "app_deploy_cloudfront" {
+  bucket = "${var.project_name}-public-${random_string.deploy_bucket_hash.result}"
+  acl    = "private"
+}
+
 resource "aws_iam_role" "codedeploy" {
   name               = "codedeploy"
   path               = "/"
@@ -84,8 +89,9 @@ CodePipeline
 --------------------------------
 */
 
-resource "aws_iam_role" "codepipeline_role" {
-  name = "test-role"
+// TODO: refactor
+resource "aws_iam_role" "codepipeline" {
+  name = "codepipeline"
 
   assume_role_policy = <<EOF
 {
@@ -103,9 +109,10 @@ resource "aws_iam_role" "codepipeline_role" {
 EOF
 }
 
-resource "aws_iam_role_policy" "codepipeline_policy" {
+// TODO: refactor
+resource "aws_iam_role_policy" "codepipeline" {
   name = "codepipeline_policy"
-  role = aws_iam_role.codepipeline_role.id
+  role = aws_iam_role.codepipeline.id
 
   policy = <<EOF
 {
@@ -138,9 +145,9 @@ EOF
 }
 
 // docs: https://www.terraform.io/docs/providers/aws/r/codepipeline.html
-resource "aws_codepipeline" "codepipeline" {
-  name     = "tf-test-pipeline"
-  role_arn = aws_iam_role.codepipeline_role.arn
+resource "aws_codepipeline" "app" {
+  name     = "${var.project_name}_prod"
+  role_arn = aws_iam_role.codepipeline.arn
 
   // TODO: use CloudWatch S3 events for change detection (requires a CloudTrail and a CloudWatch Events rule)
   // https://docs.aws.amazon.com/codepipeline/latest/userguide/trigger-S3-migration-cwe.html
@@ -153,15 +160,23 @@ resource "aws_codepipeline" "codepipeline" {
   }
 
   stage {
-    name = "Source"
+    name = "Source_S3"
 
     action {
-      name             = "Source"
+      run_order        = 1
+      name             = "Source_S3"
       category         = "Source"
-      owner            = "Custom"
+      owner            = "AWS"
       provider         = "S3"
       version          = "1"
-      input_artifacts = ["run_server.zip"]
+      output_artifacts = ["westrikworld_app"]
+
+      configuration = {
+        S3Bucket = aws_s3_bucket.app_deploy.bucket
+        S3ObjectKey = "westrikworld_app.zip"
+        PollForSourceChanges = true # TODO: disable when setting up CloudWatch event triggers
+        // TODO: add KMSEncryptionKeyARN
+      }
     }
   }
 
@@ -169,21 +184,40 @@ resource "aws_codepipeline" "codepipeline" {
   // TODO: add a Test stage
 
   stage {
-    name = "Deploy"
+    name = "Deploy_EC2"
 
     action {
-      name            = "Deploy"
+      run_order       = 2
+      name            = "Deploy_EC2"
       category        = "Deploy"
       owner           = "AWS"
       provider        = "CodeDeploy"
       version         = "1"
+      input_artifacts = ["westrikworld_app"]
 
       configuration = {
-        ActionMode     = "REPLACE_ON_FAILURE"
-        Capabilities   = "CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM"
-        OutputFileName = "CreateStackOutput.json"
-        StackName      = "MyStack"
-        TemplatePath   = "build_output::sam-templated.yaml"
+        ApplicationName = aws_codedeploy_app.app.name
+        DeploymentGroupName = aws_codedeploy_deployment_group.app.deployment_group_name
+      }
+    }
+  }
+
+  stage {
+    name = "Deploy_CloudFront"
+
+    action {
+      run_order       = 3
+      name            = "Deploy_CloudFront"
+      category        = "Deploy"
+      owner           = "AWS"
+      provider        = "S3"
+      version         = "1"
+      input_artifacts = ["westrikworld_app"]
+
+      configuration = {
+        BucketName = aws_s3_bucket.app_deploy_cloudfront.bucket
+        Extract = true
+        ObjectKey = "public"
       }
     }
   }
