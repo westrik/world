@@ -17,7 +17,7 @@ async fn main() -> std::io::Result<()> {
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let pool = db::init_pool(&database_url).expect("Failed to create pool");
 
-    // TODO: run pending migrations
+    diesel_migrations::run_pending_migrations(&db::get_conn(&pool).unwrap()).unwrap();
 
     HttpServer::new(move || {
         App::new()
