@@ -1,0 +1,9 @@
+[Unit]
+Description=westrikworld API server
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/run_server
+
+[Install]
+WantedBy=multi-user.target

@@ -15,4 +15,4 @@ fmt:
 	cd infra && make fmt
 
 prepush:
-	make format && make check
+	make fmt && make check

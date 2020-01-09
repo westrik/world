@@ -17,6 +17,9 @@ jobs:
     - name: Run tests
       working-directory: ./server
       run: cargo test --verbose
+    - name: Run tests (release)
+      working-directory: ./server
+      run: cargo test --verbose --release
     - name: Run clippy
       working-directory: ./server
       run: cargo clippy

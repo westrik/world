@@ -51,9 +51,38 @@ resource "aws_s3_bucket" "app_deploy" {
   acl    = "private"
 }
 
+resource "aws_iam_access_key" "deploy_upload" {
+  user    = aws_iam_user.deploy_upload.name
+}
+
+resource "aws_iam_user" "deploy_upload" {
+  name = "deploy_upload"
+}
+
+// TODO: refactor
+resource "aws_iam_user_policy" "deploy_upload" {
+  name = "deploy_upload"
+  user = aws_iam_user.deploy_upload.name
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "s3:PutObject*"
+      ],
+      "Effect": "Allow",
+      "Resource": ["${aws_s3_bucket.app_deploy.arn}"]
+    }
+  ]
+}
+EOF
+}
+
 resource "aws_s3_bucket" "app_deploy_cloudfront" {
   bucket = "${var.project_name}-public-${random_string.deploy_bucket_hash.result}"
-  acl    = "private"
+  acl    = "public-read"
 }
 
 resource "aws_iam_role" "codedeploy" {

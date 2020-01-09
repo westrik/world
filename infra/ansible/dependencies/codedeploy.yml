@@ -6,3 +6,8 @@
 
 - name: Install CodeDeploy
   shell: AWS_REGION={{ aws_region }} /tmp/codedeploy-install auto
+
+- name: Ensure CodeDeploy was enabled
+  service:
+    name: codedeploy-agent
+    enabled: yes
