@@ -10,7 +10,6 @@ cd server;
 git stash;
 git fetch origin master;
 git checkout origin/master;
-diesel migration run;
 cd -;
 NODE_ENV=staging make;
 sudo systemctl stop westrikworld_server

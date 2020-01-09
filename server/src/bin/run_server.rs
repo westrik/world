@@ -41,6 +41,7 @@ async fn main() -> std::io::Result<()> {
                     .max_age(3600)
                     .finish(),
             )
+            .route("/", web::get().to(|| async { "OK" }))
             .route("/sign-up", web::post().to(sign_up))
             .route("/sign-in", web::post().to(sign_in))
             .route("/item", web::post().to(create_item))

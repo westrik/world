@@ -28,23 +28,7 @@ resource "aws_security_group" "app" {
   description = "Primary ${var.project_name} production VPC"
   vpc_id      = aws_vpc.app.id
 
-  //  # HTTP access from the VPC (not sure if needed)
-  //  ingress {
-  //    from_port   = 80
-  //    to_port     = 80
-  //    protocol    = "tcp"
-  //    cidr_blocks = ["10.0.0.0/16"]
-  //  }
-  //
-  //  # HTTPS access from the VPC (not sure if needed)
-  //  ingress {
-  //    from_port   = 443
-  //    to_port     = 443
-  //    protocol    = "tcp"
-  //    cidr_blocks = ["10.0.0.0/16"]
-  //  }
-  //
-  //  # SSH access from the VPC (not sure if needed)
+  //  # SSH access from the VPN subnet(?)
   //  ingress {
   //    from_port   = 22
   //    to_port     = 22
@@ -52,7 +36,7 @@ resource "aws_security_group" "app" {
   //    cidr_blocks = ["10.0.0.0/16"]
   //  }
 
-  //  # Outbound HTTPS access (for CodeDeploy)
+  //  # Outbound HTTPS access (for CodeDeploy) (not sure if needed)
   //  egress {
   //    from_port   = 443
   //    to_port     = 443
@@ -68,7 +52,7 @@ resource "aws_security_group" "app" {
     cidr_blocks = ["10.0.0.0/16"]
   }
 
-  //  # Outbound DNS access
+  //  # Outbound DNS access (not sure if needed)
   //  egress {
   //    from_port   = 53
   //    to_port     = 53
