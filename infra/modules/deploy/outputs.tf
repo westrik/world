@@ -7,5 +7,5 @@ output "deploy_upload_access_key" {
 }
 
 output "deploy_upload_bucket" {
-  value = "${aws_s3_bucket.app_deploy.bucket_domain_name}"
+  value = "${aws_s3_bucket.app_deploy.bucket}"
 }
