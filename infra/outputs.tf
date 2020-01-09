@@ -8,7 +8,7 @@ output "deploy_upload_secret" {
 }
 
 output "deploy_upload_access_key" {
-  value = module.deploy.deploy_upload_user
+  value = module.deploy.deploy_upload_access_key
 }
 
 output "deploy_upload_bucket" {

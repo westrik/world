@@ -43,4 +43,5 @@ module "deploy" {
   source           = "./modules/deploy"
   app_deploy_hosts = module.api.app_deploy_hosts
   aws_region       = var.aws_region
+  root_domain_name = var.root_domain_name
 }

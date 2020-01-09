@@ -234,6 +234,6 @@ resource "aws_route53_record" "app" {
   alias {
     name                   = aws_lb.app.dns_name
     zone_id                = aws_lb.app.zone_id
-    evaluate_target_health = true
+    evaluate_target_health = false // TODO: enable?
   }
 }

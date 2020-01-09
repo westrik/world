@@ -252,7 +252,7 @@ resource "aws_codepipeline" "app" {
   }
 }
 
-resource "aws_cloudfront_distribution" "s3_distribution" {
+resource "aws_cloudfront_distribution" "app" {
   origin {
     domain_name = aws_s3_bucket.app_deploy_cloudfront.bucket_regional_domain_name
     origin_id   = "${var.project_name}_prod"
@@ -273,7 +273,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 //    prefix          = "myprefix"
 //  }
 
-//  aliases = ["mysite.example.com", "yoursite.example.com"]
+  aliases = [var.root_domain_name]
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
@@ -308,6 +308,50 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn = aws_acm_certificate.cloudfront.arn
+    ssl_support_method = "sni-only"
+  }
+}
+
+resource "aws_acm_certificate" "cloudfront" {
+  domain_name       = var.root_domain_name
+  validation_method = "DNS"
+
+  tags = {
+    Environment = "production"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_route53_record" "cloudfront_acm" {
+  zone_id = data.aws_route53_zone.app.id
+  name    = aws_acm_certificate.cloudfront.domain_validation_options[0].resource_record_name
+  type    = aws_acm_certificate.cloudfront.domain_validation_options[0].resource_record_type
+  records = [
+    aws_acm_certificate.cloudfront.domain_validation_options[0].resource_record_value]
+  ttl     = 60
+}
+
+resource "aws_acm_certificate_validation" "cloudfront" {
+  certificate_arn         = aws_acm_certificate.cloudfront.arn
+  validation_record_fqdns = [aws_route53_record.cloudfront_acm.fqdn]
+}
+
+data "aws_route53_zone" "app" {
+  name = "${var.root_domain_name}."
+}
+
+resource "aws_route53_record" "app" {
+  zone_id = data.aws_route53_zone.app.id
+  name    = var.root_domain_name
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.app.domain_name
+    zone_id                = aws_cloudfront_distribution.app.hosted_zone_id
+    evaluate_target_health = false
   }
 }

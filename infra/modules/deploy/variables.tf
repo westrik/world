@@ -10,3 +10,7 @@ variable "aws_region" {
 variable "app_deploy_hosts" {
   type = list(string)
 }
+
+variable "root_domain_name" {
+  type = string
+}
