@@ -1,5 +1,0 @@
-#!/bin/bash
-
-set -euxo pipefail
-
-systemctl stop app_server
