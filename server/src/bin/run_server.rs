@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate diesel_migrations;
+
 extern crate log;
 
 use actix_web::{http, middleware, web, App, HttpServer};
@@ -9,6 +12,8 @@ use actix_web::middleware::Logger;
 use westrikworld_server::db;
 use westrikworld_server::routes::*;
 
+embed_migrations!();
+
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
@@ -16,6 +21,9 @@ async fn main() -> std::io::Result<()> {
 
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let pool = db::init_pool(&database_url).expect("Failed to create pool");
+
+    let conn = db::get_conn(&pool).unwrap();
+    embedded_migrations::run_with_output(&conn, &mut std::io::stdout()).unwrap();
 
     HttpServer::new(move || {
         App::new()
@@ -33,6 +41,7 @@ async fn main() -> std::io::Result<()> {
                     .max_age(3600)
                     .finish(),
             )
+            .route("/", web::get().to(|| async { "OK" }))
             .route("/sign-up", web::post().to(sign_up))
             .route("/sign-in", web::post().to(sign_in))
             .route("/item", web::post().to(create_item))

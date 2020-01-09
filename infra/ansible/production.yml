@@ -1,0 +1,30 @@
+---
+- name: Configure Debian AMI for westrikworld production
+  hosts: all
+  become: true
+  vars:
+    aws_region: "us-east-1"
+
+  module_defaults:
+    apt:
+      force_apt_get: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install service apt dependencies
+      import_tasks: dependencies/service.yml
+
+    - name: Set up firewall
+      import_tasks: config/ufw.yml
+
+    - name: Configure app server
+      import_tasks: config/app.yml
+
+    - name: Configure nginx
+      import_tasks: config/nginx.yml
+
+    - name: Install CodeDeploy
+      import_tasks: dependencies/codedeploy.yml

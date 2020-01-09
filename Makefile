@@ -7,10 +7,12 @@ check:
 	cd web-client && yarn lint
 	cd server && cargo test
 	cd web-client && yarn test
+	cd infra && terraform validate
 
-format:
+fmt:
 	cd server && cargo fmt
 	cd web-client && yarn fix
+	cd infra && make fmt
 
 prepush:
-	make format && make check
+	make fmt && make check

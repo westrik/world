@@ -1,0 +1,40 @@
+- name: Enable ufw logging
+  ufw:
+    logging: 'on'
+
+- name: Deny all incoming and outgoing connections
+  ufw:
+    policy: deny
+
+- name: Allow outbound DNS
+  ufw:
+    rule: allow
+    port: '53'
+    direction: out
+
+- name: Allow inbound ssh
+  ufw:
+    rule: allow
+    port: '22'
+    direction: in
+# todo: limit to only VPC
+
+- name: Limit brute-force ssh connections
+  ufw:
+    rule: limit
+    port: '22'
+    proto: tcp
+
+- name: Allow http
+  ufw:
+    rule: allow
+    port: '80'
+
+- name: Allow https
+  ufw:
+    rule: allow
+    port: '443'
+
+- name: Start ufw now and at boot
+  ufw:
+    state: enabled

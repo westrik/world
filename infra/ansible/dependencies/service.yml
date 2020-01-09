@@ -1,0 +1,14 @@
+- name: Install ufw
+  apt:
+    name: ufw
+    state: present
+
+- name: Install nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Install ruby
+  apt:
+    name: ruby
+    state: present

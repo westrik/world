@@ -31,7 +31,7 @@ impl NewItem {
         Ok(diesel::insert_into(items::table)
             .values(self)
             .get_result(conn)
-            .map_err(|err| ItemQueryError::DatabaseError(err))?)
+            .map_err(ItemQueryError::DatabaseError)?)
     }
 }
 
@@ -71,7 +71,7 @@ impl Item {
             .map_err(|_| ItemQueryError::InvalidToken)?;
         let new_user = NewItem {
             user_id: session.user_id,
-            content: content,
+            content,
         };
         new_user.insert(conn)
     }

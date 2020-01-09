@@ -1,0 +1,9 @@
+- name: Copy service systemd config file
+  copy:
+    src: ../../systemd/app.service
+    dest: /etc/systemd/system/app.service
+
+- name: Ensure service is disabled until it receives a deploy
+  service:
+    name: app
+    enabled: no

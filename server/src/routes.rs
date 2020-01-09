@@ -59,10 +59,7 @@ pub struct GetItemResponse {
 }
 
 fn run_get_items(token: String, pool: &db::PgPool) -> Result<Vec<Item>, ItemQueryError> {
-    Ok(Item::find_all_for_user(
-        &get_conn(&pool).unwrap(),
-        token.to_string(),
-    )?)
+    Ok(Item::find_all_for_user(&get_conn(&pool).unwrap(), token)?)
 }
 
 pub async fn get_items(
@@ -104,11 +101,7 @@ fn run_create_item(
     content: String,
     pool: &db::PgPool,
 ) -> Result<Item, ItemQueryError> {
-    Ok(Item::create(
-        &get_conn(&pool).unwrap(),
-        token.to_string(),
-        content.to_string(),
-    )?)
+    Ok(Item::create(&get_conn(&pool).unwrap(), token, content)?)
 }
 
 pub async fn create_item(

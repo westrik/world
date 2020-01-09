@@ -5,7 +5,7 @@ use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 
 use crate::models::user::{User, UserQueryError};
-use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
+use crate::schema::sessions;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[primary_key(token)]
@@ -24,7 +24,7 @@ impl Session {
         Ok(diesel::insert_into(sessions::table)
             .values((sessions::token.eq(token), sessions::user_id.eq(user.id)))
             .get_result(conn)
-            .map_err(|err| UserQueryError::DatabaseError(err))?)
+            .map_err(UserQueryError::DatabaseError)?)
     }
 }
 
