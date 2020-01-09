@@ -1,6 +1,5 @@
-name: Push application bundle to S3
+name: release
 on: push
-
 #  release:
 #    types: [published]
 
@@ -19,12 +18,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 13.x
-      - name: yarn install; build & test
+      - name: yarn install & build
         working-directory: ./web-client
         run: |
           yarn install
           yarn build
-          yarn test
       - name: bundle
         run: bash ./infra/codedeploy/bin/zip_app_bundle.sh
       - name: Upload bundle to S3 bucket
@@ -32,7 +30,7 @@ jobs:
         with:
           args: --acl private
         env:
-          FILE: ./
+          FILE: ./westrikworld_app.zip
           AWS_REGION: 'us-east-1'
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
