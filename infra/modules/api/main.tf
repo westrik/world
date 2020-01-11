@@ -23,6 +23,28 @@ resource "aws_vpc" "app" {
   }
 }
 
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id       = aws_vpc.app.id
+  service_name = "com.amazonaws.${var.aws_region}.s3"
+  route_table_ids = [aws_vpc.app.main_route_table_id]
+
+  tags = {
+    Environment = "production"
+  }
+}
+
+resource "aws_vpc_endpoint" "codepipeline" {
+  vpc_id       = aws_vpc.app.id
+  service_name = "com.amazonaws.${var.aws_region}.codepipeline"
+  vpc_endpoint_type = "Interface"
+  subnet_ids = [aws_subnet.app_az1.id, aws_subnet.app_az2.id]
+  security_group_ids = [aws_security_group.app.id]
+
+  tags = {
+    Environment = "production"
+  }
+}
+
 resource "aws_security_group" "app" {
   name        = "app_sg"
   description = "Primary ${var.project_name} production VPC"
@@ -36,14 +58,29 @@ resource "aws_security_group" "app" {
   //    cidr_blocks = ["10.0.0.0/16"]
   //  }
 
-  # Outbound HTTPS access (for CodeDeploy) (not sure if needed)
+  # Inbound HTTP
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  # Inbound HTTPS
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  # Outbound HTTPS access for S3 and CodeDeploy
   egress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # TODO: add VPC endpoint for CodeDeploy and S3
-    //    cidr_blocks = ["10.0.0.0/16"] # TODO: add VPC endpoint for CodeDeploy and S3
-    //    prefix_list_ids
+    prefix_list_ids = [aws_vpc_endpoint.s3.prefix_list_id]
+    cidr_blocks = ["10.0.0.0/16"]
   }
 
   # RDS (not sure if needed)

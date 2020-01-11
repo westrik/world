@@ -8,4 +8,4 @@ if ! [ "$(systemctl is-active --quiet nginx)" ]; then
 fi
 
 chmod +x /usr/bin/run_server
-systemctl start app_server
+systemctl start app

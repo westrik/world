@@ -2,4 +2,4 @@
 
 set -euxo pipefail
 
-systemctl stop app_server
+systemctl stop app
