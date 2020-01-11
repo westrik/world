@@ -43,6 +43,6 @@ jobs:
       - name: Install linguist deps
         run: sudo apt-get install cmake pkg-config libicu-dev zlib1g-dev libcurl4-openssl-dev libssl-dev ruby-dev
       - name: Install linguist
-        run: gem install github-linguist
+        run: sudo gem install github-linguist
       - name: Run linguist
         run: github-linguist --breakdown
