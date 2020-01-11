@@ -12,3 +12,8 @@
   apt:
     name: ruby
     state: present
+
+- name: Install awscli
+  apt:
+    name: awscli
+    state: present
