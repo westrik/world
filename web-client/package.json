@@ -6,10 +6,8 @@
   "scripts": {
     "start": "yarn parcel src/index.html",
     "build": "yarn parcel build src/index.html",
-    "lint": "yarn lint:ts && yarn lint:es",
-    "lint:ts": "yarn tslint src/*.ts{,x} src/**/*.ts{,x} tests/**/*.ts{,x}",
-    "lint:es": "yarn eslint . --ext .ts,.tsx",
-    "fix": "yarn lint:es --fix",
+    "lint": "yarn eslint . --ext .ts,.tsx",
+    "fix": "yarn lint --fix",
     "test": "yarn mocha -r ts-node/register tests/**/*.ts{,x}"
   },
   "devDependencies": {
@@ -25,14 +23,12 @@
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.17.0",
-    "mocha": "^6.2.2",
+    "mocha": "^7.0.0",
     "parcel-bundler": "^1.12.4",
     "prettier": "^1.19.1",
-    "sass": "^1.24.0",
-    "sinon": "^7.5.0",
-    "ts-node": "^8.5.4",
-    "tslint": "^5.20.1",
-    "tslint-config-prettier": "^1.18.0",
+    "sass": "^1.24",
+    "sinon": "^8.0",
+    "ts-node": "^8.6",
     "typescript": "^3.7.3"
   },
   "dependencies": {
