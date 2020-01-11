@@ -1,2 +1,2 @@
-*/**/*.sql linguist-language=SQL
-*/**/*.scss linguist-language=SCSS
+**/*.sql linguist-language=SQL
+**/*.scss linguist-language=SCSS
