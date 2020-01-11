@@ -1,15 +1,14 @@
-name: web
+name: Web
 
 on: [push]
 
 jobs:
-  build:
-
+  Build and Test:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v1
-    - name: set up node.js 13.x
+    - name: Set up node.js 13.x
       uses: actions/setup-node@v1
       with:
         node-version: 13.x
@@ -21,7 +20,7 @@ jobs:
         yarn test
       env:
         CI: true
-    - name: lint & typecheck
+    - name: Lint & Type-check
       working-directory: ./web-client
       run: |
         yarn lint
