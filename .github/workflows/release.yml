@@ -5,6 +5,7 @@ on: push
 
 jobs:
   deploy-aws:
+    name: deploy to AWS
     runs-on: ubuntu-latest
 
     steps:
@@ -37,6 +38,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
 
   generate-release-info:
+    name: generate information about release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1

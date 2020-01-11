@@ -4,6 +4,7 @@ on: [push]
 
 jobs:
   build-and-test:
+    name: build & test web client
     runs-on: ubuntu-latest
 
     steps:
