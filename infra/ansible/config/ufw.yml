@@ -35,6 +35,12 @@
     rule: allow
     port: '443'
 
+- name: Allow postgres port
+  ufw:
+    rule: allow
+    port: '5543'
+    direction: out
+
 - name: Start ufw now and at boot
   ufw:
     state: enabled

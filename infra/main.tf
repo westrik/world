@@ -1,13 +1,4 @@
 // Tested with Terraform v0.12.18 (as of 2020-01-05)
-/*
-TODO:
-
-- create S3 bucket for statically hosted files
-- set up CloudFront to point to S3
-- point westrikworld.com at CloudFront (docs)
-- verify that app works at westrikworld.com
-
-*/
 
 provider "aws" {
   region = var.aws_region

@@ -36,13 +36,15 @@ resource "aws_security_group" "app" {
   //    cidr_blocks = ["10.0.0.0/16"]
   //  }
 
-  //  # Outbound HTTPS access (for CodeDeploy) (not sure if needed)
-  //  egress {
-  //    from_port   = 443
-  //    to_port     = 443
-  //    protocol    = "tcp"
-  //    cidr_blocks = ["0.0.0.0/0"] # TODO: specify CIDR for CodeDeploy?
-  //  }
+  # Outbound HTTPS access (for CodeDeploy) (not sure if needed)
+  egress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # TODO: add VPC endpoint for CodeDeploy and S3
+    //    cidr_blocks = ["10.0.0.0/16"] # TODO: add VPC endpoint for CodeDeploy and S3
+    //    prefix_list_ids
+  }
 
   # RDS (not sure if needed)
   egress {
@@ -52,13 +54,13 @@ resource "aws_security_group" "app" {
     cidr_blocks = ["10.0.0.0/16"]
   }
 
-  //  # Outbound DNS access (not sure if needed)
-  //  egress {
-  //    from_port   = 53
-  //    to_port     = 53
-  //    protocol    = "tcp"
-  //    cidr_blocks = ["0.0.0.0/0"] # TODO: specify CIDR for DNS
-  //  }
+  # Outbound DNS access TODO: VPC endpoint?
+  egress {
+    from_port   = 53
+    to_port     = 53
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # TODO: specify CIDR for DNS
+  }
 }
 
 resource "aws_internet_gateway" "app" {

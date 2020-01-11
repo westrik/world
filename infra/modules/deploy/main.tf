@@ -1,9 +1,4 @@
 // Configure CodeDeploy and CodePipeline
-/*
-TODO:
-- upload a release zip to S3 manually
-- set up CodePipeline to pull from S3 and trigger CodeDeploy automatically
-*/
 
 provider "aws" {
   region = var.aws_region
@@ -24,7 +19,8 @@ resource "aws_codedeploy_deployment_group" "app" {
   deployment_group_name = "${var.project_name}_app"
   service_role_arn      = aws_iam_role.codedeploy.arn
 
-  deployment_config_name = "CodeDeployDefault.OneAtATime"
+//  deployment_config_name = "CodeDeployDefault.OneAtATime"
+  deployment_config_name = "CodeDeployDefault.AllAtOnce"
 
   ec2_tag_filter {
     key   = "Environment"
@@ -49,6 +45,10 @@ resource "random_string" "deploy_bucket_hash" {
 resource "aws_s3_bucket" "app_deploy" {
   bucket = "${var.project_name}-deploy-${random_string.deploy_bucket_hash.result}"
   acl    = "private"
+
+  versioning {
+    enabled = true
+  }
 }
 
 resource "aws_iam_access_key" "deploy_upload" {
@@ -73,7 +73,7 @@ resource "aws_iam_user_policy" "deploy_upload" {
         "s3:PutObject*"
       ],
       "Effect": "Allow",
-      "Resource": ["${aws_s3_bucket.app_deploy.arn}"]
+      "Resource": ["${aws_s3_bucket.app_deploy.arn}/*"]
     }
   ]
 }
@@ -163,8 +163,7 @@ resource "aws_iam_role_policy" "codepipeline" {
     {
       "Effect": "Allow",
       "Action": [
-        "codebuild:BatchGetBuilds",
-        "codebuild:StartBuild"
+        "codedeploy:*"
       ],
       "Resource": "*"
     }
