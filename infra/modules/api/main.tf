@@ -24,8 +24,8 @@ resource "aws_vpc" "app" {
 }
 
 resource "aws_vpc_endpoint" "s3" {
-  vpc_id       = aws_vpc.app.id
-  service_name = "com.amazonaws.${var.aws_region}.s3"
+  vpc_id          = aws_vpc.app.id
+  service_name    = "com.amazonaws.${var.aws_region}.s3"
   route_table_ids = [aws_vpc.app.main_route_table_id]
 
   tags = {
@@ -34,10 +34,10 @@ resource "aws_vpc_endpoint" "s3" {
 }
 
 resource "aws_vpc_endpoint" "codepipeline" {
-  vpc_id       = aws_vpc.app.id
-  service_name = "com.amazonaws.${var.aws_region}.codepipeline"
-  vpc_endpoint_type = "Interface"
-  subnet_ids = [aws_subnet.app_az1.id, aws_subnet.app_az2.id]
+  vpc_id             = aws_vpc.app.id
+  service_name       = "com.amazonaws.${var.aws_region}.codepipeline"
+  vpc_endpoint_type  = "Interface"
+  subnet_ids         = [aws_subnet.app_az1.id, aws_subnet.app_az2.id]
   security_group_ids = [aws_security_group.app.id]
 
   tags = {
@@ -76,11 +76,11 @@ resource "aws_security_group" "app" {
 
   # Outbound HTTPS access for S3 and CodeDeploy
   egress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
     prefix_list_ids = [aws_vpc_endpoint.s3.prefix_list_id]
-    cidr_blocks = ["10.0.0.0/16"]
+    cidr_blocks     = ["10.0.0.0/16"]
   }
 
   # RDS (not sure if needed)
