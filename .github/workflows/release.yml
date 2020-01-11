@@ -1,10 +1,10 @@
-name: release
+name: Release
 on: push
         #  release:
         #    types: [created]
 
 jobs:
-  Deploy (AWS):
+  deploy-aws:
     runs-on: ubuntu-latest
 
     steps:
@@ -36,7 +36,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
 
-  Generate Release Info:
+  generate-release-info:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1

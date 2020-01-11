@@ -3,7 +3,7 @@ name: Rust
 on: [push]
 
 jobs:
-  Build and Test:
+  build_and_test-debug:
     name: build & test all crates
     runs-on: ubuntu-latest
 
@@ -17,14 +17,11 @@ jobs:
     - name: Run tests
       working-directory: ./server
       run: cargo test --verbose
-    - name: Run tests (release)
-      working-directory: ./server
-      run: cargo test --verbose --release
     - name: Run clippy
       working-directory: ./server
       run: cargo clippy
 
-  Build and Test (Release):
+  build_and_test-release:
     name: build & test all crates with release settings enabled
     runs-on: ubuntu-latest
 

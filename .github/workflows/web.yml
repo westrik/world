@@ -3,7 +3,7 @@ name: Web
 on: [push]
 
 jobs:
-  Build and Test:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,7 +20,7 @@ jobs:
         yarn test
       env:
         CI: true
-    - name: Lint & Type-check
+    - name: lint & type-check
       working-directory: ./web-client
       run: |
         yarn lint
