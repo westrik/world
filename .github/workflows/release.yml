@@ -15,7 +15,7 @@ jobs:
       - name: Build
         working-directory: ./server
         run: cargo build --verbose --release
-      - name: set up node.js 13.x
+      - name: Set up node.js 13.x
         uses: actions/setup-node@v1
         with:
           node-version: 13.x

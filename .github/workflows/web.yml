@@ -13,7 +13,16 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 13.x
-    - name: yarn install; build & test
+    - name: Get yarn cache
+      id: yarn-cache
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+    - uses: actions/cache@v1
+      with:
+        path: ${{ steps.yarn-cache.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+    - name: Install, build, and test
       working-directory: ./web-client
       run: |
         yarn install
@@ -21,7 +30,7 @@ jobs:
         yarn test
       env:
         CI: true
-    - name: lint & type-check
+    - name: Lint and type-check
       working-directory: ./web-client
       run: |
         yarn lint
