@@ -4,7 +4,7 @@
 resource "random_password" "password" {
   length           = 16
   special          = true
-  override_special = "_%@"
+  override_special = "_%"
 }
 
 resource "aws_db_instance" "app" {
@@ -68,6 +68,52 @@ resource "aws_security_group" "app" {
     cidr_blocks = ["10.0.0.0/16"]
   }
 }
+
+resource "aws_secretsmanager_secret" "db_url" {
+  name = "database_url"
+}
+resource "aws_secretsmanager_secret_version" "db_url" {
+  secret_id     = aws_secretsmanager_secret.db_url.id
+  secret_string = aws_db_instance.app.address
+}
+
+resource "aws_secretsmanager_secret" "db_user" {
+  name = "database_username"
+}
+resource "aws_secretsmanager_secret_version" "db_user" {
+  secret_id     = aws_secretsmanager_secret.db_user.id
+  secret_string = aws_db_instance.app.username
+}
+
+resource "aws_secretsmanager_secret" "db_name" {
+  name = "database_name"
+}
+resource "aws_secretsmanager_secret_version" "db_name" {
+  secret_id     = aws_secretsmanager_secret.db_name.id
+  secret_string = aws_db_instance.app.name
+}
+
+resource "aws_secretsmanager_secret" "db_password" {
+  name = "database_password"
+}
+resource "aws_secretsmanager_secret_version" "db_password" {
+  secret_id     = aws_secretsmanager_secret.db_password.id
+  secret_string = random_password.password.result
+}
+
+resource "aws_secretsmanager_secret" "password_salt" {
+  name = "password_hash_salt"
+}
+resource "random_string" "password_salt" {
+  length           = 32
+  special          = true
+  override_special = "_%"
+}
+resource "aws_secretsmanager_secret_version" "password_salt" {
+  secret_id     = aws_secretsmanager_secret.password_salt.id
+  secret_string = random_string.password_salt.result
+}
+
 
 /*
 To allow our app EC2 instances to communicate with RDS, we need to create a DB user with the `rds_iam` role.

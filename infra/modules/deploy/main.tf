@@ -1,9 +1,4 @@
 // Configure CodeDeploy and CodePipeline
-/*
-TODO:
-- upload a release zip to S3 manually
-- set up CodePipeline to pull from S3 and trigger CodeDeploy automatically
-*/
 
 provider "aws" {
   region = var.aws_region
@@ -24,7 +19,8 @@ resource "aws_codedeploy_deployment_group" "app" {
   deployment_group_name = "${var.project_name}_app"
   service_role_arn      = aws_iam_role.codedeploy.arn
 
-  deployment_config_name = "CodeDeployDefault.OneAtATime"
+//  deployment_config_name = "CodeDeployDefault.OneAtATime"
+  deployment_config_name = "CodeDeployDefault.AllAtOnce"
 
   ec2_tag_filter {
     key   = "Environment"
@@ -49,6 +45,10 @@ resource "random_string" "deploy_bucket_hash" {
 resource "aws_s3_bucket" "app_deploy" {
   bucket = "${var.project_name}-deploy-${random_string.deploy_bucket_hash.result}"
   acl    = "private"
+
+  versioning {
+    enabled = true
+  }
 }
 
 resource "aws_iam_access_key" "deploy_upload" {
@@ -73,7 +73,7 @@ resource "aws_iam_user_policy" "deploy_upload" {
         "s3:PutObject*"
       ],
       "Effect": "Allow",
-      "Resource": ["${aws_s3_bucket.app_deploy.arn}"]
+      "Resource": ["${aws_s3_bucket.app_deploy.arn}/*"]
     }
   ]
 }
@@ -153,18 +153,18 @@ resource "aws_iam_role_policy" "codepipeline" {
         "s3:GetObject",
         "s3:GetObjectVersion",
         "s3:GetBucketVersioning",
-        "s3:PutObject"
+        "s3:PutObject*"
       ],
       "Resource": [
         "${aws_s3_bucket.app_deploy.arn}",
-        "${aws_s3_bucket.app_deploy.arn}/*"
+        "${aws_s3_bucket.app_deploy.arn}/*",
+        "${aws_s3_bucket.app_deploy_cloudfront.arn}/*"
       ]
     },
     {
       "Effect": "Allow",
       "Action": [
-        "codebuild:BatchGetBuilds",
-        "codebuild:StartBuild"
+        "codedeploy:*"
       ],
       "Resource": "*"
     }
@@ -246,7 +246,6 @@ resource "aws_codepipeline" "app" {
       configuration = {
         BucketName = aws_s3_bucket.app_deploy_cloudfront.bucket
         Extract = true
-        ObjectKey = "public"
       }
     }
   }
@@ -254,8 +253,9 @@ resource "aws_codepipeline" "app" {
 
 resource "aws_cloudfront_distribution" "app" {
   origin {
-    domain_name = aws_s3_bucket.app_deploy_cloudfront.bucket_regional_domain_name
-    origin_id   = "${var.project_name}_prod"
+    domain_name = aws_s3_bucket.app_deploy_cloudfront.bucket_domain_name
+    origin_id   = "public"
+    origin_path = "/public"
 
 //    s3_origin_config {
 //      origin_access_identity = "origin-access-identity/cloudfront/ABCDEFG1234567" // TODO: replace
@@ -278,7 +278,7 @@ resource "aws_cloudfront_distribution" "app" {
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "${var.project_name}_prod"
+    target_origin_id = "public"
 
     forwarded_values {
       query_string = false

@@ -12,3 +12,18 @@
   apt:
     name: ruby
     state: present
+
+- name: Install awscli
+  apt:
+    name: awscli
+    state: present
+
+- name: Install jq
+  apt:
+    name: jq
+    state: present
+
+- name: Install libpq-dev
+  apt:
+    name: libpq-dev
+    state: present
