@@ -47,20 +47,20 @@ resource "aws_security_group" "app_inbound" {
     //    cidr_blocks = ["10.0.0.0/16"]
   }
 
-  # Inbound HTTP
+  # Inbound HTTP via NLB
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Inbound HTTPS
+  # Inbound HTTPS via NLB
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
 }
