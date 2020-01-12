@@ -246,6 +246,7 @@ resource "aws_codepipeline" "app" {
       configuration = {
         BucketName = aws_s3_bucket.app_deploy_cloudfront.bucket
         Extract = true
+        CannedACL = "public-read"
       }
     }
   }
