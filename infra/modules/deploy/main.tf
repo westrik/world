@@ -255,6 +255,7 @@ resource "aws_cloudfront_distribution" "app" {
   origin {
     domain_name = aws_s3_bucket.app_deploy_cloudfront.bucket_domain_name
     origin_id   = "public"
+    origin_path = "/public"
 
 //    s3_origin_config {
 //      origin_access_identity = "origin-access-identity/cloudfront/ABCDEFG1234567" // TODO: replace
