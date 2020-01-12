@@ -206,8 +206,6 @@ resource "aws_instance" "app" {
     # The connection will use the local SSH agent for authentication.
   }
 
-
-
   tags = {
     Name        = "app"
     Environment = "production"
@@ -231,6 +229,10 @@ resource "aws_iam_role_policy_attachment" "app_rds" {
 resource "aws_iam_role_policy_attachment" "app_code_deploy" {
   role       = aws_iam_role.app_host.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy"
+}
+resource "aws_iam_role_policy_attachment" "app_secrets" {
+  role       = aws_iam_role.app_host.name
+  policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
 }
 data "aws_iam_policy_document" "app_rds" {
   statement {

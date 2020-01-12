@@ -69,6 +69,28 @@ resource "aws_security_group" "app" {
   }
 }
 
+resource "aws_secretsmanager_secret" "db_url" {
+  name = "database_url"
+}
+resource "aws_secretsmanager_secret_version" "db_url" {
+  secret_id     = aws_secretsmanager_secret.db_url.id
+  secret_string = "postgres://westrikworld_app@${aws_db_instance.app.address}/${aws_db_instance.app.name}"
+}
+
+resource "aws_secretsmanager_secret" "password_salt" {
+  name = "password_hash_salt"
+}
+resource "random_string" "password_salt" {
+  length           = 32
+  special          = true
+  override_special = "_%"
+}
+resource "aws_secretsmanager_secret_version" "password_salt" {
+  secret_id     = aws_secretsmanager_secret.password_salt.id
+  secret_string = random_string.password_salt.result
+}
+
+
 /*
 To allow our app EC2 instances to communicate with RDS, we need to create a DB user with the `rds_iam` role.
 Once we have the appropriate IAM policy in place to allow RDS<>EC2 communication, Postgres will use an IAM token
