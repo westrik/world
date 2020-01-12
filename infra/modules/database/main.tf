@@ -74,7 +74,31 @@ resource "aws_secretsmanager_secret" "db_url" {
 }
 resource "aws_secretsmanager_secret_version" "db_url" {
   secret_id     = aws_secretsmanager_secret.db_url.id
-  secret_string = "postgres://westrikworld_app@${aws_db_instance.app.address}/${aws_db_instance.app.name}"
+  secret_string = aws_db_instance.app.address
+}
+
+resource "aws_secretsmanager_secret" "db_user" {
+  name = "database_username"
+}
+resource "aws_secretsmanager_secret_version" "db_user" {
+  secret_id     = aws_secretsmanager_secret.db_user.id
+  secret_string = aws_db_instance.app.username
+}
+
+resource "aws_secretsmanager_secret" "db_name" {
+  name = "database_name"
+}
+resource "aws_secretsmanager_secret_version" "db_name" {
+  secret_id     = aws_secretsmanager_secret.db_name.id
+  secret_string = aws_db_instance.app.name
+}
+
+resource "aws_secretsmanager_secret" "db_password" {
+  name = "database_password"
+}
+resource "aws_secretsmanager_secret_version" "db_password" {
+  secret_id     = aws_secretsmanager_secret.db_password.id
+  secret_string = random_password.password.result
 }
 
 resource "aws_secretsmanager_secret" "password_salt" {
