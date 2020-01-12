@@ -2,13 +2,14 @@ version: 0.0
 os: linux
 files:
   - source: bin/run_server
-    destination: /usr/bin/run_server
+    destination: /usr/bin/
 hooks:
   ApplicationStop:
     - location: bin/deploy_stop.sh
       timeout: 300
   ApplicationStart:
     - location: bin/deploy_start.sh
+      timeout: 30
   ValidateService:
     - location: bin/validate_service.sh
       timeout: 30

@@ -22,3 +22,8 @@
   apt:
     name: jq
     state: present
+
+- name: Install libpq-dev
+  apt:
+    name: libpq-dev
+    state: present
