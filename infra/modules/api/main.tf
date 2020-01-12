@@ -33,30 +33,19 @@ resource "aws_vpc_endpoint" "s3" {
   }
 }
 
-resource "aws_vpc_endpoint" "codepipeline" {
-  vpc_id             = aws_vpc.app.id
-  service_name       = "com.amazonaws.${var.aws_region}.codepipeline"
-  vpc_endpoint_type  = "Interface"
-  subnet_ids         = [aws_subnet.app_az1.id, aws_subnet.app_az2.id]
-  security_group_ids = [aws_security_group.app.id]
-
-  tags = {
-    Environment = "production"
-  }
-}
-
-resource "aws_security_group" "app" {
-  name        = "app_sg"
-  description = "Primary ${var.project_name} production VPC"
+resource "aws_security_group" "app_inbound" {
+  name        = "app_in_sg"
+  description = "Primary ${var.project_name} production SG (inbound)"
   vpc_id      = aws_vpc.app.id
 
-  //  # SSH access from the VPN subnet(?)
-  //  ingress {
-  //    from_port   = 22
-  //    to_port     = 22
-  //    protocol    = "tcp"
-  //    cidr_blocks = ["10.0.0.0/16"]
-  //  }
+  # SSH access from me
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    //    cidr_blocks = ["10.0.0.0/16"]
+  }
 
   # Inbound HTTP
   ingress {
@@ -74,29 +63,58 @@ resource "aws_security_group" "app" {
     cidr_blocks = ["10.0.0.0/16"]
   }
 
-  # Outbound HTTPS access for S3 and CodeDeploy
-  egress {
-    from_port       = 443
-    to_port         = 443
-    protocol        = "tcp"
-    prefix_list_ids = [aws_vpc_endpoint.s3.prefix_list_id]
-    cidr_blocks     = ["10.0.0.0/16"]
-  }
+}
+resource "aws_security_group" "app_outbound_s3" {
+  name        = "app_out_s3_sg"
+  description = "Primary ${var.project_name} production SG (outbound for s3)"
+  vpc_id      = aws_vpc.app.id
 
-  # RDS (not sure if needed)
+  # Outbound HTTPS access to S3 (via VPC endpoint)
   egress {
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
+    from_port = 443
+    to_port   = 443
+    protocol  = "tcp"
+    prefix_list_ids = [
+    aws_vpc_endpoint.s3.prefix_list_id]
   }
 
   # Outbound DNS access TODO: VPC endpoint?
   egress {
-    from_port   = 53
-    to_port     = 53
+    from_port = 53
+    to_port   = 53
+    protocol  = "tcp"
+    cidr_blocks = [
+    "0.0.0.0/0"]
+    # TODO: specify CIDR for DNS
+  }
+}
+
+
+data "aws_ip_ranges" "amazon_services" {
+  regions  = [var.aws_region]
+  services = ["amazon"]
+}
+
+resource "aws_security_group" "app_outbound" {
+  name        = "app_out_sg"
+  description = "Primary ${var.project_name} production SG (outbound)"
+  vpc_id      = aws_vpc.app.id
+
+  # Outbound HTTPS to AWS (CodeDeploy)
+  egress {
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # TODO: specify CIDR for DNS
+    cidr_blocks = ["0.0.0.0/0"] #data.aws_ip_ranges.amazon_services.cidr_blocks
+  }
+
+  # RDS
+  egress {
+    from_port = 5432
+    to_port   = 5432
+    protocol  = "tcp"
+    cidr_blocks = [
+    "10.0.0.0/16"]
   }
 }
 
@@ -111,9 +129,10 @@ resource "aws_route" "app_internet_access" {
 }
 
 resource "aws_subnet" "app_az1" {
-  availability_zone = var.aws_az1
-  vpc_id            = aws_vpc.app.id
-  cidr_block        = "10.0.1.0/24"
+  availability_zone       = var.aws_az1
+  vpc_id                  = aws_vpc.app.id
+  cidr_block              = "10.0.1.0/24"
+  map_public_ip_on_launch = true #TODO: remove
 
   tags = {
     Name        = "app"
@@ -152,15 +171,42 @@ data "aws_ami" "app" {
   }
 }
 
+#TODO: remove
+resource "tls_private_key" "westrikworld_staging_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+#TODO: remove
+resource "aws_key_pair" "generated_key" {
+  key_name   = "westrikworld-staging"
+  public_key = tls_private_key.westrikworld_staging_key.public_key_openssh
+}
+
+
+
 resource "aws_instance" "app" {
   # TODO: [harden] change default login and SSH config for AMI (no password)
   # TODO?: configure with a stored keypair to allow login via bastion
 
   instance_type          = "t3a.micro"
   ami                    = data.aws_ami.app.id
-  vpc_security_group_ids = [aws_security_group.app.id]
+  vpc_security_group_ids = [aws_security_group.app_inbound.id, aws_security_group.app_outbound.id, aws_security_group.app_outbound_s3.id]
   subnet_id              = aws_subnet.app_az1.id
   iam_instance_profile   = aws_iam_instance_profile.app_host.name
+  #TODO: remove
+  key_name = aws_key_pair.generated_key.key_name
+
+  #TODO: remove
+  connection {
+    # The default username for our AMI
+    user        = "admin"
+    host        = self.public_ip
+    private_key = tls_private_key.westrikworld_staging_key.private_key_pem
+    # The connection will use the local SSH agent for authentication.
+  }
+
+
 
   tags = {
     Name        = "app"
