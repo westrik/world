@@ -1,19 +1,14 @@
 import { h } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
-import { API_HOST } from './App';
+import { useContext, useEffect, useState } from 'preact/hooks';
 import './style/dashboard.css';
+import Auth from './auth/AuthContext';
+import { API_HOST, SITE_NAME } from './config';
 
 // TODO:
 // - refactor Dashboard into separate components for:
 //    - navigation
 //    - timeline
 // - add an Icon component that uses the feather-icon SVGs
-
-interface Props {
-    siteName: string;
-    apiToken: string;
-    onSignOut: () => void;
-}
 
 interface Item {
     content: string;
@@ -36,9 +31,10 @@ async function createItem(token: string, content: string): Promise<Item> {
     return await response.json();
 }
 
-function Dashboard(props: Props): h.JSX.Element {
+function Dashboard(): h.JSX.Element {
     const [newItemContent, setNewItemContent] = useState('');
     const [items, setItems] = useState([] as Item[]);
+    const authContext = useContext(Auth);
 
     async function getItems(token: string): Promise<void> {
         const response = await fetch(`${API_HOST}/item`, {
@@ -68,7 +64,8 @@ function Dashboard(props: Props): h.JSX.Element {
             const fetch = async (): Promise<void> => {
                 // tslint:disable-next-line:no-console
                 console.log('running getItems');
-                await getItems(props.apiToken);
+                // TODO: redirect to /login if authToken is expired / null
+                await getItems(authContext.authToken!);
             };
             fetch();
         }
@@ -78,7 +75,7 @@ function Dashboard(props: Props): h.JSX.Element {
         <div>
             <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
                 <a className="navbar-brand col-sm-3 col-md-2 mr-0" href="#">
-                    {props.siteName}
+                    {SITE_NAME}
                 </a>
                 <input
                     className="form-control form-control-dark w-100"
@@ -92,7 +89,7 @@ function Dashboard(props: Props): h.JSX.Element {
                             className="nav-link"
                             href="#"
                             onClick={(): void => {
-                                props.onSignOut();
+                                authContext.handleSignOut();
                             }}
                         >
                             Sign out
@@ -200,7 +197,7 @@ function Dashboard(props: Props): h.JSX.Element {
                                 type="button"
                                 className="btn btn-primary"
                                 onClick={(): void => {
-                                    createItem(props.apiToken, newItemContent);
+                                    createItem(authContext.authToken!, newItemContent);
                                 }}
                             >
                                 Create

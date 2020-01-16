@@ -1,15 +1,11 @@
 import { h } from 'preact';
-import { useState } from 'preact/hooks';
+import { useContext, useState } from 'preact/hooks';
 
-import { API_HOST } from './App';
 // @ts-ignore
 import logo from './static/img/logo.png';
 import './style/SignInForm.scss';
-
-interface Props {
-    siteName: string;
-    onSignIn: (persistLogin: boolean, user: User, session: Session) => void;
-}
+import Auth from './auth/AuthContext';
+import { API_HOST, SITE_NAME } from './config';
 
 async function authenticate(emailAddress: string, password: string): Promise<SignInResponse> {
     const response = await fetch(`${API_HOST}/sign-in`, {
@@ -37,7 +33,8 @@ interface SignInResponse {
     session: Session;
 }
 
-function SignInForm(props: Props): h.JSX.Element {
+function SignInForm(): h.JSX.Element {
+    const authContext = useContext(Auth);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [remember, setRemember] = useState(false);
@@ -48,7 +45,7 @@ function SignInForm(props: Props): h.JSX.Element {
         <div className="form-container text-center">
             <form className="form-signin">
                 <h1 className={`h3 font-weight-normal ${!errorMessage ? 'mb-3' : null}`}>
-                    {<img src={logo} className="mb-3 img-fluid" alt={props.siteName} />}
+                    {<img src={logo} className="mb-3 img-fluid" alt={SITE_NAME} />}
                 </h1>
                 {errorMessage ? (
                     <div className="alert alert-danger" role="alert">
@@ -95,7 +92,7 @@ function SignInForm(props: Props): h.JSX.Element {
                         let res: SignInResponse | null = null;
                         try {
                             res = await authenticate(email, password);
-                            props.onSignIn(remember, res.user, res.session);
+                            authContext.handleSignIn(res.session, remember);
                         } catch {
                             setErrorMessage('Invalid username or password');
                             setLoading(false);
