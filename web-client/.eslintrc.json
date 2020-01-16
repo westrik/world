@@ -47,7 +47,7 @@
         "react/react-in-jsx-scope": "error"
     },
     "overrides": [{
-      "files": ["**/*.tsx"],
+      "files": ["**/*.ts", "**/*.tsx"],
       "rules": {
         "react/prop-types": "off",
         "@typescript-eslint/ban-ts-ignore": "off",
