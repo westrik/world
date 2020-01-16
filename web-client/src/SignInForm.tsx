@@ -1,11 +1,11 @@
 import { h } from 'preact';
 import { useContext, useState } from 'preact/hooks';
 
-import { API_HOST, SITE_NAME } from './App';
 // @ts-ignore
 import logo from './static/img/logo.png';
 import './style/SignInForm.scss';
 import Auth from './contexts/Auth';
+import { API_HOST, SITE_NAME } from './config';
 
 async function authenticate(emailAddress: string, password: string): Promise<SignInResponse> {
     const response = await fetch(`${API_HOST}/sign-in`, {
