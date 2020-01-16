@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
 import './style/dashboard.css';
-import Auth from './contexts/Auth';
+import Auth from './auth/AuthContext';
 import { API_HOST, SITE_NAME } from './config';
 
 // TODO:

@@ -4,7 +4,7 @@ import { useContext, useState } from 'preact/hooks';
 // @ts-ignore
 import logo from './static/img/logo.png';
 import './style/SignInForm.scss';
-import Auth from './contexts/Auth';
+import Auth from './auth/AuthContext';
 import { API_HOST, SITE_NAME } from './config';
 
 async function authenticate(emailAddress: string, password: string): Promise<SignInResponse> {
