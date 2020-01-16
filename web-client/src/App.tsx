@@ -4,15 +4,12 @@ import Dashboard from './Dashboard';
 import SignInForm from './SignInForm';
 import { AuthProvider } from './contexts/Auth';
 
-// TODO:
-//  - set browser history
-
 function App(): h.JSX.Element {
     return (
         <AuthProvider>
             <Router>
                 <Route path="/login" default component={SignInForm} />
-                <Route path="/tasks" component={Dashboard} />
+                <Route path="/" component={Dashboard} />
             </Router>
         </AuthProvider>
     );

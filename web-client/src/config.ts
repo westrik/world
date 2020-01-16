@@ -2,7 +2,7 @@ const env = process.env.NODE_ENV;
 
 export const SITE_NAME = 'westrikworld';
 
-const API_HOSTS: { [deploy: string]: string } = {
+const API_HOSTS = {
     local: 'http://localhost:8080',
     staging: 'https://api.staging.westrikworld.com',
     production: 'https://api.westrikworld.com',
