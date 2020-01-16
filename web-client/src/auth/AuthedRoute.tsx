@@ -11,5 +11,5 @@ export function AuthedRoute<Props>(props: RouteProps<Props> & Partial<Props>): p
             route('/login');
         }
     });
-    return <Route {...props} />;
+    return authContext.isLoggedIn() ? <Route {...props} /> : <Route component={(): h.JSX.Element => <div />} />;
 }

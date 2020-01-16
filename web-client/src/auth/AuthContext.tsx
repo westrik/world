@@ -9,6 +9,7 @@ interface AuthContext {
     authToken: string | null;
     handleSignIn: (session: Session, persistSession: boolean) => void;
     handleSignOut: () => void;
+    isLoggedIn: () => boolean;
 }
 
 const Auth = createContext<AuthContext>({} as AuthContext);
@@ -28,6 +29,10 @@ function handleSignOut(this: AuthContext): void {
     route('/login');
 }
 
+function isLoggedIn(this: AuthContext): boolean {
+    return Boolean(this.authToken);
+}
+
 export function AuthProvider({ children }: { children: h.JSX.Element | Array<h.JSX.Element> }): h.JSX.Element {
     return (
         <Auth.Provider
@@ -35,6 +40,7 @@ export function AuthProvider({ children }: { children: h.JSX.Element | Array<h.J
                 authToken: sessionStorage.getItem(TOKEN_KEY) || localStorage.getItem(TOKEN_KEY),
                 handleSignIn,
                 handleSignOut,
+                isLoggedIn,
             }}
         >
             {children}
