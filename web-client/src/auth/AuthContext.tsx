@@ -1,4 +1,4 @@
-import { Session } from '../SignInForm';
+import { Session } from './SignInForm';
 import { createContext, h } from 'preact';
 import { route } from 'preact-router';
 
