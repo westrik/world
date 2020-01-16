@@ -308,17 +308,6 @@ resource "aws_lb_listener" "app_https" {
   }
 }
 
-resource "aws_lb_listener" "app_http" {
-  load_balancer_arn = aws_lb.app.arn
-  port              = "80"
-  protocol          = "TCP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.app.arn
-  }
-}
-
 resource "aws_route53_record" "app" {
   zone_id = data.aws_route53_zone.app.id
   name    = var.api_domain_name
