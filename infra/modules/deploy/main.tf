@@ -295,6 +295,12 @@ resource "aws_cloudfront_distribution" "app" {
     max_ttl                = 86400
   }
 
+  custom_error_response {
+    error_code = 404
+    response_page_path = "/index.html"
+    response_code = 200
+  }
+
   price_class = "PriceClass_100"
 
   restrictions {
