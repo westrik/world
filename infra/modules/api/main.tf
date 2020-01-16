@@ -183,8 +183,6 @@ resource "aws_key_pair" "generated_key" {
   public_key = tls_private_key.westrikworld_staging_key.public_key_openssh
 }
 
-
-
 resource "aws_instance" "app" {
   # TODO: [harden] change default login and SSH config for AMI (no password)
   # TODO?: configure with a stored keypair to allow login via bastion
