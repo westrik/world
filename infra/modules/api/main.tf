@@ -299,7 +299,7 @@ resource "aws_lb_listener" "app_https" {
   load_balancer_arn = aws_lb.app.arn
   port              = "443"
   protocol          = "TLS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
   certificate_arn   = module.acm.this_acm_certificate_arn
 
   default_action {
@@ -308,16 +308,16 @@ resource "aws_lb_listener" "app_https" {
   }
 }
 
-//resource "aws_lb_listener" "app_http" {
-//  load_balancer_arn = aws_lb.app.arn
-//  port              = "80"
-//  protocol          = "TCP"
-//
-//  default_action {
-//    type             = "forward"
-//    target_group_arn = aws_lb_target_group.app.arn
-//  }
-//}
+resource "aws_lb_listener" "app_http" {
+  load_balancer_arn = aws_lb.app.arn
+  port              = "80"
+  protocol          = "TCP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app.arn
+  }
+}
 
 resource "aws_route53_record" "app" {
   zone_id = data.aws_route53_zone.app.id
