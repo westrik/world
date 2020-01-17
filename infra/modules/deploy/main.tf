@@ -83,6 +83,10 @@ EOF
 resource "aws_s3_bucket" "app_deploy_cloudfront" {
   bucket = "${var.project_name}-public-${random_string.deploy_bucket_hash.result}"
   acl    = "public-read"
+
+  versioning {
+    enabled = true
+  }
 }
 
 resource "aws_iam_role" "codedeploy" {
