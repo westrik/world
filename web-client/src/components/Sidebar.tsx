@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { Link } from 'preact-router';
+import { Link } from 'preact-router/match';
 
 export default function Sidebar(): h.JSX.Element {
     // TODO: show nav somehow in mobile viewports
@@ -9,30 +9,31 @@ export default function Sidebar(): h.JSX.Element {
                 <ul className="nav flex-column">
                     <li className="nav-item">
                         <Link className="nav-link" activeClassName="active" href="/">
-                            Tasks
+                            tasks
                         </Link>
                     </li>
                     <li className="nav-item">
                         <Link className="nav-link" activeClassName="active" href="/notes">
-                            Notes
+                            note-stream
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" activeClassName="active" href="/docs">
-                            Documents
+                        <Link class="nav-link" activeClassName="active" href="/docs">
+                            documents
                         </Link>
                     </li>
                 </ul>
 
+                {/*TODO: disable admin section appropriately*/}
                 <h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
                     <span>Admin</span>
                     <a className="d-flex align-items-center text-muted" href="#" aria-label="Admin" />
                 </h6>
                 <ul className="nav flex-column mb-2">
                     <li className="nav-item">
-                        <a className="disabled nav-link" href="#">
-                            Users
-                        </a>
+                        <Link class="nav-link" activeClassName="active" href="/users">
+                            users
+                        </Link>
                     </li>
                 </ul>
             </div>

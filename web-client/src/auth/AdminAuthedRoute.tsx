@@ -3,10 +3,11 @@ import { useContext, useEffect } from 'preact/hooks';
 import Auth from './AuthContext';
 import { h } from 'preact';
 
-export function AuthedRoute<Props>(props: RouteProps<Props> & Partial<Props>): preact.VNode {
+export function AdminAuthedRoute<Props>(props: RouteProps<Props> & Partial<Props>): preact.VNode {
     const authContext = useContext(Auth);
     useEffect(() => {
-        // TODO: automatically sign out if token is expired
+        // TODO: automatically sign out if token is expired (re-use logic from AuthedRoute)
+        // TODO: store separate field for admin users
         if (!authContext.authToken) {
             authContext.handleSignOut();
         }

@@ -2,12 +2,12 @@ import { h } from 'preact';
 import Container from '../components/Container';
 import Header from '../components/Header';
 
-function NotesListing(): h.JSX.Element {
+function UsersListing(): h.JSX.Element {
     return (
         <Container>
-            <Header title="note-stream" />
+            <Header title="users" />
         </Container>
     );
 }
 
-export default NotesListing;
+export default UsersListing;

@@ -4,6 +4,7 @@ import Auth from '../auth/AuthContext';
 import { API_HOST } from '../config';
 import Container from '../components/Container';
 import Modal from '../components/Modal';
+import Header from '../components/Header';
 
 interface Item {
     content: string;
@@ -31,10 +32,11 @@ function TasksListing(): h.JSX.Element {
     const [items, setItems] = useState([] as Item[]);
     const authContext = useContext(Auth);
 
-    async function getItems(token: string): Promise<void> {
+    async function getItems(): Promise<void> {
         const response = await fetch(`${API_HOST}/item`, {
             headers: {
-                Authorization: token,
+                // TODO: redirect to /login if authToken is expired / null
+                Authorization: authContext.authToken!,
                 'Content-Type': 'application/json',
             },
             method: 'GET',
@@ -48,35 +50,28 @@ function TasksListing(): h.JSX.Element {
 
     useEffect(() => {
         if (!items.length) {
-            const fetch = async (): Promise<void> => {
-                // TODO: redirect to /login if authToken is expired / null
-                await getItems(authContext.authToken!);
-            };
-            fetch();
+            getItems();
         }
     });
 
     return (
         <Container>
-            <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 className="h2">Tasks</h1>
-                <div className="btn-toolbar mb-2 mb-md-0">
-                    <button
-                        type="button"
-                        className="btn btn-sm btn-outline-secondary"
-                        data-toggle="modal"
-                        data-target="#createTaskModal"
-                    >
-                        Create
-                    </button>
-                </div>
-            </div>
+            <Header title="tasks" />
 
             <ul>
                 {items.map((item, key) => {
                     return <li key={key}>{item.content}</li>;
                 })}
             </ul>
+
+            <button
+                type="button"
+                className="btn btn-sm btn-outline-secondary"
+                data-toggle="modal"
+                data-target="#createTaskModal"
+            >
+                Create
+            </button>
 
             <Modal
                 onChange={(e): void => {

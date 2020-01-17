@@ -6,6 +6,8 @@ import { AuthedRoute } from './auth/AuthedRoute';
 import TasksListing from './tasks/TasksListing';
 import NotesListing from './notes/NotesListing';
 import DocsListing from './docs/DocsListing';
+import UsersListing from './admin/UsersListing';
+import { AdminAuthedRoute } from './auth/AdminAuthedRoute';
 
 function App(): h.JSX.Element {
     return (
@@ -16,6 +18,7 @@ function App(): h.JSX.Element {
                 <AuthedRoute path="/" component={TasksListing} />
                 <AuthedRoute path="/notes" component={NotesListing} />
                 <AuthedRoute path="/docs" component={DocsListing} />
+                <AdminAuthedRoute path="/users" component={UsersListing} />
             </Router>
         </AuthProvider>
     );
