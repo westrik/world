@@ -9,12 +9,12 @@ export default function Sidebar(): h.JSX.Element {
                 <ul className="nav flex-column">
                     <li className="nav-item">
                         <Link className="nav-link" activeClassName="active" href="/">
-                            tasks
+                            stream
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" activeClassName="active" href="/notes">
-                            note-stream
+                        <Link className="nav-link" activeClassName="active" href="/tasks">
+                            tasks
                         </Link>
                     </li>
                     <li className="nav-item">

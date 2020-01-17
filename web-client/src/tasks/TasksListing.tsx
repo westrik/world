@@ -3,38 +3,25 @@ import { useContext, useEffect, useState } from 'preact/hooks';
 import Auth from '../auth/AuthContext';
 import { API_HOST } from '../config';
 import Container from '../components/Container';
-import Modal from '../components/Modal';
 import Header from '../components/Header';
+import Task from './Task';
+import ListContainer from '../components/ListContainer';
+import NewTaskForm from './NewTaskForm';
 
-interface Item {
+export interface APITask {
     content: string;
 }
 
-interface GetItemsResponse {
+interface GetTasksResponse {
     error: string | null;
-    items: Item[];
-}
-
-type LoadingItems = Item[] | undefined;
-
-async function createItem(token: string, content: string): Promise<Item> {
-    const response = await fetch(`${API_HOST}/item`, {
-        body: JSON.stringify({ content }),
-        headers: {
-            Authorization: token,
-            'Content-Type': 'application/json',
-        },
-        method: 'POST',
-    });
-    return await response.json();
+    items: Array<APITask>;
 }
 
 function TasksListing(): h.JSX.Element {
-    const [newItemContent, setNewItemContent] = useState('');
-    const [items, setItems] = useState(undefined as LoadingItems);
+    const [tasks, setTasks] = useState<Array<APITask> | null>(null);
     const authContext = useContext(Auth);
 
-    async function getItems(): Promise<void> {
+    async function getTasks(): Promise<void> {
         const response = await fetch(`${API_HOST}/item`, {
             headers: {
                 // TODO: redirect to /login if authToken is expired / null
@@ -43,53 +30,46 @@ function TasksListing(): h.JSX.Element {
             },
             method: 'GET',
         });
-        const resp = (await response.json()) as GetItemsResponse;
+        const resp = (await response.json()) as GetTasksResponse;
         if (resp.items) {
-            setItems(resp.items);
+            setTasks(resp.items);
+        } else {
+            console.log(resp.error);
         }
-        // TODO: handle error
     }
 
     useEffect(() => {
-        if (!items) {
-            getItems();
+        if (!tasks) {
+            getTasks();
         }
     });
 
     return (
         <Container>
-            <Header title="tasks" />
-            {items ? (
-                <div>
-                    <ul>
-                        {items.map((item, key) => (
-                            <li key={key}>{item.content}</li>
-                        ))}
-                    </ul>
+            <Header title="tasks">
+                <NewTaskForm />
+                <button type="button" className="btn btn-sm btn-outline-secondary">
+                    show personal
+                </button>
+                <button type="button" className="btn btn-sm btn-outline-secondary">
+                    show completed
+                </button>
+                <button type="button" className="btn btn-sm btn-outline-secondary">
+                    generate report
+                </button>
+            </Header>
 
-                    <button
-                        type="button"
-                        className="btn btn-sm btn-outline-secondary"
-                        data-toggle="modal"
-                        data-target="#createTaskModal"
-                    >
-                        Create
-                    </button>
-                </div>
+            {tasks ? (
+                <ListContainer>
+                    {tasks.map((item, key) => (
+                        <Task key={key} description={item.content} />
+                    ))}
+                </ListContainer>
             ) : (
                 <div className="spinner-border mx-auto" role="status">
                     <span className="sr-only">Loading...</span>
                 </div>
             )}
-
-            <Modal
-                onChange={(e): void => {
-                    setNewItemContent((e.target as HTMLInputElement).value);
-                }}
-                onSubmit={(): void => {
-                    createItem(authContext.authToken!, newItemContent);
-                }}
-            />
         </Container>
     );
 }

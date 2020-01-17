@@ -1,6 +1,9 @@
 import { h } from 'preact';
 
 interface Props {
+    title: string;
+    submitTitle: string;
+    textFieldPlaceholder?: string;
     onSubmit: () => void;
     onChange: (e: h.JSX.TargetedEvent<HTMLInputElement>) => void;
 }
@@ -19,7 +22,7 @@ export default function Modal(props: Props): h.JSX.Element {
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title" id="createTaskModalTitle">
-                            Create task
+                            {props.title}
                         </h5>
                         <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -30,17 +33,17 @@ export default function Modal(props: Props): h.JSX.Element {
                             type="text"
                             id="inputContent"
                             className="form-control"
-                            placeholder="Description"
+                            placeholder={props.textFieldPlaceholder}
                             required
                             onChange={props.onChange}
                         />
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-dismiss="modal">
-                            Close
+                            close
                         </button>
                         <button type="button" className="btn btn-primary" onClick={props.onSubmit}>
-                            Create
+                            {props.submitTitle}
                         </button>
                     </div>
                 </div>

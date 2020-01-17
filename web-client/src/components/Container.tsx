@@ -1,4 +1,4 @@
-import '../style/dashboard.css';
+import '../style/Dashboard.scss';
 
 import { h } from 'preact';
 import { SITE_NAME } from '../config';
@@ -16,7 +16,7 @@ function Container(props: Props): h.JSX.Element {
     return (
         <div>
             <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-                <a className="navbar-brand col-sm-3 col-md-2 mr-0" href="#">
+                <a className="navbar-brand col-sm-3 col-md-2 mr-0" href="/">
                     {SITE_NAME}
                 </a>
                 <input
@@ -34,7 +34,7 @@ function Container(props: Props): h.JSX.Element {
                                 authContext.handleSignOut();
                             }}
                         >
-                            Sign out
+                            sign out
                         </a>
                     </li>
                 </ul>

@@ -4,7 +4,7 @@ import SignInForm from './auth/SignInForm';
 import { AuthProvider } from './auth/AuthContext';
 import { AuthedRoute } from './auth/AuthedRoute';
 import TasksListing from './tasks/TasksListing';
-import NotesListing from './notes/NotesListing';
+import Stream from './stream/Stream';
 import DocsListing from './docs/DocsListing';
 import UsersListing from './admin/UsersListing';
 import { AdminAuthedRoute } from './auth/AdminAuthedRoute';
@@ -14,9 +14,8 @@ function App(): h.JSX.Element {
         <AuthProvider>
             <Router>
                 <Route path="/login" component={SignInForm} />
-                {/* TODO: redirect / to /tasks and change below */}
-                <AuthedRoute path="/" component={TasksListing} />
-                <AuthedRoute path="/notes" component={NotesListing} />
+                <AuthedRoute path="/" component={Stream} />
+                <AuthedRoute path="/tasks" component={TasksListing} />
                 <AuthedRoute path="/docs" component={DocsListing} />
                 <AdminAuthedRoute path="/users" component={UsersListing} />
             </Router>
