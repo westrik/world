@@ -15,6 +15,8 @@ interface GetItemsResponse {
     items: Item[];
 }
 
+type LoadingItems = Item[] | undefined;
+
 async function createItem(token: string, content: string): Promise<Item> {
     const response = await fetch(`${API_HOST}/item`, {
         body: JSON.stringify({ content }),
@@ -29,7 +31,7 @@ async function createItem(token: string, content: string): Promise<Item> {
 
 function TasksListing(): h.JSX.Element {
     const [newItemContent, setNewItemContent] = useState('');
-    const [items, setItems] = useState([] as Item[]);
+    const [items, setItems] = useState(undefined as LoadingItems);
     const authContext = useContext(Auth);
 
     async function getItems(): Promise<void> {
@@ -49,7 +51,7 @@ function TasksListing(): h.JSX.Element {
     }
 
     useEffect(() => {
-        if (!items.length) {
+        if (!items) {
             getItems();
         }
     });
@@ -57,21 +59,28 @@ function TasksListing(): h.JSX.Element {
     return (
         <Container>
             <Header title="tasks" />
+            {items ? (
+                <div>
+                    <ul>
+                        {items.map((item, key) => (
+                            <li key={key}>{item.content}</li>
+                        ))}
+                    </ul>
 
-            <ul>
-                {items.map((item, key) => {
-                    return <li key={key}>{item.content}</li>;
-                })}
-            </ul>
-
-            <button
-                type="button"
-                className="btn btn-sm btn-outline-secondary"
-                data-toggle="modal"
-                data-target="#createTaskModal"
-            >
-                Create
-            </button>
+                    <button
+                        type="button"
+                        className="btn btn-sm btn-outline-secondary"
+                        data-toggle="modal"
+                        data-target="#createTaskModal"
+                    >
+                        Create
+                    </button>
+                </div>
+            ) : (
+                <div className="spinner-border mx-auto" role="status">
+                    <span className="sr-only">Loading...</span>
+                </div>
+            )}
 
             <Modal
                 onChange={(e): void => {
