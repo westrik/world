@@ -1,7 +1,7 @@
 name: Release
-on: push
-        #  release:
-        #    types: [created]
+on:
+  release:
+    types: [created]
 
 jobs:
   deploy-aws:
@@ -52,14 +52,14 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
 
-  generate-release-info:
-    name: generate information about release
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: Install linguist deps
-        run: sudo apt-get install cmake pkg-config libicu-dev zlib1g-dev libcurl4-openssl-dev libssl-dev ruby-dev
-      - name: Install linguist
-        run: sudo gem install github-linguist
-      - name: Run linguist
-        run: github-linguist --breakdown
+#  generate-release-info:
+#    name: generate information about release
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v1
+#      - name: Install linguist deps
+#        run: sudo apt-get install cmake pkg-config libicu-dev zlib1g-dev libcurl4-openssl-dev libssl-dev ruby-dev
+#      - name: Install linguist
+#        run: sudo gem install github-linguist
+#      - name: Run linguist
+#        run: github-linguist --breakdown
