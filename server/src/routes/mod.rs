@@ -1,7 +1,6 @@
 use crate::auth::filters::routes as auth_routes;
 use crate::db::PgPool;
 use crate::tasks::filters::routes as task_routes;
-use warp::http::StatusCode;
 use warp::Filter;
 
 pub mod utils;
@@ -9,9 +8,8 @@ pub mod utils;
 pub fn api(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    authentication(db_pool.clone())
-        .or(authenticated(db_pool.clone()))
-        .or(admin_authenticated(db_pool))
+    authentication(db_pool.clone()).or(authenticated(db_pool.clone()))
+    //        .or(admin_authenticated(db_pool))
 }
 
 fn authentication(
@@ -26,10 +24,10 @@ fn authenticated(
     task_routes(db_pool.clone())
 }
 
-fn admin_authenticated(
-    _db_pool: PgPool,
-) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("user")
-        .and(warp::get())
-        .map(|| Ok(StatusCode::OK))
-}
+//fn admin_authenticated(
+//    _db_pool: PgPool,
+//) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+//    warp::path!("user")
+//        .and(warp::get())
+//        .map(|| Ok(StatusCode::OK))
+//}
