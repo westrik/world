@@ -5,6 +5,7 @@ extern crate diesel;
 extern crate lazy_static;
 #[macro_use]
 extern crate log;
+extern crate pretty_env_logger;
 #[macro_use]
 extern crate serde_derive;
 

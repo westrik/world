@@ -184,9 +184,9 @@ dependencies = [
 
 [[package]]
 name = "env_logger"
-version = "0.7.1"
+version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "44533bbbb3bb3c1fa17d9f2e4e38bbbaf8396ba82193c4cb1b6445d711445d36"
+checksum = "aafcde04e90a5226a6443b7aabdb016ba2f8307c847d524724bd9b346dd1a2d3"
 dependencies = [
  "atty",
  "humantime",
@@ -362,6 +362,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6ac25eee5a0582f45a67e837e350d784e7003bd29a5f460796772061ca49ffda"
 dependencies = [
  "vcpkg",
+]
+
+[[package]]
+name = "pretty_env_logger"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "717ee476b1690853d222af4634056d830b5197ffd747726a9a1eee6da9f49074"
+dependencies = [
+ "chrono",
+ "env_logger",
+ "log",
 ]
 
 [[package]]
@@ -610,9 +621,9 @@ dependencies = [
  "diesel",
  "diesel_migrations",
  "dotenv",
- "env_logger",
  "lazy_static",
  "log",
+ "pretty_env_logger",
  "rand",
  "serde",
  "serde_derive",
