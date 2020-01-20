@@ -27,12 +27,7 @@ async fn main() {
     let conn = db::get_conn(&pool).unwrap();
     embedded_migrations::run_with_output(&conn, &mut std::io::stdout()).unwrap();
 
-    let cors = warp::cors()
-        .allow_origin(cors_origin_url.as_str())
-        .allow_methods(vec!["GET", "POST", "PUT", "DELETE"])
-        .build();
-
-    let api = routes::api(pool.clone());
-    let routes = api.with(warp::log("run_server")).with(cors);
+    let api = routes::api(pool.clone(), cors_origin_url);
+    let routes = api.with(warp::log("run_server"));
     warp::serve(routes).run(([127, 0, 0, 1], 8080)).await;
 }
