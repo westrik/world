@@ -22,7 +22,7 @@ function TasksListing(): h.JSX.Element {
     const authContext = useContext(Auth);
 
     async function getTasks(): Promise<void> {
-        const response = await fetch(`${API_HOST}/item`, {
+        const response = await fetch(`${API_HOST}/task`, {
             headers: {
                 // TODO: redirect to /login if authToken is expired / null
                 Authorization: authContext.authToken!,

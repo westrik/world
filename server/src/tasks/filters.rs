@@ -18,7 +18,7 @@ pub fn routes(
 pub fn tasks_list(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("tasks")
+    warp::path!("task")
         .and(warp::get())
         .and(warp::query::<ListOptions>())
         .and(with_session_token())
@@ -30,7 +30,7 @@ pub fn tasks_list(
 pub fn tasks_create(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("tasks")
+    warp::path!("task")
         .and(warp::post())
         .and(json_body::<NewTask>())
         .and(with_session_token())
@@ -42,7 +42,7 @@ pub fn tasks_create(
 pub fn tasks_update(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("tasks" / u64)
+    warp::path!("task" / u64)
         .and(warp::put())
         .and(json_body::<NewTask>())
         .and(with_session_token())
@@ -54,7 +54,7 @@ pub fn tasks_update(
 pub fn tasks_delete(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("tasks" / u64)
+    warp::path!("task" / u64)
         .and(warp::delete())
         .and(with_session_token())
         .and(with_db(db_pool))

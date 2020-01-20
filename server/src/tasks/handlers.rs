@@ -19,18 +19,22 @@ pub async fn list_tasks(
     db_pool: PgPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("list_tasks: token={}, opts={:?}", session_token, opts);
-    Ok(warp::reply::json(
-        &match run_get_items(session_token, &db_pool) {
-            Ok(items) => GetItemResponse {
+    Ok(match run_get_items(session_token, &db_pool) {
+        Ok(items) => warp::reply::with_status(
+            warp::reply::json(&GetItemResponse {
                 error: None,
                 items: Some(items),
-            },
-            Err(_) => GetItemResponse {
+            }),
+            StatusCode::OK,
+        ),
+        Err(_) => warp::reply::with_status(
+            warp::reply::json(&GetItemResponse {
                 error: Some("Failed to query for items".to_string()),
                 items: None,
-            },
-        },
-    ))
+            }),
+            StatusCode::INTERNAL_SERVER_ERROR,
+        ),
+    })
 }
 
 #[derive(Debug, Deserialize)]
