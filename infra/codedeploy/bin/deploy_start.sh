@@ -32,6 +32,7 @@ PASSWORD_HASH_SALT=$(aws secretsmanager get-secret-value --secret-id "password_h
 echo "[Service]" >> $SECRETS_ENV_FILE
 echo "Environment=\"DATABASE_URL=postgres://$RDS_USER:$RDS_PASSWORD@$RDS_HOST/$RDS_DB_NAME\"" >> $SECRETS_ENV_FILE
 echo "Environment=\"PASSWORD_HASH_SALT=$PASSWORD_HASH_SALT\"" >> $SECRETS_ENV_FILE
+echo "Environment=\"CORS_ORIGIN_URL=https://westrikworld.com\"" >> $SECRETS_ENV_FILE
 systemctl daemon-reload
 
 chown root:root $SERVER_BIN_FILE

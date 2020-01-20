@@ -1,23 +1,26 @@
 #[macro_use]
 extern crate diesel_migrations;
 
-extern crate log;
-
-use actix_web::{http, middleware, web, App, HttpServer};
 use dotenv::dotenv;
 use std::env;
+use warp::Filter;
 
-use actix_cors::Cors;
-use actix_web::middleware::Logger;
-use westrikworld_server::db;
-use westrikworld_server::routes::*;
+use westrikworld_server::routes::utils::cors_wrapper;
+use westrikworld_server::{db, routes};
 
 embed_migrations!();
 
-#[actix_rt::main]
-async fn main() -> std::io::Result<()> {
+#[tokio::main]
+async fn main() {
     dotenv().ok();
-    env_logger::init();
+    if env::var("RUST_LOG").is_err() {
+        // Set `RUST_LOG=run_server=debug` to see debug logs,
+        // this only shows access logs.
+        env::set_var("RUST_LOG", "run_server=info");
+    }
+    pretty_env_logger::init();
+
+    let cors_origin_url = env::var("CORS_ORIGIN_URL").expect("CORS_ORIGIN_URL must be set");
 
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let pool = db::init_pool(&database_url).expect("Failed to create pool");
@@ -25,29 +28,9 @@ async fn main() -> std::io::Result<()> {
     let conn = db::get_conn(&pool).unwrap();
     embedded_migrations::run_with_output(&conn, &mut std::io::stdout()).unwrap();
 
-    HttpServer::new(move || {
-        App::new()
-            .data(pool.clone())
-            .wrap(middleware::DefaultHeaders::new().header("X-Version", "0.1"))
-            .wrap(Logger::default())
-            .wrap(
-                Cors::new()
-                    .allowed_origin("http://westrik.world:1234")
-                    .allowed_origin("https://westrikworld.com")
-                    .allowed_origin("https://staging.westrikworld.com")
-                    .allowed_methods(vec!["GET", "POST"])
-                    .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
-                    .allowed_header(http::header::CONTENT_TYPE)
-                    .max_age(3600)
-                    .finish(),
-            )
-            .route("/", web::get().to(|| async { "OK" }))
-            .route("/sign-up", web::post().to(sign_up))
-            .route("/sign-in", web::post().to(sign_in))
-            .route("/item", web::post().to(create_item))
-            .route("/item", web::get().to(get_items))
-    })
-    .bind("127.0.0.1:8080")?
-    .run()
-    .await
+    let api = routes::api(pool.clone());
+    let routes = api
+        .with(warp::log("run_server"))
+        .with(cors_wrapper(&cors_origin_url));
+    warp::serve(routes).run(([127, 0, 0, 1], 8080)).await;
 }
