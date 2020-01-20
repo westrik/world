@@ -1,5 +1,10 @@
 #/bin/bash
 
+BRANCH=$1
+if [ -z "$BRANCH" ]; then
+  BRANCH="master"
+fi
+
 set -euxo pipefail
 
 PROJECT_PATH="/home/matt/src/world"
@@ -8,8 +13,8 @@ PROJECT_PATH="/home/matt/src/world"
 cd "$PROJECT_PATH";
 cd server;
 git stash;
-git fetch origin master;
-git checkout origin/master;
+git fetch origin $BRANCH;
+git checkout "origin/$BRANCH";
 cd -;
 NODE_ENV=staging make;
 sudo systemctl stop westrikworld_server
