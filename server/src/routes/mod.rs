@@ -1,5 +1,5 @@
 use crate::db::PgPool;
-use crate::tasks::filters::routes as tasks_routes;
+use crate::tasks::filters::routes as task_routes;
 use warp::http::StatusCode;
 use warp::Filter;
 
@@ -22,7 +22,7 @@ fn authentication(
 fn authenticated(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    tasks_routes(db_pool.clone())
+    task_routes(db_pool.clone())
 }
 
 fn admin_authenticated(

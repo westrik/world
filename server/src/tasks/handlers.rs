@@ -5,6 +5,7 @@ use warp::http::StatusCode;
 
 pub async fn list_tasks(
     _opts: ListOptions,
+    _session_token: String,
     _db_pool: PgPool,
 ) -> Result<impl warp::Reply, Infallible> {
     //    // Just return a JSON array of tasks, applying the limit and offset.
@@ -20,7 +21,11 @@ pub async fn list_tasks(
     Ok(StatusCode::OK)
 }
 
-pub async fn create_task(create: Item, _db_pool: PgPool) -> Result<impl warp::Reply, Infallible> {
+pub async fn create_task(
+    create: Item,
+    _session_token: String,
+    _db_pool: PgPool,
+) -> Result<impl warp::Reply, Infallible> {
     log::debug!("create_task: {:?}", create);
     //
     //    let mut vec = db.lock().await;
@@ -42,6 +47,7 @@ pub async fn create_task(create: Item, _db_pool: PgPool) -> Result<impl warp::Re
 pub async fn update_task(
     id: u64,
     update: Item,
+    _session_token: String,
     _db_pool: PgPool,
 ) -> Result<impl warp::Reply, Infallible> {
     log::debug!("update_task: id={}, task={:?}", id, update);
@@ -63,7 +69,11 @@ pub async fn update_task(
     //    Ok(StatusCode::NOT_FOUND)
 }
 
-pub async fn delete_task(id: u64, _db_pool: PgPool) -> Result<impl warp::Reply, Infallible> {
+pub async fn delete_task(
+    id: u64,
+    _session_token: String,
+    _db_pool: PgPool,
+) -> Result<impl warp::Reply, Infallible> {
     log::debug!("delete_task: id={}", id);
     Ok(StatusCode::NO_CONTENT)
 

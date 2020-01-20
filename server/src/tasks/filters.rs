@@ -20,6 +20,7 @@ pub fn tasks_list(
     warp::path!("tasks")
         .and(warp::get())
         .and(warp::query::<ListOptions>())
+        .and(with_session_token())
         .and(with_db(db_pool))
         .and_then(handlers::list_tasks)
 }
@@ -31,6 +32,7 @@ pub fn tasks_create(
     warp::path!("tasks")
         .and(warp::post())
         .and(json_body())
+        .and(with_session_token())
         .and(with_db(db_pool))
         .and_then(handlers::create_task)
 }
@@ -42,6 +44,7 @@ pub fn tasks_update(
     warp::path!("tasks" / u64)
         .and(warp::put())
         .and(json_body())
+        .and(with_session_token())
         .and(with_db(db_pool))
         .and_then(handlers::update_task)
 }
@@ -51,15 +54,9 @@ pub fn tasks_delete(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     // We'll make one of our endpoints admin-only to show how authentication filters are used
-    let admin_only = warp::header::exact("authorization", "Bearer admin");
-
     warp::path!("tasks" / u64)
-        // It is important to put the auth check _after_ the path filters.
-        // If we put the auth check before, the request `PUT /tasks/invalid-string`
-        // would try this filter and reject because the authorization header doesn't match,
-        // rather because the param is wrong for that other path.
-        .and(admin_only)
         .and(warp::delete())
+        .and(with_session_token())
         .and(with_db(db_pool))
         .and_then(handlers::delete_task)
 }
@@ -68,6 +65,12 @@ fn with_db(
     db_pool: PgPool,
 ) -> impl Filter<Extract = (PgPool,), Error = std::convert::Infallible> + Clone {
     warp::any().map(move || db_pool.clone())
+}
+
+fn with_session_token() -> impl Filter<Extract = (String,), Error = warp::Rejection> + Clone {
+    warp::any()
+        .and(warp::header("authorization"))
+        .map(|token: String| token)
 }
 
 fn json_body() -> impl Filter<Extract = (Item,), Error = warp::Rejection> + Clone {
