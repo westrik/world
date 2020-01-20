@@ -8,7 +8,7 @@ use warp::Filter;
 pub fn routes(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    sign_up(db_pool.clone()).or(sign_in(db_pool.clone()))
+    sign_up(db_pool.clone()).or(sign_in(db_pool))
 }
 
 /// POST /sign_up with JSON body
