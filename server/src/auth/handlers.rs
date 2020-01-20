@@ -9,18 +9,22 @@ pub struct SignInRequest {
     email_address: String,
     password: String,
 }
+
 #[derive(Serialize)]
-pub struct SignInResponse {
+pub struct AuthenticationResponse {
     user: Option<UiUser>,
     session: Option<UiSession>,
     error: Option<String>,
 }
 
-fn run_sign_in(creds: SignInRequest, pool: &PgPool) -> Result<SignInResponse, UserQueryError> {
+fn run_sign_in(
+    creds: SignInRequest,
+    pool: &PgPool,
+) -> Result<AuthenticationResponse, UserQueryError> {
     let conn = get_conn(pool).unwrap();
     let user: User = User::find(creds.email_address.as_str(), creds.password.as_str(), &conn)?;
     let session: Session = Session::create(&conn, &user)?;
-    Ok(SignInResponse {
+    Ok(AuthenticationResponse {
         session: Some(UiSession::from(session)),
         user: Some(UiUser::from(user)),
         error: None,
@@ -36,7 +40,7 @@ pub async fn sign_in(
     Ok(match run_sign_in(sign_in_request, &db_pool) {
         Ok(response) => warp::reply::with_status(warp::reply::json(&response), StatusCode::OK),
         Err(_) => warp::reply::with_status(
-            warp::reply::json(&SignInResponse {
+            warp::reply::json(&AuthenticationResponse {
                 session: None,
                 user: None,
                 error: Some("Failed to login".to_string()),
@@ -44,13 +48,6 @@ pub async fn sign_in(
             StatusCode::BAD_REQUEST,
         ),
     })
-}
-
-#[derive(Serialize)]
-pub struct SignUpResponse {
-    // TODO: session: Option<UiSession>,
-    user: Option<UiUser>,
-    error: Option<String>,
 }
 
 pub async fn sign_up(new_user: NewUser, db_pool: PgPool) -> Result<impl warp::Reply, Infallible> {
@@ -61,15 +58,17 @@ pub async fn sign_up(new_user: NewUser, db_pool: PgPool) -> Result<impl warp::Re
 
     Ok(match User::create(new_user, &get_conn(&db_pool).unwrap()) {
         Ok(user) => warp::reply::with_status(
-            warp::reply::json(&SignUpResponse {
+            warp::reply::json(&AuthenticationResponse {
                 user: Some(UiUser::from(user)),
+                session: None, // TODO: create session upon sign-up
                 error: None,
             }),
             StatusCode::OK,
         ),
         Err(_) => warp::reply::with_status(
-            warp::reply::json(&SignUpResponse {
+            warp::reply::json(&AuthenticationResponse {
                 user: None,
+                session: None,
                 error: Some("Failed to create user".to_string()),
             }),
             StatusCode::INTERNAL_SERVER_ERROR,
