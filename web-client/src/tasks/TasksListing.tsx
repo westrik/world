@@ -67,6 +67,8 @@ function TasksListing(): h.JSX.Element {
         console.log(e);
     }
 
+    // TODO: set up keyboard event handlers (up/down, etc.)
+
     return (
         <Container>
             <Header title="tasks">

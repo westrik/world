@@ -191,6 +191,12 @@ body {
         border: 2px solid #4778d9 !important;
     }
 
+    label:active:before {
+        cursor: grabbing;
+        cursor: -moz-grabbing;
+        cursor: -webkit-grabbing;
+    }
+
     label:hover:after {
         border-color: #4778d9 !important;
     }

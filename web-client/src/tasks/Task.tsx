@@ -38,6 +38,8 @@ export default function Task(props: Props): h.JSX.Element {
     }
 
     // TODO: [shift]-[up/down] drags task up or down by one
+    // TODO: add task hover/pre-focus state
+    // TODO: resolve tags to chips
 
     return (
         <li className="task" style="font-size: 1.5em; height: 1.8em;">
