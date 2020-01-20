@@ -87,6 +87,14 @@ resource "aws_s3_bucket" "app_deploy_cloudfront" {
   versioning {
     enabled = true
   }
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET"]
+    allowed_origins = ["http://westrik.world:1234", "https://staging.westrikworld.com"]
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3000
+  }
 }
 
 resource "aws_iam_role" "codedeploy" {
