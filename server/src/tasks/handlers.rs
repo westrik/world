@@ -1,5 +1,5 @@
 use crate::db::PgPool;
-use crate::models::item::{Item, ListOptions};
+use crate::models::item::ListOptions;
 use std::convert::Infallible;
 use warp::http::StatusCode;
 
@@ -21,12 +21,17 @@ pub async fn list_tasks(
     Ok(StatusCode::OK)
 }
 
+#[derive(Debug, Deserialize)]
+pub struct NewTask {
+    pub content: String,
+}
+
 pub async fn create_task(
-    create: Item,
+    new_task: NewTask,
     _session_token: String,
     _db_pool: PgPool,
 ) -> Result<impl warp::Reply, Infallible> {
-    log::debug!("create_task: {:?}", create);
+    log::debug!("create_task: {:?}", new_task);
     //
     //    let mut vec = db.lock().await;
     //
@@ -46,11 +51,11 @@ pub async fn create_task(
 
 pub async fn update_task(
     id: u64,
-    update: Item,
+    task_update: NewTask,
     _session_token: String,
     _db_pool: PgPool,
 ) -> Result<impl warp::Reply, Infallible> {
-    log::debug!("update_task: id={}, task={:?}", id, update);
+    log::debug!("update_task: id={}, task={:?}", id, task_update);
     return Ok(StatusCode::OK);
 
     //    let mut vec = db.lock().await;
@@ -98,3 +103,84 @@ pub async fn delete_task(
     //        Ok(StatusCode::NOT_FOUND)
     //    }
 }
+
+/*
+ACTIX IMPLEMENTATIONS:
+*/
+
+//#[derive(Serialize)]
+//pub struct GetItemResponse {
+//    error: Option<String>,
+//    items: Option<Vec<Item>>,
+//}
+//
+//fn run_get_items(token: String, pool: &db::PgPool) -> Result<Vec<Item>, ItemQueryError> {
+//    Ok(Item::find_all_for_user(&get_conn(&pool).unwrap(), token)?)
+//}
+
+// pub async fn get_items(
+//     req: HttpRequest,
+//     pool: web::Data<db::PgPool>,
+// ) -> Result<HttpResponse, Error> {
+//     if let Some(auth_header) = req.headers().get(AUTHORIZATION) {
+//         let token = String::from(
+//             auth_header
+//                 .clone()
+//                 .to_str()
+//                 .map_err(|_| HttpResponse::BadRequest().body("bad token"))?,
+//         );
+//         let items: Vec<Item> = web::block(move || run_get_items(token, &pool))
+//             .await
+//             .map_err(|_| HttpResponse::BadRequest().body("failed to find items"))?;
+//         Ok(HttpResponse::Ok().json(GetItemResponse {
+//             error: None,
+//             items: Some(items),
+//         }))
+//     } else {
+//         Ok(HttpResponse::BadRequest().body("no token"))
+//     }
+// }
+
+//#[derive(Deserialize)]
+//pub struct NewItem {
+//    content: String,
+//}
+//
+//#[derive(Serialize)]
+//pub struct CreateItemResponse {
+//    error: Option<String>,
+//    item: Option<Item>,
+//}
+//
+//fn run_create_item(
+//    token: String,
+//    content: String,
+//    pool: &db::PgPool,
+//) -> Result<Item, ItemQueryError> {
+//    Ok(Item::create(&get_conn(&pool).unwrap(), token, content)?)
+//}
+//
+// pub async fn create_item(
+//     req: HttpRequest,
+//     item: Json<NewItem>,
+//     pool: web::Data<db::PgPool>,
+// ) -> Result<HttpResponse, Error> {
+//     let content = String::from(&item.content);
+//     if let Some(auth_header) = req.headers().get(AUTHORIZATION) {
+//         let token = String::from(
+//             auth_header
+//                 .clone()
+//                 .to_str()
+//                 .map_err(|_| HttpResponse::BadRequest().body("bad token"))?,
+//         );
+//         let item: Item = web::block(move || run_create_item(token, content, &pool))
+//             .await
+//             .map_err(|_| HttpResponse::BadRequest().body("failed to create item"))?;
+//         Ok(HttpResponse::Ok().json(CreateItemResponse {
+//             error: None,
+//             item: Some(item),
+//         }))
+//     } else {
+//         Ok(HttpResponse::BadRequest().body("no token"))
+//     }
+// }

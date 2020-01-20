@@ -1,7 +1,8 @@
 use crate::db::PgPool;
-use crate::models::item::Item;
 use crate::models::item::ListOptions;
+use crate::routes::utils::{json_body, with_db, with_session_token};
 use crate::tasks::handlers;
+use crate::tasks::handlers::NewTask;
 use warp::Filter;
 
 pub fn routes(
@@ -31,7 +32,7 @@ pub fn tasks_create(
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("tasks")
         .and(warp::post())
-        .and(json_body())
+        .and(json_body::<NewTask>())
         .and(with_session_token())
         .and(with_db(db_pool))
         .and_then(handlers::create_task)
@@ -43,7 +44,7 @@ pub fn tasks_update(
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("tasks" / u64)
         .and(warp::put())
-        .and(json_body())
+        .and(json_body::<NewTask>())
         .and(with_session_token())
         .and(with_db(db_pool))
         .and_then(handlers::update_task)
@@ -53,27 +54,9 @@ pub fn tasks_update(
 pub fn tasks_delete(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    // We'll make one of our endpoints admin-only to show how authentication filters are used
     warp::path!("tasks" / u64)
         .and(warp::delete())
         .and(with_session_token())
         .and(with_db(db_pool))
         .and_then(handlers::delete_task)
-}
-
-fn with_db(
-    db_pool: PgPool,
-) -> impl Filter<Extract = (PgPool,), Error = std::convert::Infallible> + Clone {
-    warp::any().map(move || db_pool.clone())
-}
-
-fn with_session_token() -> impl Filter<Extract = (String,), Error = warp::Rejection> + Clone {
-    warp::any()
-        .and(warp::header("authorization"))
-        .map(|token: String| token)
-}
-
-fn json_body() -> impl Filter<Extract = (Item,), Error = warp::Rejection> + Clone {
-    // We want a JSON body, and to reject huge payloads
-    warp::body::content_length_limit(1024 * 16).and(warp::body::json())
 }

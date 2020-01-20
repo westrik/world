@@ -33,7 +33,7 @@ impl DbNewUser {
     }
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct NewUser {
     pub email_address: String,
     pub full_name: Option<String>,

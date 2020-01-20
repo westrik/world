@@ -1,7 +1,10 @@
+use crate::auth::filters::routes as auth_routes;
 use crate::db::PgPool;
 use crate::tasks::filters::routes as task_routes;
 use warp::http::StatusCode;
 use warp::Filter;
+
+pub mod utils;
 
 pub fn api(
     db_pool: PgPool,
@@ -12,11 +15,9 @@ pub fn api(
 }
 
 fn authentication(
-    _db_pool: PgPool,
+    db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("sign-in")
-        .and(warp::post())
-        .map(|| Ok(StatusCode::OK))
+    auth_routes(db_pool.clone())
 }
 
 fn authenticated(
