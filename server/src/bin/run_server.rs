@@ -19,7 +19,7 @@ async fn main() {
     }
     pretty_env_logger::init();
 
-    let _cors_origin_url = env::var("CORS_ORIGIN_URL").expect("CORS_ORIGIN_URL must be set");
+    let cors_origin_url = env::var("CORS_ORIGIN_URL").expect("CORS_ORIGIN_URL must be set");
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 
     let pool = db::init_pool(&database_url).expect("Failed to create pool");
@@ -27,42 +27,11 @@ async fn main() {
     let conn = db::get_conn(&pool).unwrap();
     embedded_migrations::run_with_output(&conn, &mut std::io::stdout()).unwrap();
 
-    // TODO:
-    //  - hook up warp server
-    //  - configure CORS headers (take URL as env var)
-    //  - async route handler (handle logging, db pool)
-    //  - after filter to add version header
+    let cors = warp::cors()
+        .allow_origin(cors_origin_url.as_str())
+        .allow_methods(vec!["GET", "POST", "PUT", "DELETE"]);
 
     let api = routes::api(pool.clone());
-    let routes = api.with(warp::log("run_server"));
+    let routes = api.with(warp::log("run_server")).with(cors);
     warp::serve(routes).run(([127, 0, 0, 1], 8080)).await;
-
-    // each module should export a list of routes
-    // then the routes should be chained together with .or()
-
-    //    HttpServer::new(move || {
-    //        App::new()
-    //            .data(pool.clone())
-    //            .wrap(middleware::DefaultHeaders::new().header("X-Version", "0.1"))
-    //            .wrap(Logger::default())
-    //            .wrap(
-    //                Cors::new()
-    //                    .allowed_origin("http://westrik.world:1234")
-    //                    .allowed_origin("https://westrikworld.com")
-    //                    .allowed_origin("https://staging.westrikworld.com")
-    //                    .allowed_methods(vec!["GET", "POST"])
-    //                    .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
-    //                    .allowed_header(http::header::CONTENT_TYPE)
-    //                    .max_age(3600)
-    //                    .finish(),
-    //            )
-    //            .route("/", web::get().to(|| async { "OK" }))
-    //            .route("/sign-up", web::post().to(sign_up))
-    //            .route("/sign-in", web::post().to(sign_in))
-    //            .route("/item", web::post().to(create_item))
-    //            .route("/item", web::get().to(get_items))
-    //    })
-    //    .bind("127.0.0.1:8080")?
-    //    .run()
-    //    .await
 }

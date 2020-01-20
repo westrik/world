@@ -8,7 +8,9 @@ pub mod utils;
 pub fn api(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    authentication(db_pool.clone()).or(authenticated(db_pool))
+    authentication(db_pool.clone())
+        .or(authenticated(db_pool))
+        .map(|r| warp::reply::with_header(r, "x-api-version", "0.1"))
 }
 
 fn authentication(
