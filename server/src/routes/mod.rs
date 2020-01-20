@@ -16,7 +16,7 @@ pub fn api(
         .build();
     authentication(db_pool.clone())
         .or(authenticated(db_pool))
-        .map(|r| warp::reply::with_header(r, "x-api-version", "0.1"))
+        .map(|r| warp::reply::with_header(r, "x-api-version", "0.1.1"))
         .with(cors)
 }
 
