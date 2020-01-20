@@ -9,6 +9,7 @@ import ListContainer from '../components/ListContainer';
 import NewTaskForm from './NewTaskForm';
 
 export interface APITask {
+    position: number;
     content: string;
 }
 
@@ -44,6 +45,28 @@ function TasksListing(): h.JSX.Element {
         }
     });
 
+    function handleDragOver(e: Event): void {
+        // TODO:
+        //   get props.position from e.target
+        //   set current drag target to props.position
+        //   if props.position is less than origin, insert blank space before props.position
+        //   if props.position is greater than origin, insert blank space after props.position
+        //   hide task being dragged in the list if it's not already
+        console.log(e);
+    }
+
+    function handleDragEnd(e: Event): void {
+        // TODO:
+        //   change position of e.target to after current drag target
+        //   update all positions of items in between start position and end position
+        console.log(e);
+    }
+
+    function handleDragStart(e: Event): void {
+        // TODO: reset current drag target to current position
+        console.log(e);
+    }
+
     return (
         <Container>
             <Header title="tasks">
@@ -61,9 +84,18 @@ function TasksListing(): h.JSX.Element {
 
             {tasks ? (
                 <ListContainer>
-                    {tasks.map((item, key) => (
-                        <Task key={key} description={item.content} />
-                    ))}
+                    {tasks
+                        .sort((a: APITask, b: APITask): number => a.position - b.position)
+                        .map((item: APITask, key: number) => (
+                            <Task
+                                key={key}
+                                position={item.position}
+                                handleDragOver={handleDragOver}
+                                handleDragStart={handleDragStart}
+                                handleDragEnd={handleDragEnd}
+                                description={item.content}
+                            />
+                        ))}
                 </ListContainer>
             ) : (
                 <div className="spinner-border mx-auto" role="status">

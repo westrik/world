@@ -4,6 +4,10 @@ import { useState } from 'preact/hooks';
 export interface Props {
     description: string;
     completed?: boolean;
+    position: number;
+    handleDragOver: (e: Event) => void;
+    handleDragEnd: (e: Event) => void;
+    handleDragStart: (e: Event) => void;
 }
 
 export default function Task(props: Props): h.JSX.Element {
@@ -26,23 +30,36 @@ export default function Task(props: Props): h.JSX.Element {
     function handleSetContent(e: Event): void {
         e.preventDefault();
         e.stopPropagation();
-        setContent((e.target as HTMLInputElement).value);
+        const newContent = (e.target as HTMLInputElement).value;
+        if (newContent) {
+            setContent(newContent);
+        }
         toggleEditing();
     }
 
+    // TODO: [shift]-[up/down] drags task up or down by one
+
     return (
-        <li className="task" style="font-size: 1.5em;">
+        <li className="task" style="font-size: 1.5em; height: 1.8em;">
             <input checked={props.completed} id={checkboxId} type="checkbox" className="mt-3" />
-            <label htmlFor={checkboxId}>
+            <label
+                htmlFor={checkboxId}
+                draggable={true}
+                onDragStart={props.handleDragStart}
+                onDragOver={props.handleDragOver}
+                onDragEnd={props.handleDragEnd}
+                style="width:100%"
+            >
                 {!editing ? (
-                    <span tabIndex={0} onClick={handleToggle} onFocus={handleToggle}>
+                    <span style="display: inline-block; width:100%" tabIndex={0} onClick={handleToggle} onFocus={handleToggle}>
                         {content}
                     </span>
                 ) : (
                     <input
-                        ref={(inputRef): void | null => inputRef && inputRef.focus()}
+                        ref={(ref): void | null => ref && ref.focus()}
                         type="text"
                         value={content}
+                        style="font-size:0.9em; width: 100%"
                         onKeyDown={(e): void => {
                             if (e.key === 'Enter') {
                                 handleSetContent(e);
