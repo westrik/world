@@ -44,14 +44,19 @@ export default function Task(props: Props): h.JSX.Element {
             <input checked={props.completed} id={checkboxId} type="checkbox" className="mt-3" />
             <label
                 htmlFor={checkboxId}
-                draggable={true}
+                draggable={!editing}
                 onDragStart={props.handleDragStart}
                 onDragOver={props.handleDragOver}
                 onDragEnd={props.handleDragEnd}
                 style="width:100%"
             >
                 {!editing ? (
-                    <span style="display: inline-block; width:100%" tabIndex={0} onClick={handleToggle} onFocus={handleToggle}>
+                    <span
+                        style="display: inline-block; width:100%"
+                        tabIndex={0}
+                        onClick={handleToggle}
+                        onFocus={handleToggle}
+                    >
                         {content}
                     </span>
                 ) : (
