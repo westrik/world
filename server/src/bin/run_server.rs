@@ -29,7 +29,7 @@ async fn main() {
 
     let cors = warp::cors()
         .allow_origin(cors_origin_url.as_str())
-        .allow_methods(vec!["GET", "POST", "PUT", "DELETE"]);
+        .allow_methods(vec!["GET", "POST", "PUT", "DELETE"]).build();
 
     let api = routes::api(pool.clone());
     let routes = api.with(warp::log("run_server")).with(cors);
