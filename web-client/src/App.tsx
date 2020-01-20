@@ -8,6 +8,7 @@ import Stream from './stream/Stream';
 import DocsListing from './docs/DocsListing';
 import UsersListing from './admin/UsersListing';
 import { AdminAuthedRoute } from './auth/AdminAuthedRoute';
+import ErrorScreen from './components/ErrorScreen';
 
 function App(): h.JSX.Element {
     return (
@@ -18,6 +19,7 @@ function App(): h.JSX.Element {
                 <AuthedRoute path="/tasks" component={TasksListing} />
                 <AuthedRoute path="/docs" component={DocsListing} />
                 <AdminAuthedRoute path="/users" component={UsersListing} />
+                <Route default component={ErrorScreen} />
             </Router>
         </AuthProvider>
     );
