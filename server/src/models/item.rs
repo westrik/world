@@ -8,6 +8,12 @@ use crate::schema::{items, items::dsl::items as all_items};
 use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
 use diesel::dsl::now;
 
+#[derive(Debug, Deserialize)]
+pub struct ListOptions {
+    pub offset: Option<usize>,
+    pub limit: Option<usize>,
+}
+
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(User)]
 pub struct Item {
