@@ -3,9 +3,9 @@ extern crate diesel_migrations;
 
 use dotenv::dotenv;
 use std::env;
+use warp::Filter;
 
-use westrikworld_server::db;
-use westrikworld_server::routes::*;
+use westrikworld_server::{db, routes};
 
 embed_migrations!();
 
@@ -19,7 +19,7 @@ async fn main() {
     }
     pretty_env_logger::init();
 
-    let cors_origin_url = env::var("CORS_ORIGIN_URL").expect("CORS_ORIGIN_URL must be set");
+    let _cors_origin_url = env::var("CORS_ORIGIN_URL").expect("CORS_ORIGIN_URL must be set");
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
 
     let pool = db::init_pool(&database_url).expect("Failed to create pool");
@@ -32,6 +32,10 @@ async fn main() {
     //  - configure CORS headers (take URL as env var)
     //  - async route handler (handle logging, db pool)
     //  - after filter to add version header
+
+    let api = routes::api(pool.clone());
+    let routes = api.with(warp::log("run_server"));
+    warp::serve(routes).run(([127, 0, 0, 1], 8080)).await;
 
     // each module should export a list of routes
     // then the routes should be chained together with .or()

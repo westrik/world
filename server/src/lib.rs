@@ -13,3 +13,6 @@ pub mod db;
 pub mod models;
 pub mod routes;
 pub mod schema;
+
+pub mod auth;
+pub mod tasks;
