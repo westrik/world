@@ -14,6 +14,11 @@ table! {
         content -> Text,
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
+        completed_at -> Nullable<Timestamptz>,
+        api_id -> Nullable<Varchar>,
+        next_api_id -> Nullable<Varchar>,
+        parent_api_id -> Nullable<Varchar>,
+        is_collapsed_child -> Nullable<Bool>,
     }
 }
 

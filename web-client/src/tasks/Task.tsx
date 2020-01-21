@@ -42,7 +42,7 @@ export default function Task(props: Props): h.JSX.Element {
     // TODO: resolve tags to chips
 
     return (
-        <li className="task" style="font-size: 1.5em; height: 1.8em;">
+        <li className="task" style="font-size: 1.5em; min-height: 2em;">
             <input checked={props.completed} id={checkboxId} type="checkbox" className="mt-3" />
             <label
                 htmlFor={checkboxId}

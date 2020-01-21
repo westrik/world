@@ -1,4 +1,0 @@
-- [ ] create state machine for app
-- [ ] create state machine for task
-- [ ] create state machine for task list
-- [ ] wire up redux store for tasks
