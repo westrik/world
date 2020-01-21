@@ -4,8 +4,8 @@ use diesel::PgConnection;
 
 use crate::models::session::Session;
 use crate::models::user::User;
-use crate::schema::{items, items::dsl::items as all_items};
 use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
+use crate::schema::{tasks, tasks::dsl::tasks as all_tasks};
 use diesel::dsl::now;
 
 #[derive(Debug, Deserialize)]
@@ -16,7 +16,7 @@ pub struct ListOptions {
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(User)]
-pub struct Item {
+pub struct Task {
     pub id: i32,
     pub user_id: i32,
     pub content: String,
@@ -25,43 +25,43 @@ pub struct Item {
 }
 
 #[derive(Insertable, Debug)]
-#[table_name = "items"]
-pub struct NewItem {
+#[table_name = "tasks"]
+pub struct NewTask {
     pub user_id: i32,
     pub content: String,
 }
 
-impl NewItem {
-    pub fn insert(&self, conn: &PgConnection) -> Result<Item, ItemQueryError> {
+impl NewTask {
+    pub fn insert(&self, conn: &PgConnection) -> Result<Task, TaskQueryError> {
         info!("{:?}", self);
-        Ok(diesel::insert_into(items::table)
+        Ok(diesel::insert_into(tasks::table)
             .values(self)
             .get_result(conn)
-            .map_err(ItemQueryError::DatabaseError)?)
+            .map_err(TaskQueryError::DatabaseError)?)
     }
 }
 
 #[derive(Debug)]
-pub enum ItemQueryError {
-    ItemNotFound,
+pub enum TaskQueryError {
+    TaskNotFound,
     InvalidToken,
     DatabaseError(diesel::result::Error),
 }
 
-impl Item {
+impl Task {
     pub fn find_all_for_user(
         conn: &PgConnection,
         token: String,
-    ) -> Result<Vec<Item>, ItemQueryError> {
+    ) -> Result<Vec<Task>, TaskQueryError> {
         let session: Session = all_sessions
             .filter(sessions::token.eq(token))
             .filter(sessions::expires_at.gt(now))
             .first(conn)
-            .map_err(|_| ItemQueryError::ItemNotFound)?;
-        let items: Vec<Item> = all_items
-            .filter(items::user_id.eq(session.user_id))
+            .map_err(|_| TaskQueryError::TaskNotFound)?;
+        let items: Vec<Task> = all_tasks
+            .filter(tasks::user_id.eq(session.user_id))
             .load(conn)
-            .map_err(|_| ItemQueryError::ItemNotFound)?;
+            .map_err(|_| TaskQueryError::TaskNotFound)?;
         Ok(items)
     }
 
@@ -69,13 +69,13 @@ impl Item {
         conn: &PgConnection,
         token: String,
         content: String,
-    ) -> Result<Item, ItemQueryError> {
+    ) -> Result<Task, TaskQueryError> {
         let session: Session = all_sessions
             .filter(sessions::token.eq(token))
             .filter(sessions::expires_at.gt(now))
             .first(conn)
-            .map_err(|_| ItemQueryError::InvalidToken)?;
-        let new_user = NewItem {
+            .map_err(|_| TaskQueryError::InvalidToken)?;
+        let new_user = NewTask {
             user_id: session.user_id,
             content,
         };
@@ -90,8 +90,8 @@ pub struct UiItem {
     pub updated_at: DateTime<Utc>,
 }
 
-impl From<Item> for UiItem {
-    fn from(item: Item) -> Self {
+impl From<Task> for UiItem {
+    fn from(item: Task) -> Self {
         UiItem {
             content: item.content,
             created_at: item.created_at,

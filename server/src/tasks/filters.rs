@@ -1,5 +1,5 @@
 use crate::db::PgPool;
-use crate::models::item::ListOptions;
+use crate::models::task::ListOptions;
 use crate::routes::utils::{json_body, with_db, with_session_token};
 use crate::tasks::handlers;
 use crate::tasks::handlers::NewTask;
