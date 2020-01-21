@@ -1,5 +1,5 @@
 import { API_HOST } from '../config';
-import { APITask } from './TasksListing';
+import { APITask } from './TaskList';
 
 export default async function createTask(token: string, content: string): Promise<APITask> {
     const response = await fetch(`${API_HOST}/task`, {

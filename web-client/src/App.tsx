@@ -3,10 +3,10 @@ import { h, render } from 'preact';
 import SignInForm from './auth/SignInForm';
 import { AuthProvider } from './auth/AuthContext';
 import { AuthedRoute } from './auth/AuthedRoute';
-import TasksListing from './tasks/TasksListing';
+import TaskList from './tasks/TaskList';
 import Stream from './stream/Stream';
-import DocsListing from './docs/DocsListing';
-import UsersListing from './admin/UsersListing';
+import DocumentList from './docs/DocumentList';
+import UserList from './admin/UserList';
 import { AdminAuthedRoute } from './auth/AdminAuthedRoute';
 import ErrorScreen from './components/ErrorScreen';
 
@@ -16,9 +16,9 @@ function App(): h.JSX.Element {
             <Router>
                 <Route path="/login" component={SignInForm} />
                 <AuthedRoute path="/" component={Stream} />
-                <AuthedRoute path="/tasks" component={TasksListing} />
-                <AuthedRoute path="/docs" component={DocsListing} />
-                <AdminAuthedRoute path="/users" component={UsersListing} />
+                <AuthedRoute path="/tasks" component={TaskList} />
+                <AuthedRoute path="/docs" component={DocumentList} />
+                <AdminAuthedRoute path="/users" component={UserList} />
                 <Route default component={ErrorScreen} />
             </Router>
         </AuthProvider>

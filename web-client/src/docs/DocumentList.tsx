@@ -2,12 +2,12 @@ import { h } from 'preact';
 import Container from '../components/Container';
 import Header from '../components/Header';
 
-function UsersListing(): h.JSX.Element {
+function DocumentList(): h.JSX.Element {
     return (
         <Container>
-            <Header title="users" />
+            <Header title="documents" />
         </Container>
     );
 }
 
-export default UsersListing;
+export default DocumentList;

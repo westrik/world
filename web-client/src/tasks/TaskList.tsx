@@ -18,7 +18,7 @@ interface GetTasksResponse {
     items: Array<APITask>;
 }
 
-function TasksListing(): h.JSX.Element {
+function TaskList(): h.JSX.Element {
     const [tasks, setTasks] = useState<Array<APITask> | null>(null);
     const authContext = useContext(Auth);
 
@@ -108,4 +108,4 @@ function TasksListing(): h.JSX.Element {
     );
 }
 
-export default TasksListing;
+export default TaskList;
