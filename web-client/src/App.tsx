@@ -9,12 +9,14 @@ import DocumentList from './docs/DocumentList';
 import UserList from './admin/UserList';
 import { AdminAuthedRoute } from './auth/AdminAuthedRoute';
 import ErrorScreen from './components/ErrorScreen';
+import { TestTemplate } from './components/TestTemplate';
 
 function App(): h.JSX.Element {
     return (
         <AuthProvider>
             <Router>
                 <Route path="/login" component={SignInForm} />
+                <Route path="/css" component={TestTemplate} />
                 <AuthedRoute path="/" component={Stream} />
                 <AuthedRoute path="/tasks" component={TaskList} />
                 <AuthedRoute path="/docs" component={DocumentList} />

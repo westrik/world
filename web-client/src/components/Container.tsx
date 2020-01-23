@@ -1,4 +1,3 @@
-// import '../style/base.scss';
 import '../style/Dashboard.scss';
 
 import { h } from 'preact';
