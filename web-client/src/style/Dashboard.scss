@@ -1,12 +1,12 @@
 body {
-    /* 'Triplicate T3c' */
-    font-family: 'Concourse T3', -apple-system;
+  /* 'Triplicate T3c' */
+  font-family: 'Concourse T3', -apple-system;
 }
 
 .icon {
-    width: 16px;
-    height: 16px;
-    vertical-align: text-bottom;
+  width: 16px;
+  height: 16px;
+  vertical-align: text-bottom;
 }
 
 /*
@@ -14,53 +14,53 @@ body {
  */
 
 .sidebar {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 100; /* Behind the navbar */
-    padding: 48px 0 0; /* Height of navbar */
-    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100; /* Behind the navbar */
+  padding: 48px 0 0; /* Height of navbar */
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-sticky {
-    position: relative;
-    top: 0;
-    height: calc(100vh - 48px);
-    padding-top: 0.5rem;
-    overflow-x: hidden;
-    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+  position: relative;
+  top: 0;
+  height: calc(100vh - 48px);
+  padding-top: 0.5rem;
+  overflow-x: hidden;
+  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
 }
 
 @supports ((position: -webkit-sticky) or (position: sticky)) {
-    .sidebar-sticky {
-        position: -webkit-sticky;
-        position: sticky;
-    }
+  .sidebar-sticky {
+    position: -webkit-sticky;
+    position: sticky;
+  }
 }
 
 .sidebar .nav-link {
-    font-weight: 500;
-    color: #333;
+  font-weight: 500;
+  color: #333;
 }
 
 .sidebar .nav-link .icon {
-    margin-right: 4px;
-    color: #999;
+  margin-right: 4px;
+  color: #999;
 }
 
 .sidebar .nav-link.active {
-    color: #007bff;
+  color: #007bff;
 }
 
 .sidebar .nav-link:hover .icon,
 .sidebar .nav-link.active .icon {
-    color: inherit;
+  color: inherit;
 }
 
 .sidebar-heading {
-    font-size: 0.75rem;
-    text-transform: uppercase;
+  font-size: 0.75rem;
+  text-transform: uppercase;
 }
 
 /*
@@ -68,17 +68,17 @@ body {
  */
 
 [role='main'] {
-    padding-top: 133px; /* Space for fixed navbar */
+  padding-top: 133px; /* Space for fixed navbar */
 }
 
 @media (min-width: 768px) {
-    [role='main'] {
-        padding-top: 48px; /* Space for fixed navbar */
-    }
+  [role='main'] {
+    padding-top: 48px; /* Space for fixed navbar */
+  }
 }
 
 .vh-100 {
-    min-height: 100vh;
+  min-height: 100vh;
 }
 
 /*
@@ -86,119 +86,117 @@ body {
  */
 
 .navbar-brand {
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-    font-size: 1rem;
-    background-color: rgba(0, 0, 0, 0.25);
-    box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  font-size: 1rem;
+  background-color: rgba(0, 0, 0, 0.25);
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);
 }
 
 .navbar .form-control {
-    padding: 0.75rem 1rem;
-    border-width: 0;
-    border-radius: 0;
+  padding: 0.75rem 1rem;
+  border-width: 0;
+  border-radius: 0;
 }
 
 .form-control-dark {
-    color: #fff;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .form-control-dark:focus {
-    border-color: transparent;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
+  border-color: transparent;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
 }
 
 /* Derived from: https://css-tricks.com/the-checkbox-hack/ */
 
 .task {
+  [type="checkbox"]:not(:checked),
+  [type="checkbox"]:checked {
+    position: absolute;
+    left: -9999px;
+  }
 
-    [type="checkbox"]:not(:checked),
-    [type="checkbox"]:checked {
-        position: absolute;
-        left: -9999px;
-    }
+  [type="checkbox"]:not(:checked) + label,
+  [type="checkbox"]:checked + label {
+    position: relative;
+    padding-left: 1.95em;
+    cursor: pointer;
+  }
 
-    [type="checkbox"]:not(:checked) + label,
-    [type="checkbox"]:checked + label {
-        position: relative;
-        padding-left: 1.95em;
-        cursor: pointer;
-    }
+  [type="checkbox"]:not(:checked) + label::before,
+  [type="checkbox"]:checked + label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1.25em;
+    height: 1.25em;
+    border: 2px solid #ccc;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
 
-    [type="checkbox"]:not(:checked) + label:before,
-    [type="checkbox"]:checked + label:before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 1.25em;
-        height: 1.25em;
-        border: 2px solid #ccc;
-        background: #fff;
-        border-radius: 4px;
-        box-shadow: inset 0 1px 3px rgba(0, 0, 0, .1);
-    }
+  [type="checkbox"]:not(:checked) + label::after,
+  [type="checkbox"]:checked + label::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1.25em;
+    height: 1.25em;
+    background: #aaa;
+    border: 2px solid #aaa;
+    transition: all 0.2s;
+    border-radius: 4px;
+  }
 
-    [type="checkbox"]:not(:checked) + label:after,
-    [type="checkbox"]:checked + label:after {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 1.25em;
-        height: 1.25em;
-        background: #aaa;
-        border: 2px solid #aaa;
-        transition: all .2s;
-        border-radius: 4px;
-    }
+  [type="checkbox"]:not(:checked) + label::after {
+    opacity: 0;
+    transform: scale(0);
+  }
 
-    [type="checkbox"]:not(:checked) + label:after {
-        opacity: 0;
-        transform: scale(0);
-    }
+  [type="checkbox"]:checked + label::after {
+    opacity: 1;
+    transform: scale(1);
+  }
 
-    [type="checkbox"]:checked + label:after {
-        opacity: 1;
-        transform: scale(1);
-    }
+  [type="checkbox"]:disabled:not(:checked) + label::before,
+  [type="checkbox"]:disabled:checked + label::before {
+    box-shadow: none;
+    border-color: #bbb;
+    background-color: #ddd;
+  }
 
-    [type="checkbox"]:disabled:not(:checked) + label:before,
-    [type="checkbox"]:disabled:checked + label:before {
-        box-shadow: none;
-        border-color: #bbb;
-        background-color: #ddd;
-    }
+  [type="checkbox"]:disabled:checked + label::after {
+    background-color: #999 !important;
+  }
 
-    [type="checkbox"]:disabled:checked + label:after {
-        background-color: #999 !important;
-    }
+  [type="checkbox"]:disabled + label {
+    color: #aaa;
+  }
 
-    [type="checkbox"]:disabled + label {
-        color: #aaa;
-    }
+  [type="checkbox"]:checked:focus + label::before,
+  [type="checkbox"]:not(:checked):focus + label::before,
+  [type="checkbox"]:checked:focus + label::after,
+  [type="checkbox"]:not(:checked):focus + label::after {
+    border: 2px dotted blue;
+  }
 
-    [type="checkbox"]:checked:focus + label:before,
-    [type="checkbox"]:not(:checked):focus + label:before,
-    [type="checkbox"]:checked:focus + label:after,
-    [type="checkbox"]:not(:checked):focus + label:after {
-        border: 2px dotted blue;
-    }
+  label:hover::before {
+    border: 2px solid #4778d9 !important;
+  }
 
-    label:hover:before {
-        border: 2px solid #4778d9 !important;
-    }
+  label:active::before {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+  }
 
-    label:active:before {
-        cursor: grabbing;
-        cursor: -moz-grabbing;
-        cursor: -webkit-grabbing;
-    }
-
-    label:hover:after {
-        border-color: #4778d9 !important;
-    }
+  label:hover::after {
+    border-color: #4778d9 !important;
+  }
 }
-
