@@ -10,18 +10,21 @@ import UserList from './admin/UserList';
 import { AdminAuthedRoute } from './auth/AdminAuthedRoute';
 import ErrorScreen from './components/ErrorScreen';
 import { TestTemplate } from './components/TestTemplate';
+import { SideBySide } from './components/SideBySide';
 
 function App(): h.JSX.Element {
     return (
         <AuthProvider>
             <Router>
                 <Route path="/login" component={SignInForm} />
-                <Route path="/css" component={TestTemplate} />
                 <AuthedRoute path="/" component={Stream} />
                 <AuthedRoute path="/tasks" component={TaskList} />
                 <AuthedRoute path="/docs" component={DocumentList} />
                 <AdminAuthedRoute path="/users" component={UserList} />
                 <Route default component={ErrorScreen} />
+
+                <Route path="/css" component={TestTemplate} />
+                <Route path="/editor" component={SideBySide} />
             </Router>
         </AuthProvider>
     );

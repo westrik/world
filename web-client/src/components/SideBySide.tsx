@@ -2,39 +2,52 @@ import '../style/base.scss';
 
 import { h } from 'preact';
 
-export function TestTemplate(): h.JSX.Element {
+export function SideBySide(): h.JSX.Element {
     return (
         // TODO: use grid classes from base
         <div className="sys">
-            <div className="row row-no-padding" style="overflow-y: hidden;">
-                <div className="column column-50" style="height: 100vh">
-                    <textarea style="height: 100vh; margin: 0; border: 0; font-family: monospace; background: #f4f5f6; resize: none">
-                        {`# Top-level header: my thoughts on the things
-
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-`}
-                    </textarea>
+            <div className="row row-no-padding">
+                <div className="column column-50">
+                    <code contentEditable={true} style="min-height: 100%; padding: 8em 2em 0 2em;">
+                        {`# Top-level header: my thoughts on the things`}
+                    </code>
                 </div>
-                <div className="column column-50" style="height: 100vh; overflow: auto;">
+                <div className="column column-50">
                     <div style="width: 25em; margin: 0 auto">
                         <h1>
                             Top-level header:
                             <br /> <small>my thoughts on the things</small>
                         </h1>
-
+                    </div>
+                </div>
+            </div>
+            <div className="row row-no-padding">
+                <div className="column column-50">
+                    <code contentEditable={true} style="min-height: 100%; padding: 0 2em;">
+                        {`Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. `}
+                    </code>
+                </div>
+                <div className="column column-50">
+                    <div style="width: 25em; margin: 0 auto">
                         <p>
                             Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
                             pariatur.
                         </p>
-
+                    </div>
+                </div>
+            </div>
+            <div className="row row-no-padding">
+                <div className="column column-50">
+                    <code contentEditable={true} style="min-height: 100%; padding: 0 2em;">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+                        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+                        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    </code>
+                </div>
+                <div className="column column-50">
+                    <div style="width: 25em; margin: 0 auto">
                         <p>
                             Lorem ipsum dolor sit amet, <a href="#important">consectetur</a> adipiscing elit, sed do
                             eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis

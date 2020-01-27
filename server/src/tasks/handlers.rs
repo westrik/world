@@ -13,6 +13,8 @@ fn run_get_tasks(token: String, pool: &PgPool) -> Result<Vec<Task>, TaskQueryErr
     Ok(Task::find_all_for_user(&get_conn(&pool).unwrap(), token)?)
 }
 
+// TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
+
 pub async fn list_tasks(
     opts: ListOptions,
     session_token: String,
