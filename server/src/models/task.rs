@@ -22,6 +22,11 @@ pub struct Task {
     pub content: String,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+    pub completed_at: Option<DateTime<Utc>>,
+    pub api_id: Option<String>,
+    pub next_api_id: Option<String>,
+    pub parent_api_id: Option<String>,
+    pub is_collapsed_child: Option<bool>,
 }
 
 #[derive(Insertable, Debug)]
