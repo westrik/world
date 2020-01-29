@@ -15,13 +15,12 @@ postgres=# grant all privileges on database westrikworld_app to westrikworld_use
 GRANT
 postgres=# \q
 ~/westrikworld » echo "DATABASE_URL='postgres://westrikworld_user:PASSWORD@localhost/westrikworld_app'" > .env
-
-
 ```
 
-### Debug setup
+
+### Local setup
+
 ```
-~/westrikworld » echo "RUST_LOG=run_server=debug,run_worker=debug,actix_web=info" >> .env
 ~/westrikworld » echo "CORS_ORIGIN_URL=\"http://westrik.world\"" >> .env
 ~/westrikworld » echo "PASSWORD_HASH_SALT=\"$(gpg --gen-random --armor 0 32)\"" >> .env
 ```

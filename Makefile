@@ -16,3 +16,9 @@ fmt:
 
 prepush:
 	make fmt && make check
+
+run_server:
+	cd server && cargo run --bin run_server
+
+run_client:
+	cd web-client && yarn start
