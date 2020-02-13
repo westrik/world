@@ -199,4 +199,16 @@ body {
   label:hover::after {
     border-color: #4778d9 !important;
   }
+
+}
+ul > li.add_child_task {
+  position: absolute;
+  margin-left: -2.5rem;
+  margin-top: -0.4rem;
+}
+.child_task_list {
+    list-style: none;
+    padding: 0;
+    margin-left: 2em;
+    margin-top: 0.2em;
 }

@@ -76,7 +76,8 @@ export default function TaskRow(props: Props): h.JSX.Element {
             </label>
 
             {props.children.length > 0 ? (
-                <ul style="list-style: none; padding: 0; margin-left: 2em; margin-top: 0.2em;">
+                <ul className="child_task_list">
+                    <li className="add_child_task">+</li>
                     {props.children.map((childTask: Task, key: number) => (
                         <TaskRow
                             key={key}
