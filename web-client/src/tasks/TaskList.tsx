@@ -4,7 +4,7 @@ import Auth from '../auth/AuthContext';
 import { API_HOST } from '../config';
 import Container from '../components/Container';
 import Header from '../components/Header';
-import Task from './Task';
+import Task from './TaskRow';
 import ListContainer from '../components/ListContainer';
 import NewTaskForm from './NewTaskForm';
 

@@ -1,16 +1,14 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
+import { Task } from './MockTaskList';
 
-export interface Props {
-    description: string;
-    completed?: boolean;
-    position: number;
+export interface Props extends Task {
     handleDragOver: (e: Event) => void;
     handleDragEnd: (e: Event) => void;
     handleDragStart: (e: Event) => void;
 }
 
-export default function Task(props: Props): h.JSX.Element {
+export default function TaskRow(props: Props): h.JSX.Element {
     const [editing, setEditing] = useState(false);
     const [content, setContent] = useState(props.description);
     const checkboxId = Math.random()
@@ -42,7 +40,7 @@ export default function Task(props: Props): h.JSX.Element {
     // TODO: resolve tags to chips
 
     return (
-        <li className="task" style="font-size: 1.5em; min-height: 2em;">
+        <li className="task" style="font-size: 1.5rem; min-height: 2em;">
             <input checked={props.completed} id={checkboxId} type="checkbox" className="mt-3" />
             <label
                 htmlFor={checkboxId}
@@ -76,6 +74,20 @@ export default function Task(props: Props): h.JSX.Element {
                     />
                 )}
             </label>
+
+            {props.children.length > 0 ? (
+                <ul style="list-style: none; padding: 0; margin-left: 2em; margin-top: 0.2em;">
+                    {props.children.map((childTask: Task, key: number) => (
+                        <TaskRow
+                            key={key}
+                            handleDragOver={props.handleDragOver}
+                            handleDragEnd={props.handleDragEnd}
+                            handleDragStart={props.handleDragStart}
+                            {...childTask}
+                        />
+                    ))}
+                </ul>
+            ) : null}
         </li>
     );
 }
