@@ -13,8 +13,13 @@ Type "help" for help.
 postgres=# alter user westrikworld_user with encrypted password 'PASSWORD';
 ALTER ROLE
 postgres=# grant all privileges on database westrikworld_app to westrikworld_user;
+GRANT
 postgres=# grant all privileges on database westrikworld_test to westrikworld_user;
 GRANT
+postgres=# alter database westrikworld_app set timezone to 'UTC';
+ALTER DATABASE
+postgres=# alter database westrikworld_test set timezone to 'UTC';
+ALTER DATABASE
 postgres=# \q
 ~/westrikworld » echo "DATABASE_URL='postgres://westrikworld_user:PASSWORD@localhost/westrikworld_app'" > .env
 ~/westrikworld » echo "TEST_DATABASE_URL='postgres://westrikworld_user:PASSWORD@localhost/westrikworld_test'" >> .env

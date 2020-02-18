@@ -112,7 +112,7 @@ impl From<Task> for UiItem {
 pub mod test_task_model {
     use crate::resource_identifier::*;
     use crate::tasks::model::NewTask;
-    use crate::test_utils::db::{destroy_test_database, get_conn, spin_up_test_database};
+    use crate::test_utils::db::{get_conn, rollback, spin_up_test_database};
     use crate::test_utils::fixtures::create_test_user;
 
     #[test]
@@ -127,8 +127,9 @@ pub mod test_task_model {
             user_id: test_user.id,
             content: "HELLO WORLD".to_string(),
         };
-        new_task.insert(&conn);
+        println!("🗒 Inserting test task");
+        new_task.insert(&conn).unwrap();
 
-        destroy_test_database(&pool);
+        rollback(&pool);
     }
 }

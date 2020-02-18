@@ -1,10 +1,8 @@
 pub use crate::db::PgPool;
 pub use crate::db::{get_conn, init_pool};
-use diesel::pg::PgConnection;
-use diesel::r2d2::{ConnectionManager, Pool, PoolError, PooledConnection};
 use diesel::Connection;
 use dotenv::dotenv;
-use std::env;
+use std::{env, io};
 
 embed_migrations!();
 
@@ -14,17 +12,27 @@ pub fn spin_up_test_database() -> PgPool {
     let pool = init_pool(&test_database_url).expect("Failed to create pool");
 
     let conn = get_conn(&pool).unwrap();
-    println!("Creating test database");
-    embedded_migrations::run_with_output(&conn, &mut std::io::stdout()).unwrap();
+    println!("🌱️ Connecting to test database...\n");
+    embedded_migrations::run_with_output(&conn, &mut io::stdout().lock()).unwrap();
+    conn.execute("BEGIN").unwrap();
 
     pool
 }
 
-pub fn destroy_test_database(pool: &PgPool) {
+pub fn rollback(pool: &PgPool) {
     let conn = get_conn(&pool).unwrap();
-    println!("Destroying test database");
-    conn.execute("DROP TABLE tasks");
-    conn.execute("DROP TABLE sessions");
-    conn.execute("DROP TABLE users");
-    conn.execute("DROP TABLE __diesel_schema_migrations");
+    println!("\n🌬 Rolling back...");
+    conn.execute("ROLLBACK").unwrap();
+}
+
+pub fn destroy(pool: &PgPool) {
+    let conn = get_conn(&pool).unwrap();
+    println!("🪓 Destroying test database...");
+    conn.execute("ROLLBACK").unwrap();
+    conn.execute("DROP TABLE tasks").unwrap();
+    conn.execute("DROP TABLE sessions").unwrap();
+    conn.execute("DROP TABLE users").unwrap();
+    conn.execute("DROP TABLE __diesel_schema_migrations")
+        .unwrap();
+    conn.execute("COMMIT").unwrap();
 }
