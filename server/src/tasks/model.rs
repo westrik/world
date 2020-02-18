@@ -4,9 +4,9 @@ use diesel::PgConnection;
 
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
+use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
 use crate::schema::{tasks, tasks::dsl::tasks as all_tasks};
-use crate::util::resource_identifier::{generate_resource_identifier, ResourceType};
 use diesel::dsl::now;
 
 #[derive(Debug, Deserialize)]

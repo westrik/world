@@ -29,7 +29,7 @@ pub fn generate_resource_identifier(resource_type: ResourceType) -> String {
 #[cfg(test)]
 pub mod test_resource_identifiers {
     use super::*;
-    use crate::util::resource_identifier::ResourceType::*;
+    use crate::resource_identifier::ResourceType::*;
     use regex::Regex;
 
     #[test]

@@ -10,9 +10,9 @@ extern crate pretty_env_logger;
 extern crate serde_derive;
 
 pub mod db;
+pub mod resource_identifier;
 pub mod routes;
 pub mod schema;
-pub mod util;
 
 // TODO: move DB operations to an async thread pool (tokio?)
 pub mod auth;
