@@ -10,12 +10,12 @@ table! {
 table! {
     tasks (id) {
         id -> Int4,
+        api_id -> Varchar,
         user_id -> Int4,
-        content -> Text,
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
         completed_at -> Nullable<Timestamptz>,
-        api_id -> Nullable<Varchar>,
+        content -> Text,
         sibling_id -> Nullable<Int4>,
         parent_id -> Nullable<Int4>,
         is_collapsed -> Bool,

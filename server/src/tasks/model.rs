@@ -19,13 +19,13 @@ pub struct ListOptions {
 #[belongs_to(User)]
 pub struct Task {
     pub id: i32,
+    pub api_id: String,
     pub user_id: i32,
-    pub content: String,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub completed_at: Option<DateTime<Utc>>,
-    pub api_id: Option<String>,
-    pub next_id: Option<i32>,
+    pub content: String,
+    pub sibling_id: Option<i32>,
     pub parent_id: Option<i32>,
     pub is_collapsed: bool,
 }
