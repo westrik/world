@@ -9,8 +9,6 @@ import DocumentList from './docs/DocumentList';
 import UserList from './admin/UserList';
 import { AdminAuthedRoute } from './auth/AdminAuthedRoute';
 import ErrorScreen from './components/ErrorScreen';
-import { TestTemplate } from './components/TestTemplate';
-import { SideBySide } from './components/SideBySide';
 
 function App(): h.JSX.Element {
     return (
@@ -23,8 +21,8 @@ function App(): h.JSX.Element {
                 <AdminAuthedRoute path="/users" component={UserList} />
                 <Route default component={ErrorScreen} />
 
-                <Route path="/css" component={TestTemplate} />
-                <Route path="/editor" component={SideBySide} />
+                {/*<Route path="/css" component={TestTemplate} />*/}
+                {/*<Route path="/editor" component={SideBySide} />*/}
             </Router>
         </AuthProvider>
     );

@@ -43,9 +43,9 @@ export interface Resource {
 
 const LIST_ROOT = 'LIST_ROOT';
 
-type TaskIdToTaskMap = { [taskId: string]: Array<APITask> };
+type TaskIdToTasksMap = { [taskId: string]: Array<APITask> };
 
-function mapTasksToChildTasks(tasks: Array<APITask>, taskIdToChildAPITasks?: TaskIdToTaskMap): Array<Task> {
+function mapTasksToChildTasks(tasks: Array<APITask>, taskIdToChildAPITasks?: TaskIdToTasksMap): Array<Task> {
     const taskIdToAPITask = tasks.reduce<Map<string, APITask>>(function(
         taskIdToTask: Map<string, APITask>,
         task: APITask,
@@ -56,8 +56,8 @@ function mapTasksToChildTasks(tasks: Array<APITask>, taskIdToChildAPITasks?: Tas
     },
     new Map<string, APITask>());
 
-    function computeTaskToChildMap(): TaskIdToTaskMap {
-        const _taskIdToChildAPITasks: TaskIdToTaskMap = {};
+    function computeTaskToChildMap(): TaskIdToTasksMap {
+        const _taskIdToChildAPITasks: TaskIdToTasksMap = {};
         tasks.forEach(function(task: APITask) {
             const parentId = task.parentId ? task.parentId : LIST_ROOT;
             if (!_taskIdToChildAPITasks[parentId]) {
@@ -79,7 +79,7 @@ function mapTasksToChildTasks(tasks: Array<APITask>, taskIdToChildAPITasks?: Tas
         });
 }
 
-function MockTaskList(): h.JSX.Element {
+function TaskList(): h.JSX.Element {
     const [tasks, setTasks] = useState<Array<Task> | null>(null);
     const authContext = useContext(Auth);
 
@@ -172,4 +172,4 @@ function MockTaskList(): h.JSX.Element {
     );
 }
 
-export default MockTaskList;
+export default TaskList;
