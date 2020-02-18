@@ -25,3 +25,9 @@ postgres=# \q
 ~/westrikworld » echo "PASSWORD_HASH_SALT=\"$(gpg --gen-random --armor 0 32)\"" >> .env
 ```
 
+
+### [setup] install diesel cli
+
+```
+cargo install diesel_cli --no-default-features --features postgres
+```

@@ -16,9 +16,9 @@ table! {
         updated_at -> Timestamptz,
         completed_at -> Nullable<Timestamptz>,
         api_id -> Nullable<Varchar>,
-        next_api_id -> Nullable<Varchar>,
-        parent_api_id -> Nullable<Varchar>,
-        is_collapsed_child -> Nullable<Bool>,
+        sibling_id -> Nullable<Int4>,
+        parent_id -> Nullable<Int4>,
+        is_collapsed -> Bool,
     }
 }
 
