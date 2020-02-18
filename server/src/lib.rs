@@ -2,6 +2,8 @@ extern crate argon2rs;
 #[macro_use]
 extern crate diesel;
 #[macro_use]
+extern crate diesel_migrations;
+#[macro_use]
 extern crate lazy_static;
 #[macro_use]
 extern crate log;
