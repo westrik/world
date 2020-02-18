@@ -20,4 +20,6 @@ pub mod schema;
 pub mod auth;
 pub mod tasks;
 
+pub mod test_utils;
+
 static API_VERSION: &str = "0.1.1";

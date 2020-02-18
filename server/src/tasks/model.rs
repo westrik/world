@@ -110,52 +110,15 @@ impl From<Task> for UiItem {
 
 #[cfg(test)]
 pub mod test_task_model {
-    use crate::auth::models::user::{NewUser, User};
-    use crate::db;
-    use crate::resource_identifier::{generate_resource_identifier, ResourceType};
-    use crate::tasks::model::{NewTask, Task};
-    use diesel::{Connection, PgConnection};
-    use dotenv::dotenv;
-    use std::env;
-
-    embed_migrations!();
-
-    fn spin_up_test_database() -> db::PgPool {
-        dotenv().ok();
-        let test_database_url =
-            env::var("TEST_DATABASE_URL").expect("TEST_DATABASE_URL must be set");
-        let pool = db::init_pool(&test_database_url).expect("Failed to create pool");
-
-        let conn = db::get_conn(&pool).unwrap();
-        embedded_migrations::run_with_output(&conn, &mut std::io::stdout()).unwrap();
-
-        pool
-    }
-
-    fn destroy_test_database(pool: &db::PgPool) {
-        let conn = db::get_conn(&pool).unwrap();
-        conn.execute("DROP TABLE tasks");
-        conn.execute("DROP TABLE sessions");
-        conn.execute("DROP TABLE users");
-        conn.execute("DROP TABLE __diesel_schema_migrations");
-    }
-
-    fn create_test_user(conn: &PgConnection) -> User {
-        User::create(
-            NewUser {
-                email_address: "testuser@example.com".to_string(),
-                full_name: Some("Test User".to_string()),
-                password: "password".to_string(),
-            },
-            conn,
-        )
-        .unwrap()
-    }
+    use crate::resource_identifier::*;
+    use crate::tasks::model::NewTask;
+    use crate::test_utils::db::{destroy_test_database, get_conn, spin_up_test_database};
+    use crate::test_utils::fixtures::create_test_user;
 
     #[test]
     fn test_task_create() {
         let pool = spin_up_test_database();
-        let conn = db::get_conn(&pool).unwrap();
+        let conn = get_conn(&pool).unwrap();
 
         let test_user = create_test_user(&conn);
 
