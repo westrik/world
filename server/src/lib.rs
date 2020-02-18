@@ -13,6 +13,7 @@ pub mod db;
 pub mod models;
 pub mod routes;
 pub mod schema;
+pub mod util;
 
 // TODO: move DB operations to an async thread pool (tokio?)
 pub mod auth;
