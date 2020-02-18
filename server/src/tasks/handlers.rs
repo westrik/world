@@ -1,5 +1,5 @@
 use crate::db::{get_conn, PgPool};
-use crate::models::task::{ListOptions, Task, TaskQueryError};
+use crate::tasks::model::{ListOptions, Task, TaskQueryError};
 use std::convert::Infallible;
 use warp::http::StatusCode;
 

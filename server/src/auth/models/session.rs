@@ -4,7 +4,7 @@ use diesel::PgConnection;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 
-use crate::models::user::{User, UserQueryError};
+use crate::auth::models::user::{User, UserQueryError};
 use crate::schema::sessions;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]

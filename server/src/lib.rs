@@ -10,7 +10,6 @@ extern crate pretty_env_logger;
 extern crate serde_derive;
 
 pub mod db;
-pub mod models;
 pub mod routes;
 pub mod schema;
 pub mod util;

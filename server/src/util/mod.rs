@@ -1,1 +1,1 @@
-mod resource_identifier;
+pub mod resource_identifier;

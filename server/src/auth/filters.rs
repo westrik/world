@@ -1,7 +1,7 @@
 use crate::auth::handlers;
 use crate::auth::handlers::SignInRequest;
+use crate::auth::models::user::NewUser;
 use crate::db::PgPool;
-use crate::models::user::NewUser;
 use crate::routes::utils::{json_body, with_db};
 use warp::Filter;
 

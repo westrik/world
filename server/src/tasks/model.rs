@@ -2,10 +2,11 @@ use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use diesel::PgConnection;
 
-use crate::models::session::Session;
-use crate::models::user::User;
+use crate::auth::models::session::Session;
+use crate::auth::models::user::User;
 use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
 use crate::schema::{tasks, tasks::dsl::tasks as all_tasks};
+use crate::util::resource_identifier::{generate_resource_identifier, ResourceType};
 use diesel::dsl::now;
 
 #[derive(Debug, Deserialize)]
@@ -32,6 +33,7 @@ pub struct Task {
 #[derive(Insertable, Debug)]
 #[table_name = "tasks"]
 pub struct NewTask {
+    pub api_id: String,
     pub user_id: i32,
     pub content: String,
 }
@@ -80,11 +82,12 @@ impl Task {
             .filter(sessions::expires_at.gt(now))
             .first(conn)
             .map_err(|_| TaskQueryError::InvalidToken)?;
-        let new_user = NewTask {
+        let new_task = NewTask {
+            api_id: generate_resource_identifier(ResourceType::Task),
             user_id: session.user_id,
             content,
         };
-        new_user.insert(conn)
+        new_task.insert(conn)
     }
 }
 
@@ -103,4 +106,14 @@ impl From<Task> for UiItem {
             updated_at: item.updated_at,
         }
     }
+}
+
+#[cfg(test)]
+pub mod test_task_model {
+    //    use super::*;
+
+    // TODO: spin up (+ destroy) test database
+
+    #[test]
+    fn test_task_create() {}
 }

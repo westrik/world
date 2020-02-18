@@ -33,7 +33,7 @@ pub mod test_resource_identifiers {
     use regex::Regex;
 
     #[test]
-    fn test_gen() {
+    fn test_id_generation() {
         let user_id = generate_resource_identifier(User);
         assert!(Regex::new(r"user_[A-Za-z0-9]{8}")
             .unwrap()

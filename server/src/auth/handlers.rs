@@ -1,6 +1,6 @@
+use crate::auth::models::session::{Session, UiSession};
+use crate::auth::models::user::{NewUser, UiUser, User, UserQueryError};
 use crate::db::{get_conn, PgPool};
-use crate::models::session::{Session, UiSession};
-use crate::models::user::{NewUser, UiUser, User, UserQueryError};
 use std::convert::Infallible;
 use warp::http::StatusCode;
 
