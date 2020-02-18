@@ -4,13 +4,23 @@ import Auth from '../auth/AuthContext';
 import { API_HOST } from '../config';
 import Container from '../components/Container';
 import Header from '../components/Header';
-import Task from './TaskRow';
+import TaskRow from './TaskRow';
 import ListContainer from '../components/ListContainer';
 import NewTaskForm from './NewTaskForm';
+import { API_TASKS } from '../../tests/fixtures/tasks';
 
 export interface APITask {
+    id: string;
+    parentId?: string;
     position: number;
-    content: string;
+    description: string;
+    completed: boolean;
+    tags: Array<Tag>;
+    resources: Array<Resource>;
+}
+
+export interface Task extends APITask {
+    children: Array<Task>;
 }
 
 interface GetTasksResponse {
@@ -18,11 +28,63 @@ interface GetTasksResponse {
     items: Array<APITask>;
 }
 
-function TaskList(): h.JSX.Element {
-    const [tasks, setTasks] = useState<Array<APITask> | null>(null);
+export interface Tag {
+    id: string;
+    name: string;
+    resource?: string | Resource;
+}
+
+export interface Resource {
+    id: string;
+    name: string;
+    url: string;
+    previewUrl?: string;
+}
+
+const LIST_ROOT = 'LIST_ROOT';
+
+type TaskIdToTaskMap = { [taskId: string]: Array<APITask> };
+
+function mapTasksToChildTasks(tasks: Array<APITask>, taskIdToChildAPITasks?: TaskIdToTaskMap): Array<Task> {
+    const taskIdToAPITask = tasks.reduce<Map<string, APITask>>(function(
+        taskIdToTask: Map<string, APITask>,
+        task: APITask,
+    ) {
+        // TODO: assert(!(task.id in taskIdToTask));
+        taskIdToTask.set(task.id, task);
+        return taskIdToTask;
+    },
+    new Map<string, APITask>());
+
+    function computeTaskToChildMap(): TaskIdToTaskMap {
+        const _taskIdToChildAPITasks: TaskIdToTaskMap = {};
+        tasks.forEach(function(task: APITask) {
+            const parentId = task.parentId ? task.parentId : LIST_ROOT;
+            if (!_taskIdToChildAPITasks[parentId]) {
+                _taskIdToChildAPITasks[parentId] = [];
+            }
+            _taskIdToChildAPITasks[parentId].push(task);
+        });
+        return _taskIdToChildAPITasks;
+    }
+    const taskIdToChildren = taskIdToChildAPITasks ? taskIdToChildAPITasks : computeTaskToChildMap();
+
+    return tasks
+        .filter(task => !task.parentId || !taskIdToAPITask.get(task.parentId))
+        .map(task => {
+            return {
+                ...task,
+                children: mapTasksToChildTasks(taskIdToChildren[task.id] || [], taskIdToChildren), // TODO: look up children
+            };
+        });
+}
+
+function MockTaskList(): h.JSX.Element {
+    const [tasks, setTasks] = useState<Array<Task> | null>(null);
     const authContext = useContext(Auth);
 
     async function getTasks(): Promise<void> {
+        // TODO: check + save to localStorage
         const response = await fetch(`${API_HOST}/task`, {
             headers: {
                 // TODO: redirect to /login if authToken is expired / null
@@ -33,15 +95,18 @@ function TaskList(): h.JSX.Element {
         });
         const resp = (await response.json()) as GetTasksResponse;
         if (resp.items) {
-            setTasks(resp.items);
+            setTasks(mapTasksToChildTasks(resp.items));
         } else {
-            console.log(resp.error);
+            setTasks([]);
         }
     }
 
     useEffect(() => {
         if (!tasks) {
-            getTasks();
+            // TODO: re-enable
+            // getTasks();
+            const x = mapTasksToChildTasks(API_TASKS);
+            setTasks(x);
         }
     });
 
@@ -87,15 +152,14 @@ function TaskList(): h.JSX.Element {
             {tasks ? (
                 <ListContainer>
                     {tasks
-                        .sort((a: APITask, b: APITask): number => a.position - b.position)
-                        .map((item: APITask, key: number) => (
-                            <Task
+                        .sort((a, b): number => a.position - b.position)
+                        .map((task: Task, key: number) => (
+                            <TaskRow
                                 key={key}
-                                position={item.position}
                                 handleDragOver={handleDragOver}
                                 handleDragStart={handleDragStart}
                                 handleDragEnd={handleDragEnd}
-                                description={item.content}
+                                {...task}
                             />
                         ))}
                 </ListContainer>
@@ -108,4 +172,4 @@ function TaskList(): h.JSX.Element {
     );
 }
 
-export default TaskList;
+export default MockTaskList;

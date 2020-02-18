@@ -205,11 +205,27 @@ ul > li.add_child_task {
   position: absolute;
   margin-left: -2.5rem;
   margin-top: -0.4rem;
+  opacity: 0;
+  transition: 0.2s linear opacity;
+}
+
+ul:hover > li.add_child_task {
+  opacity: 1;
 }
 
 .child_task_list {
+  position: relative;
   list-style: none;
   padding: 0;
-  margin-left: 2em;
-  margin-top: 0.2em;
+  padding-left: 1.4em;
+  margin-left: 0.6em;
 }
+
+// .child_task_list:before {
+//   content: '';
+//   position: absolute;
+//   top: -1rem;
+//   left: 0;
+//   bottom: 0;
+//   border-left: 1px #ddd solid;
+// }

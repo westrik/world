@@ -8,7 +8,7 @@
     "build": "yarn parcel build src/index.html",
     "lint": "yarn eslint . --ext .ts,.tsx",
     "lint:scss": "yarn stylelint src/**/*.scss",
-    "fix": "yarn lint --fix; yarn lint:scss --fix",
+    "fix": "yarn lint --fix",
     "test": "yarn mocha -r ts-node/register tests/**/*.ts{,x}",
     "typecheck": "yarn tsc --skipLibCheck"
   },
@@ -40,7 +40,6 @@
   "dependencies": {
     "preact": "^10.1.1",
     "preact-router": "^3.1.0",
-    "redux-zero": "^5.1.3",
     "static": "^2.0.0"
   },
   "alias": {

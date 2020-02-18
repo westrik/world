@@ -11,7 +11,6 @@ import { AdminAuthedRoute } from './auth/AdminAuthedRoute';
 import ErrorScreen from './components/ErrorScreen';
 import { TestTemplate } from './components/TestTemplate';
 import { SideBySide } from './components/SideBySide';
-import MockTaskList from './tasks/MockTaskList';
 
 function App(): h.JSX.Element {
     return (
@@ -20,7 +19,6 @@ function App(): h.JSX.Element {
                 <Route path="/login" component={SignInForm} />
                 <AuthedRoute path="/" component={Stream} />
                 <AuthedRoute path="/tasks" component={TaskList} />
-                <AuthedRoute path="/mock/tasks" component={MockTaskList} />
                 <AuthedRoute path="/docs" component={DocumentList} />
                 <AdminAuthedRoute path="/users" component={UserList} />
                 <Route default component={ErrorScreen} />

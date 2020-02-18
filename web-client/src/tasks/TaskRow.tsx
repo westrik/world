@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
-import { Task } from './MockTaskList';
+import { Task } from './TaskList';
 
 export interface Props extends Task {
     handleDragOver: (e: Event) => void;
@@ -77,7 +77,7 @@ export default function TaskRow(props: Props): h.JSX.Element {
 
             {props.children.length > 0 ? (
                 <ul className="child_task_list">
-                    <li className="add_child_task">+</li>
+                    {/*<li className="add_child_task">+</li>*/}
                     {props.children.map((childTask: Task, key: number) => (
                         <TaskRow
                             key={key}
