@@ -1,10 +1,10 @@
 import { h } from 'preact';
 import { useContext, useState } from 'preact/hooks';
 
-import Auth from '~/auth/AuthContext';
-import { API_HOST, SITE_NAME } from '~/config';
-import { User } from '~/models/User';
-import { Session } from '~/models/Session';
+import Auth from '~auth/AuthContext';
+import { API_HOST, SITE_NAME } from '~config';
+import { User } from '~models/User';
+import { Session } from '~models/Session';
 
 // @ts-ignore
 import logo from '../static/img/logo.png';

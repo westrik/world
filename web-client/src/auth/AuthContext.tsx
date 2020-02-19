@@ -1,7 +1,7 @@
 import { createContext, h } from 'preact';
 import { route } from 'preact-router';
 
-import { Session } from '~/models/Session';
+import { Session } from '~models/Session';
 
 const TOKEN_KEY = 'access_token';
 const EXPIRATION_KEY = 'access_expiration';

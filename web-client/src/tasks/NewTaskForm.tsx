@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { useContext, useState } from 'preact/hooks';
 
-import Auth from '~/auth/AuthContext';
+import Auth from '~auth/AuthContext';
 
 import createTask from './createTask';
 

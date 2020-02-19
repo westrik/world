@@ -1,17 +1,17 @@
 import { h } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
 
-import Auth from '~/auth/AuthContext';
-import { API_HOST } from '~/config';
-import Container from '~/components/Container';
-import Header from '~/components/Header';
-import ListContainer from '~/components/ListContainer';
-import { APITask, Task } from '~/models/Task';
+import Auth from '~auth/AuthContext';
+import { API_HOST } from '~config';
+import Container from '~components/Container';
+import Header from '~components/Header';
+import ListContainer from '~components/ListContainer';
+import { APITask, Task } from '~models/Task';
 
 import TaskRow from './TaskRow';
 import NewTaskForm from './NewTaskForm';
 
-import { API_TASKS } from '~/../tests/fixtures/Tasks';
+import { API_TASKS } from '~../tests/fixtures/Tasks';
 
 const LIST_ROOT = 'LIST_ROOT';
 
@@ -46,7 +46,7 @@ function mapTasksToChildTasks(tasks: Array<APITask>, taskIdToChildAPITasks?: Tas
         .map(task => {
             return {
                 ...task,
-                children: mapTasksToChildTasks(taskIdToChildren[task.id] || [], taskIdToChildren), // TODO: look up children
+                childTasks: mapTasksToChildTasks(taskIdToChildren[task.id] || [], taskIdToChildren), // TODO: look up childTasks
             };
         });
 }

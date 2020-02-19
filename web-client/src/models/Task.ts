@@ -16,5 +16,5 @@ export interface APITask {
 }
 
 export interface Task extends APITask {
-    children: Array<Task>;
+    childTasks: Array<Task>;
 }

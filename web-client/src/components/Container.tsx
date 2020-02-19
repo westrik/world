@@ -1,12 +1,10 @@
 import { h } from 'preact';
 import { useContext } from 'preact/hooks';
 
-import { SITE_NAME } from '~/config';
-import Auth from '~/auth/AuthContext';
+import { SITE_NAME } from '~config';
+import Auth from '~auth/AuthContext';
 
 import Sidebar from './Sidebar';
-
-import '../style/Dashboard.scss';
 
 interface Props {
     children: h.JSX.Element | Array<h.JSX.Element>;
