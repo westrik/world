@@ -10,7 +10,11 @@
     "lib": [
       "es6",
       "dom"
-    ]
+    ],
+    "paths": {
+      "~*": ["./src/*"],
+      "tests/*": ["./tests/*"]
+    }
   },
   "include": [
     "src/**/*"

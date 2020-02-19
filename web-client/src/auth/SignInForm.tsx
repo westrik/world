@@ -1,11 +1,14 @@
 import { h } from 'preact';
 import { useContext, useState } from 'preact/hooks';
 
+import Auth from '~/auth/AuthContext';
+import { API_HOST, SITE_NAME } from '~/config';
+import { User } from '~/models/User';
+import { Session } from '~/models/Session';
+
 // @ts-ignore
 import logo from '../static/img/logo.png';
 import '../style/SignInForm.scss';
-import Auth from '../auth/AuthContext';
-import { API_HOST, SITE_NAME } from '../config';
 
 async function authenticate(emailAddress: string, password: string): Promise<SignInResponse> {
     const response = await fetch(`${API_HOST}/sign-in`, {
@@ -16,16 +19,6 @@ async function authenticate(emailAddress: string, password: string): Promise<Sig
         method: 'POST',
     });
     return await response.json();
-}
-
-export interface User {
-    email_address: string;
-    full_name: string;
-}
-
-export interface Session {
-    token: string;
-    expires_at: string;
 }
 
 interface SignInResponse {

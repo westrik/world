@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
-import { Task } from './TaskList';
+
+import { Task } from '~/models/Task';
 
 export interface Props extends Task {
     handleDragOver: (e: Event) => void;

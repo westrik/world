@@ -10,7 +10,8 @@
     "lint:scss": "yarn stylelint src/**/*.scss",
     "fix": "yarn lint --fix",
     "test": "yarn mocha -r ts-node/register tests/**/*.ts{,x}",
-    "typecheck": "yarn tsc --skipLibCheck"
+    "typecheck": "yarn tsc --skipLibCheck",
+    "chk": "yarn typecheck && yarn lint"
   },
   "devDependencies": {
     "@types/chai": "^4.2.7",

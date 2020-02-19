@@ -1,4 +1,4 @@
-import { APITask } from '../../src/tasks/TaskList';
+import { APITask } from '~/models/Task';
 
 export const API_TASKS: Array<APITask> = [
     {

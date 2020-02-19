@@ -1,14 +1,17 @@
 import { h } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
-import Auth from '../auth/AuthContext';
-import { API_HOST } from '../config';
-import Container from '../components/Container';
-import Header from '../components/Header';
+
+import Auth from '~/auth/AuthContext';
+import { API_HOST } from '~/config';
+import Container from '~/components/Container';
+import Header from '~/components/Header';
+import ListContainer from '~/components/ListContainer';
+import { APITask, Task } from '~/models/Task';
+
 import TaskRow from './TaskRow';
-import ListContainer from '../components/ListContainer';
 import NewTaskForm from './NewTaskForm';
-import { API_TASKS } from '../../tests/fixtures/tasks';
-import { APITask, Task } from '../models/task';
+
+import { API_TASKS } from '~/../tests/fixtures/Tasks';
 
 const LIST_ROOT = 'LIST_ROOT';
 
@@ -126,7 +129,7 @@ function TaskList(): h.JSX.Element {
             {tasks ? (
                 <ListContainer>
                     {tasks
-                        .sort((a, b): number => a.position - b.position)
+                        .sort((a, b): number => a.position! - b.position!)
                         .map((task: Task, key: number) => (
                             <TaskRow
                                 key={key}
