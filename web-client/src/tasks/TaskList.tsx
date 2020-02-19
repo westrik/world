@@ -8,38 +8,7 @@ import TaskRow from './TaskRow';
 import ListContainer from '../components/ListContainer';
 import NewTaskForm from './NewTaskForm';
 import { API_TASKS } from '../../tests/fixtures/tasks';
-
-export interface APITask {
-    id: string;
-    parentId?: string;
-    position: number;
-    description: string;
-    completed: boolean;
-    tags: Array<Tag>;
-    resources: Array<Resource>;
-}
-
-export interface Task extends APITask {
-    children: Array<Task>;
-}
-
-interface GetTasksResponse {
-    error: string | null;
-    items: Array<APITask>;
-}
-
-export interface Tag {
-    id: string;
-    name: string;
-    resource?: string | Resource;
-}
-
-export interface Resource {
-    id: string;
-    name: string;
-    url: string;
-    previewUrl?: string;
-}
+import { APITask, Task } from '../models/task';
 
 const LIST_ROOT = 'LIST_ROOT';
 
@@ -77,6 +46,11 @@ function mapTasksToChildTasks(tasks: Array<APITask>, taskIdToChildAPITasks?: Tas
                 children: mapTasksToChildTasks(taskIdToChildren[task.id] || [], taskIdToChildren), // TODO: look up children
             };
         });
+}
+
+export interface GetTasksResponse {
+    error: string | null;
+    items: Array<APITask>;
 }
 
 function TaskList(): h.JSX.Element {
