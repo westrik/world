@@ -1,3 +1,5 @@
+import '../style/Dashboard.scss';
+
 import { h } from 'preact';
 import { useContext } from 'preact/hooks';
 
