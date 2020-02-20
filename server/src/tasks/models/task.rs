@@ -180,12 +180,12 @@ impl Task {
 pub mod test_task_model {
     use crate::resource_identifier::*;
     use crate::tasks::models::task::TaskCreateSpec;
-    use crate::test_utils::db::{get_conn, rollback, spin_up_test_database};
+    use crate::test_utils::db::{connect_to_test_db, get_conn, rollback};
     use crate::test_utils::fixtures::create_test_user;
 
     #[test]
     fn test_task_create() {
-        let pool = spin_up_test_database();
+        let pool = connect_to_test_db();
 
         let conn = get_conn(&pool).unwrap();
 

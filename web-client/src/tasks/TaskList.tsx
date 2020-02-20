@@ -11,11 +11,11 @@ import { APITask, Task } from '~models/Task';
 import TaskRow from './TaskRow';
 import NewTaskForm from './NewTaskForm';
 
-import { API_TASKS } from '~../tests/fixtures/Tasks';
-
 const LIST_ROOT = 'LIST_ROOT';
 
 type TaskIdToTasksMap = { [taskId: string]: Array<APITask> };
+
+// TOOD: refactor this shit & add simple tests
 
 function mapTasksToChildTasks(tasks: Array<APITask>, taskIdToChildAPITasks?: TaskIdToTasksMap): Array<Task> {
     const taskIdToAPITask = tasks.reduce<Map<string, APITask>>(function(
@@ -53,7 +53,7 @@ function mapTasksToChildTasks(tasks: Array<APITask>, taskIdToChildAPITasks?: Tas
 
 export interface GetTasksResponse {
     error: string | null;
-    items: Array<APITask>;
+    tasks: Array<APITask>;
 }
 
 function TaskList(): h.JSX.Element {
@@ -71,8 +71,8 @@ function TaskList(): h.JSX.Element {
             method: 'GET',
         });
         const resp = (await response.json()) as GetTasksResponse;
-        if (resp.items) {
-            setTasks(mapTasksToChildTasks(resp.items));
+        if (resp.tasks) {
+            setTasks(mapTasksToChildTasks(resp.tasks));
         } else {
             setTasks([]);
         }
@@ -80,10 +80,9 @@ function TaskList(): h.JSX.Element {
 
     useEffect(() => {
         if (!tasks) {
-            // TODO: re-enable
-            // getTasks();
-            const x = mapTasksToChildTasks(API_TASKS);
-            setTasks(x);
+            getTasks().then(r => {
+                console.log('getTasks OK');
+            });
         }
     });
 
@@ -100,7 +99,7 @@ function TaskList(): h.JSX.Element {
     function handleDragEnd(e: Event): void {
         // TODO:
         //   change position of e.target to after current drag target
-        //   update all positions of items in between start position and end position
+        //   update all positions of tasks in between start position and end position
         console.log(e);
     }
 
@@ -114,7 +113,11 @@ function TaskList(): h.JSX.Element {
     return (
         <Container>
             <Header title="tasks">
-                <NewTaskForm />
+                <NewTaskForm
+                    onSubmit={(description: string): void => {
+                        setTasks([...(tasks as Array<Task>), { apiId: 'RANDOM', description, childTasks: [] } as Task]);
+                    }}
+                />
                 <button type="button" className="btn btn-sm btn-outline-secondary">
                     show personal
                 </button>

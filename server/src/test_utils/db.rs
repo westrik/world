@@ -6,7 +6,7 @@ use std::{env, io};
 
 embed_migrations!();
 
-pub fn spin_up_test_database() -> PgPool {
+pub fn connect_to_test_db() -> PgPool {
     dotenv().ok();
     let test_database_url = env::var("TEST_DATABASE_URL").expect("TEST_DATABASE_URL must be set");
     let pool = init_pool(&test_database_url).expect("Failed to create pool");
@@ -25,7 +25,7 @@ pub fn rollback(pool: &PgPool) {
     conn.execute("ROLLBACK").unwrap();
 }
 
-pub fn destroy(pool: &PgPool) {
+pub fn destroy_test_db(pool: &PgPool) {
     let conn = get_conn(&pool).unwrap();
     println!("🪓 Destroying test database...");
     conn.execute("ROLLBACK").unwrap();

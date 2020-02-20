@@ -5,7 +5,11 @@ import Auth from '~auth/AuthContext';
 
 import createTask from './createTask';
 
-export default function NewTaskForm(): h.JSX.Element {
+interface Props {
+    onSubmit: (description: string) => void;
+}
+
+export default function NewTaskForm(props: Props): h.JSX.Element {
     const [newTaskContent, setNewTaskContent] = useState('');
     const authContext = useContext(Auth);
     return (
@@ -16,6 +20,7 @@ export default function NewTaskForm(): h.JSX.Element {
                 // TODO: enforce constraints on backend
                 if (newTaskContent) {
                     createTask(authContext.authToken!, newTaskContent);
+                    props.onSubmit(newTaskContent);
                     setNewTaskContent('');
                 }
             }}
