@@ -1,30 +1,13 @@
 import { h } from 'preact';
 import { useContext, useState } from 'preact/hooks';
 
+import { authenticate, SignInResponse } from '~auth/authenticate';
 import Auth from '~auth/AuthContext';
-import { API_HOST, SITE_NAME } from '~config';
-import { User } from '~models/User';
-import { Session } from '~models/Session';
+import { SITE_NAME } from '~config';
 
 // @ts-ignore
 import logo from '../static/img/logo.png';
 import '../style/SignInForm.scss';
-
-async function authenticate(emailAddress: string, password: string): Promise<SignInResponse> {
-    const response = await fetch(`${API_HOST}/sign-in`, {
-        body: JSON.stringify({ emailAddress, password }),
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        method: 'POST',
-    });
-    return await response.json();
-}
-
-interface SignInResponse {
-    user: User;
-    session: Session;
-}
 
 function SignInForm(): h.JSX.Element {
     const authContext = useContext(Auth);
