@@ -1,3 +1,3 @@
 pub mod filters;
 mod handlers;
-pub mod model;
+pub mod models;

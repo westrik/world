@@ -1,5 +1,5 @@
 use crate::db::{get_conn, PgPool};
-use crate::tasks::model::{ApiNewTask, ListOptions, Task, TaskQueryError};
+use crate::tasks::models::task::{ApiTaskCreateSpec, ListOptions, Task, TaskQueryError};
 use std::convert::Infallible;
 use warp::http::StatusCode;
 
@@ -60,7 +60,7 @@ fn run_create_task(
 }
 
 pub async fn create_task(
-    new_task: ApiNewTask,
+    new_task: ApiTaskCreateSpec,
     session_token: String,
     db_pool: PgPool,
 ) -> Result<impl warp::Reply, Infallible> {
@@ -90,7 +90,7 @@ pub async fn create_task(
 
 pub async fn update_task(
     id: u64,
-    task_update: ApiNewTask,
+    task_update: ApiTaskCreateSpec,
     session_token: String,
     _db_pool: PgPool,
 ) -> Result<impl warp::Reply, Infallible> {

@@ -49,12 +49,12 @@ pub enum TaskQueryError {
 
 #[derive(Insertable, Debug)]
 #[table_name = "tasks"]
-pub struct TaskSpec {
+pub struct TaskCreateSpec {
     pub api_id: String,
     pub user_id: i32,
     pub description: String,
 }
-impl TaskSpec {
+impl TaskCreateSpec {
     pub fn insert(&self, conn: &PgConnection) -> Result<Task, TaskQueryError> {
         info!("{:?}", self);
         Ok(diesel::insert_into(tasks::table)
@@ -63,11 +63,29 @@ impl TaskSpec {
             .map_err(TaskQueryError::DatabaseError)?)
     }
 }
+#[derive(Debug, Deserialize)]
+pub struct ApiTaskCreateSpec {
+    pub description: String,
+}
+#[derive(AsChangeset)]
+#[table_name = "tasks"]
 pub struct TaskUpdateSpec {
     pub api_id: String,
+    pub completed_at: Option<Option<DateTime<Utc>>>,
     pub description: Option<String>,
-    pub parent_api_id: Option<String>,
-    pub sibling_api_id: Option<String>,
+    pub sibling_id: Option<i32>,
+    pub parent_id: Option<i32>,
+    pub is_collapsed: bool,
+}
+#[derive(Deserialize)]
+#[allow(non_snake_case)]
+pub struct ApiTaskUpdateSpec {
+    pub apiId: String,
+    pub description: Option<String>,
+    pub parentApiId: Option<Option<String>>,
+    pub siblingApiId: Option<Option<String>>,
+    pub isCompleted: Option<bool>,
+    pub isCollapsed: Option<bool>,
 }
 
 /* ----- API interfaces -----  */
@@ -83,10 +101,6 @@ pub struct ApiTask {
     pub siblingApiId: Option<String>,
     pub parentApiId: Option<String>,
     pub isCollapsed: bool,
-}
-#[derive(Debug, Deserialize)]
-pub struct ApiNewTask {
-    pub description: String,
 }
 impl From<LoadedTask> for ApiTask {
     fn from(lt: LoadedTask) -> Self {
@@ -132,7 +146,7 @@ impl Task {
             .filter(sessions::expires_at.gt(now))
             .first(conn)
             .map_err(|_| TaskQueryError::InvalidToken)?;
-        let new_task = TaskSpec {
+        let new_task = TaskCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Task),
             user_id: session.user_id,
             description,
@@ -151,7 +165,7 @@ impl Task {
             .filter(sessions::expires_at.gt(now))
             .first(conn)
             .map_err(|_| TaskQueryError::InvalidToken)?;
-        let new_task = TaskSpec {
+        let new_task = TaskCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Task),
             user_id: session.user_id,
             description,
@@ -165,7 +179,7 @@ impl Task {
 #[cfg(test)]
 pub mod test_task_model {
     use crate::resource_identifier::*;
-    use crate::tasks::model::TaskSpec;
+    use crate::tasks::models::task::TaskCreateSpec;
     use crate::test_utils::db::{get_conn, rollback, spin_up_test_database};
     use crate::test_utils::fixtures::create_test_user;
 
@@ -177,7 +191,7 @@ pub mod test_task_model {
 
         let test_user = create_test_user(&conn);
 
-        let new_task = TaskSpec {
+        let new_task = TaskCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Task),
             user_id: test_user.id,
             description: "HELLO WORLD".to_string(),
