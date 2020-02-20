@@ -9,9 +9,10 @@ export interface Props extends Task {
     handleDragStart: (e: Event) => void;
 }
 
-export default function TaskRow(props: Props): h.JSX.Element {
+export default function TaskRow(props: Props): h.JSX.Element | null {
     const [editing, setEditing] = useState(false);
     const [content, setContent] = useState(props.description);
+    const [deleted, setDeleted] = useState(false);
     const checkboxId = Math.random()
         .toString(36)
         .substring(2, 15);
@@ -24,6 +25,7 @@ export default function TaskRow(props: Props): h.JSX.Element {
         e.preventDefault();
         e.stopPropagation();
         toggleEditing();
+        // TODO: PUT call
     }
 
     function handleSetContent(e: Event): void {
@@ -32,15 +34,19 @@ export default function TaskRow(props: Props): h.JSX.Element {
         const newContent = (e.target as HTMLInputElement).value;
         if (newContent) {
             setContent(newContent);
+            toggleEditing();
+            // TODO: PUT call
+        } else {
+            setDeleted(true);
+            // TODO: DELETE call
         }
-        toggleEditing();
     }
 
     // TODO: [shift]-[up/down] drags task up or down by one
     // TODO: add task hover/pre-focus state
     // TODO: resolve tags to chips
 
-    return (
+    return !deleted ? (
         <li className="task" style="font-size: 1.5rem; min-height: 2em;">
             <input checked={Boolean(props.completedAt)} id={checkboxId} type="checkbox" className="mt-3" />
             <label
@@ -91,5 +97,5 @@ export default function TaskRow(props: Props): h.JSX.Element {
                 </ul>
             ) : null}
         </li>
-    );
+    ) : null;
 }

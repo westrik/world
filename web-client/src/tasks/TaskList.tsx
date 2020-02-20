@@ -80,9 +80,7 @@ function TaskList(): h.JSX.Element {
 
     useEffect(() => {
         if (!tasks) {
-            getTasks().then(r => {
-                console.log('getTasks OK');
-            });
+            getTasks();
         }
     });
 
@@ -115,7 +113,10 @@ function TaskList(): h.JSX.Element {
             <Header title="tasks">
                 <NewTaskForm
                     onSubmit={(description: string): void => {
-                        setTasks([...(tasks as Array<Task>), { apiId: 'RANDOM', description, childTasks: [] } as Task]);
+                        setTasks([
+                            ...(tasks as Array<Task>),
+                            ({ apiId: 'RANDOM', description, childTasks: [] } as unknown) as Task,
+                        ]);
                     }}
                 />
                 <button type="button" className="btn btn-sm btn-outline-secondary">
