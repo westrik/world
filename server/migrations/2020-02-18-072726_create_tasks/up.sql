@@ -7,7 +7,7 @@ CREATE TABLE tasks
     created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     completed_at  TIMESTAMPTZ,
-    content       TEXT NOT NULL,
+    description   TEXT NOT NULL,
     sibling_id    INT UNIQUE DEFERRABLE INITIALLY DEFERRED,
     parent_id     INT UNIQUE DEFERRABLE INITIALLY DEFERRED,
     is_collapsed  BOOLEAN NOT NULL DEFAULT FALSE,

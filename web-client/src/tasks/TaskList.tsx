@@ -22,8 +22,8 @@ function mapTasksToChildTasks(tasks: Array<APITask>, taskIdToChildAPITasks?: Tas
         taskIdToTask: Map<string, APITask>,
         task: APITask,
     ) {
-        // TODO: assert(!(task.id in taskIdToTask));
-        taskIdToTask.set(task.id, task);
+        // TODO: assert(!(task.apiId in taskIdToTask));
+        taskIdToTask.set(task.apiId, task);
         return taskIdToTask;
     },
     new Map<string, APITask>());
@@ -31,7 +31,7 @@ function mapTasksToChildTasks(tasks: Array<APITask>, taskIdToChildAPITasks?: Tas
     function computeTaskToChildMap(): TaskIdToTasksMap {
         const _taskIdToChildAPITasks: TaskIdToTasksMap = {};
         tasks.forEach(function(task: APITask) {
-            const parentId = task.parentId ? task.parentId : LIST_ROOT;
+            const parentId = task.parentApiId ? task.parentApiId : LIST_ROOT;
             if (!_taskIdToChildAPITasks[parentId]) {
                 _taskIdToChildAPITasks[parentId] = [];
             }
@@ -42,11 +42,11 @@ function mapTasksToChildTasks(tasks: Array<APITask>, taskIdToChildAPITasks?: Tas
     const taskIdToChildren = taskIdToChildAPITasks ? taskIdToChildAPITasks : computeTaskToChildMap();
 
     return tasks
-        .filter(task => !task.parentId || !taskIdToAPITask.get(task.parentId))
+        .filter(task => !task.parentApiId || !taskIdToAPITask.get(task.parentApiId))
         .map(task => {
             return {
                 ...task,
-                childTasks: mapTasksToChildTasks(taskIdToChildren[task.id] || [], taskIdToChildren), // TODO: look up childTasks
+                childTasks: mapTasksToChildTasks(taskIdToChildren[task.apiId] || [], taskIdToChildren), // TODO: look up childTasks
             };
         });
 }
@@ -128,17 +128,15 @@ function TaskList(): h.JSX.Element {
 
             {tasks ? (
                 <ListContainer>
-                    {tasks
-                        .sort((a, b): number => a.position! - b.position!)
-                        .map((task: Task, key: number) => (
-                            <TaskRow
-                                key={key}
-                                handleDragOver={handleDragOver}
-                                handleDragStart={handleDragStart}
-                                handleDragEnd={handleDragEnd}
-                                {...task}
-                            />
-                        ))}
+                    {tasks.map((task: Task, key: number) => (
+                        <TaskRow
+                            key={key}
+                            handleDragOver={handleDragOver}
+                            handleDragStart={handleDragStart}
+                            handleDragEnd={handleDragEnd}
+                            {...task}
+                        />
+                    ))}
                 </ListContainer>
             ) : (
                 <div className="spinner-border mx-auto" role="status">

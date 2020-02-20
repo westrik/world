@@ -15,7 +15,7 @@ table! {
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
         completed_at -> Nullable<Timestamptz>,
-        content -> Text,
+        description -> Text,
         sibling_id -> Nullable<Int4>,
         parent_id -> Nullable<Int4>,
         is_collapsed -> Bool,

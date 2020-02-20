@@ -2,19 +2,18 @@ import { Tag } from './Tag';
 import { Resource } from './Resource';
 
 export interface APITask {
-    id: string;
-    siblingId?: string;
-    parentId?: string;
-    modifiedAt?: Date;
-    createdAt?: Date;
-    completed: boolean;
-    completedAt?: Date | null;
-    position?: number; // TODO: remove
+    apiId: string;
     description: string;
-    tags?: Array<Tag>;
-    resources?: Array<Resource>;
+    createdAt: Date;
+    updatedAt: Date;
+    completedAt: Date | null;
+    siblingApiId: string | null;
+    parentApiId: string | null;
+    isCollapsed: boolean;
 }
 
 export interface Task extends APITask {
     childTasks: Array<Task>;
+    tags?: Array<Tag>;
+    resources?: Array<Resource>;
 }

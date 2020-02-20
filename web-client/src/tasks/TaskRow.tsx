@@ -42,7 +42,7 @@ export default function TaskRow(props: Props): h.JSX.Element {
 
     return (
         <li className="task" style="font-size: 1.5rem; min-height: 2em;">
-            <input checked={props.completed} id={checkboxId} type="checkbox" className="mt-3" />
+            <input checked={Boolean(props.completedAt)} id={checkboxId} type="checkbox" className="mt-3" />
             <label
                 htmlFor={checkboxId}
                 draggable={!editing}

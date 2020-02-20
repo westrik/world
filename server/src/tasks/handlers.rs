@@ -1,19 +1,31 @@
 use crate::db::{get_conn, PgPool};
-use crate::tasks::model::{ListOptions, Task, TaskQueryError};
+use crate::tasks::model::{ApiNewTask, ListOptions, Task, TaskQueryError};
 use std::convert::Infallible;
 use warp::http::StatusCode;
 
 #[derive(Serialize)]
-pub struct GetItemResponse {
+pub struct GetTaskResponse {
     error: Option<String>,
-    items: Option<Vec<Task>>,
+    tasks: Option<Vec<Task>>,
 }
+
+#[derive(Serialize)]
+pub struct CreateTaskResponse {
+    error: Option<String>,
+    task: Option<Task>,
+}
+
+#[derive(Serialize)]
+pub struct UpdateTaskResponse {
+    error: Option<String>,
+    task: Task,
+}
+
+// TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
 
 fn run_get_tasks(token: String, pool: &PgPool) -> Result<Vec<Task>, TaskQueryError> {
     Ok(Task::find_all_for_user(&get_conn(&pool).unwrap(), token)?)
 }
-
-// TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
 
 pub async fn list_tasks(
     opts: ListOptions,
@@ -22,40 +34,33 @@ pub async fn list_tasks(
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("list_tasks: token={}, opts={:?}", session_token, opts);
     Ok(match run_get_tasks(session_token, &db_pool) {
-        Ok(items) => warp::reply::with_status(
-            warp::reply::json(&GetItemResponse {
+        Ok(tasks) => warp::reply::with_status(
+            warp::reply::json(&GetTaskResponse {
                 error: None,
-                items: Some(items),
+                tasks: Some(tasks),
             }),
             StatusCode::OK,
         ),
         Err(_) => warp::reply::with_status(
-            warp::reply::json(&GetItemResponse {
-                error: Some("Failed to query for items".to_string()),
-                items: None,
+            warp::reply::json(&GetTaskResponse {
+                error: Some("Failed to query for tasks".to_string()),
+                tasks: None,
             }),
             StatusCode::INTERNAL_SERVER_ERROR,
         ),
     })
 }
 
-#[derive(Debug, Deserialize)]
-pub struct NewTask {
-    pub content: String,
-}
-
-#[derive(Serialize)]
-pub struct CreateTaskResponse {
-    error: Option<String>,
-    item: Option<Task>,
-}
-
-fn run_create_task(token: String, content: String, pool: &PgPool) -> Result<Task, TaskQueryError> {
-    Ok(Task::create(&get_conn(&pool).unwrap(), token, content)?)
+fn run_create_task(
+    token: String,
+    description: String,
+    pool: &PgPool,
+) -> Result<Task, TaskQueryError> {
+    Ok(Task::create(&get_conn(&pool).unwrap(), token, description)?)
 }
 
 pub async fn create_task(
-    new_task: NewTask,
+    new_task: ApiNewTask,
     session_token: String,
     db_pool: PgPool,
 ) -> Result<impl warp::Reply, Infallible> {
@@ -64,18 +69,18 @@ pub async fn create_task(
         session_token, new_task
     );
     Ok(
-        match run_create_task(session_token, new_task.content, &db_pool) {
-            Ok(item) => warp::reply::with_status(
+        match run_create_task(session_token, new_task.description, &db_pool) {
+            Ok(task) => warp::reply::with_status(
                 warp::reply::json(&CreateTaskResponse {
                     error: None,
-                    item: Some(item),
+                    task: Some(task),
                 }),
                 StatusCode::OK,
             ),
             Err(_) => warp::reply::with_status(
                 warp::reply::json(&CreateTaskResponse {
-                    error: Some("Failed to query for items".to_string()),
-                    item: None,
+                    error: Some("Failed to create task".to_string()),
+                    task: None,
                 }),
                 StatusCode::INTERNAL_SERVER_ERROR,
             ),
@@ -85,7 +90,7 @@ pub async fn create_task(
 
 pub async fn update_task(
     id: u64,
-    task_update: NewTask,
+    task_update: ApiNewTask,
     session_token: String,
     _db_pool: PgPool,
 ) -> Result<impl warp::Reply, Infallible> {

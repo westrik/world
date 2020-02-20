@@ -4,6 +4,7 @@ import { mount } from 'enzyme';
 
 import Config from '~config';
 import TaskRow from '~tasks/TaskRow';
+import { API_TASKS } from 'tests/fixtures/Tasks';
 
 describe('TaskRow', () => {
     it('renders', () => {
@@ -18,10 +19,8 @@ describe('TaskRow', () => {
                 handleDragStart={(): void => {
                     console.log('drag start');
                 }}
-                id={'task_abc123'}
-                completed={false}
                 childTasks={[]}
-                description={'task one'}
+                {...API_TASKS[0]}
             />,
         );
         expect(wrapper.text()).to.include('task one');
