@@ -18,7 +18,7 @@ const Auth = createContext<AuthContext>({} as AuthContext);
 function handleSignIn(this: AuthContext, session: Session, persistSession: boolean): void {
     const storage = persistSession ? localStorage : sessionStorage;
     storage.setItem(TOKEN_KEY, session.token);
-    storage.setItem(EXPIRATION_KEY, session.expires_at);
+    storage.setItem(EXPIRATION_KEY, session.expiresAt);
     this.authToken = session.token;
     route('/');
 }

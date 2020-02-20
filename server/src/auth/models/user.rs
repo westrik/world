@@ -44,9 +44,10 @@ impl UserCreateSpec {
     }
 }
 #[derive(Debug, Deserialize)]
+#[allow(non_snake_case)]
 pub struct ApiUserCreateSpec {
-    pub email_address: String,
-    pub full_name: Option<String>,
+    pub emailAddress: String,
+    pub fullName: Option<String>,
     pub password: String,
 }
 
@@ -80,8 +81,8 @@ impl User {
         conn: &PgConnection,
     ) -> Result<User, UserQueryError> {
         let new_user = UserCreateSpec {
-            email_address: new_user.email_address,
-            full_name: new_user.full_name,
+            email_address: new_user.emailAddress,
+            full_name: new_user.fullName,
             password_hash: Self::hash_password(new_user.password),
         };
         new_user.insert(conn)

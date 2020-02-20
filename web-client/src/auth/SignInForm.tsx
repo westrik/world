@@ -12,7 +12,7 @@ import '../style/SignInForm.scss';
 
 async function authenticate(emailAddress: string, password: string): Promise<SignInResponse> {
     const response = await fetch(`${API_HOST}/sign-in`, {
-        body: JSON.stringify({ email_address: emailAddress, password }),
+        body: JSON.stringify({ emailAddress, password }),
         headers: {
             'Content-Type': 'application/json',
         },

@@ -56,7 +56,7 @@ pub async fn sign_up(
 ) -> Result<impl warp::Reply, Infallible> {
     debug!(
         "sign_up: email_address={}, full_name={:?}",
-        new_user.email_address, new_user.full_name
+        new_user.emailAddress, new_user.fullName
     );
 
     Ok(match User::create(new_user, &get_conn(&db_pool).unwrap()) {

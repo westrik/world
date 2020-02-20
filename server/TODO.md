@@ -1,1 +1,0 @@
-- render markdown to JSON representation to send over wire

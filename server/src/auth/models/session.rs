@@ -22,16 +22,17 @@ pub struct Session {
 /* ----- API interfaces -----  */
 
 #[derive(Serialize)]
+#[allow(non_snake_case)]
 pub struct ApiSession {
     pub token: String,
-    pub expires_at: DateTime<Utc>,
+    pub expiresAt: DateTime<Utc>,
 }
 
 impl From<Session> for ApiSession {
     fn from(session: Session) -> Self {
         ApiSession {
             token: session.token,
-            expires_at: session.expires_at,
+            expiresAt: session.expires_at,
         }
     }
 }
