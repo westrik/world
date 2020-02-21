@@ -44,7 +44,7 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
         }
     }
 
-    function handleToggleCompleted(e: Event): void {
+    function handleToggleCompleted(): void {
         setCompleted(!completed);
     }
 
