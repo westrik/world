@@ -11,8 +11,10 @@ export interface Props extends Task {
 
 export default function TaskRow(props: Props): h.JSX.Element | null {
     const [editing, setEditing] = useState(false);
-    const [content, setContent] = useState(props.description);
     const [deleted, setDeleted] = useState(false);
+    const [description, setDescription] = useState(props.description);
+    const [completed, setCompleted] = useState(Boolean(props.completedAt));
+
     const checkboxId = Math.random()
         .toString(36)
         .substring(2, 15);
@@ -33,7 +35,7 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
         e.stopPropagation();
         const newContent = (e.target as HTMLInputElement).value;
         if (newContent) {
-            setContent(newContent);
+            setDescription(newContent);
             toggleEditing();
             // TODO: PUT call
         } else {
@@ -42,13 +44,23 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
         }
     }
 
+    function handleToggleCompleted(e: Event): void {
+        setCompleted(!completed);
+    }
+
     // TODO: [shift]-[up/down] drags task up or down by one
     // TODO: add task hover/pre-focus state
     // TODO: resolve tags to chips
 
     return !deleted ? (
         <li className="task" style="font-size: 1.5rem; min-height: 2em;">
-            <input checked={Boolean(props.completedAt)} id={checkboxId} type="checkbox" className="mt-3" />
+            <input
+                checked={completed}
+                id={checkboxId}
+                type="checkbox"
+                className="mt-3"
+                onChange={handleToggleCompleted}
+            />
             <label
                 htmlFor={checkboxId}
                 draggable={!editing}
@@ -63,14 +75,15 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
                         tabIndex={0}
                         onClick={handleToggle}
                         onFocus={handleToggle}
+                        className={completed ? 'completed' : ''}
                     >
-                        {content}
+                        {description}
                     </span>
                 ) : (
                     <input
                         ref={(ref): void | null => ref && ref.focus()}
                         type="text"
-                        value={content}
+                        value={description}
                         style="font-size:0.9em; width: 100%"
                         onKeyDown={(e): void => {
                             if (e.key === 'Enter') {

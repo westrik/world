@@ -199,6 +199,14 @@ body {
   label:hover::after {
     border-color: #4778d9 !important;
   }
+
+  span {
+    transition: 0.2s linear opacity;
+
+    &.completed {
+      opacity: 0.5;
+    }
+  }
 }
 
 ul > li.add_child_task {
