@@ -34,4 +34,4 @@ jobs:
       working-directory: ./web-client
       run: |
         yarn lint
-        yarn tsc
+        yarn typecheck

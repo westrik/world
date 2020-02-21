@@ -1,9 +1,11 @@
 import '../style/Dashboard.scss';
 
 import { h } from 'preact';
-import { SITE_NAME } from '../config';
 import { useContext } from 'preact/hooks';
-import Auth from '../auth/AuthContext';
+
+import { SITE_NAME } from '~config';
+import Auth from '~auth/AuthContext';
+
 import Sidebar from './Sidebar';
 
 interface Props {

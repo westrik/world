@@ -1,9 +1,15 @@
 import { h } from 'preact';
 import { useContext, useState } from 'preact/hooks';
-import Auth from '../auth/AuthContext';
+
+import Auth from '~auth/AuthContext';
+
 import createTask from './createTask';
 
-export default function NewTaskForm(): h.JSX.Element {
+interface Props {
+    onSubmit: (description: string) => void;
+}
+
+export default function NewTaskForm(props: Props): h.JSX.Element {
     const [newTaskContent, setNewTaskContent] = useState('');
     const authContext = useContext(Auth);
     return (
@@ -14,6 +20,7 @@ export default function NewTaskForm(): h.JSX.Element {
                 // TODO: enforce constraints on backend
                 if (newTaskContent) {
                     createTask(authContext.authToken!, newTaskContent);
+                    props.onSubmit(newTaskContent);
                     setNewTaskContent('');
                 }
             }}
@@ -21,6 +28,7 @@ export default function NewTaskForm(): h.JSX.Element {
             <input
                 type="text"
                 className="form-control float-left mr-2"
+                style="width: 50%"
                 placeholder="create a task"
                 value={newTaskContent}
                 onChange={(e): void => {

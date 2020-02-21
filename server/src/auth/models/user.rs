@@ -6,6 +6,8 @@ use std::{env, str};
 
 use crate::schema::{users, users::dsl::users as all_users};
 
+/* ----- Model definitions -----  */
+
 #[derive(Identifiable, Queryable, Serialize, Deserialize)]
 pub struct User {
     pub id: i32,
@@ -16,44 +18,7 @@ pub struct User {
     pub updated_at: DateTime<Utc>,
 }
 
-#[derive(Insertable)]
-#[table_name = "users"]
-pub struct DbNewUser {
-    pub email_address: String,
-    pub full_name: Option<String>,
-    pub password_hash: String,
-}
-
-impl DbNewUser {
-    pub fn insert(&self, conn: &PgConnection) -> Result<User, UserQueryError> {
-        Ok(diesel::insert_into(users::table)
-            .values(self)
-            .get_result(conn)
-            .map_err(UserQueryError::DatabaseError)?)
-    }
-}
-
-#[derive(Debug, Deserialize)]
-pub struct NewUser {
-    pub email_address: String,
-    pub full_name: Option<String>,
-    pub password: String,
-}
-
-#[derive(Serialize)]
-pub struct UiUser {
-    pub email_address: String, // TODO: change to user API key
-    pub full_name: Option<String>,
-}
-
-impl From<User> for UiUser {
-    fn from(user: User) -> Self {
-        UiUser {
-            email_address: user.email_address,
-            full_name: user.full_name,
-        }
-    }
-}
+/* ----- Query helper structs  -----  */
 
 #[derive(Debug)]
 pub enum UserQueryError {
@@ -61,16 +26,63 @@ pub enum UserQueryError {
     DatabaseError(diesel::result::Error),
 }
 
+/* ----- Create and update specs  -----  */
+
+#[derive(Insertable)]
+#[table_name = "users"]
+pub struct UserCreateSpec {
+    pub email_address: String,
+    pub full_name: Option<String>,
+    pub password_hash: String,
+}
+impl UserCreateSpec {
+    pub fn insert(&self, conn: &PgConnection) -> Result<User, UserQueryError> {
+        Ok(diesel::insert_into(users::table)
+            .values(self)
+            .get_result(conn)
+            .map_err(UserQueryError::DatabaseError)?)
+    }
+}
+#[derive(Debug, Deserialize)]
+#[allow(non_snake_case)]
+pub struct ApiUserCreateSpec {
+    pub emailAddress: String,
+    pub fullName: Option<String>,
+    pub password: String,
+}
+
+/* ----- API interfaces -----  */
+
+#[derive(Serialize)]
+pub struct ApiUser {
+    pub email_address: String, // TODO: change to user API key
+    pub full_name: Option<String>,
+}
+
+impl From<User> for ApiUser {
+    fn from(user: User) -> Self {
+        ApiUser {
+            email_address: user.email_address,
+            full_name: user.full_name,
+        }
+    }
+}
+
+/* ----- DB business logic -----  */
+
 lazy_static! {
     static ref HASH_SALT: String =
         env::var("PASSWORD_HASH_SALT").expect("PASSWORD_HASH_SALT must be set");
 }
 
 impl User {
-    pub fn create(new_user: NewUser, conn: &PgConnection) -> Result<User, UserQueryError> {
-        let new_user = DbNewUser {
-            email_address: new_user.email_address,
-            full_name: new_user.full_name,
+    pub fn create(
+        new_user: ApiUserCreateSpec,
+        conn: &PgConnection,
+    ) -> Result<User, UserQueryError> {
+        let new_user = UserCreateSpec {
+            email_address: new_user.emailAddress,
+            full_name: new_user.fullName,
             password_hash: Self::hash_password(new_user.password),
         };
         new_user.insert(conn)
@@ -101,3 +113,5 @@ impl User {
         .to_string()
     }
 }
+
+/* ----- TODO: DB integration tests -----  */

@@ -1558,6 +1558,7 @@ dependencies = [
  "log 0.4.8",
  "pretty_env_logger",
  "rand 0.7.2",
+ "regex",
  "serde",
  "serde_derive",
  "serde_json",

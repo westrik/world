@@ -4,8 +4,10 @@ use diesel::PgConnection;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 
-use crate::models::user::{User, UserQueryError};
+use crate::auth::models::user::{User, UserQueryError};
 use crate::schema::sessions;
+
+/* ----- Model definitions -----  */
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[primary_key(token)]
@@ -16,6 +18,26 @@ pub struct Session {
     pub created_at: DateTime<Utc>,
     pub expires_at: DateTime<Utc>,
 }
+
+/* ----- API interfaces -----  */
+
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+pub struct ApiSession {
+    pub token: String,
+    pub expiresAt: DateTime<Utc>,
+}
+
+impl From<Session> for ApiSession {
+    fn from(session: Session) -> Self {
+        ApiSession {
+            token: session.token,
+            expiresAt: session.expires_at,
+        }
+    }
+}
+
+/* ----- DB business logic -----  */
 
 impl Session {
     pub fn create(conn: &PgConnection, user: &User) -> Result<Session, UserQueryError> {
@@ -28,17 +50,4 @@ impl Session {
     }
 }
 
-#[derive(Serialize)]
-pub struct UiSession {
-    pub token: String,
-    pub expires_at: DateTime<Utc>,
-}
-
-impl From<Session> for UiSession {
-    fn from(session: Session) -> Self {
-        UiSession {
-            token: session.token,
-            expires_at: session.expires_at,
-        }
-    }
-}
+/* ----- TODO: DB integration tests -----  */

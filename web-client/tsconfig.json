@@ -10,10 +10,15 @@
     "lib": [
       "es6",
       "dom"
-    ]
+    ],
+    "paths": {
+      "~*": ["./src/*"],
+      "tests/*": ["./tests/*"]
+    }
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "tests/**/*"
   ],
   "exclude": [
     "node_modules"
