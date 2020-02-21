@@ -67,11 +67,9 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
                 onDragStart={props.handleDragStart}
                 onDragOver={props.handleDragOver}
                 onDragEnd={props.handleDragEnd}
-                style="width:100%"
             >
                 {!editing ? (
                     <span
-                        style="display: inline-block; width:100%"
                         tabIndex={0}
                         onClick={handleToggle}
                         onFocus={handleToggle}
@@ -84,9 +82,8 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
                         ref={(ref): void | null => ref && ref.focus()}
                         type="text"
                         value={description}
-                        style="font-size:0.9em; width: 100%"
                         onKeyDown={(e): void => {
-                            if (e.key === 'Enter') {
+                            if (e.key === 'Enter' && !e.shiftKey) {
                                 handleSetContent(e);
                             }
                         }}

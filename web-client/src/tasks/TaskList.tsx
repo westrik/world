@@ -111,17 +111,6 @@ function TaskList(): h.JSX.Element {
     return (
         <Container>
             <Header title="tasks">
-                <NewTaskForm
-                    onSubmit={(description: string): void => {
-                        setTasks([
-                            ...(tasks as Array<Task>),
-                            ({ apiId: 'RANDOM', description, childTasks: [] } as unknown) as Task,
-                        ]);
-                    }}
-                />
-                <button type="button" className="btn btn-sm btn-outline-secondary">
-                    show personal
-                </button>
                 <button type="button" className="btn btn-sm btn-outline-secondary">
                     show completed
                 </button>
@@ -147,6 +136,17 @@ function TaskList(): h.JSX.Element {
                     <span className="sr-only">Loading...</span>
                 </div>
             )}
+
+            <div style="background: #fff; padding-top: 1rem; position: fixed; bottom: 0; width: 100%; box-shadow: 0px -20px 20px 0px rgba(255,255,255,1);">
+                <NewTaskForm
+                    onSubmit={(description: string): void => {
+                        setTasks([
+                            ...(tasks as Array<Task>),
+                            ({ apiId: 'RANDOM', description, childTasks: [] } as unknown) as Task,
+                        ]);
+                    }}
+                />
+            </div>
         </Container>
     );
 }

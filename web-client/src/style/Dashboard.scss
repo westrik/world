@@ -1,6 +1,5 @@
 body {
-  /* 'Triplicate T3c' */
-  //font-family: 'Concourse T3', -apple-system;
+  font-family: 'JetBrains Mono', -apple-system, sans-serif;
 }
 
 .icon {
@@ -186,48 +185,52 @@ body {
     border: 2px dotted blue;
   }
 
-  label:hover::before {
-    border: 2px solid #4778d9 !important;
-  }
-
-  label:active::before {
+  [type="checkbox"] + label:active::after,
+  [type="checkbox"] + label:active::before {
     cursor: grabbing;
     cursor: -moz-grabbing;
     cursor: -webkit-grabbing;
   }
 
-  label:hover::after {
-    border-color: #4778d9 !important;
-  }
+  label {
+    width: 100%;
 
-  span {
-    transition: 0.2s linear opacity;
+    span {
+      display: inline-block;
+      width: 100%;
+      transition: 0.5s ease opacity;
 
-    &.completed {
-      opacity: 0.5;
-      text-decoration: line-through;
+      &.completed {
+        opacity: 0.5;
+        text-decoration: line-through;
+        animation: strike 0.5s ease;
+      }
+    }
+
+    input {
+      font-size: 0.85em;
+      width: 100%;
     }
   }
 }
+
+@keyframes strike {
+  from { text-decoration-color: transparent; }
+  to { text-decoration-color: auto; }
+}
+
+
 
 ul > li.add_child_task {
   position: absolute;
   margin-left: -2.5rem;
   margin-top: -0.4rem;
   opacity: 0;
-  transition: 0.2s linear opacity;
+  transition: 0.5s ease opacity;
 }
 
 ul:hover > li.add_child_task {
   opacity: 1;
-}
-
-.child_task_list {
-  position: relative;
-  list-style: none;
-  padding: 0;
-  padding-left: 1.4em;
-  margin-left: 0.6em;
 }
 
 // .child_task_list:before {
