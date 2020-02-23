@@ -9,7 +9,7 @@ export default function Sidebar(): h.JSX.Element {
                 <ul className="nav flex-column">
                     <li className="nav-item">
                         <Link className="nav-link" activeClassName="active" href="/">
-                            stream
+                            log
                         </Link>
                     </li>
                     <li className="nav-item">

@@ -29,14 +29,14 @@ export default function NewTaskForm(props: Props): h.JSX.Element {
                 type="text"
                 className="form-control float-left mr-2"
                 style="width: 50%"
-                placeholder="create a task"
+                placeholder="what's next?"
                 value={newTaskContent}
                 onChange={(e): void => {
                     setNewTaskContent((e.target as HTMLInputElement).value);
                 }}
             />
             <button type="submit" className="btn btn-sm btn-outline-secondary mr-2">
-                create
+                create task
             </button>
         </form>
     );

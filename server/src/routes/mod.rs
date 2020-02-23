@@ -26,6 +26,7 @@ fn authentication(
 fn authenticated(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    // TODO: wrap with session
     task_routes(db_pool)
 }
 

@@ -1,22 +1,22 @@
 import Router, { Route } from 'preact-router';
 import { h, render } from 'preact';
 
-import SignInForm from '~auth/SignInForm';
-import { AuthProvider } from '~auth/AuthContext';
-import { AuthedRoute } from '~auth/AuthedRoute';
-import TaskList from '~tasks/TaskList';
-import Stream from '~stream/Stream';
-import DocumentList from '~docs/DocumentList';
 import UserList from '~admin/UserList';
 import { AdminAuthedRoute } from '~auth/AdminAuthedRoute';
+import { AuthProvider } from '~auth/AuthContext';
+import { AuthedRoute } from '~auth/AuthedRoute';
+import SignInForm from '~auth/SignInForm';
 import ErrorScreen from '~components/ErrorScreen';
+import DocumentList from '~docs/DocumentList';
+import EventLog from '~/event-log/EventLog';
+import TaskList from '~tasks/TaskList';
 
 export default function App(): h.JSX.Element {
     return (
         <AuthProvider>
             <Router>
                 <Route path="/login" component={SignInForm} />
-                <AuthedRoute path="/" component={Stream} />
+                <AuthedRoute path="/" component={EventLog} />
                 <AuthedRoute path="/tasks" component={TaskList} />
                 <AuthedRoute path="/docs" component={DocumentList} />
                 <AdminAuthedRoute path="/users" component={UserList} />
