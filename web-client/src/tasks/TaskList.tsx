@@ -2,10 +2,10 @@ import { h } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
 
 import Auth from '~auth/AuthContext';
-import { API_HOST } from '~config';
 import Container from '~components/Container';
 import Header from '~components/Header';
 import ListContainer from '~components/ListContainer';
+import { API_HOST } from '~config';
 import { APITask, Task } from '~models/Task';
 
 import TaskRow from './TaskRow';
