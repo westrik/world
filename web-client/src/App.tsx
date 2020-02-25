@@ -7,9 +7,9 @@ import { AuthProvider } from '~auth/AuthContext';
 import { AuthedRoute } from '~auth/AuthedRoute';
 import SignInForm from '~auth/SignInForm';
 import ErrorScreen from '~components/ErrorScreen';
-import DocumentList from '~docs/DocumentList';
 import EventLog from '~/event-log/EventLog';
 import TaskList from '~tasks/TaskList';
+import NoteList from "~notes/NoteList";
 
 export default function App(): h.JSX.Element {
     return (
@@ -18,7 +18,7 @@ export default function App(): h.JSX.Element {
                 <Route path="/login" component={SignInForm} />
                 <AuthedRoute path="/" component={EventLog} />
                 <AuthedRoute path="/tasks" component={TaskList} />
-                <AuthedRoute path="/docs" component={DocumentList} />
+                <AuthedRoute path="/notes" component={NoteList} />
                 <AdminAuthedRoute path="/users" component={UserList} />
                 <Route default component={ErrorScreen} />
 
