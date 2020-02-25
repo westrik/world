@@ -34,7 +34,7 @@ pub async fn list_tasks(
     session_token: String,
     db_pool: PgPool,
 ) -> Result<impl warp::Reply, Infallible> {
-    debug!("list_tasks: token={}, opts={:?}", session_token, opts);
+    debug!("list_tasks: opts={:?}", opts);
     Ok(match run_get_tasks(session_token, &db_pool) {
         Ok(tasks) => warp::reply::with_status(
             warp::reply::json(&GetTaskResponse {
@@ -66,10 +66,7 @@ pub async fn create_task(
     session_token: String,
     db_pool: PgPool,
 ) -> Result<impl warp::Reply, Infallible> {
-    debug!(
-        "create_task: token={}, new_task={:?}",
-        session_token, new_task
-    );
+    debug!("create_task: new_task={:?}", new_task);
     Ok(
         match run_create_task(session_token, new_task.description, &db_pool) {
             Ok(task) => warp::reply::with_status(
@@ -110,10 +107,7 @@ pub async fn update_task(
     session_token: String,
     db_pool: PgPool,
 ) -> Result<impl warp::Reply, Infallible> {
-    debug!(
-        "update_task: token={}, api_id={}, spec={:?}",
-        session_token, api_id, spec
-    );
+    debug!("update_task: api_id={}, spec={:?}", api_id, spec);
     Ok(
         match run_update_task(session_token, api_id, spec, &db_pool) {
             Ok(task) => warp::reply::with_status(
@@ -136,9 +130,9 @@ pub async fn update_task(
 
 pub async fn delete_task(
     api_id: String,
-    session_token: String,
+    _session_token: String,
     _db_pool: PgPool,
 ) -> Result<impl warp::Reply, Infallible> {
-    debug!("delete_task: token={}, api_id={}", session_token, api_id);
+    debug!("delete_task: api_id={}", api_id);
     Ok(StatusCode::NO_CONTENT)
 }

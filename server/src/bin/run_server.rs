@@ -16,7 +16,7 @@ async fn main() {
     if env::var("RUST_LOG").is_err() {
         // Set `RUST_LOG=run_server=debug` to see debug logs,
         // this only shows access logs.
-        env::set_var("RUST_LOG", "run_server=info");
+        env::set_var("RUST_LOG", "westrikworld_server=debug");
     }
     pretty_env_logger::init();
 
@@ -30,7 +30,7 @@ async fn main() {
 
     let api = routes::api(pool.clone());
     let routes = api
-        .with(warp::log("run_server"))
+        .with(warp::log("westrikworld_server::_routing"))
         .with(cors_wrapper(&cors_origin_url));
     warp::serve(routes).run(([127, 0, 0, 1], 8080)).await;
 }
