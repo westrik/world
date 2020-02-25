@@ -56,8 +56,6 @@ pub mod test_authentication {
                 .reply(&sign_up_filter)
                 .await;
             println!("{:?}", response);
-            let pool = connect_to_test_db();
-            rollback(&pool);
         };
     }
 }

@@ -206,5 +206,3 @@ impl Task {
         .update(conn, api_id, session.user_id)
     }
 }
-
-/* ----- DB integration tests -----  */
