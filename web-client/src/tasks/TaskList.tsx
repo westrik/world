@@ -2,10 +2,10 @@ import { h } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
 
 import Auth from '~auth/AuthContext';
-import { API_HOST } from '~config';
 import Container from '~components/Container';
 import Header from '~components/Header';
 import ListContainer from '~components/ListContainer';
+import { API_HOST } from '~config';
 import { APITask, Task } from '~models/Task';
 
 import TaskRow from './TaskRow';
@@ -72,7 +72,9 @@ function TaskList(): h.JSX.Element {
         });
         const resp = (await response.json()) as GetTasksResponse;
         if (resp.tasks) {
-            setTasks(mapTasksToChildTasks(resp.tasks));
+            const tasksWithChildren = mapTasksToChildTasks(resp.tasks);
+            console.log(tasksWithChildren);
+            setTasks(tasksWithChildren);
         } else {
             setTasks([]);
         }

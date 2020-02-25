@@ -18,8 +18,8 @@ export default function Sidebar(): h.JSX.Element {
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link class="nav-link" activeClassName="active" href="/docs">
-                            documents
+                        <Link class="nav-link" activeClassName="active" href="/notes">
+                            notes
                         </Link>
                     </li>
                 </ul>

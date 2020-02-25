@@ -1,7 +1,8 @@
-import { Route, RouteProps } from 'preact-router';
-import { useContext, useEffect } from 'preact/hooks';
-import Auth from './AuthContext';
 import { h } from 'preact';
+import { useContext, useEffect } from 'preact/hooks';
+import { Route, RouteProps } from 'preact-router';
+
+import Auth from './AuthContext';
 
 export function AuthedRoute<Props>(props: RouteProps<Props> & Partial<Props>): preact.VNode {
     const authContext = useContext(Auth);

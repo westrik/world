@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import { useContext, useState } from 'preact/hooks';
 
-import { authenticate, SignInResponse } from '~auth/authenticate';
 import Auth from '~auth/AuthContext';
+import { authenticate, SignInResponse } from '~auth/authenticate';
 import { SITE_NAME } from '~config';
 
 // @ts-ignore

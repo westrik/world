@@ -1,7 +1,9 @@
 import { h } from 'preact';
-import { useState } from 'preact/hooks';
+import { useContext, useState } from 'preact/hooks';
 
 import { Task } from '~models/Task';
+import Auth from '~auth/AuthContext';
+import updateTask from '~tasks/updateTask';
 
 export interface Props extends Task {
     handleDragOver: (e: Event) => void;
@@ -14,6 +16,7 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
     const [deleted, setDeleted] = useState(false);
     const [description, setDescription] = useState(props.description);
     const [completed, setCompleted] = useState(Boolean(props.completedAt));
+    const authContext = useContext(Auth);
 
     const checkboxId = Math.random()
         .toString(36)
@@ -27,25 +30,26 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
         e.preventDefault();
         e.stopPropagation();
         toggleEditing();
-        // TODO: PUT call
     }
 
     function handleSetContent(e: Event): void {
         e.preventDefault();
         e.stopPropagation();
-        const newContent = (e.target as HTMLInputElement).value;
-        if (newContent) {
-            setDescription(newContent);
-            toggleEditing();
-            // TODO: PUT call
-        } else {
+        toggleEditing();
+        const newDescription = (e.target as HTMLInputElement).value;
+        if (newDescription && newDescription !== description) {
+            setDescription(newDescription);
+            updateTask(authContext.authToken!, props.apiId, { description: newDescription });
+        } else if (!newDescription) {
             setDeleted(true);
             // TODO: DELETE call
         }
     }
 
     function handleToggleCompleted(): void {
-        setCompleted(!completed);
+        const isCompleted = !completed;
+        setCompleted(isCompleted);
+        updateTask(authContext.authToken!, props.apiId, { isCompleted });
     }
 
     // TODO: [shift]-[up/down] drags task up or down by one

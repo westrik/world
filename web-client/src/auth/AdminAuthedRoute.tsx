@@ -1,6 +1,6 @@
 import { h } from 'preact';
-import { useContext, useEffect } from 'preact/hooks';
 import { Route, RouteProps } from 'preact-router';
+import { useContext, useEffect } from 'preact/hooks';
 
 import Auth from './AuthContext';
 

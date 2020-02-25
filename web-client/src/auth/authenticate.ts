@@ -1,6 +1,6 @@
-import { User } from '~models/User';
-import { Session } from '~models/Session';
 import { API_HOST } from '~config';
+import { Session } from '~models/Session';
+import { User } from '~models/User';
 
 export interface SignInResponse {
     user: User;

@@ -67,20 +67,19 @@ impl TaskCreateSpec {
 pub struct ApiTaskCreateSpec {
     pub description: String,
 }
-#[derive(AsChangeset)]
+#[derive(AsChangeset, Debug)]
 #[table_name = "tasks"]
 pub struct TaskUpdateSpec {
-    pub api_id: String,
+    pub updated_at: DateTime<Utc>,
     pub completed_at: Option<Option<DateTime<Utc>>>,
     pub description: Option<String>,
-    pub sibling_id: Option<i32>,
-    pub parent_id: Option<i32>,
-    pub is_collapsed: bool,
+    pub is_collapsed: Option<bool>,
+    pub parent_id: Option<Option<i32>>,
+    pub sibling_id: Option<Option<i32>>,
 }
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 #[allow(non_snake_case)]
 pub struct ApiTaskUpdateSpec {
-    pub apiId: String,
     pub description: Option<String>,
     pub parentApiId: Option<Option<String>>,
     pub siblingApiId: Option<Option<String>>,
@@ -116,6 +115,20 @@ impl From<LoadedTask> for ApiTask {
         }
     }
 }
+impl From<&Task> for ApiTask {
+    fn from(task: &Task) -> Self {
+        ApiTask {
+            apiId: task.api_id.clone(),
+            description: task.description.clone(),
+            createdAt: task.created_at,
+            updatedAt: task.updated_at,
+            completedAt: task.completed_at,
+            siblingApiId: None,
+            parentApiId: None,
+            isCollapsed: task.is_collapsed,
+        }
+    }
+}
 
 /* ----- DB business logic -----  */
 
@@ -124,6 +137,7 @@ impl Task {
         conn: &PgConnection,
         token: String,
     ) -> Result<Vec<Task>, TaskQueryError> {
+        // TODO: refactor this out
         let session: Session = all_sessions
             .filter(sessions::token.eq(token))
             .filter(sessions::expires_at.gt(now))
@@ -141,6 +155,7 @@ impl Task {
         token: String,
         description: String,
     ) -> Result<Task, TaskQueryError> {
+        // TODO: refactor this out
         let session: Session = all_sessions
             .filter(sessions::token.eq(token))
             .filter(sessions::expires_at.gt(now))
@@ -157,20 +172,41 @@ impl Task {
     pub fn update(
         conn: &PgConnection,
         token: String,
-        description: String,
-        completed: bool,
+        api_id: String,
+        spec: ApiTaskUpdateSpec,
     ) -> Result<Task, TaskQueryError> {
+        // TODO: refactor this out
         let session: Session = all_sessions
             .filter(sessions::token.eq(token))
             .filter(sessions::expires_at.gt(now))
             .first(conn)
             .map_err(|_| TaskQueryError::InvalidToken)?;
-        let new_task = TaskCreateSpec {
-            api_id: generate_resource_identifier(ResourceType::Task),
-            user_id: session.user_id,
-            description,
+
+        let update_spec = TaskUpdateSpec {
+            updated_at: Utc::now(),
+            completed_at: match spec.isCompleted {
+                Some(is_completed) => {
+                    if is_completed {
+                        Some(Some(Utc::now()))
+                    } else {
+                        Some(None)
+                    }
+                }
+                None => None,
+            },
+            description: spec.description,
+            is_collapsed: spec.isCollapsed,
+            parent_id: None,
+            sibling_id: None,
         };
-        new_task.insert(conn)
+        Ok(diesel::update(
+            all_tasks
+                .filter(tasks::api_id.eq(&api_id))
+                .filter(tasks::user_id.eq(session.user_id)),
+        )
+        .set(update_spec)
+        .get_result::<Task>(conn)
+        .map_err(TaskQueryError::DatabaseError)?)
     }
 }
 
