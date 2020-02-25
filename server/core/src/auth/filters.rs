@@ -37,10 +37,7 @@ pub fn sign_in(
 pub mod test_authentication {
     use crate::auth::filters::sign_up;
     use crate::auth::models::user::ApiUserCreateSpec;
-    use crate::resource_identifier::*;
-    use crate::tasks::models::task::TaskCreateSpec;
-    use crate::test_utils::db::{connect_to_test_db, get_conn, rollback};
-    use crate::test_utils::fixtures::create_test_user;
+    use crate::test_utils::db::{connect_to_test_db, rollback};
 
     #[test]
     fn test_sign_up() {
