@@ -1,5 +1,7 @@
 use crate::db::{get_conn, PgPool};
-use crate::tasks::models::task::{ApiTaskCreateSpec, ListOptions, Task, TaskQueryError};
+use crate::tasks::models::task::{
+    ApiTaskCreateSpec, ApiTaskUpdateSpec, ListOptions, Task, TaskQueryError,
+};
 use std::convert::Infallible;
 use warp::http::StatusCode;
 
@@ -88,24 +90,55 @@ pub async fn create_task(
     )
 }
 
+fn run_update_task(
+    token: String,
+    api_id: String,
+    spec: ApiTaskUpdateSpec,
+    pool: &PgPool,
+) -> Result<Task, TaskQueryError> {
+    Ok(Task::update(
+        &get_conn(&pool).unwrap(),
+        token,
+        api_id,
+        spec,
+    )?)
+}
+
 pub async fn update_task(
-    id: u64,
-    task_update: ApiTaskCreateSpec,
+    api_id: String,
+    spec: ApiTaskUpdateSpec,
     session_token: String,
-    _db_pool: PgPool,
+    db_pool: PgPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!(
-        "update_task: token={}, id={}, task_update={:?}",
-        session_token, id, task_update
+        "update_task: token={}, api_id={}, spec={:?}",
+        session_token, api_id, spec
     );
-    Ok(StatusCode::OK)
+    Ok(
+        match run_update_task(session_token, api_id, spec, &db_pool) {
+            Ok(task) => warp::reply::with_status(
+                warp::reply::json(&CreateTaskResponse {
+                    error: None,
+                    task: Some(task),
+                }),
+                StatusCode::OK,
+            ),
+            Err(_) => warp::reply::with_status(
+                warp::reply::json(&CreateTaskResponse {
+                    error: Some("Failed to create task".to_string()),
+                    task: None,
+                }),
+                StatusCode::INTERNAL_SERVER_ERROR,
+            ),
+        },
+    )
 }
 
 pub async fn delete_task(
-    id: u64,
+    api_id: String,
     session_token: String,
     _db_pool: PgPool,
 ) -> Result<impl warp::Reply, Infallible> {
-    debug!("delete_task: token={}, id={}", session_token, id);
+    debug!("delete_task: token={}, api_id={}", session_token, api_id);
     Ok(StatusCode::NO_CONTENT)
 }

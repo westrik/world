@@ -1,8 +1,8 @@
 use crate::db::PgPool;
 use crate::routes::utils::{json_body, with_db, with_session_token};
 use crate::tasks::handlers;
-use crate::tasks::models::task::ApiTaskCreateSpec;
 use crate::tasks::models::task::ListOptions;
+use crate::tasks::models::task::{ApiTaskCreateSpec, ApiTaskUpdateSpec};
 use warp::Filter;
 
 pub fn routes(
@@ -42,9 +42,9 @@ pub fn tasks_create(
 pub fn tasks_update(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("task" / u64)
+    warp::path!("task" / String)
         .and(warp::put())
-        .and(json_body::<ApiTaskCreateSpec>())
+        .and(json_body::<ApiTaskUpdateSpec>())
         .and(with_session_token())
         .and(with_db(db_pool))
         .and_then(handlers::update_task)
@@ -54,7 +54,7 @@ pub fn tasks_update(
 pub fn tasks_delete(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("task" / u64)
+    warp::path!("task" / String)
         .and(warp::delete())
         .and(with_session_token())
         .and(with_db(db_pool))
