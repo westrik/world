@@ -58,6 +58,7 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
 
     return !deleted ? (
         <li className="task" style="font-size: 1.5rem; min-height: 2em;">
+            {/*<div className={false ? 'drag before' : ''} />*/}
             <input
                 checked={completed}
                 id={checkboxId}
@@ -98,6 +99,7 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
 
             {props.childTasks.length > 0 ? (
                 <ul className="child_task_list">
+                    <li className="drag child" />
                     {/*<li className="add_child_task">+</li>*/}
                     {props.childTasks.map((childTask: Task, key: number) => (
                         <TaskRow
@@ -110,6 +112,8 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
                     ))}
                 </ul>
             ) : null}
+
+            {/*<div className={false ? 'drag after' : ''} />*/}
         </li>
     ) : null;
 }

@@ -21,7 +21,8 @@ export default function NewTaskForm(props: Props): h.JSX.Element {
                 // TODO: enforce constraints on backend
                 if (description) {
                     const newTask = await createTask(authContext.authToken!, description);
-                    props.onSubmit(newTask);
+                    // TODO: handle error
+                    props.onSubmit(newTask!);
                     setDescription('');
                 }
             }}
