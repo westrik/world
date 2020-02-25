@@ -115,6 +115,20 @@ impl From<LoadedTask> for ApiTask {
         }
     }
 }
+impl From<&Task> for ApiTask {
+    fn from(task: &Task) -> Self {
+        ApiTask {
+            apiId: task.api_id.clone(),
+            description: task.description.clone(),
+            createdAt: task.created_at,
+            updatedAt: task.updated_at,
+            completedAt: task.completed_at,
+            siblingApiId: None,
+            parentApiId: None,
+            isCollapsed: task.is_collapsed,
+        }
+    }
+}
 
 /* ----- DB business logic -----  */
 

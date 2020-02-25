@@ -1,6 +1,6 @@
 use crate::db::{get_conn, PgPool};
 use crate::tasks::models::task::{
-    ApiTaskCreateSpec, ApiTaskUpdateSpec, ListOptions, Task, TaskQueryError,
+    ApiTask, ApiTaskCreateSpec, ApiTaskUpdateSpec, ListOptions, Task, TaskQueryError,
 };
 use std::convert::Infallible;
 use warp::http::StatusCode;
@@ -8,19 +8,19 @@ use warp::http::StatusCode;
 #[derive(Serialize)]
 pub struct GetTaskResponse {
     error: Option<String>,
-    tasks: Option<Vec<Task>>,
+    tasks: Option<Vec<ApiTask>>,
 }
 
 #[derive(Serialize)]
 pub struct CreateTaskResponse {
     error: Option<String>,
-    task: Option<Task>,
+    task: Option<ApiTask>,
 }
 
 #[derive(Serialize)]
 pub struct UpdateTaskResponse {
     error: Option<String>,
-    task: Task,
+    task: ApiTask,
 }
 
 // TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
@@ -39,7 +39,7 @@ pub async fn list_tasks(
         Ok(tasks) => warp::reply::with_status(
             warp::reply::json(&GetTaskResponse {
                 error: None,
-                tasks: Some(tasks),
+                tasks: Some(tasks.iter().map(ApiTask::from).collect()),
             }),
             StatusCode::OK,
         ),
@@ -75,7 +75,7 @@ pub async fn create_task(
             Ok(task) => warp::reply::with_status(
                 warp::reply::json(&CreateTaskResponse {
                     error: None,
-                    task: Some(task),
+                    task: Some(ApiTask::from(&task)),
                 }),
                 StatusCode::OK,
             ),
@@ -119,7 +119,7 @@ pub async fn update_task(
             Ok(task) => warp::reply::with_status(
                 warp::reply::json(&CreateTaskResponse {
                     error: None,
-                    task: Some(task),
+                    task: Some(ApiTask::from(&task)),
                 }),
                 StatusCode::OK,
             ),

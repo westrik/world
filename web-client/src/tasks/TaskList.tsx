@@ -72,7 +72,9 @@ function TaskList(): h.JSX.Element {
         });
         const resp = (await response.json()) as GetTasksResponse;
         if (resp.tasks) {
-            setTasks(mapTasksToChildTasks(resp.tasks));
+            const tasksWithChildren = mapTasksToChildTasks(resp.tasks);
+            console.log(tasksWithChildren);
+            setTasks(tasksWithChildren);
         } else {
             setTasks([]);
         }
