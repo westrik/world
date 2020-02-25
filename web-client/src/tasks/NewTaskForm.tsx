@@ -30,7 +30,7 @@ export default function NewTaskForm(props: Props): h.JSX.Element {
             <input
                 type="text"
                 className="form-control float-left mr-2"
-                style="width: 50%"
+                style="width: calc(80% - 10em)"
                 placeholder="what's next?"
                 value={description}
                 onChange={(e): void => {

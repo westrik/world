@@ -14,8 +14,6 @@ embed_migrations!();
 async fn main() {
     dotenv().ok();
     if env::var("RUST_LOG").is_err() {
-        // Set `RUST_LOG=run_server=debug` to see debug logs,
-        // this only shows access logs.
         env::set_var("RUST_LOG", "westrikworld_server=debug");
     }
     pretty_env_logger::init();

@@ -112,7 +112,7 @@ function TaskList(): h.JSX.Element {
 
     return (
         <Container>
-            <Header title="tasks">
+            <Header title="tasks" fixed={true}>
                 <button type="button" className="btn btn-sm btn-outline-secondary">
                     show completed
                 </button>

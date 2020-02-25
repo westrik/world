@@ -6,7 +6,7 @@ import Header from '~components/Header';
 function NoteList(): h.JSX.Element {
     return (
         <Container>
-            <Header title="notes" />
+            <Header title="notes" fixed={true} />
         </Container>
     );
 }

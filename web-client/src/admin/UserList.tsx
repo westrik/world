@@ -6,7 +6,7 @@ import Header from '~components/Header';
 function UserList(): h.JSX.Element {
     return (
         <Container>
-            <Header title="users" />
+            <Header title="users" fixed={false} />
         </Container>
     );
 }
