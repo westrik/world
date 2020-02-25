@@ -2,26 +2,27 @@ import { h } from 'preact';
 import { useContext, useState } from 'preact/hooks';
 
 import Auth from '~auth/AuthContext';
+import { APITask } from '~models/Task';
 
 import createTask from './createTask';
 
 interface Props {
-    onSubmit: (description: string) => void;
+    onSubmit: (newTask: APITask) => void;
 }
 
 export default function NewTaskForm(props: Props): h.JSX.Element {
-    const [newTaskContent, setNewTaskContent] = useState('');
+    const [description, setDescription] = useState('');
     const authContext = useContext(Auth);
     return (
         <form
             className="form-group form-inline"
-            onSubmit={(e): void => {
+            onSubmit={async (e): Promise<void> => {
                 e.preventDefault();
                 // TODO: enforce constraints on backend
-                if (newTaskContent) {
-                    createTask(authContext.authToken!, newTaskContent);
-                    props.onSubmit(newTaskContent);
-                    setNewTaskContent('');
+                if (description) {
+                    const newTask = await createTask(authContext.authToken!, description);
+                    props.onSubmit(newTask);
+                    setDescription('');
                 }
             }}
         >
@@ -30,9 +31,9 @@ export default function NewTaskForm(props: Props): h.JSX.Element {
                 className="form-control float-left mr-2"
                 style="width: 50%"
                 placeholder="what's next?"
-                value={newTaskContent}
+                value={description}
                 onChange={(e): void => {
-                    setNewTaskContent((e.target as HTMLInputElement).value);
+                    setDescription((e.target as HTMLInputElement).value);
                 }}
             />
             <button type="submit" className="btn btn-sm btn-outline-secondary mr-2">

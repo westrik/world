@@ -141,11 +141,8 @@ function TaskList(): h.JSX.Element {
 
             <div style="background: #fff; padding-top: 1rem; position: fixed; bottom: 0; width: 100%; box-shadow: 0px -20px 20px 0px rgba(255,255,255,1);">
                 <NewTaskForm
-                    onSubmit={(description: string): void => {
-                        setTasks([
-                            ...(tasks as Array<Task>),
-                            ({ apiId: 'RANDOM', description, childTasks: [] } as unknown) as Task,
-                        ]);
+                    onSubmit={(newTask: APITask): void => {
+                        setTasks([...(tasks as Array<Task>), { ...newTask, childTasks: [] } as Task]);
                     }}
                 />
             </div>

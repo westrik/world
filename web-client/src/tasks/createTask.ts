@@ -1,7 +1,7 @@
 import { API_HOST } from '~config';
-import { APITask } from '~models/Task';
+import { APITask, APITaskResponse } from '~models/Task';
 
-export default async function createTask(token: string, description: string): Promise<APITask> {
+export default async function createTask(token: string, description: string): Promise<APITask | null> {
     const response = await fetch(`${API_HOST}/task`, {
         body: JSON.stringify({ description }),
         headers: {
@@ -10,5 +10,7 @@ export default async function createTask(token: string, description: string): Pr
         },
         method: 'POST',
     });
-    return await response.json();
+    const responseJson: APITaskResponse = await response.json();
+    // TODO: handle error
+    return responseJson.task;
 }

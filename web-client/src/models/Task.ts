@@ -1,6 +1,11 @@
 import { Tag } from './Tag';
 import { Resource } from './Resource';
 
+export interface APITaskResponse {
+    error: string | null;
+    task: Task | null;
+}
+
 export interface APITask {
     apiId: string;
     description: string;
