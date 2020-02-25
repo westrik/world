@@ -108,7 +108,7 @@ pub async fn update_task(
             ),
             Err(_) => warp::reply::with_status(
                 warp::reply::json(&UpdateTaskResponse {
-                    error: Some("Failed to create task".to_string()),
+                    error: Some("Failed to update task".to_string()),
                     task: None,
                 }),
                 StatusCode::INTERNAL_SERVER_ERROR,

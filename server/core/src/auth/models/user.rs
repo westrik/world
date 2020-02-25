@@ -43,7 +43,7 @@ impl UserCreateSpec {
             .map_err(UserError::DatabaseError)?)
     }
 }
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[allow(non_snake_case)]
 pub struct ApiUserCreateSpec {
     pub emailAddress: String,
