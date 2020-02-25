@@ -71,6 +71,7 @@ pub struct ApiTaskCreateSpec {
 #[table_name = "tasks"]
 pub struct TaskUpdateSpec {
     pub updated_at: DateTime<Utc>,
+    pub completed_at: Option<Option<DateTime<Utc>>>,
     pub description: Option<String>,
     pub is_collapsed: Option<bool>,
     pub parent_id: Option<Option<i32>>,
@@ -169,6 +170,16 @@ impl Task {
 
         let update_spec = TaskUpdateSpec {
             updated_at: Utc::now(),
+            completed_at: match spec.isCompleted {
+                Some(is_completed) => {
+                    if is_completed {
+                        Some(Some(Utc::now()))
+                    } else {
+                        Some(None)
+                    }
+                }
+                None => None,
+            },
             description: spec.description,
             is_collapsed: spec.isCollapsed,
             parent_id: None,
