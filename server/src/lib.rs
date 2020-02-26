@@ -18,6 +18,7 @@ pub mod schema;
 
 // TODO: move DB operations to an async thread pool (tokio?)
 pub mod auth;
+pub mod notes;
 pub mod tasks;
 
 pub mod test_utils;
