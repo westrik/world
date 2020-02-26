@@ -1,10 +1,12 @@
 use crate::auth::filters::routes as auth_routes;
 use crate::db::PgPool;
+use crate::notes::filters::routes as note_routes;
 use crate::routes::utils::{health_check, preflight_cors};
 use crate::tasks::filters::routes as task_routes;
 use crate::API_VERSION;
 use warp::Filter;
 
+pub mod options;
 pub mod utils;
 
 pub fn api(
@@ -27,7 +29,7 @@ fn authenticated(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     // TODO: wrap with session
-    task_routes(db_pool)
+    task_routes(db_pool.clone()).or(note_routes(db_pool))
 }
 
 //fn admin_authenticated(
