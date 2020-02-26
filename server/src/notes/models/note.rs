@@ -33,7 +33,7 @@ pub struct NoteCreateSpec {
 impl NoteCreateSpec {
     pub fn insert(&self, conn: &PgConnection) -> Result<Note, NoteQueryError> {
         info!("{:?}", self);
-        Ok(diesel::insert_into(tasks::table)
+        Ok(diesel::insert_into(notes::table)
             .values(self)
             .get_result(conn)
             .map_err(NoteQueryError::DatabaseError)?)
