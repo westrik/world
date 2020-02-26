@@ -5,6 +5,9 @@ import { Task } from '~models/Task';
 import Auth from '~auth/AuthContext';
 import updateTask from '~tasks/updateTask';
 
+// TODO: handle task dragging to change position
+// TODO: handle task dragging to make subtasks
+
 export interface Props extends Task {
     handleDragOver: (e: Event) => void;
     handleDragEnd: (e: Event) => void;
@@ -17,10 +20,6 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
     const [description, setDescription] = useState(props.description);
     const [completed, setCompleted] = useState(Boolean(props.completedAt));
     const authContext = useContext(Auth);
-
-    const checkboxId = Math.random()
-        .toString(36)
-        .substring(2, 15);
 
     function toggleEditing(): void {
         setEditing(!editing);
@@ -42,7 +41,7 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
             updateTask(authContext.authToken!, props.apiId, { description: newDescription });
         } else if (!newDescription) {
             setDeleted(true);
-            // TODO: DELETE call
+            updateTask(authContext.authToken!, props.apiId, { description: "[deleted]", isCompleted: true });
         }
     }
 
@@ -55,6 +54,10 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
     // TODO: [shift]-[up/down] drags task up or down by one
     // TODO: add task hover/pre-focus state
     // TODO: resolve tags to chips
+
+    const checkboxId = Math.random()
+        .toString(36)
+        .substring(2, 15);
 
     return !deleted ? (
         <li className="task" style="font-size: 1.5rem; min-height: 2em;">

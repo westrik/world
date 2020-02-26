@@ -9,6 +9,56 @@ use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
 use crate::schema::{tasks, tasks::dsl::tasks as all_tasks};
 use diesel::dsl::now;
 
+/** Database model for Tasks
+
+
+# Task sorting
+
+By default, tasks are sorted by creation time in ascending order.
+Tasks have optional `sibling_id` and `parent_id` fields.
+When set, these influence the structure and ordering of the task tree.
+The `sibling_id` field links a task to the task immediately above it.
+The `parent_id` field links a task to the task immediately above and to the left of it.
+
+**Constraint**: No two tasks can have the same `sibling_id` or `parent_id`.
+
+#### Example
+
+Consider four tasks: `A`, `B`, `C`, and `D`. The tasks were created one at a time, in alphabetical order.
+The default sorting of tasks would be:
+
+```txt
+A
+B
+C
+D
+```
+
+If we set `sibling_id` of `D` to the ID of `A`, then the sorting would become:
+
+```txt
+A
+D
+B
+C
+```
+
+If we set `parent_id` of `C` to the ID of `B`, then the sorting would become:
+
+```txt
+A
+D
+B
+  C
+```
+
+
+
+
+
+
+*/
+
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(User)]
 pub struct Task {
@@ -149,6 +199,8 @@ impl Task {
             .map_err(|_| TaskError::TaskNotFound)?;
         let items: Vec<Task> = all_tasks
             .filter(tasks::user_id.eq(session.user_id))
+            .filter(tasks::completed_at.is_null())
+            .order(tasks::created_at.asc())
             .load(conn)
             .map_err(|_| TaskError::TaskNotFound)?;
         Ok(items)
