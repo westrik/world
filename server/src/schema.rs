@@ -1,4 +1,15 @@
 table! {
+    notes (id) {
+        id -> Int4,
+        api_id -> Varchar,
+        user_id -> Int4,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
+        content -> Jsonb,
+    }
+}
+
+table! {
     sessions (token) {
         user_id -> Int4,
         token -> Text,
@@ -33,7 +44,8 @@ table! {
     }
 }
 
+joinable!(notes -> users (user_id));
 joinable!(sessions -> users (user_id));
 joinable!(tasks -> users (user_id));
 
-allow_tables_to_appear_in_same_query!(sessions, tasks, users,);
+allow_tables_to_appear_in_same_query!(notes, sessions, tasks, users,);
