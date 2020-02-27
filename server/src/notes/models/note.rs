@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc};
 
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
+use crate::notes::handlers::ApiNoteUpdateSpec;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{notes, notes::dsl::notes as all_notes};
 use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
@@ -57,7 +58,6 @@ impl NoteUpdateSpec {
         user_id: i32,
     ) -> Result<Note, NoteQueryError> {
         info!("updating note {} with {:?}", api_id, self);
-
         Ok(diesel::update(
             all_notes
                 .filter(notes::api_id.eq(&api_id))
@@ -67,25 +67,6 @@ impl NoteUpdateSpec {
         .get_result::<Note>(conn)
         .map_err(NoteQueryError::DatabaseError)?)
     }
-}
-
-#[derive(Serialize)]
-#[allow(non_snake_case)]
-pub struct ApiNote {
-    pub apiId: String,
-    pub createdAt: DateTime<Utc>,
-    pub updatedAt: DateTime<Utc>,
-    pub content: serde_json::Value,
-}
-#[derive(Debug, Deserialize)]
-pub struct ApiNoteCreateSpec {
-    pub raw_content: String,
-}
-#[derive(Debug, Deserialize)]
-#[allow(non_snake_case)]
-pub struct ApiNoteUpdateSpec {
-    pub updated_at: DateTime<Utc>,
-    pub raw_content: String,
 }
 
 impl Note {
@@ -125,6 +106,8 @@ impl Note {
         .insert(conn)
     }
 
+    // TODO: move this out of the model.
+    //    (models/note.rs should not handle API spec conversion)
     pub fn update(
         conn: &PgConnection,
         token: String,
@@ -139,7 +122,7 @@ impl Note {
             .map_err(|_| NoteQueryError::InvalidToken)?;
         NoteUpdateSpec {
             updated_at: Utc::now(),
-            content: serde_json::from_str(spec.raw_content.as_str()).unwrap(),
+            content: spec.content,
         }
         .update(conn, api_id, session.user_id)
     }

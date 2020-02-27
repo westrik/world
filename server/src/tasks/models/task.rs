@@ -29,11 +29,6 @@ pub struct LoadedTask {
     pub sibling_api_id: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
-pub struct ListOptions {
-    pub offset: Option<usize>,
-    pub limit: Option<usize>,
-}
 #[derive(Debug)]
 pub enum TaskQueryError {
     TaskNotFound,
@@ -50,7 +45,7 @@ pub struct TaskCreateSpec {
 }
 impl TaskCreateSpec {
     pub fn insert(&self, conn: &PgConnection) -> Result<Task, TaskQueryError> {
-        info!("{:?}", self);
+        info!("creating task: {:?}", self);
         Ok(diesel::insert_into(tasks::table)
             .values(self)
             .get_result(conn)
@@ -75,6 +70,7 @@ impl TaskUpdateSpec {
         api_id: String,
         user_id: i32,
     ) -> Result<Task, TaskQueryError> {
+        info!("updating task {} with {:?}", api_id, self);
         Ok(diesel::update(
             all_tasks
                 .filter(tasks::api_id.eq(&api_id))

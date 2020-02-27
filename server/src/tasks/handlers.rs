@@ -1,6 +1,7 @@
 use crate::db::{get_conn, PgPool};
+use crate::routes::options::ListOptions;
 use crate::tasks::models::task::{
-    ApiTask, ApiTaskCreateSpec, ApiTaskUpdateSpec, ListOptions, Task, TaskQueryError,
+    ApiTask, ApiTaskCreateSpec, ApiTaskUpdateSpec, Task, TaskQueryError,
 };
 use std::convert::Infallible;
 use warp::http::StatusCode;
@@ -12,15 +13,9 @@ pub struct GetTaskResponse {
 }
 
 #[derive(Serialize)]
-pub struct CreateTaskResponse {
-    error: Option<String>,
-    task: Option<ApiTask>,
-}
-
-#[derive(Serialize)]
 pub struct UpdateTaskResponse {
     error: Option<String>,
-    task: ApiTask,
+    task: Option<ApiTask>,
 }
 
 // TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
@@ -70,14 +65,14 @@ pub async fn create_task(
     Ok(
         match run_create_task(session_token, new_task.description, &db_pool) {
             Ok(task) => warp::reply::with_status(
-                warp::reply::json(&CreateTaskResponse {
+                warp::reply::json(&UpdateTaskResponse {
                     error: None,
                     task: Some(ApiTask::from(&task)),
                 }),
                 StatusCode::OK,
             ),
             Err(_) => warp::reply::with_status(
-                warp::reply::json(&CreateTaskResponse {
+                warp::reply::json(&UpdateTaskResponse {
                     error: Some("Failed to create task".to_string()),
                     task: None,
                 }),
@@ -111,14 +106,14 @@ pub async fn update_task(
     Ok(
         match run_update_task(session_token, api_id, spec, &db_pool) {
             Ok(task) => warp::reply::with_status(
-                warp::reply::json(&CreateTaskResponse {
+                warp::reply::json(&UpdateTaskResponse {
                     error: None,
                     task: Some(ApiTask::from(&task)),
                 }),
                 StatusCode::OK,
             ),
             Err(_) => warp::reply::with_status(
-                warp::reply::json(&CreateTaskResponse {
+                warp::reply::json(&UpdateTaskResponse {
                     error: Some("Failed to create task".to_string()),
                     task: None,
                 }),

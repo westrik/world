@@ -1,62 +1,62 @@
 use crate::db::PgPool;
+use crate::notes::handlers;
+use crate::notes::handlers::{ApiNoteCreateSpec, ApiNoteUpdateSpec};
 use crate::routes::options::ListOptions;
 use crate::routes::utils::{json_body, with_db, with_session_token};
-use crate::tasks::handlers;
-use crate::tasks::models::task::{ApiTaskCreateSpec, ApiTaskUpdateSpec};
 use warp::Filter;
 
 pub fn routes(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    tasks_list(db_pool.clone())
-        .or(tasks_create(db_pool.clone()))
-        .or(tasks_update(db_pool.clone()))
-        .or(tasks_delete(db_pool))
+    notes_list(db_pool.clone())
+        .or(note_create(db_pool.clone()))
+        .or(note_update(db_pool.clone()))
+        .or(note_delete(db_pool))
 }
 
-/// GET /task?offset=3&limit=5
-pub fn tasks_list(
+/// GET /note?offset=3&limit=5
+pub fn notes_list(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("task")
+    warp::path!("note")
         .and(warp::get())
         .and(warp::query::<ListOptions>())
         .and(with_session_token())
         .and(with_db(db_pool))
-        .and_then(handlers::list_tasks)
+        .and_then(handlers::list_notes)
 }
 
-/// POST /task with JSON body
-pub fn tasks_create(
+/// POST /note with JSON body
+pub fn note_create(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("task")
+    warp::path!("note")
         .and(warp::post())
-        .and(json_body::<ApiTaskCreateSpec>())
+        .and(json_body::<ApiNoteCreateSpec>())
         .and(with_session_token())
         .and(with_db(db_pool))
-        .and_then(handlers::create_task)
+        .and_then(handlers::create_note)
 }
 
-/// PUT /task/:id with JSON body
-pub fn tasks_update(
+/// PUT /note/:id with JSON body
+pub fn note_update(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("task" / String)
+    warp::path!("note" / String)
         .and(warp::put())
-        .and(json_body::<ApiTaskUpdateSpec>())
+        .and(json_body::<ApiNoteUpdateSpec>())
         .and(with_session_token())
         .and(with_db(db_pool))
-        .and_then(handlers::update_task)
+        .and_then(handlers::update_note)
 }
 
-/// DELETE /task/:id
-pub fn tasks_delete(
+/// DELETE /note/:id
+pub fn note_delete(
     db_pool: PgPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("task" / String)
+    warp::path!("note" / String)
         .and(warp::delete())
         .and(with_session_token())
         .and(with_db(db_pool))
-        .and_then(handlers::delete_task)
+        .and_then(handlers::delete_note)
 }
