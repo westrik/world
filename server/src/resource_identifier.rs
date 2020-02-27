@@ -6,7 +6,7 @@ use std::fmt;
 pub enum ResourceType {
     User,
     Task,
-    Doc,
+    Note,
     Tag,
     Link,
 }
@@ -44,7 +44,7 @@ pub mod test_resource_identifiers {
             .unwrap()
             .is_match(&task_id));
 
-        let doc_id = generate_resource_identifier(Doc);
+        let doc_id = generate_resource_identifier(Note);
         assert!(Regex::new(r"doc_[A-Za-z0-9]{8}").unwrap().is_match(&doc_id));
 
         let tag_id = generate_resource_identifier(Tag);

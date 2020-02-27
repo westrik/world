@@ -9,8 +9,6 @@ use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
 use crate::schema::{tasks, tasks::dsl::tasks as all_tasks};
 use diesel::dsl::now;
 
-/* ----- Model definitions -----  */
-
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(User)]
 pub struct Task {
@@ -31,8 +29,6 @@ pub struct LoadedTask {
     pub sibling_api_id: Option<String>,
 }
 
-/* ----- Query helper structs  -----  */
-
 #[derive(Debug, Deserialize)]
 pub struct ListOptions {
     pub offset: Option<usize>,
@@ -44,8 +40,6 @@ pub enum TaskQueryError {
     InvalidToken,
     DatabaseError(diesel::result::Error),
 }
-
-/* ----- Create and update specs  -----  */
 
 #[derive(Insertable, Debug)]
 #[table_name = "tasks"]
@@ -63,10 +57,7 @@ impl TaskCreateSpec {
             .map_err(TaskQueryError::DatabaseError)?)
     }
 }
-#[derive(Debug, Deserialize)]
-pub struct ApiTaskCreateSpec {
-    pub description: String,
-}
+
 #[derive(AsChangeset, Debug)]
 #[table_name = "tasks"]
 pub struct TaskUpdateSpec {
@@ -77,17 +68,23 @@ pub struct TaskUpdateSpec {
     pub parent_id: Option<Option<i32>>,
     pub sibling_id: Option<Option<i32>>,
 }
-#[derive(Debug, Deserialize)]
-#[allow(non_snake_case)]
-pub struct ApiTaskUpdateSpec {
-    pub description: Option<String>,
-    pub parentApiId: Option<Option<String>>,
-    pub siblingApiId: Option<Option<String>>,
-    pub isCompleted: Option<bool>,
-    pub isCollapsed: Option<bool>,
+impl TaskUpdateSpec {
+    pub fn update(
+        &self,
+        conn: &PgConnection,
+        api_id: String,
+        user_id: i32,
+    ) -> Result<Task, TaskQueryError> {
+        Ok(diesel::update(
+            all_tasks
+                .filter(tasks::api_id.eq(&api_id))
+                .filter(tasks::user_id.eq(user_id)),
+        )
+        .set(self)
+        .get_result::<Task>(conn)
+        .map_err(TaskQueryError::DatabaseError)?)
+    }
 }
-
-/* ----- API interfaces -----  */
 
 #[derive(Serialize)]
 #[allow(non_snake_case)]
@@ -101,6 +98,20 @@ pub struct ApiTask {
     pub parentApiId: Option<String>,
     pub isCollapsed: bool,
 }
+#[derive(Debug, Deserialize)]
+pub struct ApiTaskCreateSpec {
+    pub description: String,
+}
+#[derive(Debug, Deserialize)]
+#[allow(non_snake_case)]
+pub struct ApiTaskUpdateSpec {
+    pub description: Option<String>,
+    pub parentApiId: Option<Option<String>>,
+    pub siblingApiId: Option<Option<String>>,
+    pub isCompleted: Option<bool>,
+    pub isCollapsed: Option<bool>,
+}
+
 impl From<LoadedTask> for ApiTask {
     fn from(lt: LoadedTask) -> Self {
         ApiTask {
@@ -129,8 +140,6 @@ impl From<&Task> for ApiTask {
         }
     }
 }
-
-/* ----- DB business logic -----  */
 
 impl Task {
     pub fn find_all_for_user(
@@ -182,7 +191,7 @@ impl Task {
             .first(conn)
             .map_err(|_| TaskQueryError::InvalidToken)?;
 
-        let update_spec = TaskUpdateSpec {
+        TaskUpdateSpec {
             updated_at: Utc::now(),
             completed_at: match spec.isCompleted {
                 Some(is_completed) => {
@@ -198,15 +207,8 @@ impl Task {
             is_collapsed: spec.isCollapsed,
             parent_id: None,
             sibling_id: None,
-        };
-        Ok(diesel::update(
-            all_tasks
-                .filter(tasks::api_id.eq(&api_id))
-                .filter(tasks::user_id.eq(session.user_id)),
-        )
-        .set(update_spec)
-        .get_result::<Task>(conn)
-        .map_err(TaskQueryError::DatabaseError)?)
+        }
+        .update(conn, api_id, session.user_id)
     }
 }
 
