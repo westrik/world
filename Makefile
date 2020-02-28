@@ -3,7 +3,7 @@ all:
 	cd web-client && yarn && yarn build
 
 check:
-	cd server && cargo check && cargo clippy
+	cd server; cargo check; cargo clippy
 	cd web-client && yarn lint
 	cd server && cargo test
 	cd web-client && yarn test

@@ -53,6 +53,7 @@ impl TaskCreateSpec {
     }
 }
 
+#[allow(clippy::option_option)]
 #[derive(AsChangeset, Debug)]
 #[table_name = "tasks"]
 pub struct TaskUpdateSpec {
@@ -100,6 +101,7 @@ pub struct ApiTaskCreateSpec {
 }
 #[derive(Debug, Deserialize)]
 #[allow(non_snake_case)]
+#[allow(clippy::option_option)]
 pub struct ApiTaskUpdateSpec {
     pub description: Option<String>,
     pub parentApiId: Option<Option<String>>,

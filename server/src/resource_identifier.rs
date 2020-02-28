@@ -45,7 +45,9 @@ pub mod test_resource_identifiers {
             .is_match(&task_id));
 
         let note_id = generate_resource_identifier(Note);
-        assert!(Regex::new(r"note_[A-Za-z0-9]{8}").unwrap().is_match(&note_id));
+        assert!(Regex::new(r"note_[A-Za-z0-9]{8}")
+            .unwrap()
+            .is_match(&note_id));
 
         let tag_id = generate_resource_identifier(Tag);
         assert!(Regex::new(r"tag_[A-Za-z0-9]{8}").unwrap().is_match(&tag_id));
