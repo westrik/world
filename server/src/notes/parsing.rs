@@ -1,5 +1,8 @@
-use pulldown_cmark::{html, Options, Parser};
+use pulldown_cmark::{html, Event as ParserEvent, Options, Parser, Tag as ParserTag};
 use std::ops::Range;
+
+// TODO: iterate over pulldown_cmark::OffsetIter, build Vec<Event>
+// TODO(later): convert Vec<Event> back to markdown (for export)
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Content {
@@ -58,6 +61,27 @@ pub fn markdown_to_html(input: String) -> String {
     html_output
 }
 
+fn transform_parse_tag(tag: ParserTag) -> Tag {
+    match tag {
+        ParserTag::Paragraph => Tag::Paragraph,
+        ParserTag::Heading(size) => Tag::Heading(size),
+        ParserTag::BlockQuote => Tag::BlockQuote,
+        ParserTag::CodeBlock(_) => Tag::CodeBlock,
+        ParserTag::List(length) => Tag::List(length),
+        ParserTag::Item => Tag::Item,
+        ParserTag::FootnoteDefinition(fdef) => Tag::FootnoteDefinition(fdef.into_string()),
+        ParserTag::Table(_) => Tag::Table,
+        ParserTag::TableHead => Tag::TableHead,
+        ParserTag::TableRow => Tag::TableRow,
+        ParserTag::TableCell => Tag::TableCell,
+        ParserTag::Emphasis => Tag::Emphasis,
+        ParserTag::Strong => Tag::Strong,
+        ParserTag::Strikethrough => Tag::Strikethrough,
+        ParserTag::Link(_, _, _) => Tag::Link,
+        ParserTag::Image(_, _, _) => Tag::Image,
+    }
+}
+
 pub fn markdown_to_event_list(input: String) -> Vec<Event> {
     let offset_iter = Parser::new_ext(input.as_str(), get_parser_options()).into_offset_iter();
 
@@ -67,20 +91,17 @@ pub fn markdown_to_event_list(input: String) -> Vec<Event> {
     // }
 
     offset_iter
-        .map(|(event, _)| {
-            match event {
-                // Event::Start(tag) => {},
-                // Event::End(tag) => {},
-                pulldown_cmark::Event::Text(text) => Event::Text(text.into_string()),
-                // Event::Code(code) => {},
-                // Event::Html(html) => {},
-                // Event::FootnoteReference(footnote_ref) => {},
-                // Event::SoftBreak() => {},
-                // Event::HardBreak() => {},
-                // Event::Rule() => {},
-                // Event::TaskListMarker(_) => {},
-                _ => Event::Rule,
-            }
+        .map(|(event, _)| match event {
+            ParserEvent::Start(tag) => Event::Start(transform_parse_tag(tag)),
+            ParserEvent::End(tag) => Event::End(transform_parse_tag(tag)),
+            ParserEvent::Text(text) => Event::Text(text.into_string()),
+            ParserEvent::Code(code) => Event::Code(code.into_string()),
+            ParserEvent::Html(html) => Event::Html(html.into_string()),
+            ParserEvent::FootnoteReference(fref) => Event::FootnoteReference(fref.into_string()),
+            ParserEvent::SoftBreak => Event::SoftBreak,
+            ParserEvent::HardBreak => Event::HardBreak,
+            ParserEvent::Rule => Event::Rule,
+            ParserEvent::TaskListMarker(status) => Event::TaskListMarker(status),
         })
         .collect()
 }
@@ -113,9 +134,9 @@ pub mod test_resource_identifiers {
         assert_eq!(
             markdown_to_event_list("# Hello world".to_string()),
             vec![
-                Event::Rule,
+                Event::Start(Tag::Heading(1)),
                 Event::Text("Hello world".to_string()),
-                Event::Rule
+                Event::End(Tag::Heading(1)),
             ]
         );
     }
