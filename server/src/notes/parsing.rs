@@ -1,8 +1,5 @@
 use pulldown_cmark::{html, Event as ParserEvent, Options, Parser, Tag as ParserTag};
 
-// TODO: iterate over pulldown_cmark::OffsetIter, build Vec<Event>
-// TODO(later): convert Vec<Event> back to markdown (for export)
-
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Content {
     events: Vec<Event>,
@@ -73,6 +70,7 @@ pub enum Tag {
     Link,  // TODO
     Image, // TODO
 }
+
 impl Tag {
     fn _to_markdown(&self) -> String {
         "[Tag]".to_string()
@@ -118,15 +116,17 @@ fn transform_parse_tag(tag: ParserTag) -> Tag {
     }
 }
 
-pub fn markdown_to_event_list(input: String) -> Vec<Event> {
+pub fn _print_event_list_for_markdown(input: String) {
     let offset_iter = Parser::new_ext(input.as_str(), get_parser_options()).into_offset_iter();
 
-    // for (event, range) in offset_iter {
-    //     println!("{:?}, {:?}", event, range);
-    //
-    // }
+    for (event, range) in offset_iter {
+        println!("{:?}, {:?}", event, range);
+    }
+}
 
-    offset_iter
+pub fn markdown_to_event_list(input: String) -> Vec<Event> {
+    Parser::new_ext(input.as_str(), get_parser_options())
+        .into_offset_iter()
         .map(|(event, _)| match event {
             ParserEvent::Start(tag) => Event::Start(transform_parse_tag(tag)),
             ParserEvent::End(tag) => Event::End(transform_parse_tag(tag)),
