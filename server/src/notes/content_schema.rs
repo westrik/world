@@ -3,32 +3,7 @@ pub struct Content {
     pub events: Vec<Event>,
 }
 
-impl Content {
-    pub fn to_markdown(&self) -> String {
-        // TODO: actual output
-        let event_strs: Vec<String> = self
-            .events
-            .iter()
-            .map(|ev| {
-                match ev {
-                    // Event::Start(tag) => {},
-                    // Event::End(_) => {},
-                    // Event::Text(_) => {},
-                    // Event::Code(_) => {},
-                    // Event::Html(_) => {},
-                    // Event::FootnoteReference(_) => {},
-                    // Event::SoftBreak => {},
-                    // Event::HardBreak => {},
-                    // Event::Rule => {},
-                    // Event::TaskListMarker(_) => {},
-                    _ => ev.to_markdown(),
-                }
-            })
-            .collect();
-        event_strs.join("")
-    }
-}
-
+// mirrors https://docs.rs/pulldown-cmark/0.7.0/pulldown_cmark/enum.Event.html
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub enum Event {
     Start(Tag),
@@ -43,12 +18,7 @@ pub enum Event {
     TaskListMarker(bool),
 }
 
-impl Event {
-    fn to_markdown(&self) -> String {
-        "[Event]".to_string()
-    }
-}
-
+// mirrors https://docs.rs/pulldown-cmark/0.7.0/pulldown_cmark/enum.Tag.html
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub enum Tag {
     Paragraph,
@@ -67,10 +37,4 @@ pub enum Tag {
     Strikethrough,
     Link,  // TODO
     Image, // TODO
-}
-
-impl Tag {
-    fn _to_markdown(&self) -> String {
-        "[Tag]".to_string()
-    }
 }

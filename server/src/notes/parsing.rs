@@ -19,6 +19,21 @@ pub fn markdown_to_html(input: String) -> String {
     html_output
 }
 
+fn transform_parse_event(event: ParserEvent) -> Event {
+    match event {
+        ParserEvent::Start(tag) => Event::Start(transform_parse_tag(tag)),
+        ParserEvent::End(tag) => Event::End(transform_parse_tag(tag)),
+        ParserEvent::Text(text) => Event::Text(text.into_string()),
+        ParserEvent::Code(code) => Event::Code(code.into_string()),
+        ParserEvent::Html(html) => Event::Html(html.into_string()),
+        ParserEvent::FootnoteReference(fref) => Event::FootnoteReference(fref.into_string()),
+        ParserEvent::SoftBreak => Event::SoftBreak,
+        ParserEvent::HardBreak => Event::HardBreak,
+        ParserEvent::Rule => Event::Rule,
+        ParserEvent::TaskListMarker(status) => Event::TaskListMarker(status),
+    }
+}
+
 fn transform_parse_tag(tag: ParserTag) -> Tag {
     match tag {
         ParserTag::Paragraph => Tag::Paragraph,
@@ -51,18 +66,7 @@ pub fn _print_event_list_for_markdown(input: String) {
 pub fn markdown_to_event_list(input: String) -> Vec<Event> {
     Parser::new_ext(input.as_str(), get_parser_options())
         .into_offset_iter()
-        .map(|(event, _)| match event {
-            ParserEvent::Start(tag) => Event::Start(transform_parse_tag(tag)),
-            ParserEvent::End(tag) => Event::End(transform_parse_tag(tag)),
-            ParserEvent::Text(text) => Event::Text(text.into_string()),
-            ParserEvent::Code(code) => Event::Code(code.into_string()),
-            ParserEvent::Html(html) => Event::Html(html.into_string()),
-            ParserEvent::FootnoteReference(fref) => Event::FootnoteReference(fref.into_string()),
-            ParserEvent::SoftBreak => Event::SoftBreak,
-            ParserEvent::HardBreak => Event::HardBreak,
-            ParserEvent::Rule => Event::Rule,
-            ParserEvent::TaskListMarker(status) => Event::TaskListMarker(status),
-        })
+        .map(|(event, _)| transform_parse_event(event))
         .collect()
 }
 
@@ -124,17 +128,6 @@ pub mod test_markdown_parsing {
                 Event::End(Tag::Item),
                 Event::End(Tag::List(None)),
             ]
-        );
-    }
-
-    #[test]
-    fn test_content_to_markdown() {
-        let md = "- [ ] hello\n- [ ] world";
-        let events = markdown_to_event_list(md.to_string());
-        assert_eq!(
-            Content { events }.to_markdown(),
-            "[Event][Event][Event][Event][Event]\
-             [Event][Event][Event][Event][Event]" // TODO: fix this
         );
     }
 }
