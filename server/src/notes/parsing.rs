@@ -139,5 +139,30 @@ pub mod test_resource_identifiers {
                 Event::End(Tag::Heading(1)),
             ]
         );
+        assert_eq!(
+            markdown_to_event_list("~~Hello world~~".to_string()),
+            vec![
+                Event::Start(Tag::Paragraph),
+                Event::Start(Tag::Strikethrough),
+                Event::Text("Hello world".to_string()),
+                Event::End(Tag::Strikethrough),
+                Event::End(Tag::Paragraph),
+            ]
+        );
+        assert_eq!(
+            markdown_to_event_list("- [ ] hello\n- [ ] world".to_string()),
+            vec![
+                Event::Start(Tag::List(None)),
+                Event::Start(Tag::Item),
+                Event::TaskListMarker(false),
+                Event::Text("hello".to_string()),
+                Event::End(Tag::Item),
+                Event::Start(Tag::Item),
+                Event::TaskListMarker(false),
+                Event::Text("world".to_string()),
+                Event::End(Tag::Item),
+                Event::End(Tag::List(None)),
+            ]
+        );
     }
 }
