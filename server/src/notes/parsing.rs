@@ -1,5 +1,4 @@
 use pulldown_cmark::{html, Event as ParserEvent, Options, Parser, Tag as ParserTag};
-use std::ops::Range;
 
 // TODO: iterate over pulldown_cmark::OffsetIter, build Vec<Event>
 // TODO(later): convert Vec<Event> back to markdown (for export)
@@ -7,6 +6,32 @@ use std::ops::Range;
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Content {
     events: Vec<Event>,
+}
+
+impl Content {
+    pub fn to_markdown(self) -> String {
+        // TODO: actual output
+        let event_strs: Vec<String> = self
+            .events
+            .iter()
+            .map(|ev| {
+                match ev {
+                    // Event::Start(tag) => {},
+                    // Event::End(_) => {},
+                    // Event::Text(_) => {},
+                    // Event::Code(_) => {},
+                    // Event::Html(_) => {},
+                    // Event::FootnoteReference(_) => {},
+                    // Event::SoftBreak => {},
+                    // Event::HardBreak => {},
+                    // Event::Rule => {},
+                    // Event::TaskListMarker(_) => {},
+                    _ => ev.to_markdown(),
+                }
+            })
+            .collect();
+        event_strs.join("")
+    }
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
@@ -21,6 +46,12 @@ pub enum Event {
     HardBreak,
     Rule,
     TaskListMarker(bool),
+}
+
+impl Event {
+    fn to_markdown(&self) -> String {
+        "[Event]".to_string()
+    }
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
@@ -41,6 +72,11 @@ pub enum Tag {
     Strikethrough,
     Link,  // TODO
     Image, // TODO
+}
+impl Tag {
+    fn _to_markdown(&self) -> String {
+        "[Tag]".to_string()
+    }
 }
 
 fn get_parser_options() -> Options {
@@ -163,6 +199,17 @@ pub mod test_resource_identifiers {
                 Event::End(Tag::Item),
                 Event::End(Tag::List(None)),
             ]
+        );
+    }
+
+    #[test]
+    fn test_content_to_markdown() {
+        let md = "- [ ] hello\n- [ ] world";
+        let events = markdown_to_event_list(md.to_string());
+        assert_eq!(
+            Content { events }.to_markdown(),
+            "[Event][Event][Event][Event][Event]\
+             [Event][Event][Event][Event][Event]" // TODO: fix this
         );
     }
 }
