@@ -6,7 +6,7 @@ pub struct Content {
 }
 
 impl Content {
-    pub fn to_markdown(self) -> String {
+    pub fn to_markdown(&self) -> String {
         // TODO: actual output
         let event_strs: Vec<String> = self
             .events
