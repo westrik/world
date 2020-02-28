@@ -402,6 +402,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "getopts"
+version = "0.2.21"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "14dbbfd5c71d70241ecf9e6f13737f7b5ce823821063188d7e46c41d371eebd5"
+dependencies = [
+ "unicode-width",
+]
+
+[[package]]
 name = "getrandom"
 version = "0.1.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -637,9 +646,9 @@ checksum = "7ffc5c5338469d4d3ea17d269fa8ea3512ad247247c30bd2df69e68309ed0a08"
 
 [[package]]
 name = "memchr"
-version = "2.2.1"
+version = "2.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "88579771288728879b57485cc7d6b07d648c9f0141eb955f8ab7f9d45394468e"
+checksum = "3728d817d99e5ac407411fa471ff9800a778d88a24685968b36824eaf4bee400"
 
 [[package]]
 name = "migrations_internals"
@@ -934,6 +943,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9c9e470a8dc4aeae2dee2f335e8f533e2d4b347e1434e5671afc49b054592f27"
 dependencies = [
  "unicode-xid",
+]
+
+[[package]]
+name = "pulldown-cmark"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2c2d7fd131800e0d63df52aff46201acaab70b431a4a1ec6f0343fe8e64f35a4"
+dependencies = [
+ "bitflags",
+ "getopts",
+ "memchr",
+ "unicase 2.6.0",
 ]
 
 [[package]]
@@ -1458,6 +1479,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "unicode-width"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "caaa9d531767d1ff2150b9332433f32a24622147e5ebb1f26409d5da67afd479"
+
+[[package]]
 name = "unicode-xid"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1558,6 +1585,7 @@ dependencies = [
  "lazy_static",
  "log 0.4.8",
  "pretty_env_logger",
+ "pulldown-cmark",
  "rand 0.7.2",
  "regex",
  "serde",
