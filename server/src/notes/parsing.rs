@@ -1,11 +1,12 @@
 use pulldown_cmark::{html, Options, Parser};
+use std::ops::Range;
 
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Content {
     events: Vec<Event>,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub enum Event {
     Start(Tag),
     End(Tag),
@@ -19,7 +20,7 @@ pub enum Event {
     TaskListMarker(bool),
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub enum Tag {
     Paragraph,
     Heading(u32),
@@ -57,6 +58,33 @@ pub fn markdown_to_html(input: String) -> String {
     html_output
 }
 
+pub fn markdown_to_event_list(input: String) -> Vec<Event> {
+    let offset_iter = Parser::new_ext(input.as_str(), get_parser_options()).into_offset_iter();
+
+    // for (event, range) in offset_iter {
+    //     println!("{:?}, {:?}", event, range);
+    //
+    // }
+
+    offset_iter
+        .map(|(event, _)| {
+            match event {
+                // Event::Start(tag) => {},
+                // Event::End(tag) => {},
+                pulldown_cmark::Event::Text(text) => Event::Text(text.into_string()),
+                // Event::Code(code) => {},
+                // Event::Html(html) => {},
+                // Event::FootnoteReference(footnote_ref) => {},
+                // Event::SoftBreak() => {},
+                // Event::HardBreak() => {},
+                // Event::Rule() => {},
+                // Event::TaskListMarker(_) => {},
+                _ => Event::Rule,
+            }
+        })
+        .collect()
+}
+
 #[cfg(test)]
 pub mod test_resource_identifiers {
     use super::*;
@@ -77,6 +105,18 @@ pub mod test_resource_identifiers {
                 <li><input disabled=\"\" type=\"checkbox\"/>\nhello</li>\n\
                 <li><input disabled=\"\" type=\"checkbox\"/>\nworld</li>\n\
             </ul>\n"
+        );
+    }
+
+    #[test]
+    fn test_events() {
+        assert_eq!(
+            markdown_to_event_list("# Hello world".to_string()),
+            vec![
+                Event::Rule,
+                Event::Text("Hello world".to_string()),
+                Event::Rule
+            ]
         );
     }
 }
