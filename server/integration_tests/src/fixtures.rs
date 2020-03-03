@@ -5,15 +5,17 @@ use westrikworld_core::auth::models::user::{ApiUserCreateSpec, User};
 use westrikworld_core::schema::{sessions, sessions::dsl::sessions as all_sessions};
 use westrikworld_core::schema::{users, users::dsl::users as all_users};
 
-const TEST_EMAIL_ADDRESS: &str = "dolores@westrikworld.com";
+pub const TEST_USER_EMAIL_ADDRESS: &str = "dolores@westrikworld.com";
+pub const TEST_USER_FULL_NAME: &str = "Dolores Abernathy";
+pub const TEST_USER_PASSWORD: &str = "password123";
 
 pub fn create_test_user(conn: &PgConnection) {
     println!("🤖 creating test user");
     User::create(
         ApiUserCreateSpec {
-            emailAddress: TEST_EMAIL_ADDRESS.to_string(),
-            fullName: Some("Dolores Abernathy".to_string()),
-            password: "password123".to_string(),
+            emailAddress: TEST_USER_EMAIL_ADDRESS.to_string(),
+            fullName: Some(TEST_USER_FULL_NAME.to_string()),
+            password: TEST_USER_PASSWORD.to_string(),
         },
         conn,
     )
@@ -28,7 +30,7 @@ pub fn create_test_session(conn: &PgConnection) {
 
 pub fn get_test_user(conn: &PgConnection) -> User {
     all_users
-        .filter(users::email_address.eq(TEST_EMAIL_ADDRESS))
+        .filter(users::email_address.eq(TEST_USER_EMAIL_ADDRESS))
         .first(conn)
         .unwrap()
 }
