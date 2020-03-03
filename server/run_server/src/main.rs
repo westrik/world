@@ -1,3 +1,4 @@
+extern crate diesel;
 #[macro_use]
 extern crate diesel_migrations;
 
@@ -5,10 +6,10 @@ use dotenv::dotenv;
 use std::env;
 use warp::Filter;
 
-use westrikworld_server::routes::cors_wrapper;
-use westrikworld_server::{db, routes};
+use westrikworld_core::routes::cors_wrapper;
+use westrikworld_core::{db, routes};
 
-embed_migrations!();
+embed_migrations!("../core/migrations");
 
 #[tokio::main]
 async fn main() {

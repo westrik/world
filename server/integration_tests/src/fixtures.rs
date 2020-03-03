@@ -1,5 +1,5 @@
-use crate::auth::models::user::{ApiUserCreateSpec, User};
 use diesel::PgConnection;
+use westrikworld_core::auth::models::user::{ApiUserCreateSpec, User};
 
 pub fn create_test_user(conn: &PgConnection) -> User {
     println!("🤖 Creating test user");

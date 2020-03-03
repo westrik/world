@@ -1,7 +1,6 @@
 extern crate argon2rs;
 #[macro_use]
 extern crate diesel;
-#[macro_use]
 extern crate diesel_migrations;
 #[macro_use]
 extern crate lazy_static;
@@ -15,7 +14,6 @@ pub mod db;
 pub mod resource_identifier;
 pub mod routes;
 pub mod schema;
-pub mod test_utils;
 pub mod utils;
 
 // TODO: move DB operations to an async thread pool (tokio?)

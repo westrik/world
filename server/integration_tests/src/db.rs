@@ -1,10 +1,10 @@
-pub use crate::db::PgPool;
-pub use crate::db::{get_conn, init_pool};
 use diesel::Connection;
 use dotenv::dotenv;
 use std::{env, io};
+pub use westrikworld_core::db::PgPool;
+pub use westrikworld_core::db::{get_conn, init_pool};
 
-embed_migrations!();
+embed_migrations!("../core/migrations");
 
 pub fn connect_to_test_db() -> PgPool {
     dotenv().ok();
@@ -25,6 +25,7 @@ pub fn rollback(pool: &PgPool) {
     conn.execute("ROLLBACK").unwrap();
 }
 
+#[allow(unused)]
 pub fn destroy_test_db(pool: &PgPool) {
     let conn = get_conn(&pool).unwrap();
     println!("🪓 Destroying test database...");

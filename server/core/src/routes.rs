@@ -3,8 +3,8 @@ use crate::db::PgPool;
 use crate::notes::filters::routes as note_routes;
 use crate::tasks::filters::routes as task_routes;
 use crate::API_VERSION;
-use warp::Filter;
 use warp::cors::Cors;
+use warp::Filter;
 
 pub fn api(
     db_pool: PgPool,
