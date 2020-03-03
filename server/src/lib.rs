@@ -15,12 +15,12 @@ pub mod db;
 pub mod resource_identifier;
 pub mod routes;
 pub mod schema;
+pub mod test_utils;
+pub mod utils;
 
 // TODO: move DB operations to an async thread pool (tokio?)
 pub mod auth;
 pub mod notes;
 pub mod tasks;
 
-pub mod test_utils;
-
-static API_VERSION: &str = "0.1.1";
+static API_VERSION: &str = "0.1.x";

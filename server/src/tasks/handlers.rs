@@ -1,8 +1,8 @@
 use crate::db::{get_conn, PgPool};
-use crate::routes::options::ListOptions;
 use crate::tasks::models::task::{
     ApiTask, ApiTaskCreateSpec, ApiTaskUpdateSpec, Task, TaskQueryError,
 };
+use crate::utils::list_options::ListOptions;
 use std::convert::Infallible;
 use warp::http::StatusCode;
 

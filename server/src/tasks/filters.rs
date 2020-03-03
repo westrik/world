@@ -1,8 +1,8 @@
 use crate::db::PgPool;
-use crate::routes::options::ListOptions;
-use crate::routes::utils::{json_body, with_db, with_session_token};
+use crate::routes::{json_body, with_db, with_session_token};
 use crate::tasks::handlers;
 use crate::tasks::models::task::{ApiTaskCreateSpec, ApiTaskUpdateSpec};
+use crate::utils::list_options::ListOptions;
 use warp::Filter;
 
 pub fn routes(

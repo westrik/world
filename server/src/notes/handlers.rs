@@ -1,6 +1,6 @@
 use crate::db::{get_conn, PgPool};
 use crate::notes::models::note::{Note, NoteQueryError};
-use crate::routes::options::ListOptions;
+use crate::utils::list_options::ListOptions;
 use chrono::{DateTime, Utc};
 use std::convert::Infallible;
 use warp::http::StatusCode;

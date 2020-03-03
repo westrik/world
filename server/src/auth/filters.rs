@@ -2,7 +2,7 @@ use crate::auth::handlers;
 use crate::auth::handlers::SignInRequest;
 use crate::auth::models::user::ApiUserCreateSpec;
 use crate::db::PgPool;
-use crate::routes::utils::{json_body, with_db};
+use crate::routes::{json_body, with_db};
 use warp::Filter;
 
 pub fn routes(

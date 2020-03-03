@@ -5,7 +5,7 @@ use dotenv::dotenv;
 use std::env;
 use warp::Filter;
 
-use westrikworld_server::routes::utils::cors_wrapper;
+use westrikworld_server::routes::cors_wrapper;
 use westrikworld_server::{db, routes};
 
 embed_migrations!();
