@@ -24,7 +24,7 @@ pub fn create_test_db() -> DbPool {
     pool
 }
 
-pub fn start_txn(pool: &DbPool) {
+pub fn begin_txn(pool: &DbPool) {
     get_conn(&pool).unwrap().execute("BEGIN").unwrap();
 }
 

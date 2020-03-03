@@ -12,7 +12,7 @@ fn create_n_tasks(conn: &DbConnection, n: i32, user_id: i32) {
         let new_task = TaskCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Task),
             user_id,
-            description: format!("HELLO WORLD {}", id).to_string(),
+            description: format!("HELLO WORLD #{:04}", id).to_string(),
         };
         new_task.insert(conn).unwrap();
     }

@@ -34,8 +34,30 @@ postgres=# \q
 ```
 
 
-### [setup] install diesel cli
+### Adding migrations
 
+(First, install `diesel_cli` if it is not already installed):
+```sh
+cargo install diesel_cli --no-default-features --feature postgres
 ```
-cargo install diesel_cli --no-default-features --features postgres
+
+Generate `up.sql` and `down.sql` in a new sub-folder.
+
+```sh
+diesel migration generate create_users
 ```
+
+Put some SQL in the generated files.
+
+Next, test the migration in both directions (and apply the migration):
+
+```sh
+diesel migration run
+diesel migration redo
+```
+
+**Note**: If the migration adds a new model, it will need to be added in a few other places:
+
+
+- `integration_tests::db::destroy_test_db()` - drop the new table
+- `core::resource_identifier::ResourceType` (iff an API ID is needed)
