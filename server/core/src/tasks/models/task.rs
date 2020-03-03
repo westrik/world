@@ -29,7 +29,7 @@ pub struct LoadedTask {
     pub sibling_api_id: Option<String>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum TaskQueryError {
     TaskNotFound,
     InvalidToken,

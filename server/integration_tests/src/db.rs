@@ -1,7 +1,7 @@
 use diesel::Connection;
 use dotenv::dotenv;
 use std::{env, io};
-pub use westrikworld_core::db::{get_conn, init_pool, DbPool};
+pub use westrikworld_core::db::{get_conn, init_pool, DbPool, DbPooledConnection as DbConnection};
 
 embed_migrations!("../core/migrations");
 
