@@ -8,7 +8,9 @@ extern crate diesel_migrations;
 
 #[cfg(test)]
 mod db;
+#[cfg(test)]
 pub mod fixtures;
+#[cfg(test)]
 mod test_runner;
 
 #[cfg(test)]
