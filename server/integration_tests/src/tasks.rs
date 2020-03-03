@@ -1,15 +1,16 @@
-use crate::db::{get_conn, PgPool};
-use crate::fixtures::create_test_user;
-use crate::test_runner::describe_test;
+use crate::db::{get_conn, DbPool};
+use crate::fixtures::get_test_user;
 use westrikworld_core::resource_identifier::{generate_resource_identifier, ResourceType};
 use westrikworld_core::tasks::models::task::TaskCreateSpec;
 
-#[test_case]
-fn test_task_create(pool: &PgPool) {
-    describe_test("create a task");
-    let conn = get_conn(pool).unwrap();
+// TODO:
+//  - test update logic
+//  - test parent-child logic
 
-    let test_user = create_test_user(&conn);
+#[test_case]
+fn test_task_create(pool: &DbPool) {
+    let conn = get_conn(pool).unwrap();
+    let test_user = get_test_user(&conn);
 
     let new_task = TaskCreateSpec {
         api_id: generate_resource_identifier(ResourceType::Task),
@@ -19,7 +20,3 @@ fn test_task_create(pool: &PgPool) {
     println!("inserting test task");
     new_task.insert(&conn).unwrap();
 }
-
-// TODO: test update logic
-
-// TODO: test parent-child logic

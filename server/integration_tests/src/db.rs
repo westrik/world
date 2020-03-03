@@ -1,15 +1,16 @@
 use diesel::Connection;
 use dotenv::dotenv;
 use std::{env, io};
-pub use westrikworld_core::db::PgPool;
-pub use westrikworld_core::db::{get_conn, init_pool};
+pub use westrikworld_core::db::{get_conn, init_pool, DbPool};
 
 embed_migrations!("../core/migrations");
 
-pub fn connect_to_test_db() -> PgPool {
+const DB_POOL_SIZE: u32 = 20;
+
+pub fn connect_to_test_db() -> DbPool {
     dotenv().ok();
     let test_database_url = env::var("TEST_DATABASE_URL").expect("TEST_DATABASE_URL must be set");
-    let pool = init_pool(&test_database_url).expect("Failed to create pool");
+    let pool = init_pool(&test_database_url, DB_POOL_SIZE).expect("Failed to create pool");
     destroy_test_db(&pool);
 
     println!("🌱️ running all migrations...");
@@ -20,14 +21,14 @@ pub fn connect_to_test_db() -> PgPool {
     pool
 }
 
-pub fn start_txn(pool: &PgPool) {
+pub fn start_txn(pool: &DbPool) {
     let conn = get_conn(&pool).unwrap();
 
     println!("📋 starting transaction");
     conn.execute("BEGIN").unwrap();
 }
 
-pub fn rollback_txn(pool: &PgPool) {
+pub fn rollback_txn(pool: &DbPool) {
     let conn = get_conn(&pool).unwrap();
 
     println!("🧻 rolling back...");
@@ -35,7 +36,7 @@ pub fn rollback_txn(pool: &PgPool) {
 }
 
 #[allow(unused)]
-pub fn destroy_test_db(pool: &PgPool) {
+pub fn destroy_test_db(pool: &DbPool) {
     let conn = get_conn(&pool).unwrap();
     println!("🪓 destroying test database...");
     conn.execute("ROLLBACK").unwrap();

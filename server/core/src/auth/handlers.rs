@@ -1,6 +1,6 @@
 use crate::auth::models::session::{ApiSession, Session};
 use crate::auth::models::user::{ApiUser, ApiUserCreateSpec, User, UserQueryError};
-use crate::db::{get_conn, PgPool};
+use crate::db::{get_conn, DbPool};
 use std::convert::Infallible;
 use warp::http::StatusCode;
 
@@ -20,7 +20,7 @@ pub struct AuthenticationResponse {
 
 fn run_sign_in(
     creds: SignInRequest,
-    pool: &PgPool,
+    pool: &DbPool,
 ) -> Result<AuthenticationResponse, UserQueryError> {
     let conn = get_conn(pool).unwrap();
     let user: User = User::find(creds.emailAddress.as_str(), creds.password.as_str(), &conn)?;
@@ -34,7 +34,7 @@ fn run_sign_in(
 
 pub async fn sign_in(
     sign_in_request: SignInRequest,
-    db_pool: PgPool,
+    db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("sign_in: email_address={}", sign_in_request.emailAddress);
 
@@ -53,7 +53,7 @@ pub async fn sign_in(
 
 pub async fn sign_up(
     new_user: ApiUserCreateSpec,
-    db_pool: PgPool,
+    db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!(
         "sign_up: email_address={}, full_name={:?}",

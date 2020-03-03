@@ -11,6 +11,8 @@ use westrikworld_core::{db, routes};
 
 embed_migrations!("../core/migrations");
 
+const DB_POOL_SIZE: u32 = 15;
+
 #[tokio::main]
 async fn main() {
     dotenv().ok();
@@ -22,7 +24,7 @@ async fn main() {
     let cors_origin_url = env::var("CORS_ORIGIN_URL").expect("CORS_ORIGIN_URL must be set");
 
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    let pool = db::init_pool(&database_url).expect("Failed to create pool");
+    let pool = db::init_pool(&database_url, DB_POOL_SIZE).expect("Failed to create pool");
 
     let conn = db::get_conn(&pool).unwrap();
     embedded_migrations::run_with_output(&conn, &mut std::io::stdout()).unwrap();

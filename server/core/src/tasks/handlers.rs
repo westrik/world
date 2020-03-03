@@ -1,4 +1,4 @@
-use crate::db::{get_conn, PgPool};
+use crate::db::{get_conn, DbPool};
 use crate::tasks::models::task::{
     ApiTask, ApiTaskCreateSpec, ApiTaskUpdateSpec, Task, TaskQueryError,
 };
@@ -20,14 +20,14 @@ pub struct UpdateTaskResponse {
 
 // TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
 
-fn run_get_tasks(token: String, pool: &PgPool) -> Result<Vec<Task>, TaskQueryError> {
+fn run_get_tasks(token: String, pool: &DbPool) -> Result<Vec<Task>, TaskQueryError> {
     Ok(Task::find_all_for_user(&get_conn(&pool).unwrap(), token)?)
 }
 
 pub async fn list_tasks(
     opts: ListOptions,
     session_token: String,
-    db_pool: PgPool,
+    db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("list_tasks: opts={:?}", opts);
     Ok(match run_get_tasks(session_token, &db_pool) {
@@ -51,7 +51,7 @@ pub async fn list_tasks(
 fn run_create_task(
     token: String,
     description: String,
-    pool: &PgPool,
+    pool: &DbPool,
 ) -> Result<Task, TaskQueryError> {
     Ok(Task::create(&get_conn(&pool).unwrap(), token, description)?)
 }
@@ -59,7 +59,7 @@ fn run_create_task(
 pub async fn create_task(
     new_task: ApiTaskCreateSpec,
     session_token: String,
-    db_pool: PgPool,
+    db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("create_task: new_task={:?}", new_task);
     Ok(
@@ -86,7 +86,7 @@ fn run_update_task(
     token: String,
     api_id: String,
     spec: ApiTaskUpdateSpec,
-    pool: &PgPool,
+    pool: &DbPool,
 ) -> Result<Task, TaskQueryError> {
     Ok(Task::update(
         &get_conn(&pool).unwrap(),
@@ -100,7 +100,7 @@ pub async fn update_task(
     api_id: String,
     spec: ApiTaskUpdateSpec,
     session_token: String,
-    db_pool: PgPool,
+    db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("update_task: api_id={}, spec={:?}", api_id, spec);
     Ok(
@@ -126,7 +126,7 @@ pub async fn update_task(
 pub async fn delete_task(
     api_id: String,
     _session_token: String,
-    _db_pool: PgPool,
+    _db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("delete_task: api_id={}", api_id);
     Ok(StatusCode::NO_CONTENT)

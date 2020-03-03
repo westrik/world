@@ -1,4 +1,4 @@
-use crate::db::PgPool;
+use crate::db::DbPool;
 use crate::notes::handlers;
 use crate::notes::handlers::{ApiNoteCreateSpec, ApiNoteUpdateSpec};
 use crate::routes::{json_body, with_db, with_session_token};
@@ -6,7 +6,7 @@ use crate::utils::list_options::ListOptions;
 use warp::Filter;
 
 pub fn routes(
-    db_pool: PgPool,
+    db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     notes_list(db_pool.clone())
         .or(note_create(db_pool.clone()))
@@ -16,7 +16,7 @@ pub fn routes(
 
 /// GET /note?offset=3&limit=5
 pub fn notes_list(
-    db_pool: PgPool,
+    db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("note")
         .and(warp::get())
@@ -28,7 +28,7 @@ pub fn notes_list(
 
 /// POST /note with JSON body
 pub fn note_create(
-    db_pool: PgPool,
+    db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("note")
         .and(warp::post())
@@ -40,7 +40,7 @@ pub fn note_create(
 
 /// PUT /note/:id with JSON body
 pub fn note_update(
-    db_pool: PgPool,
+    db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("note" / String)
         .and(warp::put())
@@ -52,7 +52,7 @@ pub fn note_update(
 
 /// DELETE /note/:id
 pub fn note_delete(
-    db_pool: PgPool,
+    db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("note" / String)
         .and(warp::delete())

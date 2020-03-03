@@ -1,4 +1,4 @@
-use crate::db::{get_conn, PgPool};
+use crate::db::{get_conn, DbPool};
 use crate::notes::models::note::{Note, NoteQueryError};
 use crate::utils::list_options::ListOptions;
 use chrono::{DateTime, Utc};
@@ -48,14 +48,14 @@ pub struct UpdateNoteResponse {
 
 // TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
 
-fn run_get_notes(token: String, pool: &PgPool) -> Result<Vec<Note>, NoteQueryError> {
+fn run_get_notes(token: String, pool: &DbPool) -> Result<Vec<Note>, NoteQueryError> {
     Ok(Note::find_all_for_user(&get_conn(&pool).unwrap(), token)?)
 }
 
 pub async fn list_notes(
     opts: ListOptions,
     session_token: String,
-    db_pool: PgPool,
+    db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("list_notes: opts={:?}", opts);
     Ok(match run_get_notes(session_token, &db_pool) {
@@ -79,7 +79,7 @@ pub async fn list_notes(
 fn run_create_note(
     token: String,
     content: serde_json::Value,
-    pool: &PgPool,
+    pool: &DbPool,
 ) -> Result<Note, NoteQueryError> {
     Ok(Note::create(&get_conn(&pool).unwrap(), token, content)?)
 }
@@ -87,7 +87,7 @@ fn run_create_note(
 pub async fn create_note(
     spec: ApiNoteCreateSpec,
     session_token: String,
-    db_pool: PgPool,
+    db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("create_note: spec={:?}", spec);
     Ok(
@@ -114,7 +114,7 @@ fn run_update_note(
     token: String,
     api_id: String,
     spec: ApiNoteUpdateSpec,
-    pool: &PgPool,
+    pool: &DbPool,
 ) -> Result<Note, NoteQueryError> {
     Ok(Note::update(
         &get_conn(&pool).unwrap(),
@@ -128,7 +128,7 @@ pub async fn update_note(
     api_id: String,
     spec: ApiNoteUpdateSpec,
     session_token: String,
-    db_pool: PgPool,
+    db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("update_note: api_id={}, spec={:?}", api_id, spec);
     Ok(
@@ -154,7 +154,7 @@ pub async fn update_note(
 pub async fn delete_note(
     api_id: String,
     _session_token: String,
-    _db_pool: PgPool,
+    _db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("delete_note: api_id={}", api_id);
     Ok(StatusCode::NO_CONTENT)

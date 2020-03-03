@@ -1,5 +1,5 @@
 use crate::auth::filters::routes as auth_routes;
-use crate::db::PgPool;
+use crate::db::DbPool;
 use crate::notes::filters::routes as note_routes;
 use crate::tasks::filters::routes as task_routes;
 use crate::API_VERSION;
@@ -7,7 +7,7 @@ use warp::cors::Cors;
 use warp::Filter;
 
 pub fn api(
-    db_pool: PgPool,
+    db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     preflight_cors()
         .or(health_check())
@@ -17,13 +17,13 @@ pub fn api(
 }
 
 fn authentication(
-    db_pool: PgPool,
+    db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     auth_routes(db_pool)
 }
 
 fn authenticated(
-    db_pool: PgPool,
+    db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     // TODO: wrap with session
     task_routes(db_pool.clone()).or(note_routes(db_pool))
@@ -36,8 +36,8 @@ fn authenticated(
 //}
 
 pub fn with_db(
-    db_pool: PgPool,
-) -> impl Filter<Extract = (PgPool,), Error = std::convert::Infallible> + Clone {
+    db_pool: DbPool,
+) -> impl Filter<Extract = (DbPool,), Error = std::convert::Infallible> + Clone {
     warp::any().map(move || db_pool.clone())
 }
 
