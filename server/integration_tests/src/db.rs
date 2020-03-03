@@ -1,3 +1,4 @@
+use crate::fixtures::{create_test_session, create_test_user};
 use diesel::Connection;
 use dotenv::dotenv;
 use std::{env, io};
@@ -7,7 +8,7 @@ embed_migrations!("../core/migrations");
 
 const DB_POOL_SIZE: u32 = 20;
 
-pub fn connect_to_test_db() -> DbPool {
+pub fn create_test_db() -> DbPool {
     dotenv().ok();
     let test_database_url = env::var("TEST_DATABASE_URL").expect("TEST_DATABASE_URL must be set");
     let pool = init_pool(&test_database_url, DB_POOL_SIZE).expect("Failed to create pool");
@@ -17,6 +18,8 @@ pub fn connect_to_test_db() -> DbPool {
     println!("🌱️ running all migrations...");
     let conn = get_conn(&pool).unwrap();
     embedded_migrations::run_with_output(&conn, &mut io::stdout().lock()).unwrap();
+    create_test_user(&conn);
+    create_test_session(&conn);
 
     pool
 }
