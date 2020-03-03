@@ -19,8 +19,8 @@ fn create_n_tasks(conn: &DbConnection, n: i32, user_id: i32) {
 }
 
 #[test_case]
-fn test_task_create_and_get(pool: &DbPool) {
-    let conn = get_conn(pool).unwrap();
+fn test_task_create_and_get(pool: DbPool) {
+    let conn = get_conn(&pool).unwrap();
     let user = get_test_user(&conn);
     create_n_tasks(&conn, 10, user.id);
 
@@ -31,8 +31,8 @@ fn test_task_create_and_get(pool: &DbPool) {
 }
 
 #[test_case]
-fn test_get_tasks_invalid_token(pool: &DbPool) {
-    let conn = get_conn(pool).unwrap();
+fn test_get_tasks_invalid_token(pool: DbPool) {
+    let conn = get_conn(&pool).unwrap();
     let user = get_test_user(&conn);
     create_n_tasks(&conn, 10, user.id);
 

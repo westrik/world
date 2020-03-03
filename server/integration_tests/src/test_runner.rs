@@ -2,7 +2,7 @@ use crate::db::{begin_txn, create_test_db, destroy_test_db, rollback_txn, DbPool
 use std::io::{stdout, Write};
 
 #[cfg(test)]
-pub fn runner(tests: &[&dyn Fn(&DbPool)]) {
+pub fn runner(tests: &[&dyn Fn(DbPool)]) {
     println!("⚙️  setting up environment for integration tests...");
     let pool = create_test_db();
 
@@ -10,9 +10,8 @@ pub fn runner(tests: &[&dyn Fn(&DbPool)]) {
     stdout().flush().unwrap();
 
     for test in tests {
-        let pool = pool.clone();
         begin_txn(&pool);
-        test(&pool);
+        test(pool.clone());
         rollback_txn(&pool);
         print!(".");
         stdout().flush().unwrap();
