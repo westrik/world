@@ -14,4 +14,4 @@ pub mod fixtures;
 mod test_runner;
 
 #[cfg(test)]
-mod tasks;
+mod tests;
