@@ -12,24 +12,32 @@ pub fn connect_to_test_db() -> PgPool {
     let pool = init_pool(&test_database_url).expect("Failed to create pool");
     destroy_test_db(&pool);
 
-    println!("🌱️ Running all migrations...\n");
+    println!("🌱️ running all migrations...");
     let conn = get_conn(&pool).unwrap();
     embedded_migrations::run_with_output(&conn, &mut io::stdout().lock()).unwrap();
-    conn.execute("BEGIN").unwrap();
+    print!("\n");
 
     pool
 }
 
-pub fn rollback(pool: &PgPool) {
+pub fn start_txn(pool: &PgPool) {
     let conn = get_conn(&pool).unwrap();
-    println!("\n🌬 Rolling back...");
+
+    println!("📋 starting transaction");
+    conn.execute("BEGIN").unwrap();
+}
+
+pub fn rollback_txn(pool: &PgPool) {
+    let conn = get_conn(&pool).unwrap();
+
+    println!("🧻 rolling back...");
     conn.execute("ROLLBACK").unwrap();
 }
 
 #[allow(unused)]
 pub fn destroy_test_db(pool: &PgPool) {
     let conn = get_conn(&pool).unwrap();
-    println!("🪓 Destroying test database...");
+    println!("🪓 destroying test database...");
     conn.execute("ROLLBACK").unwrap();
     conn.execute("DROP TABLE IF EXISTS notes").unwrap();
     conn.execute("DROP TABLE IF EXISTS tasks").unwrap();

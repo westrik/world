@@ -1,10 +1,12 @@
 use crate::db::{get_conn, PgPool};
 use crate::fixtures::create_test_user;
+use crate::test_runner::describe_test;
 use westrikworld_core::resource_identifier::{generate_resource_identifier, ResourceType};
 use westrikworld_core::tasks::models::task::TaskCreateSpec;
 
 #[test_case]
 fn test_task_create(pool: &PgPool) {
+    describe_test("create a task");
     let conn = get_conn(pool).unwrap();
 
     let test_user = create_test_user(&conn);
@@ -14,7 +16,7 @@ fn test_task_create(pool: &PgPool) {
         user_id: test_user.id,
         description: "HELLO WORLD".to_string(),
     };
-    println!("🗒 Inserting test task");
+    println!("inserting test task");
     new_task.insert(&conn).unwrap();
 }
 
