@@ -1,5 +1,6 @@
 use crate::db::{get_conn, DbPool};
 use crate::notes::models::note::{Note, NoteQueryError};
+use crate::notes::parsing::parse_markdown_content;
 use crate::utils::list_options::ListOptions;
 use chrono::{DateTime, Utc};
 use std::convert::Infallible;
@@ -15,7 +16,8 @@ pub struct ApiNote {
 }
 #[derive(Debug, Deserialize)]
 pub struct ApiNoteCreateSpec {
-    pub content: serde_json::Value,
+    pub content_json: Option<serde_json::Value>,
+    pub content_raw: Option<String>,
 }
 #[derive(Debug, Deserialize)]
 #[allow(non_snake_case)]
@@ -90,8 +92,33 @@ pub async fn create_note(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("create_note: spec={:?}", spec);
+    let content_json: serde_json::Value;
+    if let Some(content) = spec.content_json {
+        content_json = content;
+    } else if let Some(content) = spec.content_raw {
+        let content = parse_markdown_content(content);
+        if let Ok(content) = serde_json::to_value(&content) {
+            content_json = content;
+        } else {
+            return Ok(warp::reply::with_status(
+                warp::reply::json(&UpdateNoteResponse {
+                    error: Some("Bad markdown to JSON conversion".to_string()),
+                    note: None,
+                }),
+                StatusCode::INTERNAL_SERVER_ERROR,
+            ));
+        }
+    } else {
+        return Ok(warp::reply::with_status(
+            warp::reply::json(&UpdateNoteResponse {
+                error: Some("Expected either content_json or content_raw".to_string()),
+                note: None,
+            }),
+            StatusCode::BAD_REQUEST,
+        ));
+    }
     Ok(
-        match run_create_note(session_token, spec.content, &db_pool) {
+        match run_create_note(session_token, content_json, &db_pool) {
             Ok(note) => warp::reply::with_status(
                 warp::reply::json(&UpdateNoteResponse {
                     error: None,
@@ -142,7 +169,7 @@ pub async fn update_note(
             ),
             Err(_) => warp::reply::with_status(
                 warp::reply::json(&UpdateNoteResponse {
-                    error: Some("Failed to create note".to_string()),
+                    error: Some("Failed to update note".to_string()),
                     note: None,
                 }),
                 StatusCode::INTERNAL_SERVER_ERROR,

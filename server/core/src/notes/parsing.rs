@@ -1,4 +1,4 @@
-use crate::notes::content_schema::{ColumnType, Event, LinkType, Tag};
+use crate::notes::content_schema::{ColumnType, Content, Event, LinkType, Tag};
 use pulldown_cmark::{
     html, Alignment, CodeBlockKind, Event as ParserEvent, LinkType as ParserLinkType, Options,
     Parser, Tag as ParserTag,
@@ -106,6 +106,12 @@ pub fn markdown_to_event_list(input: String) -> Vec<Event> {
         .into_offset_iter()
         .map(|(event, _)| transform_parse_event(event))
         .collect()
+}
+
+pub fn parse_markdown_content(input: String) -> Content {
+    Content {
+        events: markdown_to_event_list(input),
+    }
 }
 
 #[cfg(test)]
