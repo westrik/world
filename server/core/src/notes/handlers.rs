@@ -1,5 +1,5 @@
 use crate::db::{get_conn, DbPool};
-use crate::notes::models::note::{Note, NoteQueryError};
+use crate::notes::models::note::{Note, NoteError};
 use crate::notes::parsing::parse_markdown_content;
 use crate::utils::list_options::ListOptions;
 use chrono::{DateTime, Utc};
@@ -50,7 +50,7 @@ pub struct UpdateNoteResponse {
 
 // TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
 
-fn run_get_notes(token: String, pool: &DbPool) -> Result<Vec<Note>, NoteQueryError> {
+fn run_get_notes(token: String, pool: &DbPool) -> Result<Vec<Note>, NoteError> {
     Ok(Note::find_all_for_user(&get_conn(&pool).unwrap(), token)?)
 }
 
@@ -79,11 +79,25 @@ pub async fn list_notes(
 }
 
 fn run_create_note(
-    token: String,
-    content: serde_json::Value,
+    spec: ApiNoteCreateSpec,
+    session_token: String,
     pool: &DbPool,
-) -> Result<Note, NoteQueryError> {
-    Ok(Note::create(&get_conn(&pool).unwrap(), token, content)?)
+) -> Result<Note, NoteError> {
+    let content_json: serde_json::Value;
+    if let Some(content) = spec.content_json {
+        content_json = content;
+    } else if let Some(content) = spec.content_raw {
+        content_json = serde_json::to_value(&parse_markdown_content(content))
+            .map_err(|_| NoteError::BadContentConversion)?;
+    } else {
+        return Err(NoteError::NoSpecifiedContent);
+    }
+
+    Ok(Note::create(
+        &get_conn(&pool).unwrap(),
+        session_token,
+        content_json,
+    )?)
 }
 
 pub async fn create_note(
@@ -92,49 +106,22 @@ pub async fn create_note(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("create_note: spec={:?}", spec);
-    let content_json: serde_json::Value;
-    if let Some(content) = spec.content_json {
-        content_json = content;
-    } else if let Some(content) = spec.content_raw {
-        let content = parse_markdown_content(content);
-        if let Ok(content) = serde_json::to_value(&content) {
-            content_json = content;
-        } else {
-            return Ok(warp::reply::with_status(
-                warp::reply::json(&UpdateNoteResponse {
-                    error: Some("Bad markdown to JSON conversion".to_string()),
-                    note: None,
-                }),
-                StatusCode::INTERNAL_SERVER_ERROR,
-            ));
-        }
-    } else {
-        return Ok(warp::reply::with_status(
+    Ok(match run_create_note(spec, session_token, &db_pool) {
+        Ok(note) => warp::reply::with_status(
             warp::reply::json(&UpdateNoteResponse {
-                error: Some("Expected either content_json or content_raw".to_string()),
+                error: None,
+                note: Some(ApiNote::from(&note)),
+            }),
+            StatusCode::OK,
+        ),
+        Err(_) => warp::reply::with_status(
+            warp::reply::json(&UpdateNoteResponse {
+                error: Some("Failed to create note".to_string()),
                 note: None,
             }),
-            StatusCode::BAD_REQUEST,
-        ));
-    }
-    Ok(
-        match run_create_note(session_token, content_json, &db_pool) {
-            Ok(note) => warp::reply::with_status(
-                warp::reply::json(&UpdateNoteResponse {
-                    error: None,
-                    note: Some(ApiNote::from(&note)),
-                }),
-                StatusCode::OK,
-            ),
-            Err(_) => warp::reply::with_status(
-                warp::reply::json(&UpdateNoteResponse {
-                    error: Some("Failed to create note".to_string()),
-                    note: None,
-                }),
-                StatusCode::INTERNAL_SERVER_ERROR,
-            ),
-        },
-    )
+            StatusCode::INTERNAL_SERVER_ERROR,
+        ),
+    })
 }
 
 fn run_update_note(
@@ -142,7 +129,8 @@ fn run_update_note(
     api_id: String,
     spec: ApiNoteUpdateSpec,
     pool: &DbPool,
-) -> Result<Note, NoteQueryError> {
+) -> Result<Note, NoteError> {
+    // TODO: parse into Content struct before updating
     Ok(Note::update(
         &get_conn(&pool).unwrap(),
         token,

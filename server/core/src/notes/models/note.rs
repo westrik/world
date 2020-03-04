@@ -21,10 +21,15 @@ pub struct Note {
 }
 
 #[derive(Debug)]
-pub enum NoteQueryError {
+pub enum NoteError {
+    // our bad (500s)
+    DatabaseError(diesel::result::Error),
+    BadContentConversion,
+
+    // their bad (400s)
     NoteNotFound,
     InvalidToken,
-    DatabaseError(diesel::result::Error),
+    NoSpecifiedContent,
 }
 
 #[derive(Insertable, Debug)]
@@ -35,12 +40,12 @@ pub struct NoteCreateSpec {
     pub content: serde_json::Value,
 }
 impl NoteCreateSpec {
-    pub fn insert(&self, conn: &PgConnection) -> Result<Note, NoteQueryError> {
+    pub fn insert(&self, conn: &PgConnection) -> Result<Note, NoteError> {
         info!("creating note: {:?}", self);
         Ok(diesel::insert_into(notes::table)
             .values(self)
             .get_result(conn)
-            .map_err(NoteQueryError::DatabaseError)?)
+            .map_err(NoteError::DatabaseError)?)
     }
 }
 
@@ -56,7 +61,7 @@ impl NoteUpdateSpec {
         conn: &PgConnection,
         api_id: String,
         user_id: i32,
-    ) -> Result<Note, NoteQueryError> {
+    ) -> Result<Note, NoteError> {
         info!("updating note {} with {:?}", api_id, self);
         Ok(diesel::update(
             all_notes
@@ -65,25 +70,22 @@ impl NoteUpdateSpec {
         )
         .set(self)
         .get_result::<Note>(conn)
-        .map_err(NoteQueryError::DatabaseError)?)
+        .map_err(NoteError::DatabaseError)?)
     }
 }
 
 impl Note {
-    pub fn find_all_for_user(
-        conn: &PgConnection,
-        token: String,
-    ) -> Result<Vec<Note>, NoteQueryError> {
+    pub fn find_all_for_user(conn: &PgConnection, token: String) -> Result<Vec<Note>, NoteError> {
         // TODO: refactor this out
         let session: Session = all_sessions
             .filter(sessions::token.eq(token))
             .filter(sessions::expires_at.gt(now))
             .first(conn)
-            .map_err(|_| NoteQueryError::NoteNotFound)?;
+            .map_err(|_| NoteError::NoteNotFound)?;
         let notes: Vec<Note> = all_notes
             .filter(notes::user_id.eq(session.user_id))
             .load(conn)
-            .map_err(|_| NoteQueryError::NoteNotFound)?;
+            .map_err(|_| NoteError::NoteNotFound)?;
         Ok(notes)
     }
 
@@ -91,13 +93,13 @@ impl Note {
         conn: &PgConnection,
         token: String,
         content: serde_json::Value,
-    ) -> Result<Note, NoteQueryError> {
+    ) -> Result<Note, NoteError> {
         // TODO: refactor this out
         let session: Session = all_sessions
             .filter(sessions::token.eq(token))
             .filter(sessions::expires_at.gt(now))
             .first(conn)
-            .map_err(|_| NoteQueryError::InvalidToken)?;
+            .map_err(|_| NoteError::InvalidToken)?;
         NoteCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Note),
             user_id: session.user_id,
@@ -113,13 +115,13 @@ impl Note {
         token: String,
         api_id: String,
         spec: ApiNoteUpdateSpec,
-    ) -> Result<Note, NoteQueryError> {
+    ) -> Result<Note, NoteError> {
         // TODO: refactor this out
         let session: Session = all_sessions
             .filter(sessions::token.eq(token))
             .filter(sessions::expires_at.gt(now))
             .first(conn)
-            .map_err(|_| NoteQueryError::InvalidToken)?;
+            .map_err(|_| NoteError::InvalidToken)?;
         NoteUpdateSpec {
             updated_at: Utc::now(),
             content: spec.content,
