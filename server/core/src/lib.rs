@@ -22,3 +22,6 @@ pub mod notes;
 pub mod tasks;
 
 static API_VERSION: &str = "0.1.x";
+
+// Limit request body size to 2 MB
+static MAX_CONTENT_LENGTH_BYTES: u64 = 1024 * 1024 * 2;

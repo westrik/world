@@ -1,10 +1,20 @@
 use crate::auth::filters::routes as auth_routes;
-use crate::db::DbPool;
+use crate::auth::models::session::Session;
+use crate::db::{get_conn, DbPool};
 use crate::notes::filters::routes as note_routes;
+use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
 use crate::tasks::filters::routes as task_routes;
-use crate::API_VERSION;
+use crate::{API_VERSION, MAX_CONTENT_LENGTH_BYTES};
+use diesel::dsl::now;
+use diesel::prelude::*;
 use warp::cors::Cors;
 use warp::Filter;
+
+#[derive(Debug, Serialize)]
+pub enum GenericError {
+    Unauthorized,
+}
+impl warp::reject::Reject for GenericError {}
 
 pub fn api(
     db_pool: DbPool,
@@ -25,15 +35,10 @@ fn authentication(
 fn authenticated(
     db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    // TODO: wrap with session
     task_routes(db_pool.clone()).or(note_routes(db_pool))
 }
 
-//fn admin_authenticated(
-//    _db_pool: PgPool,
-//) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-//    unimplemented!()
-//}
+// Helpers:
 
 pub fn with_db(
     db_pool: DbPool,
@@ -41,15 +46,31 @@ pub fn with_db(
     warp::any().map(move || db_pool.clone())
 }
 
-pub fn with_session_token() -> impl Filter<Extract = (String,), Error = warp::Rejection> + Clone {
+fn load_session_for_token(
+    token: String,
+    db_pool: DbPool,
+) -> Result<Session, diesel::result::Error> {
+    // TODO: move to query thread pool
+    all_sessions
+        .filter(sessions::token.eq(token))
+        .filter(sessions::expires_at.gt(now))
+        .first(&get_conn(&db_pool).unwrap())
+}
+
+pub fn with_session(
+    db_pool: DbPool,
+) -> impl Filter<Extract = (Session,), Error = warp::Rejection> + Clone {
     warp::any()
         .and(warp::header("authorization"))
-        .map(|token: String| token)
+        .and(with_db(db_pool))
+        .and_then(|token: String, db_pool: DbPool| async move {
+            load_session_for_token(token, db_pool).map_err(|_| warp::reject())
+        })
 }
 
 pub fn json_body<T: Send + serde::de::DeserializeOwned>(
 ) -> impl Filter<Extract = (T,), Error = warp::Rejection> + Clone {
-    warp::body::content_length_limit(1024 * 16).and(warp::body::json::<T>())
+    warp::body::content_length_limit(MAX_CONTENT_LENGTH_BYTES).and(warp::body::json::<T>())
 }
 
 pub fn preflight_cors() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone

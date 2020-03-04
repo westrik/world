@@ -24,18 +24,7 @@ fn test_task_create_and_get(pool: &DbPool) {
     let user = get_test_user(&conn);
     create_n_tasks(&conn, 10, user.id);
 
-    let session = get_test_session(&conn, user.id);
-    let tasks = Task::find_all_for_user(&conn, session.token).unwrap();
+    let tasks = Task::find_all_for_user(&conn, get_test_session(&conn, user.id)).unwrap();
 
     assert_eq!(tasks.len(), 10);
-}
-
-#[test_case]
-fn test_get_tasks_invalid_token(pool: &DbPool) {
-    let conn = get_conn(pool).unwrap();
-    let user = get_test_user(&conn);
-    create_n_tasks(&conn, 10, user.id);
-
-    let result = Task::find_all_for_user(&conn, "INVALID_TOKEN".to_string());
-    assert_eq!(result.unwrap_err(), TaskError::InvalidToken);
 }

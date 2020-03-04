@@ -1,3 +1,4 @@
+use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
 use crate::notes::content_schema::Content;
 use crate::notes::models::note::{Note, NoteError};
@@ -50,17 +51,17 @@ pub struct UpdateNoteResponse {
 
 // TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
 
-fn run_get_notes(token: String, pool: &DbPool) -> Result<Vec<Note>, NoteError> {
-    Ok(Note::find_all_for_user(&get_conn(&pool).unwrap(), token)?)
+fn run_get_notes(session: Session, pool: &DbPool) -> Result<Vec<Note>, NoteError> {
+    Ok(Note::find_all_for_user(&get_conn(&pool).unwrap(), session)?)
 }
 
 pub async fn list_notes(
     opts: ListOptions,
-    session_token: String,
+    session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("list_notes: opts={:?}", opts);
-    Ok(match run_get_notes(session_token, &db_pool) {
+    Ok(match run_get_notes(session, &db_pool) {
         Ok(notes) => warp::reply::with_status(
             warp::reply::json(&GetNoteResponse {
                 error: None,
@@ -80,8 +81,8 @@ pub async fn list_notes(
 
 fn run_create_note(
     spec: ApiNoteCreateSpec,
-    session_token: String,
-    pool: &DbPool,
+    session: Session,
+    db_pool: &DbPool,
 ) -> Result<Note, NoteError> {
     let content_json: serde_json::Value;
     if let Some(content) = spec.content_json {
@@ -94,19 +95,19 @@ fn run_create_note(
     }
 
     Ok(Note::create(
-        &get_conn(&pool).unwrap(),
-        session_token,
+        &get_conn(&db_pool).unwrap(),
+        session,
         content_json,
     )?)
 }
 
 pub async fn create_note(
     spec: ApiNoteCreateSpec,
-    session_token: String,
+    session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("create_note: spec={:?}", spec);
-    Ok(match run_create_note(spec, session_token, &db_pool) {
+    Ok(match run_create_note(spec, session, &db_pool) {
         Ok(note) => warp::reply::with_status(
             warp::reply::json(&UpdateNoteResponse {
                 error: None,
@@ -125,14 +126,14 @@ pub async fn create_note(
 }
 
 fn run_update_note(
-    token: String,
+    session: Session,
     api_id: String,
     spec: ApiNoteUpdateSpec,
     pool: &DbPool,
 ) -> Result<Note, NoteError> {
     Ok(Note::update(
         &get_conn(&pool).unwrap(),
-        token,
+        session,
         api_id,
         spec.content,
     )?)
@@ -141,33 +142,31 @@ fn run_update_note(
 pub async fn update_note(
     api_id: String,
     spec: ApiNoteUpdateSpec,
-    session_token: String,
+    session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("update_note: api_id={}, spec={:?}", api_id, spec);
-    Ok(
-        match run_update_note(session_token, api_id, spec, &db_pool) {
-            Ok(note) => warp::reply::with_status(
-                warp::reply::json(&UpdateNoteResponse {
-                    error: None,
-                    note: Some(ApiNote::from(&note)),
-                }),
-                StatusCode::OK,
-            ),
-            Err(_) => warp::reply::with_status(
-                warp::reply::json(&UpdateNoteResponse {
-                    error: Some("Failed to update note".to_string()),
-                    note: None,
-                }),
-                StatusCode::INTERNAL_SERVER_ERROR,
-            ),
-        },
-    )
+    Ok(match run_update_note(session, api_id, spec, &db_pool) {
+        Ok(note) => warp::reply::with_status(
+            warp::reply::json(&UpdateNoteResponse {
+                error: None,
+                note: Some(ApiNote::from(&note)),
+            }),
+            StatusCode::OK,
+        ),
+        Err(_) => warp::reply::with_status(
+            warp::reply::json(&UpdateNoteResponse {
+                error: Some("Failed to update note".to_string()),
+                note: None,
+            }),
+            StatusCode::INTERNAL_SERVER_ERROR,
+        ),
+    })
 }
 
 pub async fn delete_note(
     api_id: String,
-    _session_token: String,
+    _session: Session,
     _db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("delete_note: api_id={}", api_id);

@@ -5,8 +5,6 @@ use crate::auth::models::user::User;
 use crate::notes::content_schema::Content;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{notes, notes::dsl::notes as all_notes};
-use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
-use diesel::dsl::now;
 use diesel::prelude::*;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
@@ -75,13 +73,10 @@ impl NoteUpdateSpec {
 }
 
 impl Note {
-    pub fn find_all_for_user(conn: &PgConnection, token: String) -> Result<Vec<Note>, NoteError> {
-        // TODO: refactor this out
-        let session: Session = all_sessions
-            .filter(sessions::token.eq(token))
-            .filter(sessions::expires_at.gt(now))
-            .first(conn)
-            .map_err(|_| NoteError::NoteNotFound)?;
+    pub fn find_all_for_user(
+        conn: &PgConnection,
+        session: Session,
+    ) -> Result<Vec<Note>, NoteError> {
         let notes: Vec<Note> = all_notes
             .filter(notes::user_id.eq(session.user_id))
             .load(conn)
@@ -91,15 +86,9 @@ impl Note {
 
     pub fn create(
         conn: &PgConnection,
-        token: String,
+        session: Session,
         content: serde_json::Value,
     ) -> Result<Note, NoteError> {
-        // TODO: refactor this out
-        let session: Session = all_sessions
-            .filter(sessions::token.eq(token))
-            .filter(sessions::expires_at.gt(now))
-            .first(conn)
-            .map_err(|_| NoteError::InvalidToken)?;
         NoteCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Note),
             user_id: session.user_id,
@@ -110,17 +99,10 @@ impl Note {
 
     pub fn update(
         conn: &PgConnection,
-        token: String,
+        session: Session,
         api_id: String,
         content: Option<Content>,
     ) -> Result<Note, NoteError> {
-        // TODO: refactor this out
-        let session: Session = all_sessions
-            .filter(sessions::token.eq(token))
-            .filter(sessions::expires_at.gt(now))
-            .first(conn)
-            .map_err(|_| NoteError::InvalidToken)?;
-
         let mut content_update = None;
         if let Some(content_data) = content {
             content_update = Some(

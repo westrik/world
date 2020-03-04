@@ -49,5 +49,3 @@ impl Session {
             .map_err(UserError::DatabaseError)?)
     }
 }
-
-/* ----- TODO: DB integration tests -----  */

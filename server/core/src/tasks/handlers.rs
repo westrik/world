@@ -1,3 +1,4 @@
+use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
 use crate::tasks::models::task::{ApiTask, ApiTaskCreateSpec, ApiTaskUpdateSpec, Task, TaskError};
 use crate::utils::list_options::ListOptions;
@@ -18,17 +19,17 @@ pub struct UpdateTaskResponse {
 
 // TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
 
-fn run_get_tasks(token: String, pool: &DbPool) -> Result<Vec<Task>, TaskError> {
-    Ok(Task::find_all_for_user(&get_conn(&pool).unwrap(), token)?)
+fn run_get_tasks(session: Session, pool: &DbPool) -> Result<Vec<Task>, TaskError> {
+    Ok(Task::find_all_for_user(&get_conn(&pool).unwrap(), session)?)
 }
 
 pub async fn list_tasks(
     opts: ListOptions,
-    session_token: String,
+    session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("list_tasks: opts={:?}", opts);
-    Ok(match run_get_tasks(session_token, &db_pool) {
+    Ok(match run_get_tasks(session, &db_pool) {
         Ok(tasks) => warp::reply::with_status(
             warp::reply::json(&GetTaskResponse {
                 error: None,
@@ -46,18 +47,26 @@ pub async fn list_tasks(
     })
 }
 
-fn run_create_task(token: String, description: String, pool: &DbPool) -> Result<Task, TaskError> {
-    Ok(Task::create(&get_conn(&pool).unwrap(), token, description)?)
+fn run_create_task(
+    session: Session,
+    description: String,
+    pool: &DbPool,
+) -> Result<Task, TaskError> {
+    Ok(Task::create(
+        &get_conn(&pool).unwrap(),
+        session,
+        description,
+    )?)
 }
 
 pub async fn create_task(
     new_task: ApiTaskCreateSpec,
-    session_token: String,
+    session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("create_task: new_task={:?}", new_task);
     Ok(
-        match run_create_task(session_token, new_task.description, &db_pool) {
+        match run_create_task(session, new_task.description, &db_pool) {
             Ok(task) => warp::reply::with_status(
                 warp::reply::json(&UpdateTaskResponse {
                     error: None,
@@ -77,14 +86,14 @@ pub async fn create_task(
 }
 
 fn run_update_task(
-    token: String,
+    session: Session,
     api_id: String,
     spec: ApiTaskUpdateSpec,
     pool: &DbPool,
 ) -> Result<Task, TaskError> {
     Ok(Task::update(
         &get_conn(&pool).unwrap(),
-        token,
+        session,
         api_id,
         spec,
     )?)
@@ -93,33 +102,31 @@ fn run_update_task(
 pub async fn update_task(
     api_id: String,
     spec: ApiTaskUpdateSpec,
-    session_token: String,
+    session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("update_task: api_id={}, spec={:?}", api_id, spec);
-    Ok(
-        match run_update_task(session_token, api_id, spec, &db_pool) {
-            Ok(task) => warp::reply::with_status(
-                warp::reply::json(&UpdateTaskResponse {
-                    error: None,
-                    task: Some(ApiTask::from(&task)),
-                }),
-                StatusCode::OK,
-            ),
-            Err(_) => warp::reply::with_status(
-                warp::reply::json(&UpdateTaskResponse {
-                    error: Some("Failed to create task".to_string()),
-                    task: None,
-                }),
-                StatusCode::INTERNAL_SERVER_ERROR,
-            ),
-        },
-    )
+    Ok(match run_update_task(session, api_id, spec, &db_pool) {
+        Ok(task) => warp::reply::with_status(
+            warp::reply::json(&UpdateTaskResponse {
+                error: None,
+                task: Some(ApiTask::from(&task)),
+            }),
+            StatusCode::OK,
+        ),
+        Err(_) => warp::reply::with_status(
+            warp::reply::json(&UpdateTaskResponse {
+                error: Some("Failed to create task".to_string()),
+                task: None,
+            }),
+            StatusCode::INTERNAL_SERVER_ERROR,
+        ),
+    })
 }
 
 pub async fn delete_task(
     api_id: String,
-    _session_token: String,
+    _session: Session,
     _db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("delete_task: api_id={}", api_id);

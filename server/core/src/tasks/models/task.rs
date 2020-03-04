@@ -5,9 +5,7 @@ use diesel::PgConnection;
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
-use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
 use crate::schema::{tasks, tasks::dsl::tasks as all_tasks};
-use diesel::dsl::now;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(User)]
@@ -140,13 +138,10 @@ impl From<&Task> for ApiTask {
 }
 
 impl Task {
-    pub fn find_all_for_user(conn: &PgConnection, token: String) -> Result<Vec<Task>, TaskError> {
-        // TODO: refactor this out
-        let session: Session = all_sessions
-            .filter(sessions::token.eq(token))
-            .filter(sessions::expires_at.gt(now))
-            .first(conn)
-            .map_err(|_| TaskError::InvalidToken)?;
+    pub fn find_all_for_user(
+        conn: &PgConnection,
+        session: Session,
+    ) -> Result<Vec<Task>, TaskError> {
         let items: Vec<Task> = all_tasks
             .filter(tasks::user_id.eq(session.user_id))
             .load(conn)
@@ -156,15 +151,9 @@ impl Task {
 
     pub fn create(
         conn: &PgConnection,
-        token: String,
+        session: Session,
         description: String,
     ) -> Result<Task, TaskError> {
-        // TODO: refactor this out
-        let session: Session = all_sessions
-            .filter(sessions::token.eq(token))
-            .filter(sessions::expires_at.gt(now))
-            .first(conn)
-            .map_err(|_| TaskError::InvalidToken)?;
         let new_task = TaskCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Task),
             user_id: session.user_id,
@@ -175,17 +164,10 @@ impl Task {
 
     pub fn update(
         conn: &PgConnection,
-        token: String,
+        session: Session,
         api_id: String,
         spec: ApiTaskUpdateSpec,
     ) -> Result<Task, TaskError> {
-        // TODO: refactor this out
-        let session: Session = all_sessions
-            .filter(sessions::token.eq(token))
-            .filter(sessions::expires_at.gt(now))
-            .first(conn)
-            .map_err(|_| TaskError::InvalidToken)?;
-
         TaskUpdateSpec {
             updated_at: Utc::now(),
             completed_at: match spec.isCompleted {
@@ -206,5 +188,3 @@ impl Task {
         .update(conn, api_id, session.user_id)
     }
 }
-
-/* ----- DB integration tests -----  */

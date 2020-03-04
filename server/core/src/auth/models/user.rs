@@ -110,5 +110,3 @@ impl User {
         .to_string()
     }
 }
-
-/* ----- TODO: DB integration tests -----  */
