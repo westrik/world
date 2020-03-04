@@ -30,7 +30,7 @@ pub struct LoadedTask {
 }
 
 #[derive(Debug, PartialEq)]
-pub enum TaskQueryError {
+pub enum TaskError {
     TaskNotFound,
     InvalidToken,
     DatabaseError(diesel::result::Error),
@@ -44,12 +44,12 @@ pub struct TaskCreateSpec {
     pub description: String,
 }
 impl TaskCreateSpec {
-    pub fn insert(&self, conn: &PgConnection) -> Result<Task, TaskQueryError> {
+    pub fn insert(&self, conn: &PgConnection) -> Result<Task, TaskError> {
         info!("creating task: {:?}", self);
         Ok(diesel::insert_into(tasks::table)
             .values(self)
             .get_result(conn)
-            .map_err(TaskQueryError::DatabaseError)?)
+            .map_err(TaskError::DatabaseError)?)
     }
 }
 
@@ -70,7 +70,7 @@ impl TaskUpdateSpec {
         conn: &PgConnection,
         api_id: String,
         user_id: i32,
-    ) -> Result<Task, TaskQueryError> {
+    ) -> Result<Task, TaskError> {
         info!("updating task {} with {:?}", api_id, self);
         Ok(diesel::update(
             all_tasks
@@ -79,7 +79,7 @@ impl TaskUpdateSpec {
         )
         .set(self)
         .get_result::<Task>(conn)
-        .map_err(TaskQueryError::DatabaseError)?)
+        .map_err(TaskError::DatabaseError)?)
     }
 }
 
@@ -140,20 +140,17 @@ impl From<&Task> for ApiTask {
 }
 
 impl Task {
-    pub fn find_all_for_user(
-        conn: &PgConnection,
-        token: String,
-    ) -> Result<Vec<Task>, TaskQueryError> {
+    pub fn find_all_for_user(conn: &PgConnection, token: String) -> Result<Vec<Task>, TaskError> {
         // TODO: refactor this out
         let session: Session = all_sessions
             .filter(sessions::token.eq(token))
             .filter(sessions::expires_at.gt(now))
             .first(conn)
-            .map_err(|_| TaskQueryError::TaskNotFound)?;
+            .map_err(|_| TaskError::TaskNotFound)?;
         let items: Vec<Task> = all_tasks
             .filter(tasks::user_id.eq(session.user_id))
             .load(conn)
-            .map_err(|_| TaskQueryError::TaskNotFound)?;
+            .map_err(|_| TaskError::TaskNotFound)?;
         Ok(items)
     }
 
@@ -161,13 +158,13 @@ impl Task {
         conn: &PgConnection,
         token: String,
         description: String,
-    ) -> Result<Task, TaskQueryError> {
+    ) -> Result<Task, TaskError> {
         // TODO: refactor this out
         let session: Session = all_sessions
             .filter(sessions::token.eq(token))
             .filter(sessions::expires_at.gt(now))
             .first(conn)
-            .map_err(|_| TaskQueryError::InvalidToken)?;
+            .map_err(|_| TaskError::InvalidToken)?;
         let new_task = TaskCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Task),
             user_id: session.user_id,
@@ -181,13 +178,13 @@ impl Task {
         token: String,
         api_id: String,
         spec: ApiTaskUpdateSpec,
-    ) -> Result<Task, TaskQueryError> {
+    ) -> Result<Task, TaskError> {
         // TODO: refactor this out
         let session: Session = all_sessions
             .filter(sessions::token.eq(token))
             .filter(sessions::expires_at.gt(now))
             .first(conn)
-            .map_err(|_| TaskQueryError::InvalidToken)?;
+            .map_err(|_| TaskError::InvalidToken)?;
 
         TaskUpdateSpec {
             updated_at: Utc::now(),

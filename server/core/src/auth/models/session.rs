@@ -4,7 +4,7 @@ use diesel::PgConnection;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 
-use crate::auth::models::user::{User, UserQueryError};
+use crate::auth::models::user::{User, UserError};
 use crate::schema::sessions;
 
 /* ----- Model definitions -----  */
@@ -40,13 +40,13 @@ impl From<Session> for ApiSession {
 /* ----- DB business logic -----  */
 
 impl Session {
-    pub fn create(conn: &PgConnection, user: &User) -> Result<Session, UserQueryError> {
+    pub fn create(conn: &PgConnection, user: &User) -> Result<Session, UserError> {
         let token: String = thread_rng().sample_iter(&Alphanumeric).take(32).collect();
         // TODO: retry on token collision
         Ok(diesel::insert_into(sessions::table)
             .values((sessions::token.eq(token), sessions::user_id.eq(user.id)))
             .get_result(conn)
-            .map_err(UserQueryError::DatabaseError)?)
+            .map_err(UserError::DatabaseError)?)
     }
 }
 

@@ -1,7 +1,5 @@
 use crate::db::{get_conn, DbPool};
-use crate::tasks::models::task::{
-    ApiTask, ApiTaskCreateSpec, ApiTaskUpdateSpec, Task, TaskQueryError,
-};
+use crate::tasks::models::task::{ApiTask, ApiTaskCreateSpec, ApiTaskUpdateSpec, Task, TaskError};
 use crate::utils::list_options::ListOptions;
 use std::convert::Infallible;
 use warp::http::StatusCode;
@@ -20,7 +18,7 @@ pub struct UpdateTaskResponse {
 
 // TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
 
-fn run_get_tasks(token: String, pool: &DbPool) -> Result<Vec<Task>, TaskQueryError> {
+fn run_get_tasks(token: String, pool: &DbPool) -> Result<Vec<Task>, TaskError> {
     Ok(Task::find_all_for_user(&get_conn(&pool).unwrap(), token)?)
 }
 
@@ -48,11 +46,7 @@ pub async fn list_tasks(
     })
 }
 
-fn run_create_task(
-    token: String,
-    description: String,
-    pool: &DbPool,
-) -> Result<Task, TaskQueryError> {
+fn run_create_task(token: String, description: String, pool: &DbPool) -> Result<Task, TaskError> {
     Ok(Task::create(&get_conn(&pool).unwrap(), token, description)?)
 }
 
@@ -87,7 +81,7 @@ fn run_update_task(
     api_id: String,
     spec: ApiTaskUpdateSpec,
     pool: &DbPool,
-) -> Result<Task, TaskQueryError> {
+) -> Result<Task, TaskError> {
     Ok(Task::update(
         &get_conn(&pool).unwrap(),
         token,

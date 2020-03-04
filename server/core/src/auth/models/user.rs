@@ -21,7 +21,7 @@ pub struct User {
 /* ----- Query helper structs  -----  */
 
 #[derive(Debug)]
-pub enum UserQueryError {
+pub enum UserError {
     UserNotFound,
     DatabaseError(diesel::result::Error),
 }
@@ -36,11 +36,11 @@ pub struct UserCreateSpec {
     pub password_hash: String,
 }
 impl UserCreateSpec {
-    pub fn insert(&self, conn: &PgConnection) -> Result<User, UserQueryError> {
+    pub fn insert(&self, conn: &PgConnection) -> Result<User, UserError> {
         Ok(diesel::insert_into(users::table)
             .values(self)
             .get_result(conn)
-            .map_err(UserQueryError::DatabaseError)?)
+            .map_err(UserError::DatabaseError)?)
     }
 }
 #[derive(Debug, Deserialize)]
@@ -76,10 +76,7 @@ lazy_static! {
 }
 
 impl User {
-    pub fn create(
-        new_user: ApiUserCreateSpec,
-        conn: &PgConnection,
-    ) -> Result<User, UserQueryError> {
+    pub fn create(new_user: ApiUserCreateSpec, conn: &PgConnection) -> Result<User, UserError> {
         let new_user = UserCreateSpec {
             email_address: new_user.emailAddress,
             full_name: new_user.fullName,
@@ -92,12 +89,12 @@ impl User {
         email_address: &str,
         password: &str,
         conn: &PgConnection,
-    ) -> Result<User, UserQueryError> {
+    ) -> Result<User, UserError> {
         let user: User = all_users
             .filter(users::email_address.eq(email_address))
             .filter(users::password_hash.eq(Self::hash_password(password.to_string())))
             .first(conn)
-            .map_err(|_| UserQueryError::UserNotFound)?;
+            .map_err(|_| UserError::UserNotFound)?;
         Ok(user)
     }
 
