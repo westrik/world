@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
-use crate::notes::handlers::ApiNoteUpdateSpec;
+use crate::notes::content_schema::Content;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{notes, notes::dsl::notes as all_notes};
 use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
@@ -53,7 +53,7 @@ impl NoteCreateSpec {
 #[table_name = "notes"]
 pub struct NoteUpdateSpec {
     pub updated_at: DateTime<Utc>,
-    pub content: serde_json::Value,
+    pub content: Option<serde_json::Value>,
 }
 impl NoteUpdateSpec {
     pub fn update(
@@ -108,13 +108,11 @@ impl Note {
         .insert(conn)
     }
 
-    // TODO: move this out of the model.
-    //    (models/note.rs should not handle API spec conversion)
     pub fn update(
         conn: &PgConnection,
         token: String,
         api_id: String,
-        spec: ApiNoteUpdateSpec,
+        content: Option<Content>,
     ) -> Result<Note, NoteError> {
         // TODO: refactor this out
         let session: Session = all_sessions
@@ -122,9 +120,16 @@ impl Note {
             .filter(sessions::expires_at.gt(now))
             .first(conn)
             .map_err(|_| NoteError::InvalidToken)?;
+
+        let mut content_update = None;
+        if let Some(content_data) = content {
+            content_update = Some(
+                serde_json::to_value(content_data).map_err(|_| NoteError::BadContentConversion)?,
+            );
+        }
         NoteUpdateSpec {
             updated_at: Utc::now(),
-            content: spec.content,
+            content: content_update,
         }
         .update(conn, api_id, session.user_id)
     }

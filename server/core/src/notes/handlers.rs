@@ -1,4 +1,5 @@
 use crate::db::{get_conn, DbPool};
+use crate::notes::content_schema::Content;
 use crate::notes::models::note::{Note, NoteError};
 use crate::notes::parsing::parse_markdown_content;
 use crate::utils::list_options::ListOptions;
@@ -22,8 +23,7 @@ pub struct ApiNoteCreateSpec {
 #[derive(Debug, Deserialize)]
 #[allow(non_snake_case)]
 pub struct ApiNoteUpdateSpec {
-    pub content: serde_json::Value,
-    pub updatedAt: DateTime<Utc>,
+    pub content: Option<Content>,
 }
 impl From<&Note> for ApiNote {
     fn from(note: &Note) -> Self {
@@ -130,12 +130,11 @@ fn run_update_note(
     spec: ApiNoteUpdateSpec,
     pool: &DbPool,
 ) -> Result<Note, NoteError> {
-    // TODO: parse into Content struct before updating
     Ok(Note::update(
         &get_conn(&pool).unwrap(),
         token,
         api_id,
-        spec,
+        spec.content,
     )?)
 }
 
