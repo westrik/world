@@ -146,7 +146,7 @@ impl Task {
             .filter(sessions::token.eq(token))
             .filter(sessions::expires_at.gt(now))
             .first(conn)
-            .map_err(|_| TaskError::TaskNotFound)?;
+            .map_err(|_| TaskError::InvalidToken)?;
         let items: Vec<Task> = all_tasks
             .filter(tasks::user_id.eq(session.user_id))
             .load(conn)

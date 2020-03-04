@@ -37,6 +37,5 @@ fn test_get_tasks_invalid_token(pool: &DbPool) {
     create_n_tasks(&conn, 10, user.id);
 
     let result = Task::find_all_for_user(&conn, "INVALID_TOKEN".to_string());
-    // TODO: should be InvalidToken
-    assert_eq!(result.unwrap_err(), TaskError::TaskNotFound);
+    assert_eq!(result.unwrap_err(), TaskError::InvalidToken);
 }
