@@ -362,7 +362,7 @@ pub mod markdown_parsing {
                 children: Some(vec![Element {
                     element: Image(LinkData {
                         link_type: Inline,
-                        destination_url: format!("{}/image.jpg", TEST_URL),
+                        destination_url: image_url.to_string(),
                         title: "the title".to_string()
                     }),
                     children: Some(vec![Element {
