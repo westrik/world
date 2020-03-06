@@ -8,10 +8,10 @@ impl MarkdownRender for Content {
     fn to_markdown(&self) -> String {
         // TODO: actual output
         let event_strs: Vec<String> = self
-            .events
+            .elements
             .iter()
-            .map(|ev| {
-                match ev {
+            .map(|el| {
+                match el {
                     // Event::Start(tag) => {},
                     // Event::End(_) => {},
                     // Event::Text(_) => {},
@@ -22,7 +22,7 @@ impl MarkdownRender for Content {
                     // Event::HardBreak => {},
                     // Event::Rule => {},
                     // Event::TaskListMarker(_) => {},
-                    _ => ev.to_markdown(),
+                    _ => el.to_markdown(),
                 }
             })
             .collect();
@@ -30,32 +30,25 @@ impl MarkdownRender for Content {
     }
 }
 
-impl MarkdownRender for Event {
+impl MarkdownRender for Element {
     fn to_markdown(&self) -> String {
-        "[Event]".to_string()
-    }
-}
-
-impl MarkdownRender for Tag {
-    fn to_markdown(&self) -> String {
-        "[Tag]".to_string()
+        unimplemented!()
     }
 }
 
 #[cfg(test)]
 pub mod test_markdown_output {
-    use crate::notes::content_schema::Content;
-    use crate::notes::output::MarkdownRender;
-    use crate::notes::parsing::markdown_to_event_list;
+    // use crate::notes::content_schema::Content;
+    use crate::notes::parsing::markdown_to_elements;
 
     #[test]
     fn test_content_to_markdown() {
         let md = "- [ ] hello\n- [ ] world";
-        let events = markdown_to_event_list(md.to_string());
-        assert_eq!(
-            Content { events }.to_markdown(),
-            "[Event][Event][Event][Event][Event]\
-                 [Event][Event][Event][Event][Event]" // TODO: fix this
-        );
+        let _elements = markdown_to_elements(md.to_string());
+        // assert_eq!(
+        //     Content { elements }.to_markdown(),
+        //     "[Event][Event][Event][Event][Event]\
+        //          [Event][Event][Event][Event][Event]" // TODO: fix this
+        // );
     }
 }
