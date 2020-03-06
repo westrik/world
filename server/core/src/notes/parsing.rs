@@ -1,8 +1,12 @@
-use crate::notes::content_schema::{ColumnType, Content, Event, LinkType, Tag};
-use pulldown_cmark::{
-    html, Alignment, CodeBlockKind, Event as ParserEvent, LinkType as ParserLinkType, Options,
-    Parser, Tag as ParserTag,
+use crate::notes::content_schema::{
+    CodeBlockData, ColumnType, Content, Element, ElementType, HeadingType, LinkData, LinkType,
+    ListData, TableData, TaskListMarkerData,
 };
+use crate::API_VERSION;
+use pulldown_cmark::{
+    html, Alignment, CodeBlockKind, Event, LinkType as ParserLinkType, Options, Parser, Tag,
+};
+use std::ops::Range;
 
 fn get_parser_options() -> Options {
     let mut parser_opts = Options::empty();
@@ -22,63 +26,6 @@ pub fn markdown_to_html(input: String) -> String {
     html_output
 }
 
-fn transform_parse_event(event: ParserEvent) -> Event {
-    match event {
-        ParserEvent::Start(tag) => Event::Start(transform_parse_tag(tag)),
-        ParserEvent::End(tag) => Event::End(transform_parse_tag(tag)),
-        ParserEvent::Text(text) => Event::Text(text.into_string()),
-        ParserEvent::Code(code) => Event::Code(code.into_string()),
-        ParserEvent::Html(html) => Event::Html(html.into_string()),
-        ParserEvent::FootnoteReference(fref) => Event::FootnoteReference(fref.into_string()),
-        ParserEvent::SoftBreak => Event::SoftBreak,
-        ParserEvent::HardBreak => Event::HardBreak,
-        ParserEvent::Rule => Event::Rule,
-        ParserEvent::TaskListMarker(status) => Event::TaskListMarker(status),
-    }
-}
-
-fn transform_parse_tag(tag: ParserTag) -> Tag {
-    match tag {
-        ParserTag::Paragraph => Tag::Paragraph,
-        ParserTag::Heading(size) => Tag::Heading(size),
-        ParserTag::BlockQuote => Tag::BlockQuote,
-        ParserTag::CodeBlock(kind) => match kind {
-            CodeBlockKind::Indented => Tag::CodeBlock(None),
-            CodeBlockKind::Fenced(lang) => Tag::CodeBlock(Some(lang.into_string())),
-        },
-        ParserTag::List(length) => Tag::List(length),
-        ParserTag::Item => Tag::Item,
-        ParserTag::FootnoteDefinition(fdef) => Tag::FootnoteDefinition(fdef.into_string()),
-        ParserTag::Table(alignments) => Tag::Table(
-            alignments
-                .iter()
-                .map(|alignment| match *alignment {
-                    Alignment::None => ColumnType::None,
-                    Alignment::Left => ColumnType::Left,
-                    Alignment::Center => ColumnType::Center,
-                    Alignment::Right => ColumnType::Right,
-                })
-                .collect(),
-        ),
-        ParserTag::TableHead => Tag::TableHead,
-        ParserTag::TableRow => Tag::TableRow,
-        ParserTag::TableCell => Tag::TableCell,
-        ParserTag::Emphasis => Tag::Emphasis,
-        ParserTag::Strong => Tag::Strong,
-        ParserTag::Strikethrough => Tag::Strikethrough,
-        ParserTag::Link(link_type, dest_url, title) => Tag::Link(
-            transform_link_type(link_type),
-            dest_url.into_string(),
-            title.into_string(),
-        ),
-        ParserTag::Image(link_type, dest_url, title) => Tag::Image(
-            transform_link_type(link_type),
-            dest_url.into_string(),
-            title.into_string(),
-        ),
-    }
-}
-
 fn transform_link_type(link_type: ParserLinkType) -> LinkType {
     match link_type {
         ParserLinkType::Inline => LinkType::Inline,
@@ -93,30 +40,173 @@ fn transform_link_type(link_type: ParserLinkType) -> LinkType {
     }
 }
 
-pub fn _print_event_list_for_markdown(input: String) {
-    let offset_iter = Parser::new_ext(input.as_str(), get_parser_options()).into_offset_iter();
-
-    for (event, range) in offset_iter {
-        println!("{:?}, {:?}", event, range);
+fn alignment_to_column_type(alignment: Alignment) -> ColumnType {
+    match alignment {
+        Alignment::None => ColumnType::None,
+        Alignment::Left => ColumnType::Left,
+        Alignment::Center => ColumnType::Center,
+        Alignment::Right => ColumnType::Right,
     }
 }
 
-pub fn markdown_to_event_list(input: String) -> Vec<Event> {
-    Parser::new_ext(input.as_str(), get_parser_options())
-        .into_offset_iter()
-        .map(|(event, _)| transform_parse_event(event))
-        .collect()
+// TODO: refactor this mess
+pub fn markdown_to_elements(content: String) -> Vec<Element> {
+    let events: Vec<(Event, Range<usize>)> =
+        Parser::new_ext(content.as_str(), get_parser_options())
+            .into_offset_iter()
+            .collect();
+    let mut tag_stack: Vec<Tag> = Vec::new();
+    let mut context: Vec<Vec<Element>> = Vec::new();
+    let mut elements: Vec<Element> = Vec::new();
+
+    for (event, _) in events {
+        match event {
+            Event::Start(tag) => {
+                tag_stack.push(tag);
+                context.push(elements.to_vec()); // TODO: avoid copying
+                elements = Vec::new();
+            }
+            Event::End(end_tag) => {
+                let start_tag = tag_stack.pop();
+                if let Some(tag_) = start_tag {
+                    if tag_ != end_tag {
+                        error!("mismatched start & end tags");
+                    }
+                    let children = elements.to_vec(); // TODO: avoid copying
+                    if let Some(context_) = context.pop() {
+                        elements = context_.clone();
+                    } else {
+                        error!("corrupted parse context");
+                        elements = Vec::new();
+                    }
+                    let element = Element {
+                        element: match tag_ {
+                            Tag::Paragraph => ElementType::Paragraph,
+                            Tag::Heading(size) => ElementType::Heading(match size {
+                                1 => HeadingType::H1,
+                                2 => HeadingType::H2,
+                                3 => HeadingType::H3,
+                                4 => HeadingType::H4,
+                                5 => HeadingType::H5,
+                                _ => HeadingType::H6,
+                            }),
+                            Tag::BlockQuote => ElementType::BlockQuote,
+                            Tag::CodeBlock(code_block_kind) => {
+                                ElementType::CodeBlock(CodeBlockData {
+                                    language: match code_block_kind {
+                                        CodeBlockKind::Indented => None,
+                                        CodeBlockKind::Fenced(lang) => Some(lang.into_string()),
+                                    },
+                                })
+                            }
+                            Tag::List(number_of_first_item) => ElementType::List(ListData {
+                                number_of_first_item,
+                            }),
+                            Tag::Item => ElementType::Item,
+                            Tag::FootnoteDefinition(label) => {
+                                ElementType::FootnoteDefinition(label.into_string())
+                            }
+                            Tag::Table(alignments) => ElementType::Table(TableData {
+                                column_types: alignments
+                                    .iter()
+                                    .map(|alignment| alignment_to_column_type(*alignment))
+                                    .collect(),
+                            }),
+                            Tag::TableHead => ElementType::TableHead,
+                            Tag::TableRow => ElementType::TableRow,
+                            Tag::TableCell => ElementType::TableCell,
+                            Tag::Emphasis => ElementType::Emphasis,
+                            Tag::Strong => ElementType::Strong,
+                            Tag::Strikethrough => ElementType::Strikethrough,
+                            Tag::Link(link_type, destination_url, title) => {
+                                ElementType::Link(LinkData {
+                                    link_type: transform_link_type(link_type),
+                                    destination_url: destination_url.into_string(),
+                                    title: title.into_string(),
+                                })
+                            }
+                            Tag::Image(link_type, destination_url, title) => {
+                                ElementType::Image(LinkData {
+                                    link_type: transform_link_type(link_type),
+                                    destination_url: destination_url.into_string(),
+                                    title: title.into_string(),
+                                })
+                            }
+                        },
+                        children: Some(children),
+                    };
+                    elements.push(element);
+                } else {
+                    error!("no start tag in stack");
+                }
+            }
+            Event::Text(content) => {
+                elements.push(Element {
+                    element: ElementType::Text(content.into_string()),
+                    children: None,
+                });
+            }
+            Event::Code(content) => {
+                elements.push(Element {
+                    element: ElementType::Code(content.into_string()),
+                    children: None,
+                });
+            }
+            Event::Html(content) => {
+                elements.push(Element {
+                    element: ElementType::Html(content.into_string()),
+                    children: None,
+                });
+            }
+            Event::FootnoteReference(label) => {
+                elements.push(Element {
+                    element: ElementType::FootnoteReference(label.into_string()),
+                    children: None,
+                });
+            }
+            Event::SoftBreak => {
+                elements.push(Element {
+                    element: ElementType::SoftBreak,
+                    children: None,
+                });
+            }
+            Event::HardBreak => {
+                elements.push(Element {
+                    element: ElementType::HardBreak,
+                    children: None,
+                });
+            }
+            Event::Rule => {
+                elements.push(Element {
+                    element: ElementType::Rule,
+                    children: None,
+                });
+            }
+            Event::TaskListMarker(checked) => {
+                elements.push(Element {
+                    element: ElementType::TaskListMarker(TaskListMarkerData { checked }),
+                    children: None,
+                });
+            }
+        }
+    }
+
+    elements.to_vec() // TODO: avoid copying
 }
 
 pub fn parse_markdown_content(input: String) -> Content {
     Content {
-        events: markdown_to_event_list(input),
+        elements: markdown_to_elements(input),
+        schema_version: API_VERSION.to_string(),
     }
 }
 
 #[cfg(test)]
 pub mod markdown_parsing {
     use super::*;
+    use crate::notes::content_schema::ElementType::*;
+    use crate::notes::content_schema::HeadingType::*;
+    use crate::notes::content_schema::LinkType::*;
     use crate::notes::content_schema::*;
 
     const TEST_URL: &str = "http://example.com";
@@ -141,117 +231,146 @@ pub mod markdown_parsing {
     }
 
     #[test]
-    fn header_events() {
+    fn header_elements() {
         assert_eq!(
-            markdown_to_event_list("# Hello\n## world".to_string()),
+            markdown_to_elements("# Hello\n## world".to_string()),
             vec![
-                Event::Start(Tag::Heading(1)),
-                Event::Text("Hello".to_string()),
-                Event::End(Tag::Heading(1)),
-                Event::Start(Tag::Heading(2)),
-                Event::Text("world".to_string()),
-                Event::End(Tag::Heading(2)),
+                Element {
+                    element: Heading(H1),
+                    children: Some(vec![Element {
+                        element: Text("Hello".to_string()),
+                        children: None
+                    }])
+                },
+                Element {
+                    element: Heading(H2),
+                    children: Some(vec![Element {
+                        element: Text("world".to_string()),
+                        children: None
+                    }])
+                }
             ]
         );
     }
 
     #[test]
-    fn strikethrough_events() {
+    fn strikethrough_elements() {
         assert_eq!(
-            markdown_to_event_list("~~Hello world~~".to_string()),
-            vec![
-                Event::Start(Tag::Paragraph),
-                Event::Start(Tag::Strikethrough),
-                Event::Text("Hello world".to_string()),
-                Event::End(Tag::Strikethrough),
-                Event::End(Tag::Paragraph),
-            ]
+            markdown_to_elements("~~Hello world~~".to_string()),
+            vec![Element {
+                element: Paragraph,
+                children: Some(vec![Element {
+                    element: Strikethrough,
+                    children: Some(vec![Element {
+                        element: Text("Hello world".to_string()),
+                        children: None
+                    }])
+                }])
+            }]
         );
     }
 
     #[test]
-    fn task_list_events() {
+    fn task_list_elements() {
         assert_eq!(
-            markdown_to_event_list("- [ ] hello\n- [ ] world".to_string()),
-            vec![
-                Event::Start(Tag::List(None)),
-                Event::Start(Tag::Item),
-                Event::TaskListMarker(false),
-                Event::Text("hello".to_string()),
-                Event::End(Tag::Item),
-                Event::Start(Tag::Item),
-                Event::TaskListMarker(false),
-                Event::Text("world".to_string()),
-                Event::End(Tag::Item),
-                Event::End(Tag::List(None)),
-            ]
+            markdown_to_elements("- [ ] hello\n- [ ] world".to_string()),
+            vec![Element {
+                element: List(ListData {
+                    number_of_first_item: None
+                }),
+                children: Some(vec![
+                    Element {
+                        element: Item,
+                        children: Some(vec![
+                            Element {
+                                element: TaskListMarker(TaskListMarkerData { checked: false }),
+                                children: None
+                            },
+                            Element {
+                                element: Text("hello".to_string()),
+                                children: None
+                            }
+                        ])
+                    },
+                    Element {
+                        element: Item,
+                        children: Some(vec![
+                            Element {
+                                element: TaskListMarker(TaskListMarkerData { checked: false }),
+                                children: None
+                            },
+                            Element {
+                                element: Text("world".to_string()),
+                                children: None
+                            }
+                        ])
+                    }
+                ])
+            }]
         );
     }
 
     #[test]
-    fn link_events() {
+    fn link_elements() {
         assert_eq!(
-            markdown_to_event_list(format!("[hello]({} \"the title\")", TEST_URL).to_string()),
-            vec![
-                Event::Start(Tag::Paragraph),
-                Event::Start(Tag::Link(
-                    LinkType::Inline,
-                    TEST_URL.to_string(),
-                    "the title".to_string()
-                )),
-                Event::Text("hello".to_string()),
-                Event::End(Tag::Link(
-                    LinkType::Inline,
-                    TEST_URL.to_string(),
-                    "the title".to_string()
-                )),
-                Event::End(Tag::Paragraph),
-            ]
+            markdown_to_elements(format!("[hello]({} \"the title\")", TEST_URL).to_string()),
+            vec![Element {
+                element: Paragraph,
+                children: Some(vec![Element {
+                    element: Link(LinkData {
+                        link_type: Inline,
+                        destination_url: "http://example.com".to_string(),
+                        title: "the title".to_string()
+                    }),
+                    children: Some(vec![Element {
+                        element: Text("hello".to_string()),
+                        children: None
+                    }])
+                }])
+            }]
         );
 
         assert_eq!(
-            markdown_to_event_list(format!("<{}>", TEST_URL).to_string()),
-            vec![
-                Event::Start(Tag::Paragraph),
-                Event::Start(Tag::Link(
-                    LinkType::Autolink,
-                    TEST_URL.to_string(),
-                    "".to_string()
-                )),
-                Event::Text(TEST_URL.to_string()),
-                Event::End(Tag::Link(
-                    LinkType::Autolink,
-                    TEST_URL.to_string(),
-                    "".to_string()
-                )),
-                Event::End(Tag::Paragraph),
-            ]
+            markdown_to_elements(format!("<{}>", TEST_URL).to_string()),
+            vec![Element {
+                element: Paragraph,
+                children: Some(vec![Element {
+                    element: Link(LinkData {
+                        link_type: Autolink,
+                        destination_url: "http://example.com".to_string(),
+                        title: "".to_string()
+                    }),
+                    children: Some(vec![Element {
+                        element: Text("http://example.com".to_string()),
+                        children: None
+                    }])
+                }])
+            }]
         );
     }
 
     #[test]
-    fn image_events() {
+    fn image_elements() {
         let image_url = format!("{}/image.jpg", TEST_URL);
         assert_eq!(
-            markdown_to_event_list(format!(
+            markdown_to_elements(format!(
                 "![test image]({} \"the title\")",
                 image_url.to_string()
             )),
-            vec![
-                Event::Start(Tag::Paragraph),
-                Event::Start(Tag::Image(
-                    LinkType::Inline,
-                    image_url.to_string(),
-                    "the title".to_string()
-                )),
-                Event::Text("test image".to_string()),
-                Event::End(Tag::Image(
-                    LinkType::Inline,
-                    image_url.to_string(),
-                    "the title".to_string()
-                )),
-                Event::End(Tag::Paragraph),
-            ]
+            vec![Element {
+                element: Paragraph,
+                children: Some(vec![Element {
+                    element: Image(LinkData {
+                        link_type: Inline,
+                        destination_url: format!("{}/image.jpg", TEST_URL),
+                        title: "the title".to_string()
+                    }),
+                    children: Some(vec![Element {
+                        element: Text("test image".to_string()),
+                        children: None
+                    }])
+                }])
+            }]
         );
     }
 }
