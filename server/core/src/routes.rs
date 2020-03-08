@@ -23,7 +23,7 @@ pub fn api(
         .or(health_check())
         .or(authentication(db_pool.clone()))
         .or(authenticated(db_pool))
-        .map(|r| warp::reply::with_header(r, "x-api-version", API_VERSION))
+        .map(|r| warp::reply::with_header(r, "X-API-Version", API_VERSION))
 }
 
 fn authentication(
@@ -61,7 +61,7 @@ pub fn with_session(
     db_pool: DbPool,
 ) -> impl Filter<Extract = (Session,), Error = warp::Rejection> + Clone {
     warp::any()
-        .and(warp::header("authorization"))
+        .and(warp::header("Authorization"))
         .and(with_db(db_pool))
         .and_then(|token: String, db_pool: DbPool| async move {
             load_session_for_token(token, db_pool).map_err(|_| warp::reject())

@@ -29,14 +29,11 @@ pub fn markdown_to_html(input: String) -> String {
 fn transform_link_type(link_type: ParserLinkType) -> LinkType {
     match link_type {
         ParserLinkType::Inline => LinkType::Inline,
-        ParserLinkType::Reference => LinkType::Reference,
-        ParserLinkType::ReferenceUnknown => LinkType::Reference,
-        ParserLinkType::Collapsed => LinkType::Collapsed,
-        ParserLinkType::CollapsedUnknown => LinkType::Collapsed,
-        ParserLinkType::Shortcut => LinkType::Shortcut,
-        ParserLinkType::ShortcutUnknown => LinkType::Shortcut,
         ParserLinkType::Autolink => LinkType::Autolink,
         ParserLinkType::Email => LinkType::Email,
+        ParserLinkType::Reference | ParserLinkType::ReferenceUnknown => LinkType::Reference,
+        ParserLinkType::Collapsed | ParserLinkType::CollapsedUnknown => LinkType::Collapsed,
+        ParserLinkType::Shortcut | ParserLinkType::ShortcutUnknown => LinkType::Shortcut,
     }
 }
 
@@ -51,19 +48,22 @@ fn alignment_to_column_type(alignment: Alignment) -> ColumnType {
 
 // TODO: refactor this mess
 pub fn markdown_to_elements(content: String) -> Vec<Element> {
+    let pdcm_guard = flame::start_guard("pulldown_cmark");
     let events: Vec<(Event, Range<usize>)> =
         Parser::new_ext(content.as_str(), get_parser_options())
             .into_offset_iter()
             .collect();
+    pdcm_guard.end();
     let mut tag_stack: Vec<Tag> = Vec::new();
-    let mut context: Vec<Vec<Element>> = Vec::new();
+    let mut context: Vec<Box<[Element]>> = Vec::new();
     let mut elements: Vec<Element> = Vec::new();
 
     for (event, _) in events {
+        let event_guard = flame::start_guard(format!("event {:?}", event));
         match event {
             Event::Start(tag) => {
                 tag_stack.push(tag);
-                context.push(elements.to_vec()); // TODO: avoid copying
+                context.push(elements.into_boxed_slice());
                 elements = Vec::new();
             }
             Event::End(end_tag) => {
@@ -72,9 +72,9 @@ pub fn markdown_to_elements(content: String) -> Vec<Element> {
                     if tag_ != end_tag {
                         error!("mismatched start & end tags");
                     }
-                    let children = elements.to_vec(); // TODO: avoid copying
+                    let children = elements.into_boxed_slice().into_vec();
                     if let Some(context_) = context.pop() {
-                        elements = context_.clone();
+                        elements = context_.into_vec();
                     } else {
                         error!("corrupted parse context");
                         elements = Vec::new();
@@ -189,9 +189,10 @@ pub fn markdown_to_elements(content: String) -> Vec<Element> {
                 });
             }
         }
+        event_guard.end();
     }
 
-    elements.to_vec() // TODO: avoid copying
+    elements.into_boxed_slice().into_vec()
 }
 
 pub fn parse_markdown_content(input: String) -> Content {
@@ -372,5 +373,23 @@ pub mod markdown_parsing {
                 }])
             }]
         );
+    }
+
+    #[test]
+    fn profile__markdown_to_elements() {
+        use flame;
+        use flamescope;
+        use std::fs::File;
+        use std::str::from_utf8;
+
+        static CRDT_BYTES: &[u8] = include_bytes!("../../benches/data/xi-editor-crdt.md");
+        let input = from_utf8(CRDT_BYTES).unwrap();
+
+        let main_guard = flame::start_guard("main");
+
+        markdown_to_elements(input.to_string());
+
+        main_guard.end();
+        flamescope::dump(&mut File::create("flamescope.json").unwrap()).unwrap();
     }
 }
