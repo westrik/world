@@ -1,17 +1,17 @@
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Content {
     pub elements: Vec<Element>,
     #[serde(rename = "schemaVersion")]
     pub schema_version: String,
 }
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub struct Element {
     pub element: ElementType,
     pub children: Option<Vec<Element>>,
 }
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
 #[serde(rename = "elementType")]
 pub enum ElementType {
     #[serde(rename = "text")]
@@ -64,7 +64,7 @@ pub enum ElementType {
     Rule,
 }
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub enum HeadingType {
     #[serde(rename = "h1")]
     H1,
@@ -80,7 +80,7 @@ pub enum HeadingType {
     H6,
 }
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
 #[serde(rename = "linkData")]
 pub struct LinkData {
     #[serde(rename = "type")]
@@ -90,7 +90,7 @@ pub struct LinkData {
     pub title: String,
 }
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub enum LinkType {
     // Inline link like `[foo](bar)`
     #[serde(rename = "inline")]
@@ -112,30 +112,30 @@ pub enum LinkType {
     Email,
 }
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub struct CodeBlockData {
     pub language: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub struct ListData {
     #[serde(rename = "numberOfFirstItem")]
     pub number_of_first_item: Option<u64>,
 }
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub struct TaskListMarkerData {
     pub checked: bool,
 }
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
 #[serde(rename = "tableData")]
 pub struct TableData {
     #[serde(rename = "columnTypes")]
     pub column_types: Vec<ColumnType>,
 }
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
 #[serde(rename = "columnType")]
 pub enum ColumnType {
     #[serde(rename = "none")]

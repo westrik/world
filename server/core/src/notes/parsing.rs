@@ -29,14 +29,11 @@ pub fn markdown_to_html(input: String) -> String {
 fn transform_link_type(link_type: ParserLinkType) -> LinkType {
     match link_type {
         ParserLinkType::Inline => LinkType::Inline,
-        ParserLinkType::Reference => LinkType::Reference,
-        ParserLinkType::ReferenceUnknown => LinkType::Reference,
-        ParserLinkType::Collapsed => LinkType::Collapsed,
-        ParserLinkType::CollapsedUnknown => LinkType::Collapsed,
-        ParserLinkType::Shortcut => LinkType::Shortcut,
-        ParserLinkType::ShortcutUnknown => LinkType::Shortcut,
         ParserLinkType::Autolink => LinkType::Autolink,
         ParserLinkType::Email => LinkType::Email,
+        ParserLinkType::Reference | ParserLinkType::ReferenceUnknown => LinkType::Reference,
+        ParserLinkType::Collapsed | ParserLinkType::CollapsedUnknown => LinkType::Collapsed,
+        ParserLinkType::Shortcut | ParserLinkType::ShortcutUnknown => LinkType::Shortcut,
     }
 }
 
@@ -56,14 +53,14 @@ pub fn markdown_to_elements(content: String) -> Vec<Element> {
             .into_offset_iter()
             .collect();
     let mut tag_stack: Vec<Tag> = Vec::new();
-    let mut context: Vec<Vec<Element>> = Vec::new();
+    let mut context: Vec<Box<[Element]>> = Vec::new();
     let mut elements: Vec<Element> = Vec::new();
 
     for (event, _) in events {
         match event {
             Event::Start(tag) => {
                 tag_stack.push(tag);
-                context.push(elements.to_vec()); // TODO: avoid copying
+                context.push(elements.into_boxed_slice());
                 elements = Vec::new();
             }
             Event::End(end_tag) => {
@@ -72,9 +69,9 @@ pub fn markdown_to_elements(content: String) -> Vec<Element> {
                     if tag_ != end_tag {
                         error!("mismatched start & end tags");
                     }
-                    let children = elements.to_vec(); // TODO: avoid copying
+                    let children = elements.into_boxed_slice().into_vec();
                     if let Some(context_) = context.pop() {
-                        elements = context_.clone();
+                        elements = context_.into_vec();
                     } else {
                         error!("corrupted parse context");
                         elements = Vec::new();
@@ -191,7 +188,7 @@ pub fn markdown_to_elements(content: String) -> Vec<Element> {
         }
     }
 
-    elements.to_vec() // TODO: avoid copying
+    elements.into_boxed_slice().into_vec()
 }
 
 pub fn parse_markdown_content(input: String) -> Content {
@@ -362,7 +359,7 @@ pub mod markdown_parsing {
                 children: Some(vec![Element {
                     element: Image(LinkData {
                         link_type: Inline,
-                        destination_url: format!("{}/image.jpg", TEST_URL),
+                        destination_url: image_url.to_string(),
                         title: "the title".to_string()
                     }),
                     children: Some(vec![Element {
