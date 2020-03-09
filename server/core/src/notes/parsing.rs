@@ -39,10 +39,10 @@ fn transform_link_type(link_type: ParserLinkType) -> LinkType {
 
 fn alignment_to_column_type(alignment: Alignment) -> ColumnType {
     match alignment {
-        Alignment::None => ColumnType::None,
-        Alignment::Left => ColumnType::Left,
-        Alignment::Center => ColumnType::Center,
-        Alignment::Right => ColumnType::Right,
+        Alignment::None => ColumnType::Unaligned,
+        Alignment::Left => ColumnType::LeftAligned,
+        Alignment::Center => ColumnType::CenterAligned,
+        Alignment::Right => ColumnType::RightAligned,
     }
 }
 
@@ -201,6 +201,7 @@ pub fn parse_markdown_content(input: String) -> Content {
 #[cfg(test)]
 pub mod markdown_parsing {
     use super::*;
+    use crate::notes::content_schema::ColumnType::*;
     use crate::notes::content_schema::ElementType::*;
     use crate::notes::content_schema::HeadingType::*;
     use crate::notes::content_schema::LinkType::*;
@@ -367,6 +368,125 @@ pub mod markdown_parsing {
                         children: None
                     }])
                 }])
+            }]
+        );
+    }
+
+    #[test]
+    fn table_elements() {
+        assert_eq!(
+            markdown_to_elements(
+                "| Column 1 | Column 2 | Column 3 | Column 4 |
+|:--------:|:---------|---------:|----------|
+| value 1  | value 2  | value 3  | value 4  |
+| value 5  | value 6  | value 7  | value 8  |"
+                    .to_string()
+            ),
+            vec![Element {
+                element: Table(TableData {
+                    column_types: vec![CenterAligned, LeftAligned, RightAligned, Unaligned]
+                }),
+                children: Some(vec![
+                    Element {
+                        element: TableHead,
+                        children: Some(vec![
+                            Element {
+                                element: TableCell,
+                                children: Some(vec![Element {
+                                    element: Text("Column 1".to_string()),
+                                    children: None
+                                }])
+                            },
+                            Element {
+                                element: TableCell,
+                                children: Some(vec![Element {
+                                    element: Text("Column 2".to_string()),
+                                    children: None
+                                }])
+                            },
+                            Element {
+                                element: TableCell,
+                                children: Some(vec![Element {
+                                    element: Text("Column 3".to_string()),
+                                    children: None
+                                }])
+                            },
+                            Element {
+                                element: TableCell,
+                                children: Some(vec![Element {
+                                    element: Text("Column 4".to_string()),
+                                    children: None
+                                }])
+                            }
+                        ])
+                    },
+                    Element {
+                        element: TableRow,
+                        children: Some(vec![
+                            Element {
+                                element: TableCell,
+                                children: Some(vec![Element {
+                                    element: Text("value 1".to_string()),
+                                    children: None
+                                }])
+                            },
+                            Element {
+                                element: TableCell,
+                                children: Some(vec![Element {
+                                    element: Text("value 2".to_string()),
+                                    children: None
+                                }])
+                            },
+                            Element {
+                                element: TableCell,
+                                children: Some(vec![Element {
+                                    element: Text("value 3".to_string()),
+                                    children: None
+                                }])
+                            },
+                            Element {
+                                element: TableCell,
+                                children: Some(vec![Element {
+                                    element: Text("value 4".to_string()),
+                                    children: None
+                                }])
+                            }
+                        ])
+                    },
+                    Element {
+                        element: TableRow,
+                        children: Some(vec![
+                            Element {
+                                element: TableCell,
+                                children: Some(vec![Element {
+                                    element: Text("value 5".to_string()),
+                                    children: None
+                                }])
+                            },
+                            Element {
+                                element: TableCell,
+                                children: Some(vec![Element {
+                                    element: Text("value 6".to_string()),
+                                    children: None
+                                }])
+                            },
+                            Element {
+                                element: TableCell,
+                                children: Some(vec![Element {
+                                    element: Text("value 7".to_string()),
+                                    children: None
+                                }])
+                            },
+                            Element {
+                                element: TableCell,
+                                children: Some(vec![Element {
+                                    element: Text("value 8".to_string()),
+                                    children: None
+                                }])
+                            }
+                        ])
+                    }
+                ])
             }]
         );
     }

@@ -136,14 +136,14 @@ pub struct TableData {
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
-#[serde(rename = "columnType")]
+#[serde(rename = "alignment")]
 pub enum ColumnType {
     #[serde(rename = "none")]
-    None,
+    Unaligned,
     #[serde(rename = "left")]
-    Left,
+    LeftAligned,
     #[serde(rename = "center")]
-    Center,
+    CenterAligned,
     #[serde(rename = "right")]
-    Right,
+    RightAligned,
 }
