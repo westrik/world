@@ -2,7 +2,8 @@ use chrono::{DateTime, Utc};
 
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
-use crate::notes::content_schema::Content;
+use crate::notes::content::schema::Content;
+use crate::notes::errors::NoteError;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{notes, notes::dsl::notes as all_notes};
 use diesel::prelude::*;
@@ -16,18 +17,6 @@ pub struct Note {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub content: serde_json::Value,
-}
-
-#[derive(Debug)]
-pub enum NoteError {
-    // our bad (500s)
-    DatabaseError(diesel::result::Error),
-    BadContentConversion,
-
-    // their bad (400s)
-    NoteNotFound,
-    InvalidToken,
-    NoSpecifiedContent,
 }
 
 #[derive(Insertable, Debug)]

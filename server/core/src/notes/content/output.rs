@@ -1,4 +1,4 @@
-use crate::notes::content_schema::*;
+use crate::notes::content::schema::*;
 
 pub trait MarkdownRender {
     fn to_markdown(&self) -> String;
@@ -37,12 +37,12 @@ impl MarkdownRender for Element {
 }
 
 #[cfg(test)]
-pub mod test_markdown_output {
-    // use crate::notes::content_schema::Content;
-    use crate::notes::parsing::markdown_to_elements;
+pub mod markdown_output {
+    // use crate::notes::content::schema::Content;
+    use crate::notes::content::parsing::markdown_to_elements;
 
     #[test]
-    fn test_content_to_markdown() {
+    fn content_to_markdown() {
         let md = "- [ ] hello\n- [ ] world";
         let _elements = markdown_to_elements(md.to_string());
         // assert_eq!(

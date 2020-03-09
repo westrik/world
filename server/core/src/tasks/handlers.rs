@@ -1,6 +1,7 @@
 use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
-use crate::tasks::models::task::{ApiTask, ApiTaskCreateSpec, ApiTaskUpdateSpec, Task, TaskError};
+use crate::tasks::errors::TaskError;
+use crate::tasks::models::task::{ApiTask, ApiTaskCreateSpec, ApiTaskUpdateSpec, Task};
 use crate::utils::list_options::ListOptions;
 use std::convert::Infallible;
 use warp::http::StatusCode;

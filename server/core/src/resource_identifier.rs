@@ -13,27 +13,24 @@ pub enum ResourceType {
 
 impl fmt::Display for ResourceType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self)
+        let type_str = format!("{:?}", self);
+        write!(f, "{}", type_str.to_ascii_lowercase())
     }
 }
 
 pub fn generate_resource_identifier(resource_type: ResourceType) -> String {
     let token: String = thread_rng().sample_iter(&Alphanumeric).take(8).collect();
-    format!(
-        "{}_{}",
-        resource_type.to_string().to_ascii_lowercase(),
-        token
-    )
+    format!("{}_{}", resource_type.to_string(), token)
 }
 
 #[cfg(test)]
-pub mod test_resource_identifiers {
+pub mod resource_identifiers {
     use super::*;
     use crate::resource_identifier::ResourceType::*;
     use regex::Regex;
 
     #[test]
-    fn test_id_generation() {
+    fn id_generation() {
         let user_id = generate_resource_identifier(User);
         assert!(Regex::new(r"user_[A-Za-z0-9]{8}")
             .unwrap()

@@ -4,6 +4,7 @@ use diesel::prelude::*;
 use diesel::{PgConnection, QueryResult};
 use std::{env, str};
 
+use crate::auth::errors::UserError;
 use crate::schema::{users, users::dsl::users as all_users};
 
 /* ----- Model definitions -----  */
@@ -16,14 +17,6 @@ pub struct User {
     pub password_hash: String,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
-}
-
-/* ----- Query helper structs  -----  */
-
-#[derive(Debug)]
-pub enum UserError {
-    UserNotFound,
-    DatabaseError(diesel::result::Error),
 }
 
 /* ----- Create and update specs  -----  */

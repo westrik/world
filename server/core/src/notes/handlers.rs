@@ -1,8 +1,9 @@
 use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
-use crate::notes::content_schema::Content;
-use crate::notes::models::note::{Note, NoteError};
-use crate::notes::parsing::parse_markdown_content;
+use crate::notes::content::parsing::parse_markdown_content;
+use crate::notes::content::schema::Content;
+use crate::notes::errors::NoteError;
+use crate::notes::models::note::Note;
 use crate::utils::list_options::ListOptions;
 use chrono::{DateTime, Utc};
 use std::convert::Infallible;

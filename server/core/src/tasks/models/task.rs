@@ -6,6 +6,7 @@ use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{tasks, tasks::dsl::tasks as all_tasks};
+use crate::tasks::errors::TaskError;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(User)]
@@ -25,13 +26,6 @@ pub struct LoadedTask {
     pub task: Task,
     pub parent_api_id: Option<String>,
     pub sibling_api_id: Option<String>,
-}
-
-#[derive(Debug, PartialEq)]
-pub enum TaskError {
-    TaskNotFound,
-    InvalidToken,
-    DatabaseError(diesel::result::Error),
 }
 
 #[derive(Insertable, Debug)]

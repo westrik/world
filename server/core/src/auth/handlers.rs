@@ -1,5 +1,6 @@
+use crate::auth::errors::UserError;
 use crate::auth::models::session::{ApiSession, Session};
-use crate::auth::models::user::{ApiUser, ApiUserCreateSpec, User, UserError};
+use crate::auth::models::user::{ApiUser, ApiUserCreateSpec, User};
 use crate::db::{get_conn, DbPool};
 use std::convert::Infallible;
 use warp::http::StatusCode;
