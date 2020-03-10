@@ -44,10 +44,10 @@ pub enum ElementType {
     TaskListMarker(TaskListMarkerData),
     #[serde(rename = "blockQuote")]
     BlockQuote,
-    #[serde(rename = "footnoteReference")]
-    FootnoteReference(String),
     #[serde(rename = "footnoteDefinition")]
     FootnoteDefinition(String),
+    #[serde(rename = "footnoteReference")]
+    FootnoteReference(String),
     #[serde(rename = "table")]
     Table(TableData),
     #[serde(rename = "tableHead")]
