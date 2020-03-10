@@ -9,12 +9,15 @@ use chrono::{DateTime, Utc};
 use std::convert::Infallible;
 use warp::http::StatusCode;
 
+// TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
+
 #[derive(Serialize)]
 #[allow(non_snake_case)]
 pub struct ApiNote {
     pub apiId: String,
     pub createdAt: DateTime<Utc>,
     pub updatedAt: DateTime<Utc>,
+    pub title: String,
     pub content: serde_json::Value,
 }
 #[derive(Debug, Deserialize)]
@@ -34,14 +37,33 @@ impl From<&Note> for ApiNote {
             content: note.content.clone(),
             createdAt: note.created_at,
             updatedAt: note.updated_at,
+            title: "".to_string(),
+        }
+    }
+}
+#[derive(Serialize)]
+#[allow(non_snake_case)]
+pub struct ApiNoteSummary {
+    pub apiId: String,
+    pub createdAt: DateTime<Utc>,
+    pub updatedAt: DateTime<Utc>,
+    pub title: String,
+}
+impl From<&Note> for ApiNoteSummary {
+    fn from(note: &Note) -> Self {
+        ApiNoteSummary {
+            apiId: note.api_id.clone(),
+            createdAt: note.created_at,
+            updatedAt: note.updated_at,
+            title: "".to_string(),
         }
     }
 }
 
 #[derive(Serialize)]
-pub struct GetNoteResponse {
+pub struct GetNotesResponse {
     error: Option<String>,
-    notes: Option<Vec<ApiNote>>,
+    notes: Option<Vec<ApiNoteSummary>>,
 }
 
 #[derive(Serialize)]
@@ -50,9 +72,10 @@ pub struct UpdateNoteResponse {
     note: Option<ApiNote>,
 }
 
-// TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
+// TODO: add GET endpoint for API ID param (return full content)
 
 fn run_get_notes(session: Session, pool: &DbPool) -> Result<Vec<Note>, NoteError> {
+    // TODO: don't load content when generating listing
     Ok(Note::find_all_for_user(&get_conn(&pool).unwrap(), session)?)
 }
 
@@ -64,14 +87,14 @@ pub async fn list_notes(
     debug!("list_notes: opts={:?}", opts);
     Ok(match run_get_notes(session, &db_pool) {
         Ok(notes) => warp::reply::with_status(
-            warp::reply::json(&GetNoteResponse {
+            warp::reply::json(&GetNotesResponse {
                 error: None,
-                notes: Some(notes.iter().map(ApiNote::from).collect()),
+                notes: Some(notes.iter().map(ApiNoteSummary::from).collect()),
             }),
             StatusCode::OK,
         ),
         Err(_) => warp::reply::with_status(
-            warp::reply::json(&GetNoteResponse {
+            warp::reply::json(&GetNotesResponse {
                 error: Some("Failed to query for notes".to_string()),
                 notes: None,
             }),

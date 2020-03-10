@@ -9,12 +9,7 @@ import { ApiTask, Task } from '~models/Task';
 
 import TaskRow from './TaskRow';
 import NewTaskForm from './NewTaskForm';
-import { ApiResponse } from '~utils/network';
 import listTasks from '~tasks/listTasks';
-
-export interface GetTasksResponse extends ApiResponse {
-    tasks: Array<ApiTask>;
-}
 
 function TaskList(): h.JSX.Element {
     const [tasks, setTasks] = useState<Array<Task> | null>(null);
