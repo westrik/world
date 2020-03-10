@@ -1,16 +1,21 @@
-import { API_HOST } from '~config';
-import { APITask, APITaskResponse } from '~models/Task';
+import { ApiTask, ApiTaskResponse } from '~models/Task';
+import { AuthContext } from '~auth/AuthContext';
+import { request, RequestMethod } from '~utils/network';
 
-export default async function createTask(token: string, description: string): Promise<APITask | null> {
-    const response = await fetch(`${API_HOST}/task`, {
-        body: JSON.stringify({ description }),
-        headers: {
-            Authorization: token,
-            'Content-Type': 'application/json',
-        },
-        method: 'POST',
-    });
-    const responseJson: APITaskResponse = await response.json();
+interface TaskCreateSpec {
+    description: string;
+}
+
+export default async function createTask(
+    authContext: AuthContext,
+    createSpec: TaskCreateSpec,
+): Promise<ApiTask | null> {
+    const responseJson = await request<TaskCreateSpec, ApiTaskResponse>(
+        RequestMethod.POST,
+        '/task/',
+        authContext,
+        createSpec,
+    );
     // TODO: handle error
     return responseJson.task;
 }

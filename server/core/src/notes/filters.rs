@@ -38,12 +38,12 @@ pub fn note_create(
         .and_then(handlers::create_note)
 }
 
-/// PUT /note/:id with JSON body
+/// PATCH /note/:id with JSON body
 pub fn note_update(
     db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("note" / String)
-        .and(warp::put())
+        .and(warp::patch())
         .and(json_body::<ApiNoteUpdateSpec>())
         .and(with_session(db_pool.clone()))
         .and(with_db(db_pool))

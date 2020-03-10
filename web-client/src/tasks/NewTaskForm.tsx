@@ -2,12 +2,12 @@ import { h } from 'preact';
 import { useContext, useState } from 'preact/hooks';
 
 import Auth from '~auth/AuthContext';
-import { APITask } from '~models/Task';
+import { ApiTask } from '~models/Task';
 
 import createTask from './createTask';
 
 interface Props {
-    onSubmit: (newTask: APITask) => void;
+    onSubmit: (newTask: ApiTask) => void;
 }
 
 export default function NewTaskForm(props: Props): h.JSX.Element {
@@ -20,7 +20,7 @@ export default function NewTaskForm(props: Props): h.JSX.Element {
                 e.preventDefault();
                 // TODO: enforce constraints on backend
                 if (description) {
-                    const newTask = await createTask(authContext.authToken!, description);
+                    const newTask = await createTask(authContext, { description });
                     // TODO: handle error
                     props.onSubmit(newTask!);
                     setDescription('');

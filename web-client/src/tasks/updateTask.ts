@@ -1,19 +1,23 @@
-import { API_HOST } from '~config';
-import { APITask } from '~models/Task';
+import { ApiTask, ApiTaskResponse } from '~models/Task';
+import { request, RequestMethod } from '~utils/network';
+import { AuthContext } from '~auth/AuthContext';
 
 interface TaskUpdateSpec {
     description?: string;
     isCompleted?: boolean;
 }
 
-export default async function updateTask(token: string, apiId: string, spec: TaskUpdateSpec): Promise<APITask> {
-    const response = await fetch(`${API_HOST}/task/${apiId}`, {
-        body: JSON.stringify(spec),
-        headers: {
-            Authorization: token,
-            'Content-Type': 'application/json',
-        },
-        method: 'PUT',
-    });
-    return await response.json();
+export default async function updateTask(
+    authContext: AuthContext,
+    apiId: string,
+    updateSpec: TaskUpdateSpec,
+): Promise<ApiTask | null> {
+    const responseJson = await request<TaskUpdateSpec, ApiTaskResponse>(
+        RequestMethod.PATCH,
+        `/task/${apiId}`,
+        authContext,
+        updateSpec,
+    );
+    // TODO: handle error
+    return responseJson.task;
 }

@@ -39,7 +39,7 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
         const newDescription = (e.target as HTMLInputElement).value;
         if (newDescription && newDescription !== description) {
             setDescription(newDescription);
-            updateTask(authContext.authToken!, props.apiId, { description: newDescription });
+            updateTask(authContext, props.apiId, { description: newDescription });
         } else if (!newDescription) {
             setDeleted(true);
             // TODO: DELETE call
@@ -49,7 +49,7 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
     function handleToggleCompleted(): void {
         const isCompleted = !completed;
         setCompleted(isCompleted);
-        updateTask(authContext.authToken!, props.apiId, { isCompleted });
+        updateTask(authContext, props.apiId, { isCompleted });
     }
 
     // TODO: [shift]-[up/down] drags task up or down by one

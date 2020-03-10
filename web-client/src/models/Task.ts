@@ -1,12 +1,12 @@
 import { Tag } from './Tag';
 import { Resource } from './Resource';
+import { ApiResponse } from '~utils/network';
 
-export interface APITaskResponse {
-    error: string | null;
+export interface ApiTaskResponse extends ApiResponse {
     task: Task | null;
 }
 
-export interface APITask {
+export interface ApiTask {
     apiId: string;
     description: string;
     createdAt: Date;
@@ -17,7 +17,7 @@ export interface APITask {
     isCollapsed: boolean;
 }
 
-export interface Task extends APITask {
+export interface Task extends ApiTask {
     childTasks: Array<Task>;
     tags?: Array<Tag>;
     resources?: Array<Resource>;

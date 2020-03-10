@@ -38,12 +38,12 @@ pub fn tasks_create(
         .and_then(handlers::create_task)
 }
 
-/// PUT /task/:id with JSON body
+/// PATCH /task/:id with JSON body
 pub fn tasks_update(
     db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("task" / String)
-        .and(warp::put())
+        .and(warp::patch())
         .and(json_body::<ApiTaskUpdateSpec>())
         .and(with_session(db_pool.clone()))
         .and(with_db(db_pool))

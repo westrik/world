@@ -85,7 +85,7 @@ pub fn health_check() -> impl Filter<Extract = impl warp::Reply, Error = warp::R
 pub fn cors_wrapper(cors_origin_url: &str) -> Cors {
     warp::cors()
         .allow_origin(cors_origin_url)
-        .allow_methods(vec!["GET", "POST", "PUT", "DELETE"])
+        .allow_methods(vec!["GET", "POST", "PATCH", "PUT", "DELETE"])
         .allow_headers(vec!["Content-Type", "Authorization"])
         .build()
 }

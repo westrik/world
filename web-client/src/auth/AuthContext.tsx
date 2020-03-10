@@ -6,7 +6,7 @@ import { Session } from '~models/Session';
 const TOKEN_KEY = 'access_token';
 const EXPIRATION_KEY = 'access_expiration';
 
-interface AuthContext {
+export interface AuthContext {
     authToken: string | null;
     handleSignIn: (session: Session, persistSession: boolean) => void;
     handleSignOut: () => void;

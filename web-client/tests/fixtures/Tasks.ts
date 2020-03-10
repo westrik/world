@@ -1,8 +1,8 @@
-import { APITask } from '~models/Task';
+import { ApiTask } from '~models/Task';
 
 const CREATED_AT = new Date();
 
-export const API_TASKS: Array<APITask> = [
+export const API_TASKS: Array<ApiTask> = [
     {
         apiId: 'task_abc123',
         description: 'task one',

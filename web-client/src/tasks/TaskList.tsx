@@ -5,84 +5,30 @@ import Auth from '~auth/AuthContext';
 import Container from '~components/Container';
 import Header from '~components/Header';
 import ListContainer from '~components/ListContainer';
-import { API_HOST } from '~config';
-import { APITask, Task } from '~models/Task';
+import { ApiTask, Task } from '~models/Task';
 
 import TaskRow from './TaskRow';
 import NewTaskForm from './NewTaskForm';
+import { ApiResponse } from '~utils/network';
+import listTasks from '~tasks/listTasks';
 
-const LIST_ROOT = 'LIST_ROOT';
-
-type TaskIdToTasksMap = { [taskId: string]: Array<APITask> };
-
-// TOOD: refactor this shit & add simple tests
-
-function mapTasksToChildTasks(tasks: Array<APITask>, taskIdToChildAPITasks?: TaskIdToTasksMap): Array<Task> {
-    const taskIdToAPITask = tasks.reduce<Map<string, APITask>>(function(
-        taskIdToTask: Map<string, APITask>,
-        task: APITask,
-    ) {
-        // TODO: assert(!(task.apiId in taskIdToTask));
-        taskIdToTask.set(task.apiId, task);
-        return taskIdToTask;
-    },
-    new Map<string, APITask>());
-
-    function computeTaskToChildMap(): TaskIdToTasksMap {
-        const _taskIdToChildAPITasks: TaskIdToTasksMap = {};
-        tasks.forEach(function(task: APITask) {
-            const parentId = task.parentApiId ? task.parentApiId : LIST_ROOT;
-            if (!_taskIdToChildAPITasks[parentId]) {
-                _taskIdToChildAPITasks[parentId] = [];
-            }
-            _taskIdToChildAPITasks[parentId].push(task);
-        });
-        return _taskIdToChildAPITasks;
-    }
-    const taskIdToChildren = taskIdToChildAPITasks ? taskIdToChildAPITasks : computeTaskToChildMap();
-
-    return tasks
-        .filter(task => !task.parentApiId || !taskIdToAPITask.get(task.parentApiId))
-        .map(task => {
-            return {
-                ...task,
-                childTasks: mapTasksToChildTasks(taskIdToChildren[task.apiId] || [], taskIdToChildren), // TODO: look up childTasks
-            };
-        });
-}
-
-export interface GetTasksResponse {
-    error: string | null;
-    tasks: Array<APITask>;
+export interface GetTasksResponse extends ApiResponse {
+    tasks: Array<ApiTask>;
 }
 
 function TaskList(): h.JSX.Element {
     const [tasks, setTasks] = useState<Array<Task> | null>(null);
     const authContext = useContext(Auth);
 
-    async function getTasks(): Promise<void> {
-        // TODO: check + save to localStorage
-        const response = await fetch(`${API_HOST}/task`, {
-            headers: {
-                // TODO: redirect to /login if authToken is expired / null
-                Authorization: authContext.authToken!,
-                'Content-Type': 'application/json',
-            },
-            method: 'GET',
-        });
-        const resp = (await response.json()) as GetTasksResponse;
-        if (resp.tasks) {
-            const tasksWithChildren = mapTasksToChildTasks(resp.tasks);
-            console.log(tasksWithChildren);
-            setTasks(tasksWithChildren);
-        } else {
-            setTasks([]);
-        }
-    }
-
     useEffect(() => {
         if (!tasks) {
-            getTasks();
+            listTasks(authContext, tasks => {
+                if (tasks) {
+                    setTasks(tasks);
+                } else {
+                    setTasks([]);
+                }
+            });
         }
     });
 
@@ -141,7 +87,7 @@ function TaskList(): h.JSX.Element {
 
             <div style="background: #fff; padding-top: 1rem; position: fixed; bottom: 0; width: 100%; box-shadow: 0px -20px 20px 0px rgba(255,255,255,1);">
                 <NewTaskForm
-                    onSubmit={(newTask: APITask): void => {
+                    onSubmit={(newTask: ApiTask): void => {
                         setTasks([...(tasks as Array<Task>), { ...newTask, childTasks: [] } as Task]);
                     }}
                 />
