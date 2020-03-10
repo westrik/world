@@ -13,8 +13,8 @@ pub fn create_test_user(conn: &PgConnection) {
     println!("🤖 creating test user");
     User::create(
         ApiUserCreateSpec {
-            emailAddress: TEST_USER_EMAIL_ADDRESS.to_string(),
-            fullName: Some(TEST_USER_FULL_NAME.to_string()),
+            email_address: TEST_USER_EMAIL_ADDRESS.to_string(),
+            full_name: Some(TEST_USER_FULL_NAME.to_string()),
             password: TEST_USER_PASSWORD.to_string(),
         },
         conn,

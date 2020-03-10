@@ -11,12 +11,27 @@ use diesel::prelude::*;
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(User)]
 pub struct Note {
+    #[serde(skip)]
     pub id: i32,
+    #[serde(rename = "apiId")]
     pub api_id: String,
+    #[serde(skip)]
     pub user_id: i32,
+    #[serde(rename = "createdAt")]
     pub created_at: DateTime<Utc>,
+    #[serde(rename = "updatedAt")]
     pub updated_at: DateTime<Utc>,
     pub content: serde_json::Value,
+}
+
+#[derive(Queryable, Serialize, Deserialize, Debug)]
+pub struct NoteSummary {
+    #[serde(rename = "apiId")]
+    pub api_id: String,
+    #[serde(rename = "createdAt")]
+    pub created_at: DateTime<Utc>,
+    #[serde(rename = "updatedAt")]
+    pub updated_at: DateTime<Utc>,
 }
 
 #[derive(Insertable, Debug)]
@@ -62,15 +77,22 @@ impl NoteUpdateSpec {
 }
 
 impl Note {
-    pub fn find_all_for_user(
-        conn: &PgConnection,
-        session: Session,
-    ) -> Result<Vec<Note>, NoteError> {
-        let notes: Vec<Note> = all_notes
+    pub fn find_all(conn: &PgConnection, session: Session) -> Result<Vec<NoteSummary>, NoteError> {
+        let notes: Vec<NoteSummary> = all_notes
+            .select((notes::api_id, notes::created_at, notes::updated_at))
             .filter(notes::user_id.eq(session.user_id))
             .load(conn)
             .map_err(|_| NoteError::NoteNotFound)?;
         Ok(notes)
+    }
+
+    pub fn find(conn: &PgConnection, session: Session, api_id: String) -> Result<Note, NoteError> {
+        let note = all_notes
+            .filter(notes::user_id.eq(session.user_id))
+            .filter(notes::api_id.eq(api_id))
+            .first(conn)
+            .map_err(|_| NoteError::NoteNotFound)?;
+        Ok(note)
     }
 
     pub fn create(

@@ -76,57 +76,66 @@ impl TaskUpdateSpec {
 }
 
 #[derive(Serialize)]
-#[allow(non_snake_case)]
 pub struct ApiTask {
-    pub apiId: String,
+    #[serde(rename = "apiId")]
+    pub api_id: String,
     pub description: String,
-    pub createdAt: DateTime<Utc>,
-    pub updatedAt: DateTime<Utc>,
-    pub completedAt: Option<DateTime<Utc>>,
-    pub siblingApiId: Option<String>,
-    pub parentApiId: Option<String>,
-    pub isCollapsed: bool,
+    #[serde(rename = "createdAt")]
+    pub created_at: DateTime<Utc>,
+    #[serde(rename = "updatedAt")]
+    pub updated_at: DateTime<Utc>,
+    #[serde(rename = "completedAt")]
+    pub completed_at: Option<DateTime<Utc>>,
+    #[serde(rename = "siblingApiId")]
+    pub sibling_api_id: Option<String>,
+    #[serde(rename = "parentApiId")]
+    pub parent_api_id: Option<String>,
+    #[serde(rename = "isCollapsed")]
+    pub is_collapsed: bool,
 }
 #[derive(Debug, Deserialize)]
 pub struct ApiTaskCreateSpec {
     pub description: String,
 }
 #[derive(Debug, Deserialize)]
-#[allow(non_snake_case)]
 #[allow(clippy::option_option)]
 pub struct ApiTaskUpdateSpec {
     pub description: Option<String>,
-    pub parentApiId: Option<Option<String>>,
-    pub siblingApiId: Option<Option<String>>,
-    pub isCompleted: Option<bool>,
-    pub isCollapsed: Option<bool>,
+    #[serde(rename = "parentApiId")]
+    pub parent_api_id: Option<Option<String>>,
+    #[serde(rename = "siblingApiId")]
+    pub sibling_api_id: Option<Option<String>>,
+    #[serde(rename = "isCompleted")]
+    pub is_completed: Option<bool>,
+    #[serde(rename = "isCollapsed")]
+    pub is_collapsed: Option<bool>,
 }
 
 impl From<LoadedTask> for ApiTask {
     fn from(lt: LoadedTask) -> Self {
         ApiTask {
-            apiId: lt.task.api_id,
+            api_id: lt.task.api_id,
             description: lt.task.description,
-            createdAt: lt.task.created_at,
-            updatedAt: lt.task.updated_at,
-            completedAt: lt.task.completed_at,
-            siblingApiId: lt.sibling_api_id,
-            parentApiId: lt.parent_api_id,
-            isCollapsed: lt.task.is_collapsed,
+            created_at: lt.task.created_at,
+            updated_at: lt.task.updated_at,
+            completed_at: lt.task.completed_at,
+            sibling_api_id: lt.sibling_api_id,
+            parent_api_id: lt.parent_api_id,
+            is_collapsed: lt.task.is_collapsed,
         }
     }
 }
 impl From<&Task> for ApiTask {
     fn from(task: &Task) -> Self {
         ApiTask {
-            apiId: task.api_id.clone(),
+            api_id: task.api_id.clone(),
             description: task.description.clone(),
-            createdAt: task.created_at,
-            updatedAt: task.updated_at,
-            completedAt: task.completed_at,
-            siblingApiId: None,
-            parentApiId: None,
-            isCollapsed: task.is_collapsed,
+            created_at: task.created_at,
+            updated_at: task.updated_at,
+            completed_at: task.completed_at,
+            sibling_api_id: None,
+            parent_api_id: None,
+            is_collapsed: task.is_collapsed,
         }
     }
 }
@@ -164,7 +173,7 @@ impl Task {
     ) -> Result<Task, TaskError> {
         TaskUpdateSpec {
             updated_at: Utc::now(),
-            completed_at: match spec.isCompleted {
+            completed_at: match spec.is_completed {
                 Some(is_completed) => {
                     if is_completed {
                         Some(Some(Utc::now()))
@@ -175,7 +184,7 @@ impl Task {
                 None => None,
             },
             description: spec.description,
-            is_collapsed: spec.isCollapsed,
+            is_collapsed: spec.is_collapsed,
             parent_id: None,
             sibling_id: None,
         }

@@ -9,6 +9,7 @@ pub fn routes(
     db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     notes_list(db_pool.clone())
+        .or(note_get(db_pool.clone()))
         .or(note_create(db_pool.clone()))
         .or(note_update(db_pool.clone()))
         .or(note_delete(db_pool))
@@ -24,6 +25,17 @@ pub fn notes_list(
         .and(with_session(db_pool.clone()))
         .and(with_db(db_pool))
         .and_then(handlers::list_notes)
+}
+
+/// GET /note/:id
+pub fn note_get(
+    db_pool: DbPool,
+) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("note" / String)
+        .and(warp::get())
+        .and(with_session(db_pool.clone()))
+        .and(with_db(db_pool))
+        .and_then(handlers::get_note)
 }
 
 /// POST /note with JSON body

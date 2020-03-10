@@ -8,37 +8,18 @@ use crate::auth::errors::UserError;
 use crate::auth::models::user::User;
 use crate::schema::sessions;
 
-/* ----- Model definitions -----  */
-
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[primary_key(token)]
 #[belongs_to(User)]
 pub struct Session {
+    #[serde(skip)]
     pub user_id: i32,
     pub token: String,
+    #[serde(rename = "createdAt")]
     pub created_at: DateTime<Utc>,
+    #[serde(rename = "expiresAt")]
     pub expires_at: DateTime<Utc>,
 }
-
-/* ----- API interfaces -----  */
-
-#[derive(Serialize)]
-#[allow(non_snake_case)]
-pub struct ApiSession {
-    pub token: String,
-    pub expiresAt: DateTime<Utc>,
-}
-
-impl From<Session> for ApiSession {
-    fn from(session: Session) -> Self {
-        ApiSession {
-            token: session.token,
-            expiresAt: session.expires_at,
-        }
-    }
-}
-
-/* ----- DB business logic -----  */
 
 impl Session {
     pub fn create(conn: &PgConnection, user: &User) -> Result<Session, UserError> {

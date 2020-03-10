@@ -11,11 +11,17 @@ use crate::schema::{users, users::dsl::users as all_users};
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize)]
 pub struct User {
+    #[serde(skip)]
     pub id: i32,
+    #[serde(rename = "emailAddress")]
     pub email_address: String,
+    #[serde(rename = "fullName")]
     pub full_name: Option<String>,
+    #[serde(skip)]
     pub password_hash: String,
+    #[serde(rename = "createdAt")]
     pub created_at: DateTime<Utc>,
+    #[serde(rename = "updatedAt")]
     pub updated_at: DateTime<Utc>,
 }
 
@@ -37,31 +43,13 @@ impl UserCreateSpec {
     }
 }
 #[derive(Debug, Deserialize)]
-#[allow(non_snake_case)]
 pub struct ApiUserCreateSpec {
-    pub emailAddress: String,
-    pub fullName: Option<String>,
+    #[serde(rename = "emailAddress")]
+    pub email_address: String,
+    #[serde(rename = "fullName")]
+    pub full_name: Option<String>,
     pub password: String,
 }
-
-/* ----- API interfaces -----  */
-
-#[derive(Serialize)]
-pub struct ApiUser {
-    pub email_address: String, // TODO: change to user API key
-    pub full_name: Option<String>,
-}
-
-impl From<User> for ApiUser {
-    fn from(user: User) -> Self {
-        ApiUser {
-            email_address: user.email_address,
-            full_name: user.full_name,
-        }
-    }
-}
-
-/* ----- DB business logic -----  */
 
 lazy_static! {
     static ref HASH_SALT: String =
@@ -71,8 +59,8 @@ lazy_static! {
 impl User {
     pub fn create(new_user: ApiUserCreateSpec, conn: &PgConnection) -> Result<User, UserError> {
         let new_user = UserCreateSpec {
-            email_address: new_user.emailAddress,
-            full_name: new_user.fullName,
+            email_address: new_user.email_address,
+            full_name: new_user.full_name,
             password_hash: Self::hash_password(new_user.password),
         };
         new_user.insert(conn)
