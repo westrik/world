@@ -37,6 +37,13 @@ export async function request<RequestT = null, ResponseT extends ApiResponse = A
         },
         method,
     });
+    if (response.status === 500) {
+        console.log(`API call caused server error`);
+    } else if (response.status == 401) {
+        console.log(`API call returned 401 (need to login)`);
+    } else if (response.status !== 200) {
+        console.log(`API call returned ${response.status}`);
+    }
     const responseJson: ResponseT = await response.json();
     if (responseJson.error) {
         // TODO: redirect to login on auth error
