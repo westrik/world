@@ -6,14 +6,18 @@ export interface ApiNoteResponse extends ApiResponse {
     note: Note | null;
 }
 
-export interface ApiNote {
+export interface ApiNoteSummary {
     apiId: string;
     createdAt: Date;
     updatedAt: Date;
-    content: Content;
 }
 
-export interface Note extends ApiNote {
+// export interface ApiNote extends ApiNoteSummary {
+//     content: Content;
+// }
+
+export interface Note extends ApiNoteSummary {
+    content?: Content;
     tags?: Array<Tag>;
     resources?: Array<Resource>;
 }

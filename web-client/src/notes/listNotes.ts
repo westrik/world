@@ -1,9 +1,9 @@
 import { ApiResponse, request, RequestMethod } from '~utils/network';
 import { AuthContext } from '~auth/AuthContext';
-import { ApiNote, Note } from '~models/Note';
+import { ApiNoteSummary, Note } from '~models/Note';
 
 export interface GetNotesResponse extends ApiResponse {
-    notes: Array<ApiNote>;
+    notes: Array<ApiNoteSummary>;
 }
 
 export default async function listNotes(
