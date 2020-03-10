@@ -1,8 +1,11 @@
-import { request, RequestMethod } from '~utils/network';
-import { GetTasksResponse } from '~tasks/TaskList';
+import { ApiResponse, request, RequestMethod } from '~utils/network';
 import { AuthContext } from '~auth/AuthContext';
-import { Task } from '~models/Task';
+import { ApiTask, Task } from '~models/Task';
 import mapTaskListToTaskTree from '~tasks/mapTaskListToTaskTree';
+
+export interface GetTasksResponse extends ApiResponse {
+    tasks: Array<ApiTask>;
+}
 
 export default async function listTasks(
     authContext: AuthContext,
