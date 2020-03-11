@@ -1,35 +1,31 @@
 #[macro_use]
 extern crate lazy_static;
 use console::Style;
-use indicatif::{HumanDuration, MultiProgress, ProgressBar};
+use indicatif::{HumanDuration, MultiProgress, ProgressBar, ProgressStyle};
 use std::time::Instant;
 use std::{env, thread};
 
 mod build_client;
 mod build_server;
 
+// TODO: configure with TOML
+
 const BUILD_CMD: &str = "build";
-const TEST_CMD: &str = "test";
-const RUN_SERVER_CMD: &str = "run_server";
-const RUN_CLIENT_CMD: &str = "run_client";
-const FORMAT_CMD: &str = "format";
+const CHECK_CMD: &str = "check";
+const RUN_SERVERS_CMD: &str = "run";
 
 lazy_static! {
     static ref BOLD_CYAN: Style = Style::new().bold().cyan();
-    static ref BOLD_RED: Style = Style::new().bold().red();
+    static ref RED: Style = Style::new().red();
 }
 
 fn exit_and_warn() {
-    eprintln!("{}", BOLD_RED.apply_to("invalid arguments!"));
+    eprintln!("{}", RED.apply_to("invalid arguments!"));
     eprintln!(
-        "usage: bin/dev [{}|{}|{}|{}]",
-        BUILD_CMD, TEST_CMD, RUN_SERVER_CMD, RUN_CLIENT_CMD
+        "usage: bin/dev [{}|{}|{}]",
+        BUILD_CMD, CHECK_CMD, RUN_SERVERS_CMD
     );
     std::process::exit(1);
-}
-
-fn print_title(title: &str) {
-    print!("{}", BOLD_CYAN.apply_to(title));
 }
 
 fn main() {
@@ -46,49 +42,60 @@ fn main() {
         let m = MultiProgress::new();
         let started = Instant::now();
 
-        let pb = m.add(ProgressBar::new_spinner());
+        // task definition:
+        // - name ("building server")
+        // - subdirectory (server/)
+        // - command ("cargo build --release")
+        // - stdout location (None=/dev/null)
+        // - stderr location (None=/dev/null)
+
+        // TODO: refactor
+        let style = ProgressStyle::default_spinner().tick_chars("✶✸✹✺✹✷ ");
+        let spinner = ProgressBar::new_spinner();
+        spinner.set_style(
+            style
+                .clone()
+                .template(format!("☁️  {{msg}} {}", BOLD_CYAN.apply_to("{spinner}")).as_str()),
+        );
+        let pb = m.add(spinner);
         let project_path = path.to_string();
         let build_args = command_args.clone();
         let _thread = thread::spawn(move || {
-            pb.enable_steady_tick(30);
-            pb.set_message("running server build");
+            pb.enable_steady_tick(66);
+            pb.set_message("building server");
             build_server::run_build_server(&project_path, &build_args);
             pb.set_message(
-                format!(
-                    "server build completed in {}",
-                    HumanDuration(started.elapsed())
-                )
-                .as_str(),
+                format!("building server took {}", HumanDuration(started.elapsed())).as_str(),
             );
             pb.finish();
         });
         thread_handles.push(_thread);
 
-        let pb = m.add(ProgressBar::new_spinner());
+        let spinner = ProgressBar::new_spinner();
+        spinner.set_style(
+            style
+                .clone()
+                .template(format!("💻 {{msg}} {}", BOLD_CYAN.apply_to("{spinner}")).as_str()),
+        );
+        let pb = m.add(spinner);
         let project_path = path.to_string();
         let build_args = command_args.clone();
         let _thread = thread::spawn(move || {
-            pb.enable_steady_tick(30);
-            pb.set_message("running client build");
+            pb.enable_steady_tick(66);
+            pb.set_message("building client");
             build_client::run_build_client(&project_path, &build_args);
             pb.set_message(
-                format!(
-                    "client build completed in {}",
-                    HumanDuration(started.elapsed())
-                )
-                .as_str(),
+                format!("building client took {}", HumanDuration(started.elapsed())).as_str(),
             );
             pb.finish();
         });
         thread_handles.push(_thread);
         m.join().unwrap();
-    } else if command == TEST_CMD {
+    } else if command == CHECK_CMD {
         unimplemented!();
-    } else if command == RUN_CLIENT_CMD {
-        unimplemented!();
-    } else if command == RUN_SERVER_CMD {
-        unimplemented!();
-    } else if command == FORMAT_CMD {
+    } else if command == RUN_SERVERS_CMD {
+        // https://docs.rs/notify/5.0.0-pre.2/notify/index.html
+        // TODO: on file change: run check task, rebuild, restart server
         unimplemented!();
     } else {
         exit_and_warn();
