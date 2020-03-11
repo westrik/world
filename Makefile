@@ -23,5 +23,8 @@ watch_check:
 watch_run_server:
 	cd server && cargo watch --no-gitignore -w ../.trigger -x 'run --bin run_server'
 
+watch_run_tests:
+	cd server && cargo watch --no-gitignore -w ../.trigger -x test
+
 run_client:
 	cd web-client && yarn start
