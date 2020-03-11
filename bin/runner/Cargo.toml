@@ -8,7 +8,6 @@ publish = false
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-console = "0.10.0"
-indicatif = "0.14.0"
+console = "^0.10"
+indicatif = "^0.14"
 lazy_static="^1.4"
-#spinners = "1.2.0"

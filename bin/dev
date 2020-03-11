@@ -16,4 +16,4 @@ if [ ! -f "$RUNNER" ]; then
   cargo build --release
 fi
 
-$RUNNER "${@:1}"
+$RUNNER "$PROJECT_ROOT" "${@:1}"
