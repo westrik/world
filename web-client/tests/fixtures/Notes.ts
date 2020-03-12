@@ -1,4 +1,4 @@
-import { HeadingType, LinkType, Note } from '~models/Note';
+import { HeaderType, LinkType, Note } from '~models/Note';
 
 export const NOTE_FIXTURE: Note = {
     apiId: 'note_xsOqTy6c',
@@ -16,7 +16,7 @@ export const NOTE_FIXTURE: Note = {
                     },
                 ],
                 element: {
-                    header: HeadingType.H1,
+                    header: HeaderType.H1,
                 },
             },
             {

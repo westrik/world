@@ -73,9 +73,9 @@ export type EmphasisElement = 'em';
 export type StrongElement = 'strong';
 export type StrikethroughElement = 'strike';
 export interface HeaderElement {
-    header: HeadingType;
+    header: HeaderType;
 }
-export enum HeadingType {
+export enum HeaderType {
     H1 = 'h1',
     H2 = 'h2',
     H3 = 'h3',

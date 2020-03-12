@@ -50,10 +50,9 @@ export function ContentArea(props: ContentAreaProps): h.JSX.Element {
     );
 }
 
-function elementDataHasProperty(element: ElementData, property: string) {
+function elementDataHasProperty(element: ElementData, property: string): boolean {
     return Object.prototype.hasOwnProperty.call(element, property);
 }
-
 function isText(el: ElementData): el is TextElement {
     return elementDataHasProperty(el, 'text');
 }
@@ -172,16 +171,16 @@ function ContentElement(props: ContentElementProps): h.JSX.Element {
     return <span />;
 }
 
-interface ParagraphProps {
+interface ElementWithChildrenProps {
     cxn: Array<Element> | null;
 }
-function Paragraph(props: ParagraphProps): h.JSX.Element {
+
+function Paragraph(props: ElementWithChildrenProps): h.JSX.Element {
     return <p>{props.cxn ? props.cxn.map((el, key) => <ContentElement element={el} key={key} />) : null}</p>;
 }
 
-interface CodeBlockProps {
+interface CodeBlockProps extends ElementWithChildrenProps {
     language: string | null;
-    cxn: Array<Element> | null;
 }
 function CodeBlock(props: CodeBlockProps): h.JSX.Element {
     return <pre>{props.cxn ? props.cxn.map((el, key) => <ContentElement element={el} key={key} />) : null}</pre>;
