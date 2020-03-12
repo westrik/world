@@ -150,6 +150,9 @@ pub fn markdown_to_elements(content: String) -> Vec<Element> {
                 });
             }
             Event::Html(content) => {
+                // TODO: sanitize HTML content
+                //  use whitelist similar to https://github.com/jch/html-pipeline/blob/master/lib/html/pipeline/sanitization_filter.rb
+                //  LATER: allow custom tags (JSX-style) and parse them out on the FE
                 elements.push(Element {
                     element: ElementType::Html(content.into_string()),
                     children: None,
@@ -226,6 +229,23 @@ pub mod markdown_parsing {
                 <li><input disabled=\"\" type=\"checkbox\"/>\nworld</li>\n\
             </ul>\n"
         );
+        // assert_eq!(
+        //     markdown_to_html("hello world[^1]\n[^1]: footnote".to_string()),
+        //     "<p>hello world<sup class=\"footnote-reference\"><a href=\"#1\">1</a></sup>\n\
+        //     <sup class=\"footnote-reference\"><a href=\"#1\">1</a></sup>: footnote</p>\n"
+        // );
+
+        assert_eq!(
+        markdown_to_html(
+            "| Column 1 | Column 2 | Column 3 | Column 4 |
+|:--------:|:---------|---------:|----------|
+| value 1  | value 2  | value 3  | value 4  |
+| value 5  | value 6  | value 7  | value 8  |"
+                .to_string()
+        ), "<table><thead><tr><th align=\"center\">Column 1</th><th align=\"left\">Column 2</th><th align=\"right\">Column 3</th><th>Column 4</th></tr></thead><tbody>\n\
+                <tr><td align=\"center\">value 1</td><td align=\"left\">value 2</td><td align=\"right\">value 3</td><td>value 4</td></tr>\n\
+                <tr><td align=\"center\">value 5</td><td align=\"left\">value 6</td><td align=\"right\">value 7</td><td>value 8</td></tr>\n\
+                </tbody></table>\n");
     }
 
     #[test]
@@ -487,6 +507,43 @@ pub mod markdown_parsing {
                         ])
                     }
                 ])
+            }]
+        );
+    }
+
+    #[test]
+    fn html_elements() {
+        let html_string = "<div><h1>hello world</h1></div>";
+        assert_eq!(
+            markdown_to_elements(html_string.to_string()),
+            vec![Element {
+                element: Html(html_string.to_string()),
+                children: None
+            }]
+        );
+    }
+
+    #[test]
+    fn illegal_html_elements() {
+        let html_string = "<script>alert('hi');</script>";
+        // TODO: this should fail
+        assert_eq!(
+            markdown_to_elements(html_string.to_string()),
+            vec![Element {
+                element: Html(html_string.to_string()),
+                children: None
+            }]
+        );
+    }
+
+    #[test]
+    fn custom_html_elements() {
+        let html_string = "<MyComponent hello=\"world\" />";
+        assert_eq!(
+            markdown_to_elements(html_string.to_string()),
+            vec![Element {
+                element: Html(html_string.to_string()),
+                children: None
             }]
         );
     }

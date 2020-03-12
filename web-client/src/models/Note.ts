@@ -42,7 +42,7 @@ export type ElementData =
     | EmphasisElement
     | StrongElement
     | StrikethroughElement
-    | HeadingElement
+    | HeaderElement
     | LinkElement
     | ImageElement
     | CodeBlockElement
@@ -72,10 +72,10 @@ export type ParagraphElement = 'p';
 export type EmphasisElement = 'em';
 export type StrongElement = 'strong';
 export type StrikethroughElement = 'strike';
-export interface HeadingElement {
-    heading: HeadingType;
+export interface HeaderElement {
+    header: HeaderType;
 }
-export enum HeadingType {
+export enum HeaderType {
     H1 = 'h1',
     H2 = 'h2',
     H3 = 'h3',
@@ -114,7 +114,7 @@ export interface ListElement {
 export interface ListData {
     numberOfFirstItem: number | null;
 }
-export type ListItemElement = 'item';
+export type ListItemElement = 'listItem';
 export interface TaskListMarkerElement {
     taskListMarker: TaskListMarkerData;
 }
@@ -145,3 +145,76 @@ export type TableCellElement = 'tableCell';
 export type SoftBreakElement = 'softBreak';
 export type HardBreakElement = 'hardBreak';
 export type RuleElement = 'rule';
+
+function elementDataHasProperty(element: ElementData, property: string): boolean {
+    return Object.prototype.hasOwnProperty.call(element, property);
+}
+export function isText(el: ElementData): el is TextElement {
+    return elementDataHasProperty(el, 'text');
+}
+export function isCode(el: ElementData): el is CodeElement {
+    return elementDataHasProperty(el, 'code');
+}
+export function isHtml(el: ElementData): el is HtmlElement {
+    return elementDataHasProperty(el, 'html');
+}
+export function isParagraph(el: ElementData): el is ParagraphElement {
+    return el === 'p';
+}
+export function isEmphasis(el: ElementData): el is EmphasisElement {
+    return el === 'em';
+}
+export function isStrong(el: ElementData): el is StrongElement {
+    return el === 'strong';
+}
+export function isStrikethrough(el: ElementData): el is StrikethroughElement {
+    return el === 'strike';
+}
+export function isHeaderElement(el: ElementData): el is HeaderElement {
+    return elementDataHasProperty(el, 'header');
+}
+export function isLink(el: ElementData): el is LinkElement {
+    return elementDataHasProperty(el, 'link');
+}
+export function isImage(el: ElementData): el is ImageElement {
+    return elementDataHasProperty(el, 'image');
+}
+export function isCodeBlock(el: ElementData): el is CodeBlockElement {
+    return elementDataHasProperty(el, 'codeBlock');
+}
+export function isList(el: ElementData): el is ListElement {
+    return elementDataHasProperty(el, 'list');
+}
+export function isListItem(el: ElementData): el is ListItemElement {
+    return el === 'listItem';
+}
+export function isTaskListMarker(el: ElementData): el is TaskListMarkerElement {
+    return elementDataHasProperty(el, 'taskListMarker');
+}
+export function isFootnoteDefinition(el: ElementData): el is FootnoteDefinitionElement {
+    return elementDataHasProperty(el, 'footnoteDefinition');
+}
+export function isFootnoteReference(el: ElementData): el is FootnoteReferenceElement {
+    return elementDataHasProperty(el, 'footnoteReference');
+}
+export function isTable(el: ElementData): el is TableElement {
+    return elementDataHasProperty(el, 'table');
+}
+export function isTableHead(el: ElementData): el is TableHeadElement {
+    return el === 'tableHead';
+}
+export function isTableRow(el: ElementData): el is TableRowElement {
+    return el === 'tableRow';
+}
+export function isTableCell(el: ElementData): el is TableCellElement {
+    return el === 'tableCell';
+}
+export function isSoftBreak(el: ElementData): el is SoftBreakElement {
+    return el === 'softBreak';
+}
+export function isHardBreak(el: ElementData): el is HardBreakElement {
+    return el === 'hardBreak';
+}
+export function isRule(el: ElementData): el is RuleElement {
+    return el === 'rule';
+}

@@ -7,9 +7,12 @@ import { AuthProvider } from '~auth/AuthContext';
 import { AuthedRoute } from '~auth/AuthedRoute';
 import SignInForm from '~auth/SignInForm';
 import ErrorScreen from '~components/ErrorScreen';
+import RichTextEditor from '~components/RichTextEditor';
 import EventLog from '~event-log/EventLog';
 import NoteList from '~notes/NoteList';
 import TaskList from '~tasks/TaskList';
+import { TestTemplate } from '~components/TestTemplate';
+import { SideBySide } from '~components/SideBySide';
 
 export default function App(): h.JSX.Element {
     return (
@@ -22,8 +25,9 @@ export default function App(): h.JSX.Element {
                 <AdminAuthedRoute path="/users" component={UserList} />
                 <Route default component={ErrorScreen} />
 
-                {/*<Route path="/css" component={TestTemplate} />*/}
-                {/*<Route path="/editor" component={SideBySide} />*/}
+                <Route path="/editor" component={RichTextEditor} />
+                <Route path="/side-by-side" component={SideBySide} />
+                <Route path="/test-template" component={TestTemplate} />
             </Router>
         </AuthProvider>
     );
