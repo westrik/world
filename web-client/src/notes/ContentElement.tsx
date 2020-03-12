@@ -73,17 +73,22 @@ export default function ContentElement(props: ContentElementProps): h.JSX.Elemen
     return <span />;
 }
 
+function renderChildren(cxn: Array<Element> | null): Array<h.JSX.Element> | null {
+    return cxn ? cxn.map((el, key) => <ContentElement element={el} key={key} />) : null;
+}
+
 interface ElementWithChildrenProps {
     cxn: Array<Element> | null;
 }
 
 function Paragraph(props: ElementWithChildrenProps): h.JSX.Element {
-    return <p>{props.cxn ? props.cxn.map((el, key) => <ContentElement element={el} key={key} />) : null}</p>;
+    return <p>{renderChildren(props.cxn)}</p>;
 }
 
 interface CodeBlockProps extends ElementWithChildrenProps {
     language: string | null;
 }
 function CodeBlock(props: CodeBlockProps): h.JSX.Element {
-    return <pre>{props.cxn ? props.cxn.map((el, key) => <ContentElement element={el} key={key} />) : null}</pre>;
+    // TODO: language-specific code formatting
+    return <pre>{renderChildren(props.cxn)}</pre>;
 }
