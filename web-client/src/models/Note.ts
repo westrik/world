@@ -42,7 +42,7 @@ export type ElementData =
     | EmphasisElement
     | StrongElement
     | StrikethroughElement
-    | HeadingElement
+    | HeaderElement
     | LinkElement
     | ImageElement
     | CodeBlockElement
@@ -72,8 +72,8 @@ export type ParagraphElement = 'p';
 export type EmphasisElement = 'em';
 export type StrongElement = 'strong';
 export type StrikethroughElement = 'strike';
-export interface HeadingElement {
-    heading: HeadingType;
+export interface HeaderElement {
+    header: HeadingType;
 }
 export enum HeadingType {
     H1 = 'h1',
