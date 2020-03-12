@@ -29,7 +29,7 @@ import { h } from 'preact';
 interface ContentElementProps {
     element: Element;
 }
-export function ContentElement(props: ContentElementProps): h.JSX.Element {
+export default function ContentElement(props: ContentElementProps): h.JSX.Element {
     const { element, children } = props.element;
 
     if (isText(element)) {
