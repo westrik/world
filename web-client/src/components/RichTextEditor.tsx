@@ -10,7 +10,7 @@ export default function RichTextEditor(): h.JSX.Element {
     const [content, setContent] = useState<Content>(NOTE_FIXTURE.content!);
     // TODO: edit mode context
     return (
-        <div>
+        <div className="textEditor">
             {content.elements.map((el: Element, key: number) => (
                 <ContentElement key={key} element={el} />
             ))}

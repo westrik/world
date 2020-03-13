@@ -38,7 +38,7 @@ pub enum ElementType {
     CodeBlock(CodeBlockData),
     #[serde(rename = "list")]
     List(ListData),
-    #[serde(rename = "item")]
+    #[serde(rename = "listItem")]
     Item,
     #[serde(rename = "taskListMarker")]
     TaskListMarker(TaskListMarkerData),

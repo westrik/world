@@ -28,7 +28,14 @@ import {
 } from '~/models/Note';
 import { h } from 'preact';
 
-function renderChildren(cxn: Array<Element> | null): Array<h.JSX.Element> | null {
+/*
+TODO:
+    when editing an element, set `contenteditable="true"` with:
+        outline: none;
+        border: 0;
+ */
+
+function renderElements(cxn: Array<Element> | null): Array<h.JSX.Element> | null {
     return cxn ? cxn.map((el, key) => <ContentElement element={el} key={key} />) : null;
 }
 
@@ -41,14 +48,14 @@ interface CodeBlockProps extends ElementWithChildrenProps {
 }
 function CodeBlock(props: CodeBlockProps): h.JSX.Element {
     // TODO: language-specific code formatting
-    return <pre>{renderChildren(props.cxn)}</pre>;
+    return <pre>{renderElements(props.cxn)}</pre>;
 }
 
 interface HeaderProps extends ElementWithChildrenProps {
     headerType: HeaderType;
 }
 function Header(props: HeaderProps): h.JSX.Element {
-    const renderedChildren = renderChildren(props.cxn);
+    const renderedChildren = renderElements(props.cxn);
     if (props.headerType == HeaderType.H1) {
         return <h1>{renderedChildren}</h1>;
     } else if (props.headerType == HeaderType.H2) {
@@ -67,11 +74,12 @@ function Header(props: HeaderProps): h.JSX.Element {
 interface LinkProps extends ElementWithChildrenProps {
     link: LinkData;
 }
+
 function Link(props: LinkProps): h.JSX.Element {
     const { destinationUrl, title } = props.link;
     return (
         <a href={destinationUrl} title={title}>
-            {renderChildren(props.cxn)}
+            {renderElements(props.cxn)}
         </a>
     );
 }
@@ -80,7 +88,7 @@ function Image(props: LinkProps): h.JSX.Element {
     const { destinationUrl, title } = props.link;
     return (
         <img src={destinationUrl} title={title} alt={title}>
-            {renderChildren(props.cxn)}
+            {renderElements(props.cxn)}
         </img>
     );
 }
@@ -99,13 +107,13 @@ export default function ContentElement(props: ContentElementProps): h.JSX.Elemen
     } else if (isHtml(element)) {
         // TODO
     } else if (isEmphasis(element)) {
-        return <em>{renderChildren(children)}</em>;
+        return <em>{renderElements(children)}</em>;
     } else if (isParagraph(element)) {
-        return <p>{renderChildren(children)}</p>;
+        return <p>{renderElements(children)}</p>;
     } else if (isStrong(element)) {
-        return <strong>{renderChildren(children)}</strong>;
+        return <strong>{renderElements(children)}</strong>;
     } else if (isStrikethrough(element)) {
-        return <del>{renderChildren(children)}</del>;
+        return <del>{renderElements(children)}</del>;
     } else if (isCodeBlock(element)) {
         return <CodeBlock language={element.codeBlock.language} cxn={children} />;
     } else if (isHeaderElement(element)) {
@@ -115,11 +123,11 @@ export default function ContentElement(props: ContentElementProps): h.JSX.Elemen
     } else if (isImage(element)) {
         return <Image link={element.image} cxn={children} />;
     } else if (isList(element)) {
-        return <ul>{renderChildren(children)}</ul>;
+        return <ul>{renderElements(children)}</ul>;
     } else if (isListItem(element)) {
-        return <li>{renderChildren(children)}</li>;
+        return <li>{renderElements(children)}</li>;
     } else if (isTaskListMarker(element)) {
-        return <span>[{element.taskListMarker.checked}]</span>;
+        return <span>[{element.taskListMarker.checked ? 'x' : ' '}] </span>;
     } else if (isFootnoteDefinition(element)) {
         // TODO
     } else if (isFootnoteReference(element)) {

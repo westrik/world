@@ -150,6 +150,9 @@ pub fn markdown_to_elements(content: String) -> Vec<Element> {
                 });
             }
             Event::Html(content) => {
+                // TODO: sanitize HTML content
+                //  use whitelist similar to https://github.com/jch/html-pipeline/blob/master/lib/html/pipeline/sanitization_filter.rb
+                //  LATER: allow custom tags (JSX-style) and parse them out on the FE
                 elements.push(Element {
                     element: ElementType::Html(content.into_string()),
                     children: None,
@@ -487,6 +490,43 @@ pub mod markdown_parsing {
                         ])
                     }
                 ])
+            }]
+        );
+    }
+
+    #[test]
+    fn html_elements() {
+        let html_string = "<div><h1>hello world</h1></div>";
+        assert_eq!(
+            markdown_to_elements(html_string.to_string()),
+            vec![Element {
+                element: Html(html_string.to_string()),
+                children: None
+            }]
+        );
+    }
+
+    #[test]
+    fn illegal_html_elements() {
+        let html_string = "<script>alert('hi');</script>";
+        // TODO: this should fail
+        assert_eq!(
+            markdown_to_elements(html_string.to_string()),
+            vec![Element {
+                element: Html(html_string.to_string()),
+                children: None
+            }]
+        );
+    }
+
+    #[test]
+    fn custom_html_elements() {
+        let html_string = "<MyComponent hello=\"world\" />";
+        assert_eq!(
+            markdown_to_elements(html_string.to_string()),
+            vec![Element {
+                element: Html(html_string.to_string()),
+                children: None
             }]
         );
     }

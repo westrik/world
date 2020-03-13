@@ -114,7 +114,7 @@ export interface ListElement {
 export interface ListData {
     numberOfFirstItem: number | null;
 }
-export type ListItemElement = 'item';
+export type ListItemElement = 'listItem';
 export interface TaskListMarkerElement {
     taskListMarker: TaskListMarkerData;
 }
@@ -159,16 +159,16 @@ export function isHtml(el: ElementData): el is HtmlElement {
     return elementDataHasProperty(el, 'html');
 }
 export function isParagraph(el: ElementData): el is ParagraphElement {
-    return el == 'p';
+    return el === 'p';
 }
 export function isEmphasis(el: ElementData): el is EmphasisElement {
-    return el == 'em';
+    return el === 'em';
 }
 export function isStrong(el: ElementData): el is StrongElement {
-    return el == 'strong';
+    return el === 'strong';
 }
 export function isStrikethrough(el: ElementData): el is StrikethroughElement {
-    return el == 'strike';
+    return el === 'strike';
 }
 export function isHeaderElement(el: ElementData): el is HeaderElement {
     return elementDataHasProperty(el, 'header');
@@ -186,7 +186,7 @@ export function isList(el: ElementData): el is ListElement {
     return elementDataHasProperty(el, 'list');
 }
 export function isListItem(el: ElementData): el is ListItemElement {
-    return elementDataHasProperty(el, 'listItem');
+    return el === 'listItem';
 }
 export function isTaskListMarker(el: ElementData): el is TaskListMarkerElement {
     return elementDataHasProperty(el, 'taskListMarker');
@@ -201,20 +201,20 @@ export function isTable(el: ElementData): el is TableElement {
     return elementDataHasProperty(el, 'table');
 }
 export function isTableHead(el: ElementData): el is TableHeadElement {
-    return el == 'tableHead';
+    return el === 'tableHead';
 }
 export function isTableRow(el: ElementData): el is TableRowElement {
-    return el == 'tableRow';
+    return el === 'tableRow';
 }
 export function isTableCell(el: ElementData): el is TableCellElement {
-    return el == 'tableCell';
+    return el === 'tableCell';
 }
 export function isSoftBreak(el: ElementData): el is SoftBreakElement {
-    return el == 'softBreak';
+    return el === 'softBreak';
 }
 export function isHardBreak(el: ElementData): el is HardBreakElement {
-    return el == 'hardBreak';
+    return el === 'hardBreak';
 }
 export function isRule(el: ElementData): el is RuleElement {
-    return el == 'rule';
+    return el === 'rule';
 }
