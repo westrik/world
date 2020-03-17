@@ -23,7 +23,7 @@ export default function App(): h.JSX.Element {
                 <AuthedRoute path="/tasks" component={TaskList} />
                 <AuthedRoute path="/notes" component={NoteList} />
                 <AuthedRoute path="/notes/new" component={NoteEditor} />
-                <AuthedRoute path="/notes/:apiId" component={NoteEditor} />
+                <AuthedRoute path="/notes/:strippedApiId" component={NoteEditor} />
                 <AdminAuthedRoute path="/users" component={UserList} />
                 <Route default component={ErrorScreen} />
 

@@ -11,7 +11,7 @@ import LoadingSpinner from '~components/LoadingSpinner';
 import fetchNote from '~notes/fetchNote';
 
 interface Props {
-    apiId?: string;
+    strippedApiId?: string;
 }
 
 export default function NoteEditor(props: Props): h.JSX.Element {
@@ -20,8 +20,8 @@ export default function NoteEditor(props: Props): h.JSX.Element {
     // TODO: edit mode context
 
     useEffect(() => {
-        if (!content && props.apiId) {
-            fetchNote(authContext, props.apiId, (note: ApiNote) => {
+        if (!content && props.strippedApiId) {
+            fetchNote(authContext, `note_${props.strippedApiId}`, (note: ApiNote) => {
                 console.log(note);
                 if (note.content) {
                     setContent(note.content);
@@ -30,7 +30,7 @@ export default function NoteEditor(props: Props): h.JSX.Element {
                     setContent(null);
                 }
             });
-        } else if (!props.apiId) {
+        } else if (!props.strippedApiId) {
             setContent({
                 elements: [],
                 schemaVersion: 'v0.1.x',
@@ -41,7 +41,7 @@ export default function NoteEditor(props: Props): h.JSX.Element {
     return (
         <Container>
             <Header
-                title={`${props.apiId ? props.apiId.slice(5) : 'new document'}`}
+                title={`${props.strippedApiId ? props.strippedApiId : 'new document'}`}
                 fixed={true}
                 backLink="/notes"
                 backLinkTitle="notes"

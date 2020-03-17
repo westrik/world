@@ -8,6 +8,7 @@ import Auth from '~auth/AuthContext';
 import listNotes from '~notes/listNotes';
 import ListContainer from '~components/ListContainer';
 import LoadingSpinner from '~components/LoadingSpinner';
+import { stripApiId } from '~utils/identifier';
 
 interface Props {
     apiId?: string;
@@ -36,7 +37,7 @@ function NoteList(props: Props): h.JSX.Element {
                 <ListContainer>
                     {noteSummaries.map((note, key) => (
                         <li key={key}>
-                            <a href={`/notes/${note.apiId}`}>{note.apiId.slice(5)}</a>
+                            <a href={`/notes/${stripApiId(note.apiId)}`}>{stripApiId(note.apiId)}</a>
                         </li>
                     ))}
                 </ListContainer>
