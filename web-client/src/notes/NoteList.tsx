@@ -10,11 +10,7 @@ import ListContainer from '~components/ListContainer';
 import LoadingSpinner from '~components/LoadingSpinner';
 import { stripApiId } from '~utils/identifier';
 
-interface Props {
-    apiId?: string;
-}
-
-function NoteList(props: Props): h.JSX.Element {
+function NoteList(): h.JSX.Element {
     const [noteSummaries, setNotes] = useState<Array<Note> | null>(null);
     const authContext = useContext(Auth);
 

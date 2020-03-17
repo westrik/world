@@ -13,6 +13,7 @@ import NoteList from '~notes/NoteList';
 import TaskList from '~tasks/TaskList';
 import { TestTemplate } from '~components/TestTemplate';
 import { SideBySide } from '~components/SideBySide';
+import Note from '~notes/Note';
 
 export default function App(): h.JSX.Element {
     return (
@@ -22,8 +23,8 @@ export default function App(): h.JSX.Element {
                 <AuthedRoute path="/" component={EventLog} />
                 <AuthedRoute path="/tasks" component={TaskList} />
                 <AuthedRoute path="/notes" component={NoteList} />
-                <AuthedRoute path="/notes/new" component={NoteEditor} />
-                <AuthedRoute path="/notes/:strippedApiId" component={NoteEditor} />
+                <AuthedRoute path="/notes/new" component={Note} />
+                <AuthedRoute path="/notes/:strippedApiId" component={Note} />
                 <AdminAuthedRoute path="/users" component={UserList} />
                 <Route default component={ErrorScreen} />
 

@@ -29,6 +29,8 @@ import {
     TableData,
 } from '~/models/Note';
 import { h } from 'preact';
+import { useContext } from 'preact/hooks';
+import Editing from '~notes/EditingContext';
 
 /*
 TODO:
@@ -176,21 +178,22 @@ interface ContentElementProps {
 
 export default function ContentElement(props: ContentElementProps): h.JSX.Element {
     const { element, children } = props.element;
+    const editingContext = useContext(Editing);
 
     if (isText(element)) {
-        return <span>{element.text}</span>;
+        return <span contentEditable={editingContext.isEditing}>{element.text}</span>;
     } else if (isCode(element)) {
-        return <code>{element.code}</code>;
+        return <code contentEditable={editingContext.isEditing}>{element.code}</code>;
     } else if (isHtml(element)) {
         // TODO
     } else if (isEmphasis(element)) {
-        return <em>{renderElements(children)}</em>;
+        return <em contentEditable={editingContext.isEditing}>{renderElements(children)}</em>;
     } else if (isParagraph(element)) {
-        return <p>{renderElements(children)}</p>;
+        return <p contentEditable={editingContext.isEditing}>{renderElements(children)}</p>;
     } else if (isStrong(element)) {
-        return <strong>{renderElements(children)}</strong>;
+        return <strong contentEditable={editingContext.isEditing}>{renderElements(children)}</strong>;
     } else if (isStrikethrough(element)) {
-        return <del>{renderElements(children)}</del>;
+        return <del contentEditable={editingContext.isEditing}>{renderElements(children)}</del>;
     } else if (isCodeBlock(element)) {
         return <CodeBlock language={element.codeBlock.language} cxn={children} />;
     } else if (isHeaderElement(element)) {
@@ -200,11 +203,11 @@ export default function ContentElement(props: ContentElementProps): h.JSX.Elemen
     } else if (isImage(element)) {
         return <Image link={element.image} cxn={children} />;
     } else if (isList(element)) {
-        return <ul>{renderElements(children)}</ul>;
+        return <ul contentEditable={editingContext.isEditing}>{renderElements(children)}</ul>;
     } else if (isListItem(element)) {
-        return <li>{renderElements(children)}</li>;
+        return <li contentEditable={editingContext.isEditing}>{renderElements(children)}</li>;
     } else if (isTaskListMarker(element)) {
-        return <span>[{element.taskListMarker.checked ? 'x' : ' '}] </span>;
+        return <span contentEditable={editingContext.isEditing}>[{element.taskListMarker.checked ? 'x' : ' '}] </span>;
     } else if (isFootnoteDefinition(element)) {
         // TODO
     } else if (isFootnoteReference(element)) {

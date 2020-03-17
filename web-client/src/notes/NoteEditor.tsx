@@ -9,6 +9,7 @@ import Header from '~components/Header';
 import Auth from '~auth/AuthContext';
 import LoadingSpinner from '~components/LoadingSpinner';
 import fetchNote from '~notes/fetchNote';
+import Editing from '~notes/EditingContext';
 
 interface Props {
     strippedApiId?: string;
@@ -17,13 +18,15 @@ interface Props {
 export default function NoteEditor(props: Props): h.JSX.Element {
     const [content, setContent] = useState<Content | null>(null);
     const authContext = useContext(Auth);
-    // TODO: edit mode context
+    const editingContext = useContext(Editing);
 
     useEffect(() => {
         if (!content && props.strippedApiId) {
             fetchNote(authContext, `note_${props.strippedApiId}`, (note: ApiNote) => {
-                console.log(note);
                 if (note.content) {
+                    if (!editingContext.isEditing) {
+                        editingContext.toggleEditing();
+                    }
                     setContent(note.content);
                 } else {
                     // TODO: error toast
