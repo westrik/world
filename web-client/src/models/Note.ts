@@ -12,9 +12,9 @@ export interface ApiNoteSummary {
     updatedAt: Date;
 }
 
-// export interface ApiNote extends ApiNoteSummary {
-//     content: Content;
-// }
+export interface ApiNote extends ApiNoteSummary {
+    content: Content;
+}
 
 export interface Note extends ApiNoteSummary {
     content?: Content;
