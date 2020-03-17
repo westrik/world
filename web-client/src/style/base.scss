@@ -1388,10 +1388,16 @@
 }
 
 .textEditor {
+  padding-top: 6em;
   width: 30em;
   margin: 0 auto;
 
   img {
     max-width: 100%;
   }
+}
+
+.back-link {
+  font-size: 0.5em;
+  padding-right: 1.5em;
 }

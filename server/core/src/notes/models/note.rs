@@ -22,6 +22,9 @@ pub struct Note {
     #[serde(rename = "updatedAt")]
     pub updated_at: DateTime<Utc>,
     pub content: serde_json::Value,
+    // TODO: add title and description columns
+    //  fallback: generate title from content (first header element)
+    //  fallback: generate description from content (first non-header text element)
 }
 
 #[derive(Queryable, Serialize, Deserialize, Debug)]

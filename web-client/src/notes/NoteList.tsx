@@ -7,13 +7,18 @@ import { Note } from '~models/Note';
 import Auth from '~auth/AuthContext';
 import listNotes from '~notes/listNotes';
 import ListContainer from '~components/ListContainer';
+import LoadingSpinner from '~components/LoadingSpinner';
 
-function NoteList(): h.JSX.Element {
-    const [notes, setNotes] = useState<Array<Note> | null>(null);
+interface Props {
+    apiId?: string;
+}
+
+function NoteList(props: Props): h.JSX.Element {
+    const [noteSummaries, setNotes] = useState<Array<Note> | null>(null);
     const authContext = useContext(Auth);
 
     useEffect(() => {
-        if (!notes) {
+        if (!noteSummaries) {
             listNotes(authContext, notes => {
                 if (notes) {
                     setNotes(notes);
@@ -27,14 +32,16 @@ function NoteList(): h.JSX.Element {
     return (
         <Container>
             <Header title="notes" fixed={true} />
-            {notes ? (
+            {noteSummaries ? (
                 <ListContainer>
-                    {notes.map((note, key) => (
-                        <div key={key}>{note.createdAt}</div>
+                    {noteSummaries.map((note, key) => (
+                        <li key={key}>
+                            <a href={`/notes/${note.apiId}`}>{note.apiId.slice(5)}</a>
+                        </li>
                     ))}
                 </ListContainer>
             ) : (
-                <br />
+                <LoadingSpinner />
             )}
         </Container>
     );

@@ -10,6 +10,7 @@ import { ApiTask, Task } from '~models/Task';
 import TaskRow from './TaskRow';
 import NewTaskForm from './NewTaskForm';
 import listTasks from '~tasks/listTasks';
+import LoadingSpinner from '~components/LoadingSpinner';
 
 function TaskList(): h.JSX.Element {
     const [tasks, setTasks] = useState<Array<Task> | null>(null);
@@ -75,9 +76,7 @@ function TaskList(): h.JSX.Element {
                     ))}
                 </ListContainer>
             ) : (
-                <div className="spinner-border mx-auto" role="status">
-                    <span className="sr-only">Loading...</span>
-                </div>
+                <LoadingSpinner />
             )}
 
             <div style="background: #fff; padding-top: 1rem; position: fixed; bottom: 0; width: 100%; box-shadow: 0px -20px 20px 0px rgba(255,255,255,1);">

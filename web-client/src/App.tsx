@@ -7,8 +7,8 @@ import { AuthProvider } from '~auth/AuthContext';
 import { AuthedRoute } from '~auth/AuthedRoute';
 import SignInForm from '~auth/SignInForm';
 import ErrorScreen from '~components/ErrorScreen';
-import RichTextEditor from '~components/RichTextEditor';
 import EventLog from '~event-log/EventLog';
+import NoteEditor from '~/notes/NoteEditor';
 import NoteList from '~notes/NoteList';
 import TaskList from '~tasks/TaskList';
 import { TestTemplate } from '~components/TestTemplate';
@@ -22,10 +22,11 @@ export default function App(): h.JSX.Element {
                 <AuthedRoute path="/" component={EventLog} />
                 <AuthedRoute path="/tasks" component={TaskList} />
                 <AuthedRoute path="/notes" component={NoteList} />
+                <AuthedRoute path="/notes/new" component={NoteEditor} />
+                <AuthedRoute path="/notes/:apiId" component={NoteEditor} />
                 <AdminAuthedRoute path="/users" component={UserList} />
                 <Route default component={ErrorScreen} />
 
-                <Route path="/editor" component={RichTextEditor} />
                 <Route path="/side-by-side" component={SideBySide} />
                 <Route path="/test-template" component={TestTemplate} />
             </Router>
