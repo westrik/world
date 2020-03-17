@@ -1,4 +1,5 @@
 import {
+    ColumnType,
     Element,
     HeaderType,
     isCode,
@@ -25,6 +26,7 @@ import {
     isTaskListMarker,
     isText,
     LinkData,
+    TableData,
 } from '~/models/Note';
 import { h } from 'preact';
 
@@ -93,6 +95,81 @@ function Image(props: LinkProps): h.JSX.Element {
     );
 }
 
+interface TableHeaderProps {
+    element: Element;
+    columnTypes: Array<ColumnType>;
+}
+
+function TableHeader(props: TableHeaderProps): h.JSX.Element {
+    if (!props.element.children) {
+        return <thead />;
+    }
+    return (
+        <thead>
+            {props.element.children.map((tableCell, key) => {
+                if (isTableCell(tableCell.element)) {
+                    return (
+                        <th key={key} style={`text-align: ${props.columnTypes[key]}`}>
+                            {renderElements(tableCell.children)}
+                        </th>
+                    );
+                } else {
+                    console.error('expected child of thead to be th');
+                }
+            })}
+        </thead>
+    );
+}
+
+interface TableRowProps {
+    element: Element;
+    columnTypes: Array<ColumnType>;
+}
+
+function TableRow(props: TableRowProps): h.JSX.Element {
+    if (!props.element.children) {
+        return <tr />;
+    } else {
+        return (
+            <tr>
+                {props.element.children.map((tableCell, key) => {
+                    if (isTableCell(tableCell.element)) {
+                        return (
+                            <td key={key} style={`text-align: ${props.columnTypes[key]}}`}>
+                                {renderElements(tableCell.children)}
+                            </td>
+                        );
+                    } else {
+                        console.error('expected child of tr to be td');
+                    }
+                })}
+            </tr>
+        );
+    }
+}
+
+interface TableProps extends ElementWithChildrenProps {
+    data: TableData;
+}
+
+function Table(props: TableProps): h.JSX.Element {
+    if (!props.cxn) {
+        return <table />;
+    }
+    const tableHeaders = props.cxn.filter(el => isTableHead(el.element));
+    const tableRows = props.cxn.filter(el => isTableRow(el.element));
+    return (
+        <table>
+            {tableHeaders.length > 0 ? (
+                <TableHeader element={tableHeaders[0]} columnTypes={props.data.columnTypes} />
+            ) : null}
+            {tableRows.map((tableRow, key) => (
+                <TableRow key={key} element={tableRow} columnTypes={props.data.columnTypes} />
+            ))}
+        </table>
+    );
+}
+
 interface ContentElementProps {
     element: Element;
 }
@@ -131,17 +208,15 @@ export default function ContentElement(props: ContentElementProps): h.JSX.Elemen
     } else if (isFootnoteDefinition(element)) {
         // TODO
     } else if (isFootnoteReference(element)) {
-        // TODO
+        return (
+            <sup className="footnote-reference">
+                <a href={`#${element.footnoteReference}`}>{element.footnoteReference}</a>
+            </sup>
+        );
     } else if (isTable(element)) {
-        // TODO
-    } else if (isTableHead(element)) {
-        // TODO
-    } else if (isTableRow(element)) {
-        // TODO
-    } else if (isTableCell(element)) {
-        // TODO
+        return <Table data={element.table} cxn={children} />;
     } else if (isSoftBreak(element)) {
-        // TODO: do nothing??
+        // TODO?
     } else if (isHardBreak(element)) {
         return <br />;
     } else if (isRule(element)) {
