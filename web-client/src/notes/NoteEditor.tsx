@@ -49,7 +49,13 @@ export default function NoteEditor(props: Props): h.JSX.Element {
                 backLink="/notes"
                 backLinkTitle="notes"
             />
-            <div className="textEditor">
+            {/*
+
+            TODO: add change listeners to .textEditor
+            https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
+            https://codepen.io/webgeeker/details/YjrZgg
+            */}
+            <div className="textEditor" contentEditable={editingContext.isEditing}>
                 {content ? (
                     content.elements.map((el: Element, key: number) => <ContentElement key={key} element={el} />)
                 ) : (

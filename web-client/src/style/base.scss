@@ -1389,8 +1389,10 @@
 
 .textEditor {
   padding-top: 6em;
-  width: 30em;
+  max-width: 40em;
   margin: 0 auto;
+  outline: none;
+  border: 0;
 
   img {
     max-width: 100%;
