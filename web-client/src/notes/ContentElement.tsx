@@ -29,6 +29,8 @@ import {
     TableData,
 } from '~/models/Note';
 import { h } from 'preact';
+import {useContext} from "preact/hooks";
+import Editing from "~notes/EditingContext";
 
 function renderElements(cxn: Array<Element> | null): Array<h.JSX.Element> | null {
     return cxn ? cxn.map((el, key) => <ContentElement element={el} key={key} />) : null;
@@ -72,8 +74,11 @@ interface LinkProps extends ElementWithChildrenProps {
 
 function Link(props: LinkProps): h.JSX.Element {
     const { destinationUrl, title } = props.link;
+    const editingContext = useContext(Editing);
+
     return (
         <a contentEditable={false} href={destinationUrl} title={title}>
+            {editingContext.isEditing ? <span onClick={(ev) => {ev.preventDefault()}} className="link-edit-tooltip">tooltip</span> : null}
             {renderElements(props.cxn)}
         </a>
     );
