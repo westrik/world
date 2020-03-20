@@ -14,6 +14,8 @@ import { TestTemplate } from '~components/TestTemplate';
 import { SideBySide } from '~components/SideBySide';
 import Note from '~notes/Note';
 
+import './style/app.scss';
+
 export default function App(): h.JSX.Element {
     return (
         <AuthProvider>

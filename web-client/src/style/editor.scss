@@ -1,0 +1,51 @@
+
+.textEditor {
+  padding-top: 6em;
+  max-width: 40em;
+  margin: 0 auto;
+  outline: none;
+  border: 0;
+  font-family: 'Concourse T4', -apple-system, sans-serif;
+
+  code, pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8em;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  a {
+    position: relative;
+
+    .link-edit-tooltip {
+      display: inline-block;
+      opacity: 0;
+      transition: 0.2s ease opacity;
+      transform: translateX(50%);
+      position: absolute;
+      top: -35px;
+      right: 50%;
+      bottom: auto;
+      //pointer-events: none;
+      color: #fff;
+      background: #1b1f23;
+      padding: 5px 10px;
+      border-radius: 99px;
+      z-index: 1000000;
+    }
+
+    &:hover {
+      .link-edit-tooltip {
+        opacity: 1;
+      }
+    }
+  }
+
+}
+
+.back-link {
+  display: inline-block;
+  padding-right: 1em;
+}
