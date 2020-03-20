@@ -1393,6 +1393,12 @@
   margin: 0 auto;
   outline: none;
   border: 0;
+  font-family: 'Concourse T4', -apple-system, sans-serif;
+
+  code, pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8em;
+  }
 
   img {
     max-width: 100%;

@@ -29,8 +29,8 @@ import {
     TableData,
 } from '~/models/Note';
 import { h } from 'preact';
-import {useContext} from "preact/hooks";
-import Editing from "~notes/EditingContext";
+import { useContext } from 'preact/hooks';
+import Editing from '~notes/EditingContext';
 
 function renderElements(cxn: Array<Element> | null): Array<h.JSX.Element> | null {
     return cxn ? cxn.map((el, key) => <ContentElement element={el} key={key} />) : null;
@@ -76,9 +76,21 @@ function Link(props: LinkProps): h.JSX.Element {
     const { destinationUrl, title } = props.link;
     const editingContext = useContext(Editing);
 
+    {
+        /* TODO: open internal links in new ww_tab */
+    }
     return (
-        <a contentEditable={false} href={destinationUrl} title={title}>
-            {editingContext.isEditing ? <span onClick={(ev) => {ev.preventDefault()}} className="link-edit-tooltip">tooltip</span> : null}
+        <a contentEditable={false} href={destinationUrl} target="_blank" rel="noopener noreferrer" title={title}>
+            {editingContext.isEditing ? (
+                <span
+                    onClick={(ev): void => {
+                        ev.preventDefault();
+                    }}
+                    className="link-edit-tooltip"
+                >
+                    edit
+                </span>
+            ) : null}
             {renderElements(props.cxn)}
         </a>
     );
@@ -180,7 +192,7 @@ export default function ContentElement(props: ContentElementProps): h.JSX.Elemen
     } else if (isCode(element)) {
         return <code>{element.code}</code>;
     } else if (isHtml(element)) {
-        // TODO
+        // TODO: strip and validate on server-side; set with dangerouslySetInnerHTML
     } else if (isEmphasis(element)) {
         return <em>{renderElements(children)}</em>;
     } else if (isParagraph(element)) {
@@ -214,7 +226,7 @@ export default function ContentElement(props: ContentElementProps): h.JSX.Elemen
     } else if (isTable(element)) {
         return <Table data={element.table} cxn={children} />;
     } else if (isSoftBreak(element)) {
-        // TODO?
+        return <wbr />;
     } else if (isHardBreak(element)) {
         return <br />;
     } else if (isRule(element)) {

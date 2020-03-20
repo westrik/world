@@ -8,7 +8,6 @@ import { AuthedRoute } from '~auth/AuthedRoute';
 import SignInForm from '~auth/SignInForm';
 import ErrorScreen from '~components/ErrorScreen';
 import EventLog from '~event-log/EventLog';
-import NoteEditor from '~/notes/NoteEditor';
 import NoteList from '~notes/NoteList';
 import TaskList from '~tasks/TaskList';
 import { TestTemplate } from '~components/TestTemplate';
