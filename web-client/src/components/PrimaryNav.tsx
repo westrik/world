@@ -8,10 +8,6 @@ interface Section {
 
 const SECTIONS: Array<Section> = [
     {
-        name: 'dashboard',
-        route: '/',
-    },
-    {
         name: 'tasks',
         route: '/tasks',
     },

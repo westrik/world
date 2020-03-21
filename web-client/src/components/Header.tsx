@@ -10,7 +10,8 @@ interface Props {
 
 export default function Header(props: Props): h.JSX.Element {
     return (
-        <div className={`header ${props.fixed ? 'fixed' : ''}`}>
+        // <div className={`header ${props.fixed ? 'fixed' : ''}`}>
+        <div className={`header`}>
             <div>
                 {props.backLink ? (
                     <a className="back-link" href={props.backLink}>

@@ -22,8 +22,9 @@ body {
 }
 
 code {
-  margin: 0 0.2rem;
+  margin-bottom: -0.4rem;
   padding: 0.2rem 0.5rem;
+  line-height: 1.2;
   border-radius: 0.4rem;
   outline: none;
   font-size: $code-font-size;
@@ -394,6 +395,8 @@ code {
 
 pre {
   border-left: 0.3rem solid $code-border-color;
+  padding-left: 0.5rem;
+  margin-left: -0.5rem;
 }
 
 pre > code {
