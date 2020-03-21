@@ -51,18 +51,6 @@
       // .col-md-2
       // .mr-0
     }
-
-    ul {
-      // .navbar-nav px-3
-      li {
-        float: left;
-        display: inline-block;
-        // .nav-item text-nowrap
-        a {
-          // .nav-link
-        }
-      }
-    }
   }
 
   main {
@@ -75,10 +63,23 @@
   }
 }
 
+//ul {
+//  // .navbar-nav px-3
+//  li {
+//    float: left;
+//    display: inline-block;
+//    // .nav-item text-nowrap
+//    a {
+//      // .nav-link
+//    }
+//  }
+//}
+
 .nav-section-list {
   li {
     a {
       &.active {
+        color: $link-font-color-active;
       }
     }
   }
@@ -87,7 +88,7 @@
 .nav-action-list {
   .li {
     a {
-
+      // TODO: make it smaller
     }
   }
 }

@@ -825,7 +825,7 @@ body {
 
 header,
 footer {
-  /* Prevent these two eleemnts from shrinking when content is added to the <body>
+  /* Prevent these two elements from shrinking when content is added to the <body>
        element. */
   flex-shrink: 0;
 }
@@ -1172,7 +1172,7 @@ body {
 }
 
 a {
-  color: $link-font-color;
+  color: $link-font-color-default;
   text-decoration: none;
 }
 

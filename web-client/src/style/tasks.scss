@@ -1,6 +1,27 @@
 /* Derived from: https://css-tricks.com/the-checkbox-hack/ */
 
 .task {
+  label {
+    width: 100%;
+
+    span {
+      display: inline-block;
+      width: 100%;
+      transition: 0.5s ease opacity;
+
+      &.completed {
+        opacity: 0.5;
+        text-decoration: line-through;
+        animation: strike 0.5s ease;
+      }
+    }
+
+    input {
+      font-size: 0.85em;
+      width: 100%;
+    }
+  }
+
   [type="checkbox"]:not(:checked),
   [type="checkbox"]:checked {
     position: absolute;
@@ -52,6 +73,13 @@
     transform: scale(1);
   }
 
+  [type="checkbox"] + label:active::after,
+  [type="checkbox"] + label:active::before {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+  }
+
   [type="checkbox"]:disabled:not(:checked) + label::before,
   [type="checkbox"]:disabled:checked + label::before {
     box-shadow: none;
@@ -72,34 +100,6 @@
   [type="checkbox"]:checked:focus + label::after,
   [type="checkbox"]:not(:checked):focus + label::after {
     border: 2px dotted blue;
-  }
-
-  [type="checkbox"] + label:active::after,
-  [type="checkbox"] + label:active::before {
-    cursor: grabbing;
-    cursor: -moz-grabbing;
-    cursor: -webkit-grabbing;
-  }
-
-  label {
-    width: 100%;
-
-    span {
-      display: inline-block;
-      width: 100%;
-      transition: 0.5s ease opacity;
-
-      &.completed {
-        opacity: 0.5;
-        text-decoration: line-through;
-        animation: strike 0.5s ease;
-      }
-    }
-
-    input {
-      font-size: 0.85em;
-      width: 100%;
-    }
   }
 }
 
