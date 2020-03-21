@@ -1,5 +1,3 @@
-import '../style/base.scss';
-
 import { h } from 'preact';
 
 export function TestTemplate(): h.JSX.Element {

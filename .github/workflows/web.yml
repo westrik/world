@@ -37,8 +37,8 @@ jobs:
     - name: Lint TypeScript
       working-directory: ./web-client
       run: |
-        yarn lint:js
+        yarn lint:ts
     - name: Lint styles
       working-directory: ./web-client
       run: |
-        yarn lint:scss
+        yarn lint:style

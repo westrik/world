@@ -1,0 +1,28 @@
+/******************************************************************************
+*
+*   UTILITY CLASSES
+*
+*   Some helpful utility classes.
+*
+******************************************************************************/
+
+.table-container {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.clearfix::after {
+  clear: both;
+  content: ' ';
+  display: block;
+}
+
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
+}

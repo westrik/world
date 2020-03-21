@@ -1,5 +1,3 @@
-import '../style/base.scss';
-
 import { h } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
 import { ApiNote, Content, Element } from '~/models/Note';

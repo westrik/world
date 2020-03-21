@@ -1,4 +1,10 @@
-@import 'base';
+// base
+@import 'reset';
+@import 'layout';
+@import 'utils';
+
+// app styles
+@import 'theme';
 @import 'auth';
 @import 'container';
 @import 'editor';

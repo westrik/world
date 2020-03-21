@@ -29,8 +29,8 @@ export default function PrimaryNav(): h.JSX.Element {
     return (
         <ul className="nav-section-list">
             {SECTIONS.map((section, key) => (
-                <li>
-                    <Link key={key} activeClassName="active" href={section.route}>
+                <li key={key}>
+                    <Link activeClassName="active" href={section.route}>
                         {section.name}
                     </Link>
                 </li>
