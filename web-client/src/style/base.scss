@@ -1,3 +1,5 @@
+@import '_shared';
+
 /******************************************************************************
 *
 *  RESET
@@ -879,13 +881,13 @@ main {
 
 body {
   font-family: -apple-system, sans-serif;
-  font-size: 1.4em;
+  font-size: $base-font-size;
+  line-height: $base-line-height;
   font-weight: 300;
-  line-height: 1.6;
 }
 
 code {
-  font-size: 1rem;
+  font-size: $code-font-size;
   overflow-x: auto;
   white-space: pre-wrap;
   white-space: -moz-pre-wrap;
@@ -900,37 +902,37 @@ h3,
 h4,
 h5,
 h6 {
-  font-weight: 500;
+  font-weight: $header-font-weight;
 }
 
 h1 {
-  font-size: 3.9rem;
-  line-height: 1.2;
+  font-size: $h1-font-size;
+  line-height: $h1-line-height;
 }
 
 h2 {
-  font-size: 3.4rem;
-  line-height: 1.25;
+  font-size: $h2-font-size;
+  line-height: $h2-line-height;
 }
 
 h3 {
-  font-size: 2.9rem;
-  line-height: 1.3;
+  font-size: $h3-font-size;
+  line-height: $h3-line-height;
 }
 
 h4 {
-  font-size: 2.6rem;
-  line-height: 1.35;
+  font-size: $h4-font-size;
+  line-height: $h4-line-height;
 }
 
 h5 {
-  font-size: 2.4rem;
-  line-height: 1.5;
+  font-size: $h5-font-size;
+  line-height: $h5-line-height;
 }
 
 h6 {
-  font-size: 2.2rem;
-  line-height: 1.4;
+  font-size: $h6-font-size;
+  line-height: $h6-line-height;
 }
 
 dl {
@@ -962,11 +964,10 @@ button,
 [type="button"],
 [type="reset"],
 [type="submit"] {
-  //font-family: Verdana;
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: 0.1rem;
-  line-height: 3.8rem;
+  font-size: $button-font-size;
+  font-weight: $button-font-weight;
+  letter-spacing: $button-letter-spacing;
+  line-height: $button-line-height;
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
@@ -974,8 +975,8 @@ button,
 
 label,
 legend {
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-size: $label-font-size;
+  font-weight: $label-font-weight;
 }
 
 label.inline,
@@ -1167,30 +1168,30 @@ fieldset {
  */
 
 body {
-  color: #595959;
+  color: $base-font-color;
 }
 
 a {
-  color: #5680cc;
+  color: $link-font-color;
   text-decoration: none;
 }
 
 a:focus,
 a:hover {
-  color: #595959;
+  color: $base-font-color;
 }
 
 blockquote {
-  border-left: 0.3rem solid #d1d1d1;
+  border-left: 0.3rem solid $blockquote-border-color;
 }
 
 pre,
 code {
-  background: #f4f5f6;
+  background: $code-bg-color;
 }
 
 pre {
-  border-left: 0.3rem solid #5680cc;
+  border-left: 0.3rem solid $code-border-color;
 }
 
 code {
@@ -1203,12 +1204,12 @@ pre > code {
 
 hr {
   border: 0;
-  border-top: 0.1rem solid #f4f5f6;
+  border-top: 0.1rem solid $hr-border-color;
 }
 
 td,
 th {
-  border-bottom: 0.1rem solid #e1e1e1;
+  border-bottom: 0.1rem solid $table-cell-border-color;
 }
 
 
@@ -1223,11 +1224,11 @@ button,
 [type="button"],
 [type="reset"],
 [type="submit"] {
-  border: 0.1rem solid #5680cc;
+  border: 0.1rem solid $button-color-default;
   border-radius: 0.4rem;
   white-space: nowrap;
   background-color: transparent;
-  color: #5680cc;
+  color: $button-color-default;
   vertical-align: text-bottom;
   -webkit-appearance: none;
 }
@@ -1244,8 +1245,8 @@ button:hover,
 [type="submit"]:hover {
   outline: 0;
   background-color: transparent;
-  border-color: #595959;
-  color: #595959;
+  border-color: $button-color-active;
+  color: $button-color-active;
 }
 
 
@@ -1272,7 +1273,7 @@ button[disabled]:hover,
 [type="submit"][disabled]:focus,
 [type="submit"][disabled]:hover {
   border-color: inherit;
-  color: #5680cc;
+  color: $button-color-default;
 }
 
 
@@ -1286,7 +1287,7 @@ button.default,
 [type="button"].default,
 [type="reset"].default,
 [type="submit"] {
-  background-color: #5680cc;
+  background-color: $button-color-default;
   color: #fff;
 }
 
@@ -1302,8 +1303,8 @@ button.default:hover,
 [type="reset"].default:hover,
 [type="submit"]:focus,
 [type="submit"]:hover {
-  background-color: #595959;
-  border-color: #595959;
+  background-color: $button-color-active;
+  border-color: $button-color-active;
   color: #fff;
 }
 
@@ -1319,8 +1320,8 @@ button.default[disabled]:hover,
 [type="reset"].default[disabled]:hover,
 [type="submit"].default[disabled]:focus,
 [type="submit"].default[disabled]:hover {
-  background-color: #5680cc;
-  border-color: #5680cc;
+  background-color: $button-color-default;
+  border-color: $button-color-default;
 }
 
 
@@ -1341,7 +1342,7 @@ select {
   -moz-appearance: none;
   appearance: none;
   background-color: transparent;
-  border: 0.1rem solid #d1d1d1;
+  border: 0.1rem solid $input-border-color-default;
   border-radius: 0.4rem;
   box-shadow: none;
 }
@@ -1355,7 +1356,7 @@ select {
 [type='url']:focus,
 textarea:focus,
 select:focus {
-  border-color: #5680cc;
+  border-color: $input-border-color-active;
   outline: 0;
 }
 

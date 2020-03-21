@@ -6,7 +6,7 @@
   "scripts": {
     "start": "yarn parcel src/index.html",
     "build": "yarn parcel build src/index.html",
-    "lint": "yarn eslint . --ext .ts,.tsx",
+    "lint:ts": "yarn eslint . --ext .ts,.tsx",
     "lint:scss": "yarn stylelint src/**/*.scss",
     "fix": "yarn lint --fix",
     "test": "yarn mocha -r ts-node/register -r tsconfig-paths/register -r tests/setup.js tests/{**/,}*-test.ts{,x}",
