@@ -17,7 +17,7 @@ const SECTIONS: Array<Section> = [
     },
     {
         name: 'media',
-        route: '/',
+        route: '/media',
     },
 ];
 
