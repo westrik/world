@@ -7,12 +7,12 @@ import { AuthProvider } from '~auth/AuthContext';
 import { AuthedRoute } from '~auth/AuthedRoute';
 import SignInForm from '~auth/SignInForm';
 import ErrorScreen from '~components/ErrorScreen';
+import { SideBySide } from '~components/SideBySide';
+import { TestTemplate } from '~components/TestTemplate';
 import EventLog from '~event-log/EventLog';
+import Note from '~notes/Note';
 import NoteList from '~notes/NoteList';
 import TaskList from '~tasks/TaskList';
-import { TestTemplate } from '~components/TestTemplate';
-import { SideBySide } from '~components/SideBySide';
-import Note from '~notes/Note';
 
 import './style/app.scss';
 

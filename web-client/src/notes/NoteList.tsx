@@ -1,13 +1,13 @@
 import { h } from 'preact';
-
-import Container from '~components/Container';
-import Header from '~components/Header';
 import { useContext, useEffect, useState } from 'preact/hooks';
-import { Note } from '~models/Note';
+
 import Auth from '~auth/AuthContext';
-import listNotes from '~notes/listNotes';
+import Container from '~components/Container';
 import ListContainer from '~components/ListContainer';
 import LoadingSpinner from '~components/LoadingSpinner';
+import Header from '~components/Header';
+import { Note } from '~models/Note';
+import listNotes from '~notes/listNotes';
 import { stripApiId } from '~utils/identifier';
 
 function NoteList(): h.JSX.Element {
