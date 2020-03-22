@@ -8,7 +8,7 @@ import LoadingSpinner from '~components/LoadingSpinner';
 import Header from '~components/Header';
 import { Note } from '~models/Note';
 import listNotes from '~notes/listNotes';
-import { stripApiId } from '~utils/identifier';
+import NoteTile from '~notes/NoteTile';
 
 function NoteList(): h.JSX.Element {
     const [noteSummaries, setNotes] = useState<Array<Note> | null>(null);
@@ -32,8 +32,8 @@ function NoteList(): h.JSX.Element {
             {noteSummaries ? (
                 <ListContainer>
                     {noteSummaries.map((note, key) => (
-                        <li key={key}>
-                            <a href={`/notes/${stripApiId(note.apiId)}`}>{stripApiId(note.apiId)}</a>
+                        <li className="note-item" key={key}>
+                            <NoteTile note={note} />
                         </li>
                     ))}
                 </ListContainer>

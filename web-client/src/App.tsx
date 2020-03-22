@@ -14,8 +14,6 @@ import Note from '~notes/Note';
 import NoteList from '~notes/NoteList';
 import TaskList from '~tasks/TaskList';
 
-import './style/app.scss';
-
 export default function App(): h.JSX.Element {
     return (
         <AuthProvider>
