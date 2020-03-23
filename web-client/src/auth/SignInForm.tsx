@@ -7,7 +7,6 @@ import { SITE_NAME } from '~config';
 
 // @ts-ignore
 import logo from '../static/img/logo.png';
-import '../style/SignInForm.scss';
 
 function SignInForm(): h.JSX.Element {
     const authContext = useContext(Auth);

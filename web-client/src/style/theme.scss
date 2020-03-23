@@ -1,0 +1,405 @@
+@import 'config';
+
+/******************************************************************************
+*
+*   BASE THEME
+*
+*   The rest of these rules set a default look-and-feel based on milligram.css [2].
+*   Override these as needed in your own css to set a custom look-and-feel.
+*
+******************************************************************************/
+
+/**
+ * Typography: font, letter-spacing, line-height, text-*, list-style-type.
+ */
+
+body {
+  font-family: -apple-system, sans-serif;
+  font-size: $base-font-size;
+  color: $base-font-color;
+  line-height: $base-line-height;
+  font-weight: 300;
+}
+
+code {
+  margin-bottom: -0.4rem;
+  padding: 0.2rem 0.5rem;
+  line-height: 1.2;
+  border-radius: 0.4rem;
+  outline: none;
+  font-size: $code-font-size;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: $header-font-weight;
+  margin-top: 2em;
+  margin-bottom: 0.75em;
+}
+
+h1 {
+  font-size: $h1-font-size;
+  line-height: $h1-line-height;
+}
+
+h2 {
+  font-size: $h2-font-size;
+  line-height: $h2-line-height;
+}
+
+h3 {
+  font-size: $h3-font-size;
+  line-height: $h3-line-height;
+}
+
+h4 {
+  font-size: $h4-font-size;
+  line-height: $h4-line-height;
+}
+
+h5 {
+  font-size: $h5-font-size;
+  line-height: $h5-line-height;
+}
+
+h6 {
+  font-size: $h6-font-size;
+  line-height: $h6-line-height;
+}
+
+ol {
+  list-style: decimal inside;
+}
+
+ul {
+  list-style: disc inside;
+}
+
+/**
+ * Button styling. All buttons start with the "outline" style defined in
+ * milligram.css [2]. Buttons with a "submit" type or a "default" attribute
+ * or class get the default style defined in milligram.
+ */
+
+.button,
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+  display: inline-block;
+  height: 3.8rem;
+  padding: 0 3rem;
+  margin-bottom: 1rem;
+  font-size: $button-font-size;
+  font-weight: $button-font-weight;
+  letter-spacing: $button-letter-spacing;
+  line-height: $button-line-height;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  border: 0.1rem solid $button-color-default;
+  border-radius: 0.4rem;
+  white-space: nowrap;
+  background-color: transparent;
+  color: $button-color-default;
+  vertical-align: text-bottom;
+  -webkit-appearance: none;
+}
+
+/**
+ * Submit buttons and buttons with a "default" class or attribute.
+ */
+.button.default,
+button.default,
+[type="button"][default],
+[type="button"].default,
+[type="reset"].default,
+[type="submit"] {
+  background-color: $button-color-default;
+  color: #fff;
+}
+
+.button:focus,
+.button:hover,
+button:focus,
+button:hover,
+[type="button"]:focus,
+[type="button"]:hover,
+[type="reset"]:focus,
+[type="reset"]:hover,
+[type="submit"]:focus,
+[type="submit"]:hover {
+  outline: 0;
+  background-color: transparent;
+  border-color: $button-color-active;
+  color: $button-color-active;
+}
+
+/**
+ * Disabled buttons.
+ */
+.button[disabled],
+button[disabled],
+[type="button"][disabled],
+[type="reset"][disabled],
+[type="submit"][disabled] {
+  opacity: 0.5;
+}
+
+.button[disabled]:focus,
+.button[disabled]:hover,
+button[disabled]:focus,
+button[disabled]:hover,
+[type="button"][disabled]:focus,
+[type="button"][disabled]:hover,
+[type="reset"][disabled]:focus,
+[type="reset"][disabled]:hover,
+[type="submit"][disabled]:focus,
+[type="submit"][disabled]:hover {
+  border-color: inherit;
+  color: $button-color-default;
+}
+
+.button.default:focus,
+.button.default:hover,
+button.default:focus,
+button.default:hover,
+[type="button"][default]:focus,
+[type="button"][default]:hover,
+[type="button"].default:focus,
+[type="button"].default:hover,
+[type="reset"].default:focus,
+[type="reset"].default:hover,
+[type="submit"]:focus,
+[type="submit"]:hover {
+  background-color: $button-color-active;
+  border-color: $button-color-active;
+  color: #fff;
+}
+
+.button.default[disabled]:focus,
+.button.default[disabled]:hover,
+button.default[disabled]:focus,
+button.default[disabled]:hover,
+[type="button"][default][disabled]:focus,
+[type="button"][default][disabled]:hover,
+[type="button"].default[disabled]:focus,
+[type="button"].default[disabled]:hover,
+[type="reset"].default[disabled]:focus,
+[type="reset"].default[disabled]:hover,
+[type="submit"].default[disabled]:focus,
+[type="submit"].default[disabled]:hover {
+  background-color: $button-color-default;
+  border-color: $button-color-default;
+}
+
+label,
+legend {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: $label-font-size;
+  font-weight: $label-font-weight;
+}
+
+label.inline,
+legend.inline {
+  display: inline-block;
+  margin-left: 0.5rem;
+  font-weight: normal;
+}
+
+/**
+ * Layout: Display, position, margin, padding, height, and width.
+ */
+main article,
+main section {
+  padding: 7.5rem 1rem;
+  position: relative;
+  width: 100%;
+}
+
+main section > *,
+main article > * {
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+blockquote,
+figure,
+form,
+p,
+pre {
+  margin-bottom: 2.5rem;
+}
+
+blockquote {
+  padding: 1rem 1.5rem;
+  border-left: 0.3rem solid $blockquote-border-color;
+}
+
+blockquote *:last-child {
+  margin-bottom: 0;
+}
+
+hr {
+  margin: 3rem 0;
+  border: 0;
+  border-top: 0.1rem solid $hr-border-color;
+}
+
+dl,
+ol,
+ul {
+  list-style: none;
+  margin-top: 0;
+  margin-bottom: 2.5rem;
+  padding-left: 0;
+}
+
+dl dl,
+dl ol,
+dl ul,
+ol dl,
+ol ol,
+ol ul,
+ul dl,
+ul ol,
+ul ul {
+  margin: 1.5rem 0 1.5rem 3rem;
+  font-size: 90%;
+}
+
+dd,
+dt,
+li {
+  margin-bottom: 1rem;
+}
+
+table {
+  margin-bottom: 2.5rem;
+  border-spacing: 0;
+}
+
+main section .table-container,
+main article .table-container {
+  max-width: 80rem;
+}
+
+main section .table-container table,
+main article .table-container table {
+  width: 100%;
+}
+
+td,
+th {
+  padding: 1.2rem 1.5rem;
+  border-bottom: 0.1rem solid $table-cell-border-color;
+}
+
+td:first-child,
+th:first-child {
+  padding-left: 0;
+}
+
+td:last-child,
+th:last-child {
+  padding-right: 0;
+}
+
+input,
+select,
+fieldset,
+textarea {
+  margin-bottom: 1.5rem;
+}
+
+textarea {
+  min-height: 6.5rem;
+}
+
+[type='email'],
+[type='number'],
+[type='password'],
+[type='search'],
+[type='tel'],
+[type='text'],
+[type='url'],
+textarea,
+select {
+  height: 3.8rem;
+  padding: 0.6rem 1rem;
+  width: 100%;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  border: 0.1rem solid $input-border-color-default;
+  border-radius: 0.4rem;
+  box-shadow: none;
+}
+
+select {
+  padding-right: 3rem;
+}
+
+[type='email']:focus,
+[type='number']:focus,
+[type='password']:focus,
+[type='search']:focus,
+[type='tel']:focus,
+[type='text']:focus,
+[type='url']:focus,
+textarea:focus,
+select:focus {
+  border-color: $input-border-color-active;
+  outline: 0;
+}
+
+[type='checkbox'],
+[type='radio'] {
+  display: inline;
+}
+
+fieldset {
+  border-width: 0;
+  padding: 0;
+}
+
+/**
+ * Colors, borders, outline, box-shadow, appearance, and opacity.
+ */
+a {
+  color: $link-font-color-default;
+  text-decoration: none;
+}
+
+a:focus,
+a:hover {
+  color: $base-font-color;
+}
+
+pre,
+code {
+  background: $code-bg-color;
+}
+
+pre {
+  border-left: 0.3rem solid $code-border-color;
+  padding-left: 0.5rem;
+  margin-left: -0.5rem;
+}
+
+pre > code {
+  padding: 1rem 1.5rem;
+  border-radius: 0;
+}

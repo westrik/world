@@ -7,12 +7,13 @@ import { AuthProvider } from '~auth/AuthContext';
 import { AuthedRoute } from '~auth/AuthedRoute';
 import SignInForm from '~auth/SignInForm';
 import ErrorScreen from '~components/ErrorScreen';
+import { SideBySide } from '~components/SideBySide';
+import { TestTemplate } from '~components/TestTemplate';
 import EventLog from '~event-log/EventLog';
+import Note from '~notes/Note';
+import MediaList from '~media/MediaList';
 import NoteList from '~notes/NoteList';
 import TaskList from '~tasks/TaskList';
-import { TestTemplate } from '~components/TestTemplate';
-import { SideBySide } from '~components/SideBySide';
-import Note from '~notes/Note';
 
 export default function App(): h.JSX.Element {
     return (
@@ -24,6 +25,7 @@ export default function App(): h.JSX.Element {
                 <AuthedRoute path="/notes" component={NoteList} />
                 <AuthedRoute path="/notes/new" component={Note} />
                 <AuthedRoute path="/notes/:strippedApiId" component={Note} />
+                <AuthedRoute path="/media" component={MediaList} />
                 <AdminAuthedRoute path="/users" component={UserList} />
                 <Route default component={ErrorScreen} />
 

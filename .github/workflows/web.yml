@@ -30,8 +30,15 @@ jobs:
         yarn test
       env:
         CI: true
-    - name: Lint and type-check
+    - name: Type-check
       working-directory: ./web-client
       run: |
-        yarn lint
         yarn typecheck
+    - name: Lint TypeScript
+      working-directory: ./web-client
+      run: |
+        yarn lint:ts
+    - name: Lint styles
+      working-directory: ./web-client
+      run: |
+        yarn lint:style

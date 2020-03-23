@@ -5,12 +5,12 @@ import Auth from '~auth/AuthContext';
 import Container from '~components/Container';
 import Header from '~components/Header';
 import ListContainer from '~components/ListContainer';
+import LoadingSpinner from '~components/LoadingSpinner';
 import { ApiTask, Task } from '~models/Task';
 
-import TaskRow from './TaskRow';
+import listTasks from './listTasks';
 import NewTaskForm from './NewTaskForm';
-import listTasks from '~tasks/listTasks';
-import LoadingSpinner from '~components/LoadingSpinner';
+import TaskRow from './TaskRow';
 
 function TaskList(): h.JSX.Element {
     const [tasks, setTasks] = useState<Array<Task> | null>(null);

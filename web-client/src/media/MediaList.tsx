@@ -7,20 +7,21 @@ import ListContainer from '~components/ListContainer';
 import LoadingSpinner from '~components/LoadingSpinner';
 import Header from '~components/Header';
 import { Note } from '~models/Note';
-import listNotes from '~notes/listNotes';
-import NoteTile from '~notes/NoteTile';
 
-function NoteList(): h.JSX.Element {
-    const [noteSummaries, setNotes] = useState<Array<Note> | null>(null);
+import listMedia from './listMedia';
+import MediaTile from './MediaTile';
+
+function MediaList(): h.JSX.Element {
+    const [mediaSummaries, setMediaSummaries] = useState<Array<Note> | null>(null);
     const authContext = useContext(Auth);
 
     useEffect(() => {
-        if (!noteSummaries) {
-            listNotes(authContext, notes => {
+        if (!mediaSummaries) {
+            listMedia(authContext, notes => {
                 if (notes) {
-                    setNotes(notes);
+                    setMediaSummaries(notes);
                 } else {
-                    setNotes([]);
+                    setMediaSummaries([]);
                 }
             });
         }
@@ -29,11 +30,11 @@ function NoteList(): h.JSX.Element {
     return (
         <Container>
             <Header title="notes" fixed={true} />
-            {noteSummaries ? (
+            {mediaSummaries ? (
                 <ListContainer>
-                    {noteSummaries.map((note, key) => (
+                    {mediaSummaries.map((note, key) => (
                         <li className="note-item" key={key}>
-                            <NoteTile note={note} />
+                            <MediaTile note={note} />
                         </li>
                     ))}
                 </ListContainer>
@@ -44,4 +45,4 @@ function NoteList(): h.JSX.Element {
     );
 }
 
-export default NoteList;
+export default MediaList;
