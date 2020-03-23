@@ -36,7 +36,11 @@
 }
 
 .app-container {
+  margin: 0 2.5rem;
+
   nav {
+    display: flex;
+    align-content: space-around;
     // .navbar
     // .navbar-dark
     // .fixed-top
@@ -50,6 +54,12 @@
       // .col-sm-3
       // .col-md-2
       // .mr-0
+      flex: 0 1 auto;
+    }
+
+    & > a,
+    & > ul {
+      display: inline-flex;
     }
   }
 
@@ -63,20 +73,15 @@
   }
 }
 
-//ul {
-//  // .navbar-nav px-3
-//  li {
-//    float: left;
-//    display: inline-block;
-//    // .nav-item text-nowrap
-//    a {
-//      // .nav-link
-//    }
-//  }
-//}
-
 .nav-section-list {
+  flex: 1;
+  margin: 0 5rem;
+
   li {
+    flex: 1;
+    display: flex;
+    justify-content: space-around;
+
     a {
       &.active {
         color: $link-font-color-active;
@@ -86,7 +91,9 @@
 }
 
 .nav-action-list {
-  .li {
+  flex: 0 1 auto;
+
+  li {
     a {
       // TODO: make it smaller
     }
