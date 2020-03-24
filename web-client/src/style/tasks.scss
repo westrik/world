@@ -1,3 +1,5 @@
+@import 'config';
+
 .list-container.tasks {
   max-width: 35em;
   margin: 0 auto;
@@ -8,7 +10,14 @@
  * https://css-tricks.com/the-checkbox-hack/
  */
 .task {
+  margin: 0 0 0.5rem 0;
+  padding: 0.5em;
+  border-radius: $tile-radius;
+  border: 1px solid #dedede;
+  background: #fdfdfd;
+
   label {
+    margin: 0;
     width: 100%;
     font-weight: 300;
 
@@ -55,7 +64,7 @@
     content: '';
     position: absolute;
     left: 0;
-    top: 0;
+    top: 0.3rem;
     width: 1.25em;
     height: 1.25em;
     border: 2px solid #ccc;
@@ -69,7 +78,7 @@
     content: '';
     position: absolute;
     left: 0;
-    top: 0;
+    top: 0.3rem;
     width: 1.25em;
     height: 1.25em;
     background: #aaa;
