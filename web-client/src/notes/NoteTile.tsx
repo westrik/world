@@ -9,7 +9,7 @@ interface Props {
 
 export default function NoteTile(props: Props): h.JSX.Element {
     return (
-        <Tile>
+        <Tile acceptFocus={true}>
             <a href={`/notes/${stripApiId(props.note.apiId)}`}>{stripApiId(props.note.apiId)}</a>
         </Tile>
     );
