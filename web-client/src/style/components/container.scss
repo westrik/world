@@ -1,0 +1,64 @@
+@import 'config';
+
+.header {
+  &.fixed {
+    position: fixed;
+    z-index: 1;
+    background: #fff;
+    box-shadow: 0 20px 20px 0 rgba(255, 255, 255, 1);
+    width: 100%;
+    max-width: 75%;
+  }
+
+  h1 {
+    display: inline-block;
+    font-size: $h2-font-size;
+  }
+}
+
+.app-container {
+  nav {
+    padding: 1rem 2.5rem;
+    background: $nav-header-bg-color;
+    display: flex;
+
+    & > a {
+      flex: 0 1 auto;
+    }
+
+    & > a,
+    & > ul {
+      display: inline-flex;
+      align-items: center;
+    }
+  }
+
+  main {
+    margin: 0 2.5rem;
+  }
+}
+
+.nav-section-list {
+  flex: 1;
+  margin: 0 5rem;
+  justify-content: center;
+
+  li {
+    margin: 0 2rem;
+
+    a {
+      &.active {
+        color: $link-font-color-active;
+      }
+    }
+  }
+}
+
+.nav-action-list {
+  flex: 0 1 auto;
+
+  li {
+    margin: 0 2rem;
+    //a {}
+  }
+}

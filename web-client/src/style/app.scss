@@ -3,9 +3,13 @@
 @import 'layout';
 @import 'utils';
 
+// component lib styles
+@import 'components/container';
+@import 'components/lists';
+@import 'components/tile';
+
 // app styles
 @import 'theme';
-@import 'components';
 @import 'auth';
 @import 'editor';
 @import 'tasks';
