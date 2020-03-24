@@ -27,11 +27,11 @@
 
     & > a {
       flex: 0 1 auto;
+      display: none;
     }
 
     & > a,
-    & > ul {
-      display: inline-flex;
+    ul{
       align-items: center;
     }
   }
@@ -45,8 +45,13 @@
 
 .nav-section-list {
   flex: 1;
-  margin: 0 5rem;
-  justify-content: center;
+
+  ul {
+    flex: 1;
+    margin: 0;
+    display: none;
+    justify-content: center;
+  }
 
   li {
     margin: 0 2rem;
@@ -55,6 +60,30 @@
       &.active {
         color: $link-font-color-active;
       }
+    }
+  }
+
+  select {
+    display: inline-flex;
+    flex: 1;
+    margin: 0 1rem;
+    padding: 0 1rem;
+    height: 2.5rem;
+    justify-items: center;
+  }
+}
+
+@media (min-width: 35rem) {
+  .app-container nav > a {
+    display: inline;
+  }
+
+  .nav-section-list {
+    select {
+      display: none;
+    }
+    ul {
+      display: flex;
     }
   }
 }
