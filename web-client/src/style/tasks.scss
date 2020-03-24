@@ -23,6 +23,10 @@
     }
   }
 
+  &:last-child {
+    padding-bottom: 9rem;
+  }
+
   [type="checkbox"]:not(:checked),
   [type="checkbox"]:checked {
     position: absolute;
