@@ -23,6 +23,7 @@
     padding: 1rem 2.5rem;
     background: $nav-header-bg-color;
     display: flex;
+    z-index: 10000;
 
     & > a {
       flex: 0 1 auto;
