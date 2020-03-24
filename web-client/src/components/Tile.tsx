@@ -5,9 +5,5 @@ interface Props {
 }
 
 export default function Tile(props: Props): h.JSX.Element {
-    return (
-        <div draggable={true} className="tile">
-            {props.children}
-        </div>
-    );
+    return <div className="tile">{props.children}</div>;
 }

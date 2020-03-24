@@ -56,9 +56,40 @@
 
 .note-item {
   display: inline-block;
+  margin: 0;
 
   .tile {
-    margin: 0 1.5em 1.5em 0;
-    width: 15em;
+    margin: 0 1.75rem 1.75rem 0;
+    position: relative;
+
+    a {
+      display: block;
+      width: 8em;
+      height: 5em;
+      padding: 2rem;
+      margin: -1.2rem;
+    }
+
+    &:active,
+    &:hover {
+      box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+    }
+
+    &::before {
+      content: '';
+      cursor: grab;
+      display: inline-block;
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 100;
+      width: 1rem;
+      height: 1rem;
+      background: #ddd;
+    }
+
+    &:active::before {
+      cursor: grabbing;
+    }
   }
 }
