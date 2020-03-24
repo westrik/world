@@ -18,6 +18,8 @@
 
 .app-container {
   nav {
+    position: fixed;
+    width: 100%;
     padding: 1rem 2.5rem;
     background: $nav-header-bg-color;
     display: flex;
@@ -34,6 +36,7 @@
   }
 
   main {
+    padding-top: 6rem;
     margin: 0 2.5rem;
   }
 }

@@ -60,7 +60,7 @@
     height: 1.25em;
     background: #aaa;
     border: 2px solid #aaa;
-    transition: all 0.2s;
+    transition: 0.2s ease transform, 0.2s ease opacity;
     border-radius: 4px;
   }
 
