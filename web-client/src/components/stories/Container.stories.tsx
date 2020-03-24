@@ -1,17 +1,16 @@
 import { h } from 'preact';
+import Container from '~components/Container';
+import ListContainer from '~components/ListContainer';
 
-export default { title: 'Button' };
+export default { title: 'Container' };
 
-export function withText(): h.JSX.Element {
-    return <div>Hello Button</div>;
-}
-
-export function withEmoji(): h.JSX.Element {
+export function normal(): h.JSX.Element {
     return (
-        <div>
-            <span role="img" aria-label="so cool">
-                😀 😎 👍 💯
-            </span>
-        </div>
+        <Container>
+            <ListContainer>
+                <li>Hello</li>
+                <li>World</li>
+            </ListContainer>
+        </Container>
     );
 }

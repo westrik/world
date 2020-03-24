@@ -1,0 +1,18 @@
+// TODO: update padding
+.btn {
+  &.xs {
+    font-size: 1rem;
+    text-transform: capitalize;
+    padding: 0 1rem;
+    line-height: 0.5;
+  }
+  &.sm {
+    font-size: 1.0rem;
+  }
+  &.md {
+    font-size: 1.2rem;
+  }
+  &.lg {
+    font-size: 1.6rem;
+  }
+}
