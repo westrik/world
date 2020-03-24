@@ -9,6 +9,7 @@ export interface Props extends Task {
     handleDragOver: (e: Event) => void;
     handleDragEnd: (e: Event) => void;
     handleDragStart: (e: Event) => void;
+    onCreateTask: (newTask: Task) => void;
 }
 
 export default function TaskRow(props: Props): h.JSX.Element | null {
@@ -107,6 +108,7 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
                             handleDragOver={props.handleDragOver}
                             handleDragEnd={props.handleDragEnd}
                             handleDragStart={props.handleDragStart}
+                            onCreateTask={props.onCreateTask}
                             {...childTask}
                         />
                     ))}

@@ -17,14 +17,17 @@
       }
     }
 
-    input {
-      font-size: 0.85em;
+    [type="text"] {
+      font-size: 1em;
       width: 100%;
+      height: 2.7rem;
+      padding: 0.5rem 0.5rem;
+      margin: -0.6rem 0 0 -0.6rem;
     }
   }
 
   &:last-child {
-    padding-bottom: 9rem;
+    padding-bottom: 1rem;
   }
 
   [type="checkbox"]:not(:checked),

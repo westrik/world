@@ -20,6 +20,9 @@ describe('TaskRow', () => {
                     console.log('drag start');
                 }}
                 childTasks={[]}
+                onCreateTask={(task): void => {
+                    console.log(`create task: ${task}`);
+                }}
                 {...API_TASKS[0]}
             />,
         );
