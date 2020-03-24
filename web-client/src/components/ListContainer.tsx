@@ -1,5 +1,10 @@
 import { h } from 'preact';
 
-export default function ListContainer({ children }: { children: Array<h.JSX.Element> }): h.JSX.Element {
-    return <ul className="list-container">{children}</ul>;
+interface Props {
+    className?: string;
+    children: h.JSX.Element | Array<h.JSX.Element>;
+}
+
+export default function ListContainer(props: Props): h.JSX.Element {
+    return <ul className={`list-container ${props.className}`}>{props.children}</ul>;
 }

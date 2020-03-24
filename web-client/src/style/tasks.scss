@@ -1,5 +1,12 @@
-/* Derived from: https://css-tricks.com/the-checkbox-hack/ */
+.list-container.tasks {
+  max-width: 35em;
+  margin: 0 auto;
+}
 
+/*
+ * checkbox styling derived from:
+ * https://css-tricks.com/the-checkbox-hack/
+ */
 .task {
   label {
     width: 100%;

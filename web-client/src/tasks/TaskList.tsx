@@ -64,7 +64,7 @@ function TaskList(): h.JSX.Element {
             </Header>
 
             {tasks ? (
-                <ListContainer>
+                <ListContainer className="tasks">
                     {tasks.map((task: Task, key: number) => (
                         <TaskRow
                             key={key}
