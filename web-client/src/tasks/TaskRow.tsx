@@ -34,10 +34,8 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
     }
 
     function handleSetContent(e: Event): void {
-        e.preventDefault();
-        e.stopPropagation();
         toggleEditing();
-        const newDescription = (e.target as HTMLInputElement).value;
+        const newDescription = (e.target as HTMLSpanElement).innerText;
         if (newDescription && newDescription !== description) {
             setDescription(newDescription);
             updateTask(authContext, props.apiId, { description: newDescription });
@@ -73,30 +71,26 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
                 onDragStart={props.handleDragStart}
                 onDragOver={props.handleDragOver}
                 onDragEnd={props.handleDragEnd}
+            />
+            <span
+                tabIndex={0}
+                contentEditable={true}
+                onClick={handleToggle}
+                onFocus={handleToggle}
+                onKeyDown={(e): void => {
+                    if (e.keyCode === 13 && !e.shiftKey) {
+                        e.preventDefault();
+                        (e.target as HTMLSpanElement).blur();
+                        // TODO: focus the next task
+                    }
+                }}
+                onBlur={(e): void => {
+                    handleSetContent(e);
+                }}
+                className={completed ? 'completed' : ''}
             >
-                {!editing ? (
-                    <span
-                        tabIndex={0}
-                        onClick={handleToggle}
-                        onFocus={handleToggle}
-                        className={completed ? 'completed' : ''}
-                    >
-                        {description}
-                    </span>
-                ) : (
-                    <input
-                        ref={(ref): void | null => ref && ref.focus()}
-                        type="text"
-                        value={description}
-                        onKeyDown={(e): void => {
-                            if (e.key === 'Enter' && !e.shiftKey) {
-                                handleSetContent(e);
-                            }
-                        }}
-                        onBlur={handleSetContent}
-                    />
-                )}
-            </label>
+                {description}
+            </span>
 
             {props.childTasks.length > 0 ? (
                 <ul className="child_task_list">

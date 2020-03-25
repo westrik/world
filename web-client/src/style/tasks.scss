@@ -16,30 +16,25 @@
   border: 1px solid #dedede;
   background: #fdfdfd;
 
+  span {
+    display: inline-block;
+    width: 100%;
+    transition: 0.5s ease opacity;
+    outline: 0;
+    padding-left: 2.5rem;
+
+    &.completed {
+      opacity: 0.5;
+      text-decoration: line-through;
+      animation: strike 0.5s ease;
+    }
+  }
+
   label {
     margin: 0;
     width: 100%;
     font-weight: 300;
-
-    span {
-      display: inline-block;
-      width: 100%;
-      transition: 0.5s ease opacity;
-
-      &.completed {
-        opacity: 0.5;
-        text-decoration: line-through;
-        animation: strike 0.5s ease;
-      }
-    }
-
-    [type="text"] {
-      font-size: 1em;
-      width: 100%;
-      height: 2.7rem;
-      padding: 0.5rem 0.5rem;
-      margin: -0.6rem 0 0 -0.6rem;
-    }
+    z-index: 10;
   }
 
   &:last-child {

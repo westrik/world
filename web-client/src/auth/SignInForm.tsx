@@ -53,7 +53,7 @@ export function UnconnectedSignInForm({
                     type="email"
                     id="inputEmail"
                     className="form-control"
-                    placeholder="email address"
+                    placeholder="Email address"
                     required
                     autoFocus
                     onChange={(e): void => setEmail((e.target as HTMLInputElement).value)}
@@ -65,7 +65,7 @@ export function UnconnectedSignInForm({
                     type="password"
                     id="inputPassword"
                     className="form-control"
-                    placeholder="password"
+                    placeholder="Password"
                     required
                     onChange={(e): void => setPassword((e.target as HTMLInputElement).value)}
                 />
@@ -76,7 +76,7 @@ export function UnconnectedSignInForm({
                             value="remember-me"
                             onClick={(e): void => setRemember((e.target as HTMLInputElement).checked)}
                         />{' '}
-                        remember me
+                        Remember me
                     </label>
                 </div>
                 <button
@@ -93,7 +93,7 @@ export function UnconnectedSignInForm({
                     type="submit"
                     disabled={isLoading}
                 >
-                    sign in
+                    Sign in
                 </button>
             </form>
         </div>
