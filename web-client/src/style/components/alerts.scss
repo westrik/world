@@ -1,0 +1,14 @@
+@import 'config';
+
+.alert {
+  padding: 0.3rem 1rem;
+  margin: 0.5rem 0;
+  border: 1px solid transparent;
+  border-radius: $tile-radius;
+
+  &.danger {
+    color: #fff;
+    background-color: $alert-color-main;
+    border-color: $alert-color-accent;
+  }
+}

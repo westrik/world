@@ -10,6 +10,27 @@ import logo from '../static/img/logo.png';
 
 function SignInForm(): h.JSX.Element {
     const authContext = useContext(Auth);
+    return (
+        <UnconnectedSignInForm
+            handleSignIn={async (email, password, remember): Promise<boolean> => {
+                let res: SignInResponse | null = null;
+                try {
+                    res = await authenticate(email, password);
+                    authContext.handleSignIn(res.session, remember);
+                    return true;
+                } catch {
+                    return false;
+                }
+            }}
+        />
+    );
+}
+
+export function UnconnectedSignInForm({
+    handleSignIn,
+}: {
+    handleSignIn: (email: string, password: string, remember: boolean) => Promise<boolean>;
+}): h.JSX.Element {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [remember, setRemember] = useState(false);
@@ -17,13 +38,11 @@ function SignInForm(): h.JSX.Element {
     const [errorMessage, setErrorMessage] = useState('');
 
     return (
-        <div className="form-container text-center">
-            <form className="form-signin">
-                <h1 className={`h3 font-weight-normal ${!errorMessage ? 'mb-3' : null}`}>
-                    {<img src={logo} className="mb-3 img-fluid" alt={SITE_NAME} />}
-                </h1>
+        <div className="sign-in-form">
+            <form className="tile">
+                <h1>{<img src={logo} alt={SITE_NAME} />}</h1>
                 {errorMessage ? (
-                    <div className="alert alert-danger" role="alert">
+                    <div className="alert danger" role="alert">
                         {errorMessage}
                     </div>
                 ) : null}
@@ -34,7 +53,7 @@ function SignInForm(): h.JSX.Element {
                     type="email"
                     id="inputEmail"
                     className="form-control"
-                    placeholder="Email address"
+                    placeholder="email address"
                     required
                     autoFocus
                     onChange={(e): void => setEmail((e.target as HTMLInputElement).value)}
@@ -46,29 +65,26 @@ function SignInForm(): h.JSX.Element {
                     type="password"
                     id="inputPassword"
                     className="form-control"
-                    placeholder="Password"
+                    placeholder="password"
                     required
                     onChange={(e): void => setPassword((e.target as HTMLInputElement).value)}
                 />
-                <div className="checkbox mb-3">
+                <div className="checkbox">
                     <label>
                         <input
                             type="checkbox"
                             value="remember-me"
                             onClick={(e): void => setRemember((e.target as HTMLInputElement).checked)}
                         />{' '}
-                        Remember me
+                        remember me
                     </label>
                 </div>
                 <button
                     onClick={async (event): Promise<void> => {
                         event.preventDefault();
                         setLoading(true);
-                        let res: SignInResponse | null = null;
-                        try {
-                            res = await authenticate(email, password);
-                            authContext.handleSignIn(res.session, remember);
-                        } catch {
+                        const res = await handleSignIn(email, password, remember);
+                        if (!res) {
                             setErrorMessage('Invalid username or password');
                             setLoading(false);
                         }
@@ -77,7 +93,7 @@ function SignInForm(): h.JSX.Element {
                     type="submit"
                     disabled={isLoading}
                 >
-                    Sign in
+                    sign in
                 </button>
             </form>
         </div>
