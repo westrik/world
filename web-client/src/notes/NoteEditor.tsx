@@ -54,11 +54,13 @@ export default function NoteEditor(props: Props): h.JSX.Element {
             https://codepen.io/webgeeker/details/YjrZgg
             */}
             <div className="textEditor" contentEditable={editingContext.isEditing}>
-                {content ? (
-                    content.elements.map((el: Element, key: number) => <ContentElement key={key} element={el} />)
-                ) : (
-                    <LoadingSpinner />
-                )}
+                <div className="elements">
+                    {content ? (
+                        content.elements.map((el: Element, key: number) => <ContentElement key={key} element={el} />)
+                    ) : (
+                        <LoadingSpinner />
+                    )}
+                </div>
             </div>
         </Container>
     );

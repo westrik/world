@@ -1,11 +1,19 @@
+@import 'config';
+
 .textEditor {
-  padding-top: 6em;
-  max-width: 40em;
-  margin: 0 auto;
-  outline: none;
-  border: 0;
   font-family: 'Concourse T4', -apple-system, sans-serif;
   font-family: -apple-system, sans-serif;
+  padding: 5rem 0;
+  outline: none;
+  border: 0;
+
+  .elements {
+    margin: 0 auto;
+    padding: 1px 4rem 4rem;
+    max-width: 42em;
+    background: hsl(0, 100%, 100%);
+    border-radius: $tile-radius;
+  }
 
   code,
   pre {
@@ -19,6 +27,7 @@
 
   img {
     max-width: 100%;
+    border-radius: $tile-radius;
   }
 
   a {

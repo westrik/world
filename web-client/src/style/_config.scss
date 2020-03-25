@@ -41,6 +41,16 @@ $hr-border-color: #f4f5f6;
 $blockquote-border-color: #d1d1d1;
 $table-cell-border-color: #e1e1e1;
 
+// App-specific styling
+$nav-header-bg-color: rgba(240, 240, 240, 0.75);
+
+// Components
+$tile-radius: 0.5rem;
+$spinner-color-default: #ccc;
+$spinner-color-active: #5680cc;
+$alert-color-main: hsl(352, 100%, 50%);
+$alert-color-accent: hsl(352, 100%, 65%);
+
 // dark mode color scheme
 // TODO:
 //  $base-font-color: #595959;
