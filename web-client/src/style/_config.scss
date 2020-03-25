@@ -1,5 +1,9 @@
+/* stylelint-disable at-rule-no-unknown */
+@use "sass:color";
+
 $base-font-size: 1.4rem;
 $base-font-color: #595959;
+$base-font-weight: 300;
 $base-line-height: 1.6;
 
 $header-font-weight: 500;
@@ -22,12 +26,12 @@ $code-border-color: #5680cc;
 
 $link-font-color-default: #5680cc;
 $link-font-color-active: #595959;
-$button-color-default: #5680cc;
-$button-color-active: #595959;
+$button-color-default: hsl(219, 54%, 57%);
+$button-color-active: color.adjust($button-color-default, $lightness: -15%);
 $button-font-size: 1.1rem;
 $button-font-weight: 700;
-$button-letter-spacing: 0.1rem;
-$button-line-height: 3.8rem;
+$button-letter-spacing: 0;
+$button-line-height: 1.5rem;
 $label-font-size: 1.6rem;
 $label-font-weight: 700;
 $input-border-color-default: #d1d1d1;

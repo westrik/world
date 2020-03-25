@@ -73,7 +73,7 @@ function SignInForm(): h.JSX.Element {
                             setLoading(false);
                         }
                     }}
-                    className="btn btn-lg btn-primary btn-block"
+                    className="button lg"
                     type="submit"
                     disabled={isLoading}
                 >

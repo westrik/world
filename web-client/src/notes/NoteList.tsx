@@ -30,7 +30,7 @@ function NoteList(): h.JSX.Element {
         <Container>
             <Header title="notes" fixed={true} />
             {noteSummaries ? (
-                <ListContainer>
+                <ListContainer className="notes">
                     {noteSummaries.map((note, key) => (
                         <li draggable={true} className="note-item" key={key}>
                             <NoteTile note={note} />

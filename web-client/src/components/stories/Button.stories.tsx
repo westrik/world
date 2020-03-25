@@ -11,13 +11,30 @@ export function normal(): h.JSX.Element {
                 <Button size={ButtonSize.LARGE} title="Test Button (Large)" />
             </li>
             <li>
-                <Button title="Test Button (Default)" />
+                <Button title="Test Button (Medium)" />
             </li>
             <li>
                 <Button size={ButtonSize.SMALL} title="Test Button (Small)" />
             </li>
             <li>
                 <Button size={ButtonSize.XSMALL} title="Test Button (X-Small)" />
+            </li>
+            <li>
+                <Button
+                    default={true}
+                    disabled={true}
+                    size={ButtonSize.LARGE}
+                    title="Test Button (Large, Default, Disabled)"
+                />
+            </li>
+            <li>
+                <Button default={true} title="Test Button (Medium, Default)" />
+            </li>
+            <li>
+                <Button disabled={true} size={ButtonSize.SMALL} title="Test Button (Small, Disabled)" />
+            </li>
+            <li>
+                <Button disabled={true} size={ButtonSize.XSMALL} title="Test Button (X-Small, Disabled)" />
             </li>
         </ul>
     );

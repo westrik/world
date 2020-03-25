@@ -11,12 +11,18 @@ export enum ButtonSize {
 interface Props {
     title: string;
     size?: ButtonSize;
+    disabled?: boolean;
+    default?: boolean;
     onClick?: (ev: Event) => void;
 }
 
 export default function Button(props: Props): h.JSX.Element {
     return (
-        <button className={`btn ${props.size || 'md'}`} onClick={props.onClick ? props.onClick : noop}>
+        <button
+            disabled={props.disabled}
+            className={`button ${props.size || 'md'} ${props.default ? 'default' : ''}`}
+            onClick={props.onClick ? props.onClick : noop}
+        >
             {props.title}
         </button>
     );

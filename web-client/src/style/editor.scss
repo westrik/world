@@ -54,6 +54,32 @@
   padding-right: 1em;
 }
 
+// TODO: use flex?
+.list-container.notes {
+  max-width: 13.55rem;
+  margin: 0 auto;
+}
+
+@media (min-width: 21rem) {
+  .list-container.notes { max-width: 27.1rem; }
+}
+
+@media (min-width: 29rem) {
+  .list-container.notes { max-width: 40.65rem; }
+}
+
+@media (min-width: 37rem) {
+  .list-container.notes { max-width: 54.2rem; }
+}
+
+@media (min-width: 46rem) {
+  .list-container.notes { max-width: 67.75rem; }
+}
+
+@media (min-width: 55rem) {
+  .list-container.notes { max-width: 81.3rem; }
+}
+
 .note-item {
   display: inline-block;
   margin: 0;
