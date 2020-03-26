@@ -1,37 +1,72 @@
+@import 'config';
+
 .sign-in-form {
-  height: 100vh;
-  min-height: 100vh;
   display: flex;
   align-items: center;
-  padding-top: 40px;
-  padding-bottom: 40px;
-  background-color: #f5f5f5;
+  min-height: 100vh;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  background-color: $base-background-color;
   text-align: center;
 
-  form {
+  .tile {
     width: 100%;
     max-width: 35rem;
-    padding: 2rem 3rem;
+    height: 27rem;
+    padding: 2rem 3rem 1rem;
+    box-shadow: 0.5rem 0.5rem 2.5rem hsla(0, 0%, 0%, 7%);
     margin: auto;
+    position: relative;
+  }
 
+  .alert {
+    position: absolute;
+    top: -4rem;
+    left: 0;
+    width: 100%;
+  }
+
+  img {
+    min-height: 2rem;
+  }
+
+  .loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 3rem;
+    height: 3rem;
+    margin-top: -1.5rem;
+    margin-left: -1.5rem;
+  }
+
+  form {
     h1 {
-      margin-top: 2rem;
-    }
-
-    .checkbox {
-      font-weight: 400;
+      margin: 2.2rem 0;
     }
 
     .form-control {
       position: relative;
       box-sizing: border-box;
       height: auto;
-      padding: 10px;
-      font-size: 16px;
+      padding: 1rem;
+      font-size: 1.6rem;
     }
 
     .form-control:focus {
       z-index: 2;
+    }
+
+    input {
+      box-shadow: inset 0 0 0.5rem hsla(0, 0%, 0%, 7%);
+    }
+
+    .checkbox {
+      font-weight: 400;
+
+      input {
+        margin-bottom: 1rem;
+      }
     }
 
     input[type='email'] {

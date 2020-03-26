@@ -7,6 +7,7 @@ import { SITE_NAME } from '~config';
 
 // @ts-ignore
 import logo from '../static/img/logo.png';
+import LoadingSpinner from '~components/LoadingSpinner';
 
 function SignInForm(): h.JSX.Element {
     const authContext = useContext(Auth);
@@ -35,67 +36,70 @@ export function UnconnectedSignInForm({
     const [password, setPassword] = useState('');
     const [remember, setRemember] = useState(false);
     const [isLoading, setLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     return (
         <div className="sign-in-form">
-            <form className="tile">
-                <h1>{<img src={logo} alt={SITE_NAME} />}</h1>
+            <div className="tile">
                 {errorMessage ? (
-                    <div className="alert danger" role="alert">
+                    <div className={`alert danger ${isLoading ? 'fade-out' : 'fade-in'}`} role="alert">
                         {errorMessage}
                     </div>
                 ) : null}
-                <label htmlFor="inputEmail" className="sr-only">
-                    Email address
-                </label>
-                <input
-                    type="email"
-                    id="inputEmail"
-                    className="form-control"
-                    placeholder="Email address"
-                    required
-                    autoFocus
-                    onChange={(e): void => setEmail((e.target as HTMLInputElement).value)}
-                />
-                <label htmlFor="inputPassword" className="sr-only">
-                    Password
-                </label>
-                <input
-                    type="password"
-                    id="inputPassword"
-                    className="form-control"
-                    placeholder="Password"
-                    required
-                    onChange={(e): void => setPassword((e.target as HTMLInputElement).value)}
-                />
-                <div className="checkbox">
-                    <label>
-                        <input
-                            type="checkbox"
-                            value="remember-me"
-                            onClick={(e): void => setRemember((e.target as HTMLInputElement).checked)}
-                        />{' '}
-                        Remember me
+                {isLoading ? <LoadingSpinner className="fade-in" /> : null}
+                <form className={isLoading ? 'fade-out' : 'fade-in'}>
+                    <h1>{<img src={logo} alt={SITE_NAME} />}</h1>
+                    <label htmlFor="inputEmail" className="sr-only">
+                        Email address
                     </label>
-                </div>
-                <button
-                    onClick={async (event): Promise<void> => {
-                        event.preventDefault();
-                        setLoading(true);
-                        const res = await handleSignIn(email, password, remember);
-                        if (!res) {
-                            setErrorMessage('Invalid username or password');
-                            setLoading(false);
-                        }
-                    }}
-                    className="button lg"
-                    type="submit"
-                    disabled={isLoading}
-                >
-                    Sign in
-                </button>
-            </form>
+                    <input
+                        type="email"
+                        id="inputEmail"
+                        className="form-control"
+                        placeholder="Email address"
+                        required
+                        autoFocus
+                        onChange={(e): void => setEmail((e.target as HTMLInputElement).value)}
+                    />
+                    <label htmlFor="inputPassword" className="sr-only">
+                        Password
+                    </label>
+                    <input
+                        type="password"
+                        id="inputPassword"
+                        className="form-control"
+                        placeholder="Password"
+                        required
+                        onChange={(e): void => setPassword((e.target as HTMLInputElement).value)}
+                    />
+                    <div className="checkbox">
+                        <label>
+                            <input
+                                type="checkbox"
+                                value="remember-me"
+                                onClick={(e): void => setRemember((e.target as HTMLInputElement).checked)}
+                            />{' '}
+                            Remember me
+                        </label>
+                    </div>
+                    <button
+                        onClick={async (event): Promise<void> => {
+                            event.preventDefault();
+                            setLoading(true);
+                            const res = await handleSignIn(email, password, remember);
+                            if (!res) {
+                                setErrorMessage('Invalid username or password');
+                                setLoading(false);
+                            }
+                        }}
+                        className="button lg"
+                        type="submit"
+                        disabled={isLoading}
+                    >
+                        Sign in
+                    </button>
+                </form>
+            </div>
         </div>
     );
 }

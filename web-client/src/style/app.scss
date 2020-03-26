@@ -1,18 +1,13 @@
-// base
 @import 'reset';
 @import 'layout';
 @import 'utils';
-
-// component lib styles
 @import 'components/alerts';
 @import 'components/buttons';
 @import 'components/container';
 @import 'components/lists';
 @import 'components/loading-spinner';
 @import 'components/tile';
-
-// app styles
-@import 'theme';
 @import 'auth';
-@import 'editor';
+@import 'notes';
 @import 'tasks';
+@import 'theme';

@@ -99,9 +99,11 @@ function Link(props: LinkProps): h.JSX.Element {
 function Image(props: LinkProps): h.JSX.Element {
     const { destinationUrl, title } = props.link;
     return (
-        <img src={destinationUrl} title={title} alt={title}>
-            {renderElements(props.cxn)}
-        </img>
+        <div className="image-container">
+            <img src={destinationUrl} title={title} alt={title}>
+                {renderElements(props.cxn)}
+            </img>
+        </div>
     );
 }
 

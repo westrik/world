@@ -1,18 +1,28 @@
 @import 'config';
 
 .textEditor {
-  font-family: 'Concourse T4', -apple-system, sans-serif;
-  font-family: -apple-system, sans-serif;
   padding: 5rem 0;
-  outline: none;
-  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
 
   .elements {
+    position: relative;
+    top: 1rem;
     margin: 0 auto;
-    padding: 1px 4rem 4rem;
-    max-width: 42em;
+    padding: 4rem;
+    min-width: 100%;
+    min-height: 70vh;
     background: hsl(0, 100%, 100%);
+    box-shadow: 0.5rem 0.5rem 2.5rem hsla(0, 0%, 0%, 7%);
     border-radius: $tile-radius;
+    border: 0;
+    outline: none;
+    font-family: 'Concourse T4', -apple-system, sans-serif;
+    font-family: -apple-system, sans-serif;
+    word-wrap: break-word;
+    z-index: 0;
   }
 
   code,
@@ -25,9 +35,18 @@
     display: inline;
   }
 
-  img {
-    max-width: 100%;
+  .image-container {
+    position: relative;
     border-radius: $tile-radius;
+    box-shadow: 0.5em 0.5em 0.5em hsla(0, 0%, 0%, 20%) inset;
+
+    img {
+      border-radius: $tile-radius;
+      border: 1px solid hsl(0, 0%, 50%);
+      display: block;
+      position: relative;
+      z-index: -1;
+    }
   }
 
   a {
@@ -55,6 +74,13 @@
         opacity: 1;
       }
     }
+  }
+}
+
+@media (min-width: 40em) {
+  .textEditor .elements {
+    min-width: 0;
+    width: 42em;
   }
 }
 
@@ -94,6 +120,7 @@
   margin: 0;
 
   .tile {
+    // TODO: no rems
     margin: 0 1.75rem 1.75rem 0;
     position: relative;
 

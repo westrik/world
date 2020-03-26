@@ -2,9 +2,10 @@
 @use "sass:color";
 
 $base-font-size: 1.4rem;
-$base-font-color: #595959;
+$base-font-color: hsl(0, 0%, 20%);
 $base-font-weight: 300;
 $base-line-height: 1.6;
+$base-background-color: hsl(0, 0%, 93%);
 
 $header-font-weight: 500;
 $h1-font-size: 3.9rem;

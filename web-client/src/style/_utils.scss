@@ -41,3 +41,28 @@
 wbr {
   display: block;
 }
+
+.story-container {
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  > li,
+  > div,
+  > ul {
+    flex: 0 1 auto;
+    align-self: center;
+  }
+}
+
+.fade-in {
+  transition: 0.05s linear opacity;
+  opacity: 1;
+  z-index: 100;
+}
+
+.fade-out {
+  transition: 0.05s linear opacity;
+  opacity: 0;
+}

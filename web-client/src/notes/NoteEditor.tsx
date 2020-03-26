@@ -53,14 +53,16 @@ export default function NoteEditor(props: Props): h.JSX.Element {
             https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
             https://codepen.io/webgeeker/details/YjrZgg
             */}
-            <div className="textEditor" contentEditable={editingContext.isEditing}>
-                <div className="elements">
-                    {content ? (
-                        content.elements.map((el: Element, key: number) => <ContentElement key={key} element={el} />)
-                    ) : (
-                        <LoadingSpinner />
-                    )}
-                </div>
+            <div className="textEditor">
+                {content ? (
+                    <div className="elements" contentEditable={editingContext.isEditing}>
+                        {content.elements.map((el: Element, key: number) => (
+                            <ContentElement key={key} element={el} />
+                        ))}
+                    </div>
+                ) : (
+                    <LoadingSpinner />
+                )}
             </div>
         </Container>
     );

@@ -1,8 +1,12 @@
 import { h } from 'preact';
 
-export default function LoadingSpinner(): h.JSX.Element {
+interface Props {
+    className?: string;
+}
+
+export default function LoadingSpinner(props: Props): h.JSX.Element {
     return (
-        <div className="loading-spinner" role="status">
+        <div className={`loading-spinner ${props.className}`} role="status">
             <span className="sr-only">Loading...</span>
         </div>
     );

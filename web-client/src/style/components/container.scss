@@ -1,5 +1,9 @@
 @import '../config';
 
+html {
+  background: $base-background-color;
+}
+
 .header {
   &.fixed {
     position: fixed;
@@ -39,7 +43,7 @@
   main {
     padding: 0 2.5rem;
     min-height: 100vh;
-    background: #eeeeee;
+    background: $base-background-color;
   }
 }
 

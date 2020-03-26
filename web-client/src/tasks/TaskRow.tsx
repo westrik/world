@@ -84,9 +84,9 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
                         // TODO: focus the next task
                     }
                 }}
-                onBlur={(e): void => {
-                    handleSetContent(e);
-                }}
+                onBlur={handleSetContent}
+                /* TODO: handle contenteditable redo/undo?
+                     or: implement custom undo/redo */
                 className={completed ? 'completed' : ''}
             >
                 {description}

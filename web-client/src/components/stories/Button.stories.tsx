@@ -1,12 +1,13 @@
 import { h } from 'preact';
 import Button, { ButtonSize } from '~components/Button';
 import { createPopper } from '@popperjs/core';
+import Popover from '~components/Popover';
 
 export default { title: 'Button' };
 
 export function normal(): h.JSX.Element {
     return (
-        <ul>
+        <ul className="story-container">
             <li>
                 <Button size={ButtonSize.LARGE} title="Test Button (Large)" />
             </li>
@@ -41,30 +42,26 @@ export function normal(): h.JSX.Element {
 }
 
 export function withPopover(): h.JSX.Element {
-    const newPopper = (ev: Event): void => {
-        const target = ev.target as HTMLButtonElement;
-        const popper = document.querySelector('#popper');
-        createPopper(target, popper as HTMLElement);
+    const showPopper = () => {
+        console.log('TODO: show popper');
     };
     return (
-        <div>
-            <div style="position:absolute;top:-9999rem;left:-9999rem;" id="popper">
-                this is a popover
+        <div className="story-container">
+            <div>
+                <Popover key="popover" />
             </div>
-            <ul>
-                <li>
-                    <Button onClick={newPopper} size={ButtonSize.LARGE} title="large" />
-                </li>
-                <li>
-                    <Button onClick={newPopper} title="default" />
-                </li>
-                <li>
-                    <Button onClick={newPopper} size={ButtonSize.SMALL} title="small" />
-                </li>
-                <li>
-                    <Button onClick={newPopper} size={ButtonSize.XSMALL} title="x-small" />
-                </li>
-            </ul>
+            <div>
+                <Button onClick={showPopper} size={ButtonSize.LARGE} title="large" />
+            </div>
+            <div>
+                <Button onClick={showPopper} title="default" />
+            </div>
+            <div>
+                <Button onClick={showPopper} size={ButtonSize.SMALL} title="small" />
+            </div>
+            <div>
+                <Button onClick={showPopper} size={ButtonSize.XSMALL} title="x-small" />
+            </div>
         </div>
     );
 }
