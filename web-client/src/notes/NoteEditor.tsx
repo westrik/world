@@ -8,6 +8,8 @@ import Auth from '~auth/AuthContext';
 import LoadingSpinner from '~components/LoadingSpinner';
 import fetchNote from '~notes/fetchNote';
 import Editing from '~notes/EditingContext';
+import useMutationObserver from '~hooks/useMutationObserver';
+import { randomIdentifier } from '~utils/identifier';
 
 interface Props {
     strippedApiId?: string;
@@ -17,6 +19,27 @@ export default function NoteEditor(props: Props): h.JSX.Element {
     const [content, setContent] = useState<Content | null>(null);
     const authContext = useContext(Auth);
     const editingContext = useContext(Editing);
+    const [isMutationObserverActive, setIsMutationObserverActive] = useState(true);
+    const editorId = `editor-${randomIdentifier()}`;
+
+    useMutationObserver(isMutationObserverActive, editorId, (mutations: Array<MutationRecord>) => {
+        console.log(`got ${mutations.length} mutations`);
+        for (const mutation of mutations) {
+            const mutationData: any = {
+                type: mutation.type,
+                oldValue: mutation.oldValue,
+            };
+            if (mutation.addedNodes) {
+                mutationData['num_added'] = mutation.addedNodes.length;
+                mutationData['added'] = mutation.addedNodes;
+            }
+            if (mutation.removedNodes) {
+                mutationData['num_removed'] = mutation.removedNodes.length;
+                mutationData['removed'] = mutation.removedNodes;
+            }
+            console.table(mutationData);
+        }
+    });
 
     useEffect(() => {
         if (!content && props.strippedApiId) {
@@ -47,15 +70,9 @@ export default function NoteEditor(props: Props): h.JSX.Element {
                 backLink="/notes"
                 backLinkTitle="notes"
             />
-            {/*
-
-            TODO: add change listeners to .textEditor
-            https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
-            https://codepen.io/webgeeker/details/YjrZgg
-            */}
             <div className="textEditor">
                 {content ? (
-                    <div className="elements" contentEditable={editingContext.isEditing}>
+                    <div id={editorId} className="elements" contentEditable={editingContext.isEditing} tabIndex={0}>
                         {content.elements.map((el: Element, key: number) => (
                             <ContentElement key={key} element={el} />
                         ))}

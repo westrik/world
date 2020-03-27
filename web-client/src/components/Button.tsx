@@ -8,7 +8,7 @@ export enum ButtonSize {
     LARGE = 'lg',
 }
 
-interface Props {
+export interface ButtonProps {
     title: string;
     size?: ButtonSize;
     disabled?: boolean;
@@ -16,7 +16,7 @@ interface Props {
     onClick?: (ev: Event) => void;
 }
 
-export default function Button(props: Props): h.JSX.Element {
+export default function Button(props: ButtonProps): h.JSX.Element {
     return (
         <button
             disabled={props.disabled}

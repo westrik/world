@@ -48,7 +48,10 @@ export function UnconnectedSignInForm({
                 ) : null}
                 {isLoading ? <LoadingSpinner className="fade-in" /> : null}
                 <form className={isLoading ? 'fade-out' : 'fade-in'}>
-                    <h1>{<img src={logo} alt={SITE_NAME} />}</h1>
+                    <h1 className="h3">
+                        <span className="sr-only">Sign-in for</span>
+                        <img src={logo} alt={SITE_NAME} />
+                    </h1>
                     <label htmlFor="inputEmail" className="sr-only">
                         Email address
                     </label>

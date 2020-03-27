@@ -4,6 +4,7 @@ import { useContext, useState } from 'preact/hooks';
 import { Task } from '~models/Task';
 import Auth from '~auth/AuthContext';
 import updateTask from '~tasks/updateTask';
+import { randomIdentifier } from '~utils/identifier';
 
 export interface Props extends Task {
     handleDragOver: (e: Event) => void;
@@ -19,9 +20,7 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
     const [completed, setCompleted] = useState(Boolean(props.completedAt));
     const authContext = useContext(Auth);
 
-    const checkboxId = Math.random()
-        .toString(36)
-        .substring(2, 15);
+    const checkboxId = randomIdentifier();
 
     function toggleEditing(): void {
         setEditing(!editing);
