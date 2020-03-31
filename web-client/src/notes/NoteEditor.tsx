@@ -23,6 +23,10 @@ export default function NoteEditor(props: Props): h.JSX.Element {
     const editorId = `editor-${randomIdentifier()}`;
 
     useMutationObserver(isMutationObserverActive, editorId, (mutations: Array<MutationRecord>) => {
+        // TODO: apply mutations to `content`
+        // TODO: then call `setContent`
+        // TODO: then call debounced DAO helper to sync w/ server
+
         console.log(`got ${mutations.length} mutations`);
         for (const mutation of mutations) {
             const mutationData: any = {

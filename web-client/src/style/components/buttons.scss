@@ -9,8 +9,9 @@
  */
 
 
-$button-border-color-default: color.adjust($button-color-default, $lightness: +10%);
-$button-border-color-active: color.adjust($button-color-active, $lightness: +10%);
+$button-border-color-default: color.adjust($button-color-default, $lightness: -10%);
+$button-border-color-active: color.adjust($button-color-active, $lightness: -10%);
+$button-border-color-default-inverted: color.adjust($button-color-default-inverted, $lightness: -10%);
 
 
 .button, button, [type="button"], [type="reset"], [type="submit"] {
@@ -31,9 +32,10 @@ $button-border-color-active: color.adjust($button-color-active, $lightness: +10%
   vertical-align: text-bottom;
   -webkit-appearance: none;
   transition:
-          0.1s ease-in background-color,
-          0.1s ease-in border-color,
-          0.1s ease-in box-shadow;
+          0.05s linear background-color,
+          0.05s linear border-color,
+          0.05s linear box-shadow;
+
 
   &.xs {
     font-size: 0.9rem;
@@ -60,6 +62,19 @@ $button-border-color-active: color.adjust($button-color-active, $lightness: +10%
     outline: 0;
     background-color: $button-color-active;
     border-color: $button-border-color-active;
+  }
+
+  &.inverted {
+    background-color: $button-color-default-inverted;
+    border-color: $button-border-color-default-inverted;
+    color: hsla(0, 0%, 10%, 0.8);
+
+    &:focus, &:hover {
+      background-color: $button-color-default-inverted;
+      border-color: $button-border-color-default-inverted;
+      color: hsla(0, 0%, 10%, 0.8);
+      box-shadow: 0 0 0.3rem rgba(0,0,0,0.1);
+    }
   }
 
   &:active {
@@ -89,6 +104,16 @@ $button-border-color-active: color.adjust($button-color-active, $lightness: +10%
       background-color: $button-color-active;
       border-color: $button-color-active;
     }
+
+    &.inverted {
+      background-color: $button-color-default-inverted;
+
+      &:focus, &:hover {
+        background-color: $button-color-default-inverted;
+        border-color: $button-color-default-inverted;
+        color: $link-font-color-default;
+      }
+    }
   }
 
   &[disabled] {
@@ -99,6 +124,11 @@ $button-border-color-active: color.adjust($button-color-active, $lightness: +10%
       background-color: $button-color-default;
       box-shadow: none;
       top: 0;
+
+      &.inverted {
+        border-color: $button-border-color-default-inverted;
+        background-color: $button-color-default-inverted;
+      }
     }
   }
 }
@@ -106,5 +136,9 @@ $button-border-color-active: color.adjust($button-color-active, $lightness: +10%
 [type="submit"] {
   background-color: $button-color-default;
   color: #fff;
+
+  &.inverted {
+    background-color: $button-color-default-inverted;
+  }
 }
 

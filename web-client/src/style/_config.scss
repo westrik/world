@@ -29,6 +29,7 @@ $link-font-color-default: #5680cc;
 $link-font-color-active: #595959;
 $button-color-default: hsl(219, 54%, 57%);
 $button-color-active: color.adjust($button-color-default, $lightness: -15%);
+$button-color-default-inverted: hsl(0, 0%, 100%);
 $button-font-size: 1.1rem;
 $button-font-weight: 700;
 $button-letter-spacing: 0;
@@ -43,7 +44,9 @@ $blockquote-border-color: #d1d1d1;
 $table-cell-border-color: #e1e1e1;
 
 // App-specific styling
-$nav-header-bg-color: rgba(240, 240, 240, 0.75);
+$nav-header-bg-color: rgba(245, 245, 245, 0.75);
+//$nav-header-bg-color: rgba(255, 255, 255, 0.9);
+$nav-header-border-color: rgba(170, 170, 170, 0.7);
 
 // Components
 $tile-radius: 0.5rem;

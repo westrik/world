@@ -6,25 +6,26 @@ import { route } from 'preact-router';
 interface Section {
     name: string;
     route: string;
+    desktopOnly?: boolean;
     mobileOnly?: boolean;
 }
 
 const SECTIONS: Array<Section> = [
     {
-        name: 'dashboard',
+        name: '-',
         route: '/',
-        mobileOnly: true,
+        desktopOnly: true,
     },
     {
-        name: 'tasks',
+        name: 'Tasks',
         route: '/tasks',
     },
     {
-        name: 'notes',
+        name: 'Notes',
         route: '/notes',
     },
     {
-        name: 'media',
+        name: 'Media',
         route: '/media',
     },
 ];
@@ -45,12 +46,22 @@ export default function PrimaryNav(): h.JSX.Element {
                     return null;
                 }
                 return (
-                    <Link onClick={(ev): void => ev.preventDefault()} activeClassName="active" href={section.route}>
+                    <Link
+                        className="button inverted"
+                        onClick={(ev): void => ev.preventDefault()}
+                        activeClassName="active"
+                        href={section.route}
+                    >
                         {section.name}
                     </Link>
                 );
             }}
-            renderSelectorItem={(section: Section): string => section.name}
+            renderSelectorItem={(section: Section): string | null => {
+                if (section.desktopOnly) {
+                    return null;
+                }
+                return section.name;
+            }}
             onSelectItem={(section: Section): void => {
                 route(section.route);
             }}

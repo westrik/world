@@ -5,7 +5,7 @@ interface Props<T> {
     items: Array<T>;
     selectedIndex?: number;
     renderListItem: (item: T) => h.JSX.Element | null;
-    renderSelectorItem: (item: T) => string;
+    renderSelectorItem: (item: T) => string | null;
     onSelectItem: (item: T) => void;
 }
 
@@ -37,13 +37,14 @@ export default function CollapsibleList<T extends ListItem>(props: Props<T>): h.
                     }
                 }}
             >
-                {props.items.map(
-                    (item, key): h.JSX.Element => (
+                {props.items.map((item, key): h.JSX.Element | null => {
+                    const renderedItem = props.renderSelectorItem(item);
+                    return renderedItem ? (
                         <option selected={key == props.selectedIndex} key={key}>
-                            {props.renderSelectorItem(item)}
+                            {renderedItem}
                         </option>
-                    ),
-                )}
+                    ) : null;
+                })}
             </select>
         </div>
     );

@@ -13,7 +13,7 @@ function Container(props: Props): h.JSX.Element {
     return (
         <div className="app-container">
             <nav>
-                <a href="/">{SITE_NAME}</a>
+                {/*<a href="/">{SITE_NAME}</a>*/}
                 <PrimaryNav />
                 <SecondaryNav />
             </nav>

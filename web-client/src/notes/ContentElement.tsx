@@ -45,7 +45,8 @@ interface CodeBlockProps extends ElementWithChildrenProps {
 }
 function CodeBlock(props: CodeBlockProps): h.JSX.Element {
     // TODO: language-specific code formatting
-    return <pre>{renderElements(props.cxn)}</pre>;
+    // eslint-disable-next-line react/no-unknown-property
+    return <pre spellcheck={false}>{renderElements(props.cxn)}</pre>;
 }
 
 interface HeaderProps extends ElementWithChildrenProps {
@@ -187,12 +188,15 @@ interface ContentElementProps {
 }
 
 export default function ContentElement(props: ContentElementProps): h.JSX.Element {
+    // TODO: element components should register with the editor (via a context?)
+    //    (this will be used when applying mutations)
     const { element, children } = props.element;
 
     if (isText(element)) {
         return <span>{element.text}</span>;
     } else if (isCode(element)) {
-        return <code>{element.code}</code>;
+        // eslint-disable-next-line react/no-unknown-property
+        return <code spellcheck={false}>{element.code}</code>;
     } else if (isHtml(element)) {
         // TODO: strip and validate on server-side; set with dangerouslySetInnerHTML
     } else if (isEmphasis(element)) {
