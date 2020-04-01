@@ -1,14 +1,17 @@
 extern crate diesel;
 #[macro_use]
 extern crate diesel_migrations;
+extern crate fallible_iterator;
+extern crate postgres;
 
 use dotenv::dotenv;
-use std::env;
+use std::{env, thread};
 use warp::Filter;
 
 use westrikworld_core::db;
 
 mod routes;
+mod subscribe;
 
 embed_migrations!("../core/migrations");
 
@@ -28,7 +31,9 @@ async fn main() {
     let conn = db::get_conn(&pool).unwrap();
     embedded_migrations::run_with_output(&conn, &mut std::io::stdout()).unwrap();
 
-    // TODO: start up worker thread pool (and leader thread)
+    thread::spawn(move || {
+        subscribe::subscribe_to_jobs(database_url);
+    });
 
     let api = routes::worker_api(pool.clone());
     let routes = api.with(warp::log("run_worker::routing"));
