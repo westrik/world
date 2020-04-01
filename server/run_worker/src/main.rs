@@ -1,0 +1,36 @@
+extern crate diesel;
+#[macro_use]
+extern crate diesel_migrations;
+
+use dotenv::dotenv;
+use std::env;
+use warp::Filter;
+
+use westrikworld_core::db;
+
+mod routes;
+
+embed_migrations!("../core/migrations");
+
+const DB_POOL_SIZE: u32 = 15;
+
+#[tokio::main]
+async fn main() {
+    dotenv().ok();
+    if env::var("RUST_LOG").is_err() {
+        env::set_var("RUST_LOG", "westrikworld_core=debug,run_worker=debug");
+    }
+    pretty_env_logger::init();
+
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let pool = db::init_pool(&database_url, DB_POOL_SIZE).expect("Failed to create pool");
+
+    let conn = db::get_conn(&pool).unwrap();
+    embedded_migrations::run_with_output(&conn, &mut std::io::stdout()).unwrap();
+
+    // TODO: start up worker thread pool (and leader thread)
+
+    let api = routes::worker_api(pool.clone());
+    let routes = api.with(warp::log("run_worker::routing"));
+    warp::serve(routes).run(([127, 0, 0, 1], 8081)).await;
+}
