@@ -1469,6 +1469,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "run_worker"
+version = "0.1.0"
+dependencies = [
+ "diesel",
+ "diesel_migrations",
+ "dotenv",
+ "log 0.4.8",
+ "pretty_env_logger",
+ "tokio",
+ "warp",
+ "westrikworld_core",
+]
+
+[[package]]
 name = "rustc-demangle"
 version = "0.1.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"

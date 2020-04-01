@@ -20,7 +20,7 @@ pub fn api(
     db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     preflight_cors()
-        .or(health_check())
+        .or(health_check("API service"))
         .or(authentication(db_pool.clone()))
         .or(authenticated(db_pool))
         .map(|r| warp::reply::with_header(r, "X-API-Version", API_VERSION))
@@ -78,8 +78,10 @@ pub fn preflight_cors() -> impl Filter<Extract = impl warp::Reply, Error = warp:
     warp::options().map(warp::reply)
 }
 
-pub fn health_check() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path::end().map(|| Ok(format!("OK, version {}", API_VERSION)))
+pub fn health_check(
+    system: &'static str,
+) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone + 'static {
+    warp::path::end().map(move || Ok(format!("{} OK, version {}", system, API_VERSION)))
 }
 
 pub fn cors_wrapper(cors_origin_url: &str) -> Cors {

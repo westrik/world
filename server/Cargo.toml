@@ -3,4 +3,5 @@ members = [
   "core",
   "integration_tests",
   "run_server",
+  "run_worker",
 ]
