@@ -17,7 +17,8 @@ pub fn create_test_db() -> DbPool {
 
     println!("🌱️ running all migrations...");
     let conn = get_conn(&pool).unwrap();
-    embedded_migrations::run_with_output(&conn, &mut io::stdout().lock()).unwrap();
+    embedded_migrations::run_with_output(&conn, &mut io::stdout().lock())
+        .expect("running migrations failed");
     create_test_user(&conn);
     create_test_session(&conn);
 
