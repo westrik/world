@@ -5,6 +5,7 @@ use std::fmt;
 #[derive(Debug)]
 pub enum ResourceType {
     User,
+    Job,
     Task,
     Note,
     Tag,
@@ -12,6 +13,7 @@ pub enum ResourceType {
 }
 
 impl fmt::Display for ResourceType {
+    // TODO: write macro to add Debug and this impl
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let type_str = format!("{:?}", self);
         write!(f, "{}", type_str.to_ascii_lowercase())
@@ -53,5 +55,8 @@ pub mod resource_identifiers {
         assert!(Regex::new(r"link_[A-Za-z0-9]{8}")
             .unwrap()
             .is_match(&link_id));
+
+        let job_id = generate_resource_identifier(Job);
+        assert!(Regex::new(r"job_[A-Za-z0-9]{8}").unwrap().is_match(&job_id));
     }
 }
