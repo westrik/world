@@ -2,7 +2,7 @@ use std::process::{Command, Stdio};
 
 pub fn run_build_client(path: &str, _args: &Vec<String>) {
     // print_title("building client...");
-    let path = format!("{}/web-client/", path);
+    let path = format!("{}/client-web/", path);
 
     let _result = Command::new("bash")
         .args(&["-c", "yarn && yarn build"])

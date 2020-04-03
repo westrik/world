@@ -1,17 +1,17 @@
 all:
 	cd server && cargo build --release
-	cd web-client && yarn && yarn build
+	cd client-web && yarn && yarn build
 
 check:
 	cd server; cargo check; cargo clippy
-	cd web-client && yarn lint
+	cd client-web && yarn lint
 	cd server && cargo test
-	cd web-client && yarn test
+	cd client-web && yarn test
 	cd infra && terraform validate
 
 fmt:
 	cd server && cargo fmt
-	cd web-client && yarn fix
+	cd client-web && yarn fix
 	cd infra && make fmt
 
 prepush:
@@ -27,4 +27,4 @@ watch_run_tests:
 	cd server && cargo watch --no-gitignore -w ../.trigger -x test
 
 run_client:
-	cd web-client && yarn start
+	cd client-web && yarn start
