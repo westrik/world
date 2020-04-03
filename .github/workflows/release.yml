@@ -40,7 +40,7 @@ jobs:
         with:
           node-version: 13.x
       - name: yarn install & build
-        working-directory: ./web-client
+        working-directory: ./client-web
         run: |
           yarn install
           yarn build

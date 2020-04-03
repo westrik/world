@@ -24,11 +24,11 @@ chown root:root $SERVICE_CONF
 chmod 644 $SERVICE_CONF
 
 aws configure set region us-east-1
-RDS_HOST=$(aws secretsmanager get-secret-value --secret-id "database_url" | jq -r '.SecretString')
-RDS_USER=$(aws secretsmanager get-secret-value --secret-id "database_username" | jq -r '.SecretString')
-RDS_PASSWORD=$(aws secretsmanager get-secret-value --secret-id "database_password" | jq -r '.SecretString')
-RDS_DB_NAME=$(aws secretsmanager get-secret-value --secret-id "database_name" | jq -r '.SecretString')
-PASSWORD_HASH_SALT=$(aws secretsmanager get-secret-value --secret-id "password_hash_salt" | jq -r '.SecretString')
+RDS_HOST=$(aws secretsmanager get-secret-value --secret-id "westrikworld_database_url" | jq -r '.SecretString')
+RDS_USER=$(aws secretsmanager get-secret-value --secret-id "westrikworld_database_username" | jq -r '.SecretString')
+RDS_PASSWORD=$(aws secretsmanager get-secret-value --secret-id "westrikworld_database_password" | jq -r '.SecretString')
+RDS_DB_NAME=$(aws secretsmanager get-secret-value --secret-id "westrikworld_database_name" | jq -r '.SecretString')
+PASSWORD_HASH_SALT=$(aws secretsmanager get-secret-value --secret-id "westrikworld_password_hash_salt" | jq -r '.SecretString')
 echo "[Service]" >> $SECRETS_ENV_FILE
 echo "Environment=\"DATABASE_URL=postgres://$RDS_USER:$RDS_PASSWORD@$RDS_HOST/$RDS_DB_NAME\"" >> $SECRETS_ENV_FILE
 echo "Environment=\"PASSWORD_HASH_SALT=$PASSWORD_HASH_SALT\"" >> $SECRETS_ENV_FILE

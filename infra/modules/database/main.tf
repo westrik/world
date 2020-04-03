@@ -70,7 +70,8 @@ resource "aws_security_group" "app" {
 }
 
 resource "aws_secretsmanager_secret" "db_url" {
-  name = "database_url"
+  name                    = "westrikworld_database_url"
+  recovery_window_in_days = 0
 }
 resource "aws_secretsmanager_secret_version" "db_url" {
   secret_id     = aws_secretsmanager_secret.db_url.id
@@ -78,7 +79,8 @@ resource "aws_secretsmanager_secret_version" "db_url" {
 }
 
 resource "aws_secretsmanager_secret" "db_user" {
-  name = "database_username"
+  name                    = "westrikworld_database_username"
+  recovery_window_in_days = 0
 }
 resource "aws_secretsmanager_secret_version" "db_user" {
   secret_id     = aws_secretsmanager_secret.db_user.id
@@ -86,7 +88,8 @@ resource "aws_secretsmanager_secret_version" "db_user" {
 }
 
 resource "aws_secretsmanager_secret" "db_name" {
-  name = "database_name"
+  name                    = "westrikworld_database_name"
+  recovery_window_in_days = 0
 }
 resource "aws_secretsmanager_secret_version" "db_name" {
   secret_id     = aws_secretsmanager_secret.db_name.id
@@ -94,7 +97,8 @@ resource "aws_secretsmanager_secret_version" "db_name" {
 }
 
 resource "aws_secretsmanager_secret" "db_password" {
-  name = "database_password"
+  name                    = "westrikworld_database_password"
+  recovery_window_in_days = 0
 }
 resource "aws_secretsmanager_secret_version" "db_password" {
   secret_id     = aws_secretsmanager_secret.db_password.id
@@ -102,7 +106,8 @@ resource "aws_secretsmanager_secret_version" "db_password" {
 }
 
 resource "aws_secretsmanager_secret" "password_salt" {
-  name = "password_hash_salt"
+  name                    = "westrikworld_password_hash_salt"
+  recovery_window_in_days = 0
 }
 resource "random_string" "password_salt" {
   length           = 32
