@@ -62,5 +62,7 @@
 	<string></string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
+	<key>SUPublicEDKey</key>
+	<string>KdK63SOuJov5Y3PQPuKY4CH1OjBxmXwUhqTVumDhH9s=</string>
 </dict>
 </plist>

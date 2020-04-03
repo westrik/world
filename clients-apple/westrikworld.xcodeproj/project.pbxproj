@@ -103,6 +103,7 @@
 		C6FF25E2241A9C7900C896DA /* Defaults.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Defaults.plist; sourceTree = "<group>"; };
 		C6FF25E5241A9EE000C896DA /* westrikworld.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = westrikworld.sdef; sourceTree = "<group>"; };
 		C6FF25E7241A9F3800C896DA /* ASApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASApplication.swift; sourceTree = "<group>"; };
+		C9EB6E0F2436EDE00013683C /* westrikworld.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = westrikworld.entitlements; sourceTree = "<group>"; };
 		D0A4E93EAF866B15897EB6EE /* Pods-Spotter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Spotter.release.xcconfig"; path = "Target Support Files/Pods-Spotter/Pods-Spotter.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -159,6 +160,7 @@
 				C6891246241D25EB0086397B /* Resources */,
 				C689123A241D250E0086397B /* Assets.xcassets */,
 				C689123F241D250E0086397B /* Info.plist */,
+				C9EB6E0F2436EDE00013683C /* westrikworld.entitlements */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
