@@ -129,10 +129,9 @@ resource "aws_route" "app_internet_access" {
 }
 
 resource "aws_subnet" "app_az1" {
-  availability_zone       = var.aws_az1
-  vpc_id                  = aws_vpc.app.id
-  cidr_block              = "10.0.1.0/24"
-  map_public_ip_on_launch = true #TODO: remove
+  availability_zone = var.aws_az1
+  vpc_id            = aws_vpc.app.id
+  cidr_block        = "10.0.1.0/24"
 
   tags = {
     Name        = "app"
@@ -171,18 +170,6 @@ data "aws_ami" "app" {
   }
 }
 
-#TODO: remove
-resource "tls_private_key" "westrikworld_staging_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-#TODO: remove
-resource "aws_key_pair" "generated_key" {
-  key_name   = "westrikworld-staging"
-  public_key = tls_private_key.westrikworld_staging_key.public_key_openssh
-}
-
 resource "aws_instance" "app" {
   # TODO: [harden] change default login and SSH config for AMI (no password)
   # TODO?: configure with a stored keypair to allow login via bastion
@@ -192,17 +179,6 @@ resource "aws_instance" "app" {
   vpc_security_group_ids = [aws_security_group.app_inbound.id, aws_security_group.app_outbound.id, aws_security_group.app_outbound_s3.id]
   subnet_id              = aws_subnet.app_az1.id
   iam_instance_profile   = aws_iam_instance_profile.app_host.name
-  #TODO: remove
-  key_name = aws_key_pair.generated_key.key_name
-
-  #TODO: remove
-  connection {
-    # The default username for our AMI
-    user        = "admin"
-    host        = self.public_ip
-    private_key = tls_private_key.westrikworld_staging_key.private_key_pem
-    # The connection will use the local SSH agent for authentication.
-  }
 
   tags = {
     Name        = "app"
@@ -274,31 +250,44 @@ resource "aws_lb" "app" {
   }
 }
 
-resource "aws_lb_target_group" "app" {
-  name     = "app-lb-target-group"
+resource "aws_lb_target_group" "app_insecure" {
+  name     = "app-lb-insecure-target-group"
   port     = 80
   protocol = "TCP"
   vpc_id   = aws_vpc.app.id
-
-  # work-around for https://github.com/terraform-providers/terraform-provider-aws/issues/9093
-  stickiness {
-    enabled = false
-    type    = "lb_cookie"
-  }
 }
-
-resource "aws_lb_target_group_attachment" "app" {
-  target_group_arn = aws_lb_target_group.app.arn
+resource "aws_lb_target_group_attachment" "app_insecure" {
+  target_group_arn = aws_lb_target_group.app_insecure.arn
   target_id        = aws_instance.app.id
   port             = 80
 }
-
-resource "aws_lb_listener" "app_https" {
+resource "aws_lb_listener" "app_insecure" {
   load_balancer_arn = aws_lb.app.arn
-  port              = "443"
-  protocol          = "TLS"
-  ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
-  certificate_arn   = module.acm.this_acm_certificate_arn
+  port              = 80
+  protocol          = "TCP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app_insecure.arn
+  }
+}
+
+
+resource "aws_lb_target_group" "app" {
+  name     = "app-lb-target-group"
+  port     = 443
+  protocol = "TCP_UDP"
+  vpc_id   = aws_vpc.app.id
+}
+resource "aws_lb_target_group_attachment" "app" {
+  target_group_arn = aws_lb_target_group.app.arn
+  target_id        = aws_instance.app.id
+  port             = 443
+}
+resource "aws_lb_listener" "app" {
+  load_balancer_arn = aws_lb.app.arn
+  port              = 443
+  protocol          = "TCP_UDP"
 
   default_action {
     type             = "forward"
@@ -317,3 +306,12 @@ resource "aws_route53_record" "app" {
     evaluate_target_health = false // TODO: enable?
   }
 }
+
+resource "aws_route53_record" "app_caa" {
+  zone_id = data.aws_route53_zone.app.id
+  name    = var.api_domain_name
+  type    = "CAA"
+  records = ["0 issue \"amazon.com\""]
+  ttl     = 60
+}
+

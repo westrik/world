@@ -13,11 +13,3 @@ output "app_vpc" {
 output "app_deploy_hosts" {
   value = [aws_instance.app.id]
 }
-
-#TODO: remove
-output "instance_ip" {
-  value = aws_instance.app.public_ip
-}
-output "instance_private_key_pem" {
-  value = tls_private_key.westrikworld_staging_key.private_key_pem
-}

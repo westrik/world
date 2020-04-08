@@ -14,11 +14,3 @@ output "deploy_upload_access_key" {
 output "deploy_upload_bucket" {
   value = module.deploy.deploy_upload_bucket
 }
-
-output "instance_ip" {
-  value = module.api.instance_ip
-}
-
-output "instance_private_key_pem" {
-  value = module.api.instance_private_key_pem
-}

@@ -376,3 +376,11 @@ resource "aws_route53_record" "app" {
     evaluate_target_health = false
   }
 }
+
+resource "aws_route53_record" "app_caa" {
+  zone_id = data.aws_route53_zone.app.id
+  name    = var.root_domain_name
+  type = "CAA"
+  records = ["0 issue \"amazon.com\""]
+  ttl = 60
+}
