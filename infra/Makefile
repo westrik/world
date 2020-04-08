@@ -1,9 +1,8 @@
+init_state:
+	cd modules/state; terraform init; terraform apply -auto-approve
+
 ami:
-	# hack to get around packer breaking ssh-agent by adding 6+ keys
-	ssh-add -D
 	packer build amis/westrikworld_production.json
-	# add back default key
-	ssh-add
 
 apply_packer_infra:
 	terraform apply -target=module.build_resources
@@ -17,6 +16,7 @@ check:
 
 fmt:
 	terraform fmt
-	terraform fmt modules/build_resources
 	terraform fmt modules/api
+	terraform fmt modules/build_resources
 	terraform fmt modules/database
+	terraform fmt modules/state

@@ -31,7 +31,6 @@ postgres=# \q
 ```sh
 ~/world » echo "CORS_ORIGIN_URL=\"https://westrik.world\"" >> .env
 ~/world » echo "PASSWORD_HASH_SALT=\"$(gpg --gen-random --armor 0 32)\"" >> .env
-~/world » export WW_SRC_DIR=$(pwd)
 ~/world »
 ~/world » # Generate self-signed certs
 ~/world » sudo mkdir -p /etc/ssl/{certs,private}
@@ -41,8 +40,8 @@ postgres=# \q
 ~/world »
 ~/world » # Install and configure nginx
 ~/world » brew install nginx
-~/world » sudo ln -s "$WW_SRC_DIR/infra/nginx/local.conf" world.conf
-~/world » sudo ln -s "$WW_SRC_DIR/infra/nginx/selfsigned.conf" selfsigned.conf
+~/world » sudo ln -s "$(pwd)/infra/nginx/local.conf" /usr/local/etc/nginx/world.conf
+~/world » sudo ln -s "$(pwd)/infra/nginx/selfsigned.conf" /usr/local/etc/nginx/selfsigned.conf
 ~/world » # add 'include world.conf;':
 ~/world » sudo vi /usr/local/etc/nginx/nginx.conf
 ~/world » sudo nginx -t

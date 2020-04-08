@@ -11,6 +11,8 @@
 - Run:
 
 ```sh
+# Create encrypted S3 bucket for Terraform state, then initialize
+make init_state
 terraform init
 # Set up required infra, then build AMI with Packer
 make apply_packer_infra

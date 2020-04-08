@@ -1,5 +1,15 @@
 // Tested with Terraform v0.12.18 (as of 2020-01-05)
 
+terraform {
+  backend "s3" {
+    bucket         = "westrikworld-tfstate"
+    key            = "global/s3/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "westrikworld-tfstate-lock"
+    encrypt        = true
+  }
+}
+
 provider "aws" {
   region = var.aws_region
 }
