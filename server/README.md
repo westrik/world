@@ -3,34 +3,50 @@
 ### DB setup
 
 ```
-~/westrikworld » createdb westrikworld_app
-~/westrikworld » createdb westrikworld_test
-~/westrikworld » createuser westrikworld_user
-~/westrikworld » psql postgres
+~/world » createdb world_app
+~/world » createdb world_test
+~/world » createuser world_user
+~/world » psql postgres
 psql (11.5)
 Type "help" for help.
 
-postgres=# alter user westrikworld_user with encrypted password 'PASSWORD';
+postgres=# alter user world_user with encrypted password 'PASSWORD';
 ALTER ROLE
-postgres=# grant all privileges on database westrikworld_app to westrikworld_user;
+postgres=# grant all privileges on database world_app to world_user;
 GRANT
-postgres=# grant all privileges on database westrikworld_test to westrikworld_user;
+postgres=# grant all privileges on database world_test to world_user;
 GRANT
-postgres=# alter database westrikworld_app set timezone to 'UTC';
+postgres=# alter database world_app set timezone to 'UTC';
 ALTER DATABASE
-postgres=# alter database westrikworld_test set timezone to 'UTC';
+postgres=# alter database world_test set timezone to 'UTC';
 ALTER DATABASE
 postgres=# \q
-~/westrikworld » echo "DATABASE_URL='postgres://westrikworld_user:PASSWORD@localhost/westrikworld_app'" > .env
-~/westrikworld » echo "TEST_DATABASE_URL='postgres://westrikworld_user:PASSWORD@localhost/westrikworld_test'" >> .env
+~/world » echo "DATABASE_URL='postgres://world_user:PASSWORD@localhost/world_app'" > .env
+~/world » echo "TEST_DATABASE_URL='postgres://world_user:PASSWORD@localhost/world_test'" >> .env
 ```
 
 
 ### Local setup
 
-```
-~/westrikworld » echo "CORS_ORIGIN_URL=\"http://westrik.world\"" >> .env
-~/westrikworld » echo "PASSWORD_HASH_SALT=\"$(gpg --gen-random --armor 0 32)\"" >> .env
+```sh
+~/world » echo "CORS_ORIGIN_URL=\"https://westrik.world\"" >> .env
+~/world » echo "PASSWORD_HASH_SALT=\"$(gpg --gen-random --armor 0 32)\"" >> .env
+~/world » export WW_SRC_DIR=$(pwd)
+~/world »
+~/world » # Generate self-signed certs
+~/world » sudo mkdir -p /etc/ssl/{certs,private}
+~/world » sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
+~/world » sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned-api.key -out /etc/ssl/certs/nginx-selfsigned-api.crt
+~/world » sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+~/world »
+~/world » # Install and configure nginx
+~/world » brew install nginx
+~/world » sudo ln -s "$WW_SRC_DIR/infra/nginx/local.conf" world.conf
+~/world » sudo ln -s "$WW_SRC_DIR/infra/nginx/selfsigned.conf" selfsigned.conf
+~/world » # add 'include world.conf;':
+~/world » sudo vi /usr/local/etc/nginx/nginx.conf
+~/world » sudo nginx -t
+~/world » sudo brew services restart nginx
 ```
 
 

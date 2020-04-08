@@ -6,7 +6,7 @@ const env = process.env.NODE_ENV;
 export const SITE_NAME = 'westrikworld';
 
 const API_HOSTS = {
-    local: 'http://api.westrik.world:6874',
+    local: 'https://api.westrik.world',
     staging: 'https://api.staging.westrikworld.com',
     production: 'https://api.westrikworld.com',
 };
