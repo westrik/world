@@ -1,13 +1,14 @@
 use crate::auth::filters::routes as auth_routes;
 use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
-use crate::errors::handle_rejection;
+use crate::errors::{handle_rejection, ApiError};
 use crate::notes::filters::routes as note_routes;
 use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
 use crate::tasks::filters::routes as task_routes;
 use crate::{API_VERSION, MAX_CONTENT_LENGTH_BYTES};
 use diesel::dsl::now;
 use diesel::prelude::*;
+use diesel::result::Error;
 use std::convert::Infallible;
 use warp::cors::Cors;
 use warp::Filter;
@@ -59,7 +60,12 @@ pub fn with_session(
         .and(warp::header("Authorization"))
         .and(with_db(db_pool))
         .and_then(|token: String, db_pool: DbPool| async move {
-            load_session_for_token(token, db_pool).map_err(|_| warp::reject())
+            load_session_for_token(token, db_pool).map_err(|e| {
+                warp::reject::custom(match e {
+                    Error::NotFound => ApiError::Forbidden,
+                    e => ApiError::DatabaseError(e),
+                })
+            })
         })
 }
 
