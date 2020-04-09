@@ -33,7 +33,6 @@ pub fn rollback_txn(pool: &DbPool) {
     get_conn(&pool).unwrap().execute("ROLLBACK").unwrap();
 }
 
-#[allow(unused)]
 pub fn destroy_test_db(pool: &DbPool) {
     let conn = get_conn(&pool).unwrap();
     println!("🪓 destroying test database...");
@@ -41,6 +40,7 @@ pub fn destroy_test_db(pool: &DbPool) {
     conn.execute("DROP TABLE IF EXISTS notes").unwrap();
     conn.execute("DROP TABLE IF EXISTS tasks").unwrap();
     conn.execute("DROP TABLE IF EXISTS sessions").unwrap();
+    conn.execute("DROP TABLE IF EXISTS jobs").unwrap();
     conn.execute("DROP TABLE IF EXISTS users").unwrap();
     conn.execute("DROP TABLE IF EXISTS __diesel_schema_migrations")
         .unwrap();
