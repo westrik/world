@@ -46,7 +46,10 @@ impl Job {
         let note = all_jobs
             .filter(jobs::api_id.eq(&api_id))
             .first(conn)
-            .map_err(|_| ApiError::NotFound(api_id))?;
+            .map_err(|e| match e {
+                diesel::result::Error::NotFound => ApiError::NotFound(api_id),
+                _ => ApiError::DatabaseError(e),
+            })?;
         Ok(note)
     }
 

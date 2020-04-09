@@ -75,7 +75,10 @@ impl User {
             .filter(users::email_address.eq(email_address))
             .filter(users::password_hash.eq(Self::hash_password(password.to_string())))
             .first(conn)
-            .map_err(|_| ApiError::NotFound(email_address.to_string()))?;
+            .map_err(|e| match e {
+                diesel::result::Error::NotFound => ApiError::Forbidden,
+                _ => ApiError::DatabaseError(e),
+            })?;
         Ok(user)
     }
 
