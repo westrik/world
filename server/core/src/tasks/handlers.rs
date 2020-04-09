@@ -5,6 +5,7 @@ use crate::tasks::models::task::{ApiTask, ApiTaskCreateSpec, ApiTaskUpdateSpec, 
 use crate::utils::list_options::ListOptions;
 use std::convert::Infallible;
 use warp::http::StatusCode;
+use warp::Rejection;
 
 #[derive(Serialize)]
 pub struct GetTaskResponse {
@@ -28,24 +29,16 @@ pub async fn list_tasks(
     opts: ListOptions,
     session: Session,
     db_pool: DbPool,
-) -> Result<impl warp::Reply, Infallible> {
+) -> Result<impl warp::Reply, Rejection> {
     debug!("list_tasks: opts={:?}", opts);
-    Ok(match run_get_tasks(session, &db_pool) {
-        Ok(tasks) => warp::reply::with_status(
-            warp::reply::json(&GetTaskResponse {
-                error: None,
-                tasks: Some(tasks.iter().map(ApiTask::from).collect()),
-            }),
-            StatusCode::OK,
-        ),
-        Err(_) => warp::reply::with_status(
-            warp::reply::json(&GetTaskResponse {
-                error: Some("Failed to query for tasks".to_string()),
-                tasks: None,
-            }),
-            StatusCode::INTERNAL_SERVER_ERROR,
-        ),
-    })
+    let tasks = run_get_tasks(session, &db_pool)?;
+    Ok(warp::reply::with_status(
+        warp::reply::json(&GetTaskResponse {
+            error: None,
+            tasks: Some(tasks.iter().map(ApiTask::from).collect()),
+        }),
+        StatusCode::OK,
+    ))
 }
 
 fn run_create_task(session: Session, description: String, pool: &DbPool) -> Result<Task, ApiError> {
@@ -60,26 +53,16 @@ pub async fn create_task(
     new_task: ApiTaskCreateSpec,
     session: Session,
     db_pool: DbPool,
-) -> Result<impl warp::Reply, Infallible> {
+) -> Result<impl warp::Reply, Rejection> {
     debug!("create_task: new_task={:?}", new_task);
-    Ok(
-        match run_create_task(session, new_task.description, &db_pool) {
-            Ok(task) => warp::reply::with_status(
-                warp::reply::json(&UpdateTaskResponse {
-                    error: None,
-                    task: Some(ApiTask::from(&task)),
-                }),
-                StatusCode::OK,
-            ),
-            Err(_) => warp::reply::with_status(
-                warp::reply::json(&UpdateTaskResponse {
-                    error: Some("Failed to create task".to_string()),
-                    task: None,
-                }),
-                StatusCode::INTERNAL_SERVER_ERROR,
-            ),
-        },
-    )
+    let task = run_create_task(session, new_task.description, &db_pool)?;
+    Ok(warp::reply::with_status(
+        warp::reply::json(&UpdateTaskResponse {
+            error: None,
+            task: Some(ApiTask::from(&task)),
+        }),
+        StatusCode::OK,
+    ))
 }
 
 fn run_update_task(
@@ -101,24 +84,16 @@ pub async fn update_task(
     spec: ApiTaskUpdateSpec,
     session: Session,
     db_pool: DbPool,
-) -> Result<impl warp::Reply, Infallible> {
+) -> Result<impl warp::Reply, Rejection> {
     debug!("update_task: api_id={}, spec={:?}", api_id, spec);
-    Ok(match run_update_task(session, api_id, spec, &db_pool) {
-        Ok(task) => warp::reply::with_status(
-            warp::reply::json(&UpdateTaskResponse {
-                error: None,
-                task: Some(ApiTask::from(&task)),
-            }),
-            StatusCode::OK,
-        ),
-        Err(_) => warp::reply::with_status(
-            warp::reply::json(&UpdateTaskResponse {
-                error: Some("Failed to create task".to_string()),
-                task: None,
-            }),
-            StatusCode::INTERNAL_SERVER_ERROR,
-        ),
-    })
+    let task = run_update_task(session, api_id, spec, &db_pool)?;
+    Ok(warp::reply::with_status(
+        warp::reply::json(&UpdateTaskResponse {
+            error: None,
+            task: Some(ApiTask::from(&task)),
+        }),
+        StatusCode::OK,
+    ))
 }
 
 pub async fn delete_task(

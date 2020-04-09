@@ -1,29 +1,24 @@
 use crate::auth::filters::routes as auth_routes;
 use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
+use crate::errors::handle_rejection;
 use crate::notes::filters::routes as note_routes;
 use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
 use crate::tasks::filters::routes as task_routes;
 use crate::{API_VERSION, MAX_CONTENT_LENGTH_BYTES};
 use diesel::dsl::now;
 use diesel::prelude::*;
+use std::convert::Infallible;
 use warp::cors::Cors;
 use warp::Filter;
 
-#[derive(Debug, Serialize)]
-pub enum GenericError {
-    Unauthorized,
-}
-impl warp::reject::Reject for GenericError {}
-
-pub fn api(
-    db_pool: DbPool,
-) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+pub fn api(db_pool: DbPool) -> impl Filter<Extract = impl warp::Reply, Error = Infallible> + Clone {
     preflight_cors()
         .or(health_check("API service"))
         .or(authentication(db_pool.clone()))
         .or(authenticated(db_pool))
         .map(|r| warp::reply::with_header(r, "X-API-Version", API_VERSION))
+        .recover(handle_rejection)
 }
 
 fn authentication(

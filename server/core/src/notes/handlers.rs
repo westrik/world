@@ -7,6 +7,7 @@ use crate::notes::models::note::{Note, NoteSummary};
 use crate::utils::list_options::ListOptions;
 use std::convert::Infallible;
 use warp::http::StatusCode;
+use warp::Rejection;
 
 // TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
 
@@ -42,24 +43,16 @@ pub async fn list_notes(
     opts: ListOptions,
     session: Session,
     db_pool: DbPool,
-) -> Result<impl warp::Reply, Infallible> {
+) -> Result<impl warp::Reply, Rejection> {
     debug!("list_notes: opts={:?}", opts);
-    Ok(match run_get_notes(session, &db_pool) {
-        Ok(notes) => warp::reply::with_status(
-            warp::reply::json(&GetNotesResponse {
-                error: None,
-                notes: Some(notes),
-            }),
-            StatusCode::OK,
-        ),
-        Err(_) => warp::reply::with_status(
-            warp::reply::json(&GetNotesResponse {
-                error: Some("Failed to query for notes".to_string()),
-                notes: None,
-            }),
-            StatusCode::INTERNAL_SERVER_ERROR,
-        ),
-    })
+    let notes = run_get_notes(session, &db_pool)?;
+    Ok(warp::reply::with_status(
+        warp::reply::json(&GetNotesResponse {
+            error: None,
+            notes: Some(notes),
+        }),
+        StatusCode::OK,
+    ))
 }
 
 fn run_get_note(session: Session, pool: &DbPool, api_id: String) -> Result<Note, ApiError> {
@@ -70,24 +63,16 @@ pub async fn get_note(
     api_id: String,
     session: Session,
     db_pool: DbPool,
-) -> Result<impl warp::Reply, Infallible> {
+) -> Result<impl warp::Reply, Rejection> {
     debug!("get_note: api_id={:?}", api_id);
-    Ok(match run_get_note(session, &db_pool, api_id) {
-        Ok(note) => warp::reply::with_status(
-            warp::reply::json(&GetNoteResponse {
-                error: None,
-                note: Some(note),
-            }),
-            StatusCode::OK,
-        ),
-        Err(_) => warp::reply::with_status(
-            warp::reply::json(&GetNoteResponse {
-                error: Some("Failed to load note".to_string()),
-                note: None,
-            }),
-            StatusCode::INTERNAL_SERVER_ERROR,
-        ),
-    })
+    let note = run_get_note(session, &db_pool, api_id)?;
+    Ok(warp::reply::with_status(
+        warp::reply::json(&GetNoteResponse {
+            error: None,
+            note: Some(note),
+        }),
+        StatusCode::OK,
+    ))
 }
 
 fn run_create_note(
@@ -116,24 +101,16 @@ pub async fn create_note(
     spec: ApiNoteCreateSpec,
     session: Session,
     db_pool: DbPool,
-) -> Result<impl warp::Reply, Infallible> {
+) -> Result<impl warp::Reply, Rejection> {
     debug!("create_note: spec={:?}", spec);
-    Ok(match run_create_note(spec, session, &db_pool) {
-        Ok(note) => warp::reply::with_status(
-            warp::reply::json(&GetNoteResponse {
-                error: None,
-                note: Some(note),
-            }),
-            StatusCode::OK,
-        ),
-        Err(_) => warp::reply::with_status(
-            warp::reply::json(&GetNoteResponse {
-                error: Some("Failed to create note".to_string()),
-                note: None,
-            }),
-            StatusCode::INTERNAL_SERVER_ERROR,
-        ),
-    })
+    let note = run_create_note(spec, session, &db_pool)?;
+    Ok(warp::reply::with_status(
+        warp::reply::json(&GetNoteResponse {
+            error: None,
+            note: Some(note),
+        }),
+        StatusCode::OK,
+    ))
 }
 
 fn run_update_note(
@@ -155,24 +132,16 @@ pub async fn update_note(
     spec: ApiNoteUpdateSpec,
     session: Session,
     db_pool: DbPool,
-) -> Result<impl warp::Reply, Infallible> {
+) -> Result<impl warp::Reply, Rejection> {
     debug!("update_note: api_id={}, spec={:?}", api_id, spec);
-    Ok(match run_update_note(session, api_id, spec, &db_pool) {
-        Ok(note) => warp::reply::with_status(
-            warp::reply::json(&GetNoteResponse {
-                error: None,
-                note: Some(note),
-            }),
-            StatusCode::OK,
-        ),
-        Err(_) => warp::reply::with_status(
-            warp::reply::json(&GetNoteResponse {
-                error: Some("Failed to update note".to_string()),
-                note: None,
-            }),
-            StatusCode::INTERNAL_SERVER_ERROR,
-        ),
-    })
+    let note = run_update_note(session, api_id, spec, &db_pool)?;
+    Ok(warp::reply::with_status(
+        warp::reply::json(&GetNoteResponse {
+            error: None,
+            note: Some(note),
+        }),
+        StatusCode::OK,
+    ))
 }
 
 pub async fn delete_note(
