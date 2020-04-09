@@ -1,4 +1,4 @@
-use crate::jobs::errors::JobError;
+use crate::errors::ApiError;
 use crate::jobs::job_type::JobType;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{jobs, jobs::dsl::jobs as all_jobs};
@@ -32,21 +32,21 @@ pub struct JobCreateSpec {
 }
 
 impl JobCreateSpec {
-    pub fn insert(&self, conn: &PgConnection) -> Result<Job, JobError> {
+    pub fn insert(&self, conn: &PgConnection) -> Result<Job, ApiError> {
         info!("creating note: {:?}", self);
         Ok(diesel::insert_into(jobs::table)
             .values(self)
             .get_result(conn)
-            .map_err(JobError::DatabaseError)?)
+            .map_err(ApiError::DatabaseError)?)
     }
 }
 
 impl Job {
-    pub fn find(conn: &PgConnection, api_id: String) -> Result<Job, JobError> {
+    pub fn find(conn: &PgConnection, api_id: String) -> Result<Job, ApiError> {
         let note = all_jobs
-            .filter(jobs::api_id.eq(api_id))
+            .filter(jobs::api_id.eq(&api_id))
             .first(conn)
-            .map_err(|_| JobError::JobNotFound)?;
+            .map_err(|_| ApiError::NotFound(api_id))?;
         Ok(note)
     }
 
@@ -54,7 +54,7 @@ impl Job {
         conn: &PgConnection,
         job_type: JobType,
         payload: Option<serde_json::Value>,
-    ) -> Result<Job, JobError> {
+    ) -> Result<Job, ApiError> {
         JobCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Job),
             job_type: format!("{}", job_type).to_string(),

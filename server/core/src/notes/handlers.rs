@@ -1,8 +1,8 @@
 use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
+use crate::errors::ApiError;
 use crate::notes::content::parsing::parse_markdown_content;
 use crate::notes::content::schema::Content;
-use crate::notes::errors::NoteError;
 use crate::notes::models::note::{Note, NoteSummary};
 use crate::utils::list_options::ListOptions;
 use std::convert::Infallible;
@@ -34,7 +34,7 @@ pub struct GetNoteResponse {
     note: Option<Note>,
 }
 
-fn run_get_notes(session: Session, pool: &DbPool) -> Result<Vec<NoteSummary>, NoteError> {
+fn run_get_notes(session: Session, pool: &DbPool) -> Result<Vec<NoteSummary>, ApiError> {
     Ok(Note::find_all(&get_conn(&pool).unwrap(), session)?)
 }
 
@@ -62,7 +62,7 @@ pub async fn list_notes(
     })
 }
 
-fn run_get_note(session: Session, pool: &DbPool, api_id: String) -> Result<Note, NoteError> {
+fn run_get_note(session: Session, pool: &DbPool, api_id: String) -> Result<Note, ApiError> {
     Ok(Note::find(&get_conn(&pool).unwrap(), session, api_id)?)
 }
 
@@ -94,15 +94,15 @@ fn run_create_note(
     spec: ApiNoteCreateSpec,
     session: Session,
     db_pool: &DbPool,
-) -> Result<Note, NoteError> {
+) -> Result<Note, ApiError> {
     let content_json: serde_json::Value;
     if let Some(content) = spec.content_json {
         content_json = content;
     } else if let Some(content) = spec.content_raw {
         content_json = serde_json::to_value(&parse_markdown_content(content))
-            .map_err(|_| NoteError::BadContentConversion)?;
+            .map_err(|_| ApiError::InternalError("Bad content conversion".to_string()))?;
     } else {
-        return Err(NoteError::NoSpecifiedContent);
+        return Err(ApiError::InvalidRequest("No specified content".to_string()));
     }
 
     Ok(Note::create(
@@ -141,7 +141,7 @@ fn run_update_note(
     api_id: String,
     spec: ApiNoteUpdateSpec,
     pool: &DbPool,
-) -> Result<Note, NoteError> {
+) -> Result<Note, ApiError> {
     Ok(Note::update(
         &get_conn(&pool).unwrap(),
         session,

@@ -4,9 +4,9 @@ use diesel::PgConnection;
 
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
+use crate::errors::ApiError;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{tasks, tasks::dsl::tasks as all_tasks};
-use crate::tasks::errors::TaskError;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(User)]
@@ -36,12 +36,12 @@ pub struct TaskCreateSpec {
     pub description: String,
 }
 impl TaskCreateSpec {
-    pub fn insert(&self, conn: &PgConnection) -> Result<Task, TaskError> {
+    pub fn insert(&self, conn: &PgConnection) -> Result<Task, ApiError> {
         info!("creating task: {:?}", self);
         Ok(diesel::insert_into(tasks::table)
             .values(self)
             .get_result(conn)
-            .map_err(TaskError::DatabaseError)?)
+            .map_err(ApiError::DatabaseError)?)
     }
 }
 
@@ -62,7 +62,7 @@ impl TaskUpdateSpec {
         conn: &PgConnection,
         api_id: String,
         user_id: i32,
-    ) -> Result<Task, TaskError> {
+    ) -> Result<Task, ApiError> {
         info!("updating task {} with {:?}", api_id, self);
         Ok(diesel::update(
             all_tasks
@@ -71,7 +71,7 @@ impl TaskUpdateSpec {
         )
         .set(self)
         .get_result::<Task>(conn)
-        .map_err(TaskError::DatabaseError)?)
+        .map_err(ApiError::DatabaseError)?)
     }
 }
 
@@ -141,14 +141,11 @@ impl From<&Task> for ApiTask {
 }
 
 impl Task {
-    pub fn find_all_for_user(
-        conn: &PgConnection,
-        session: Session,
-    ) -> Result<Vec<Task>, TaskError> {
+    pub fn find_all_for_user(conn: &PgConnection, session: Session) -> Result<Vec<Task>, ApiError> {
         let items: Vec<Task> = all_tasks
             .filter(tasks::user_id.eq(session.user_id))
             .load(conn)
-            .map_err(|_| TaskError::TaskNotFound)?;
+            .map_err(ApiError::DatabaseError)?;
         Ok(items)
     }
 
@@ -156,7 +153,7 @@ impl Task {
         conn: &PgConnection,
         session: Session,
         description: String,
-    ) -> Result<Task, TaskError> {
+    ) -> Result<Task, ApiError> {
         let new_task = TaskCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Task),
             user_id: session.user_id,
@@ -170,7 +167,7 @@ impl Task {
         session: Session,
         api_id: String,
         spec: ApiTaskUpdateSpec,
-    ) -> Result<Task, TaskError> {
+    ) -> Result<Task, ApiError> {
         TaskUpdateSpec {
             updated_at: Utc::now(),
             completed_at: match spec.is_completed {

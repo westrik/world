@@ -4,7 +4,7 @@ use diesel::prelude::*;
 use diesel::{PgConnection, QueryResult};
 use std::{env, str};
 
-use crate::auth::errors::UserError;
+use crate::errors::ApiError;
 use crate::schema::{users, users::dsl::users as all_users};
 
 /* ----- Model definitions -----  */
@@ -35,11 +35,11 @@ pub struct UserCreateSpec {
     pub password_hash: String,
 }
 impl UserCreateSpec {
-    pub fn insert(&self, conn: &PgConnection) -> Result<User, UserError> {
+    pub fn insert(&self, conn: &PgConnection) -> Result<User, ApiError> {
         Ok(diesel::insert_into(users::table)
             .values(self)
             .get_result(conn)
-            .map_err(UserError::DatabaseError)?)
+            .map_err(ApiError::DatabaseError)?)
     }
 }
 #[derive(Debug, Deserialize)]
@@ -57,7 +57,7 @@ lazy_static! {
 }
 
 impl User {
-    pub fn create(new_user: ApiUserCreateSpec, conn: &PgConnection) -> Result<User, UserError> {
+    pub fn create(new_user: ApiUserCreateSpec, conn: &PgConnection) -> Result<User, ApiError> {
         let new_user = UserCreateSpec {
             email_address: new_user.email_address,
             full_name: new_user.full_name,
@@ -70,12 +70,12 @@ impl User {
         email_address: &str,
         password: &str,
         conn: &PgConnection,
-    ) -> Result<User, UserError> {
+    ) -> Result<User, ApiError> {
         let user: User = all_users
             .filter(users::email_address.eq(email_address))
             .filter(users::password_hash.eq(Self::hash_password(password.to_string())))
             .first(conn)
-            .map_err(|_| UserError::UserNotFound)?;
+            .map_err(|_| ApiError::NotFound(email_address.to_string()))?;
         Ok(user)
     }
 

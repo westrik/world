@@ -1,7 +1,7 @@
-use crate::auth::errors::UserError;
 use crate::auth::models::session::Session;
 use crate::auth::models::user::{ApiUserCreateSpec, User};
 use crate::db::{get_conn, DbPool};
+use crate::errors::ApiError;
 use std::convert::Infallible;
 use warp::http::StatusCode;
 
@@ -19,7 +19,7 @@ pub struct AuthenticationResponse {
     error: Option<String>,
 }
 
-fn run_sign_in(creds: SignInRequest, pool: &DbPool) -> Result<AuthenticationResponse, UserError> {
+fn run_sign_in(creds: SignInRequest, pool: &DbPool) -> Result<AuthenticationResponse, ApiError> {
     let conn = get_conn(pool).unwrap();
     let user: User = User::find(creds.email_address.as_str(), creds.password.as_str(), &conn)?;
     let session: Session = Session::create(&conn, &user)?;

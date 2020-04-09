@@ -2,8 +2,8 @@ use chrono::{DateTime, Utc};
 
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
+use crate::errors::ApiError;
 use crate::notes::content::schema::Content;
-use crate::notes::errors::NoteError;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{notes, notes::dsl::notes as all_notes};
 use diesel::prelude::*;
@@ -45,12 +45,12 @@ pub struct NoteCreateSpec {
     pub content: serde_json::Value,
 }
 impl NoteCreateSpec {
-    pub fn insert(&self, conn: &PgConnection) -> Result<Note, NoteError> {
+    pub fn insert(&self, conn: &PgConnection) -> Result<Note, ApiError> {
         info!("creating note: {:?}", self);
         Ok(diesel::insert_into(notes::table)
             .values(self)
             .get_result(conn)
-            .map_err(NoteError::DatabaseError)?)
+            .map_err(ApiError::DatabaseError)?)
     }
 }
 
@@ -66,7 +66,7 @@ impl NoteUpdateSpec {
         conn: &PgConnection,
         api_id: String,
         user_id: i32,
-    ) -> Result<Note, NoteError> {
+    ) -> Result<Note, ApiError> {
         info!("updating note {} with {:?}", api_id, self);
         Ok(diesel::update(
             all_notes
@@ -75,26 +75,26 @@ impl NoteUpdateSpec {
         )
         .set(self)
         .get_result::<Note>(conn)
-        .map_err(NoteError::DatabaseError)?)
+        .map_err(ApiError::DatabaseError)?)
     }
 }
 
 impl Note {
-    pub fn find_all(conn: &PgConnection, session: Session) -> Result<Vec<NoteSummary>, NoteError> {
+    pub fn find_all(conn: &PgConnection, session: Session) -> Result<Vec<NoteSummary>, ApiError> {
         let notes: Vec<NoteSummary> = all_notes
             .select((notes::api_id, notes::created_at, notes::updated_at))
             .filter(notes::user_id.eq(session.user_id))
             .load(conn)
-            .map_err(|_| NoteError::NoteNotFound)?;
+            .map_err(ApiError::DatabaseError)?;
         Ok(notes)
     }
 
-    pub fn find(conn: &PgConnection, session: Session, api_id: String) -> Result<Note, NoteError> {
+    pub fn find(conn: &PgConnection, session: Session, api_id: String) -> Result<Note, ApiError> {
         let note = all_notes
             .filter(notes::user_id.eq(session.user_id))
-            .filter(notes::api_id.eq(api_id))
+            .filter(notes::api_id.eq(&api_id))
             .first(conn)
-            .map_err(|_| NoteError::NoteNotFound)?;
+            .map_err(|_| ApiError::NotFound(api_id))?;
         Ok(note)
     }
 
@@ -102,7 +102,7 @@ impl Note {
         conn: &PgConnection,
         session: Session,
         content: serde_json::Value,
-    ) -> Result<Note, NoteError> {
+    ) -> Result<Note, ApiError> {
         NoteCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Note),
             user_id: session.user_id,
@@ -116,11 +116,12 @@ impl Note {
         session: Session,
         api_id: String,
         content: Option<Content>,
-    ) -> Result<Note, NoteError> {
+    ) -> Result<Note, ApiError> {
         let mut content_update = None;
         if let Some(content_data) = content {
             content_update = Some(
-                serde_json::to_value(content_data).map_err(|_| NoteError::BadContentConversion)?,
+                serde_json::to_value(content_data)
+                    .map_err(|_| ApiError::InternalError("Bad content conversion".to_string()))?,
             );
         }
         NoteUpdateSpec {
