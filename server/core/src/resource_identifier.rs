@@ -34,29 +34,33 @@ pub mod resource_identifiers {
     #[test]
     fn id_generation() {
         let user_id = generate_resource_identifier(User);
-        assert!(Regex::new(r"user_[A-Za-z0-9]{8}")
+        assert!(Regex::new(r"^user_[A-Za-z0-9]{8}$")
             .unwrap()
             .is_match(&user_id));
 
         let task_id = generate_resource_identifier(Task);
-        assert!(Regex::new(r"task_[A-Za-z0-9]{8}")
+        assert!(Regex::new(r"^task_[A-Za-z0-9]{8}$")
             .unwrap()
             .is_match(&task_id));
 
         let note_id = generate_resource_identifier(Note);
-        assert!(Regex::new(r"note_[A-Za-z0-9]{8}")
+        assert!(Regex::new(r"^note_[A-Za-z0-9]{8}$")
             .unwrap()
             .is_match(&note_id));
 
         let tag_id = generate_resource_identifier(Tag);
-        assert!(Regex::new(r"tag_[A-Za-z0-9]{8}").unwrap().is_match(&tag_id));
+        assert!(Regex::new(r"^tag_[A-Za-z0-9]{8}$")
+            .unwrap()
+            .is_match(&tag_id));
 
         let link_id = generate_resource_identifier(Link);
-        assert!(Regex::new(r"link_[A-Za-z0-9]{8}")
+        assert!(Regex::new(r"^link_[A-Za-z0-9]{8}$")
             .unwrap()
             .is_match(&link_id));
 
         let job_id = generate_resource_identifier(Job);
-        assert!(Regex::new(r"job_[A-Za-z0-9]{8}").unwrap().is_match(&job_id));
+        assert!(Regex::new(r"^job_[A-Za-z0-9]{8}$")
+            .unwrap()
+            .is_match(&job_id));
     }
 }
