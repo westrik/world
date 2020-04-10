@@ -134,3 +134,19 @@ impl Note {
         .update(conn, api_id, session.user_id)
     }
 }
+
+#[cfg(test)]
+pub mod note_queries {
+    use super::*;
+    use crate::schema::{notes, notes::dsl::notes as all_notes};
+    use diesel::pg::Pg;
+
+    #[test]
+    fn get_note() {
+        let query = all_notes
+            .select((notes::api_id, notes::created_at, notes::updated_at))
+            .filter(notes::user_id.eq(13));
+        let debug_query = diesel::debug_query::<Pg, _>(&query);
+        println!("{}", debug_query);
+    }
+}

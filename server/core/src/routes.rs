@@ -47,6 +47,7 @@ fn load_session_for_token(
     db_pool: DbPool,
 ) -> Result<Session, diesel::result::Error> {
     // TODO: move to query thread pool
+    // TODO: get rid of .unwrap()'s somehow
     all_sessions
         .filter(sessions::token.eq(token))
         .filter(sessions::expires_at.gt(now))
