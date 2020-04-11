@@ -1,5 +1,8 @@
 #!/bin/bash
 
-set -euxo pipefail
+set -euo pipefail
 
-systemctl stop app
+if (systemctl -q is-active app); then
+  echo "stopping app service..."
+  systemctl stop app
+fi
