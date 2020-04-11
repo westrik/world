@@ -3,6 +3,10 @@ variable "project_name" {
   default = "westrikworld"
 }
 
+variable "admin_email" {
+  type = string
+}
+
 variable "aws_region" {
   type = string
 }

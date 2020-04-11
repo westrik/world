@@ -129,9 +129,9 @@ resource "aws_route" "app_internet_access" {
 }
 
 resource "aws_subnet" "app_az1" {
-  availability_zone = var.aws_az1
-  vpc_id            = aws_vpc.app.id
-  cidr_block        = "10.0.1.0/24"
+  availability_zone       = var.aws_az1
+  vpc_id                  = aws_vpc.app.id
+  cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
 
   tags = {
@@ -314,5 +314,73 @@ resource "aws_route53_record" "app_caa" {
   type    = "CAA"
   records = ["0 issue \"amazon.com\""]
   ttl     = 60
+}
+
+
+
+resource "aws_secretsmanager_secret" "westrikworld_api_cert" {
+  name                    = "westrikworld_api_cert"
+  recovery_window_in_days = 0
+}
+
+/** Lambda for renewing certificate with Let's Encrypt */
+resource "aws_lambda_function" "renew_certificate" {
+  function_name = "renew_certificate"
+  role          = aws_iam_role.lambda_renew_certificate.arn
+  // TODO: zip needs to be built on ami-0080e4c5bc078760e
+  // see https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
+  filename = "./lambda/renew_certificate.zip"
+  handler  = "renew_certificate.lambda_handler"
+  runtime  = "python3.7"
+
+  vpc_config {
+    security_group_ids = [aws_security_group.app_inbound.id, aws_security_group.app_outbound.id, aws_security_group.app_outbound_s3.id]
+    subnet_ids         = [aws_subnet.app_az1.id, aws_subnet.app_az2.id]
+
+  }
+}
+
+data "aws_iam_policy_document" "lambda_renew_certificate" {
+  statement {
+    sid = "1"
+
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    principals {
+      identifiers = ["lambda.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+}
+
+resource "aws_iam_role" "lambda_renew_certificate" {
+  name               = "lambda_renew_certificate"
+  path               = "/"
+  assume_role_policy = data.aws_iam_policy_document.lambda_renew_certificate.json
+}
+
+resource "aws_iam_role_policy_attachment" "role_attach_lambda_vpc" {
+  role       = aws_iam_role.lambda_renew_certificate.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "role_attach_lambda_secrets_manager" {
+  role       = aws_iam_role.lambda_renew_certificate.name
+  policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+}
+
+data "aws_lambda_invocation" "renew_certificate" {
+  function_name = aws_lambda_function.renew_certificate.function_name
+  depends_on    = [aws_lambda_function.renew_certificate]
+
+  input = <<JSON
+{
+  "domains": ["${var.api_domain_name}"],
+  "email": "${var.admin_email}",
+  "secret_id": "${aws_secretsmanager_secret.westrikworld_api_cert.name}"
+}
+JSON
 }
 

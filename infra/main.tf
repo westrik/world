@@ -31,6 +31,7 @@ module "api" {
   aws_region       = var.aws_region
   api_domain_name  = var.api_domain_name
   root_domain_name = var.root_domain_name
+  admin_email      = var.admin_email
 }
 
 module "database" {

@@ -17,3 +17,7 @@ variable "api_domain_name" {
 variable "root_domain_name" {
   default = "westrikworld.com"
 }
+
+variable "admin_email" {
+  type = string
+}
