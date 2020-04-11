@@ -25,4 +25,9 @@ do
 done
 
 echo "all requests failed"
+
+echo "service logs:"
+journalctl --no-pager -u app -b
+journalctl --no-pager -u nginx -b
+
 exit 1
