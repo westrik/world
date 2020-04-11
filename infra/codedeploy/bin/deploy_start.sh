@@ -4,6 +4,7 @@ SERVICE_CONF="/etc/systemd/system/app.service"
 SERVICE_D="$SERVICE_CONF.d"
 SECRETS_ENV_FILE="$SERVICE_D/production.conf"
 SERVER_BIN_FILE=/usr/bin/run_server
+CORS_ORIGIN_URL="https://westrikworld.com"
 
 set -euxo pipefail
 
@@ -29,10 +30,19 @@ RDS_USER=$(aws secretsmanager get-secret-value --secret-id "westrikworld_databas
 RDS_PASSWORD=$(aws secretsmanager get-secret-value --secret-id "westrikworld_database_password" | jq -r '.SecretString')
 RDS_DB_NAME=$(aws secretsmanager get-secret-value --secret-id "westrikworld_database_name" | jq -r '.SecretString')
 PASSWORD_HASH_SALT=$(aws secretsmanager get-secret-value --secret-id "westrikworld_password_hash_salt" | jq -r '.SecretString')
-echo "[Service]" >> $SECRETS_ENV_FILE
-echo "Environment=\"DATABASE_URL='postgres://$RDS_USER:$RDS_PASSWORD@$RDS_HOST/$RDS_DB_NAME'\"" >> $SECRETS_ENV_FILE
-echo "Environment=\"PASSWORD_HASH_SALT='$PASSWORD_HASH_SALT'\"" >> $SECRETS_ENV_FILE
-echo "Environment=\"CORS_ORIGIN_URL='https://westrikworld.com'\"" >> $SECRETS_ENV_FILE
+
+# escape '%' in random strings
+# (otherwise systemd thinks it's a unit specifier)
+RDS_PASSWORD="${RDS_PASSWORD//\%/\%\%}"
+PASSWORD_HASH_SALT="${PASSWORD_HASH_SALT//\%/\%\%}"
+
+{
+  echo "[Service]"
+  echo "Environment=\"DATABASE_URL='postgres://$RDS_USER:$RDS_PASSWORD@$RDS_HOST/$RDS_DB_NAME'\""
+  echo "Environment=\"PASSWORD_HASH_SALT='$PASSWORD_HASH_SALT'\""
+  echo "Environment=\"CORS_ORIGIN_URL='$CORS_ORIGIN_URL'\""
+} >> $SECRETS_ENV_FILE
+
 systemctl daemon-reload
 
 chown root:root $SERVER_BIN_FILE
