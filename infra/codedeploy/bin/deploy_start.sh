@@ -31,10 +31,9 @@ RDS_PASSWORD=$(aws secretsmanager get-secret-value --secret-id "westrikworld_dat
 RDS_DB_NAME=$(aws secretsmanager get-secret-value --secret-id "westrikworld_database_name" | jq -r '.SecretString')
 PASSWORD_HASH_SALT=$(aws secretsmanager get-secret-value --secret-id "westrikworld_password_hash_salt" | jq -r '.SecretString')
 
-# escape '%' in random strings
-# (otherwise systemd thinks it's a unit specifier)
-RDS_PASSWORD="${RDS_PASSWORD//\%/%%}"
-PASSWORD_HASH_SALT="${PASSWORD_HASH_SALT//\%/%%}"
+# for random strings, escape '%' twice (once for systemd, once for postgres)
+RDS_PASSWORD="${RDS_PASSWORD//\%/%%25}"
+PASSWORD_HASH_SALT="${PASSWORD_HASH_SALT//\%/%%25}"
 
 {
   echo "[Service]"
