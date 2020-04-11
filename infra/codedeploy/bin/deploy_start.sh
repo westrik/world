@@ -33,8 +33,8 @@ PASSWORD_HASH_SALT=$(aws secretsmanager get-secret-value --secret-id "westrikwor
 
 # escape '%' in random strings
 # (otherwise systemd thinks it's a unit specifier)
-RDS_PASSWORD="${RDS_PASSWORD//\%/\%\%}"
-PASSWORD_HASH_SALT="${PASSWORD_HASH_SALT//\%/\%\%}"
+RDS_PASSWORD="${RDS_PASSWORD//\%/%%}"
+PASSWORD_HASH_SALT="${PASSWORD_HASH_SALT//\%/%%}"
 
 {
   echo "[Service]"
