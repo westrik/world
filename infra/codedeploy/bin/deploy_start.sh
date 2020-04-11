@@ -38,9 +38,9 @@ PASSWORD_HASH_SALT="${PASSWORD_HASH_SALT//\%/%%}"
 
 {
   echo "[Service]"
-  echo "Environment=\"DATABASE_URL='postgres://$RDS_USER:$RDS_PASSWORD@$RDS_HOST/$RDS_DB_NAME'\""
-  echo "Environment=\"PASSWORD_HASH_SALT='$PASSWORD_HASH_SALT'\""
-  echo "Environment=\"CORS_ORIGIN_URL='$CORS_ORIGIN_URL'\""
+  echo "Environment=\"DATABASE_URL=postgres://$RDS_USER:$RDS_PASSWORD@$RDS_HOST/$RDS_DB_NAME\""
+  echo "Environment=\"PASSWORD_HASH_SALT=$PASSWORD_HASH_SALT\""
+  echo "Environment=\"CORS_ORIGIN_URL=$CORS_ORIGIN_URL\""
 } >> $SECRETS_ENV_FILE
 
 systemctl daemon-reload
