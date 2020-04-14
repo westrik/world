@@ -1,7 +1,8 @@
 use chrono::{DateTime, Utc};
 
 use crate::auth::models::user::User;
-use crate::schema::{blocks, blocks::dsl::blocks as all_blocks};
+// use crate::schema::{blocks, blocks::dsl::blocks as all_blocks};
+use crate::schema::blocks;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(User)]

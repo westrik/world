@@ -1,7 +1,7 @@
 use crate::db::{get_conn, DbConnection, DbPool};
 use crate::fixtures::{get_test_session, get_test_user};
+use westrikworld_core::content::models::task::{Task, TaskCreateSpec};
 use westrikworld_core::resource_identifier::{generate_resource_identifier, ResourceType};
-use westrikworld_core::tasks::models::task::{Task, TaskCreateSpec};
 
 // TODO:
 //  - test update logic

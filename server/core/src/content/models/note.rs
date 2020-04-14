@@ -2,8 +2,8 @@ use chrono::{DateTime, Utc};
 
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
+use crate::content::schema::Content;
 use crate::errors::ApiError;
-use crate::notes::content::schema::Content;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{notes, notes::dsl::notes as all_notes};
 use diesel::prelude::*;

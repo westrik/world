@@ -1,9 +1,9 @@
 use crate::auth::models::session::Session;
+use crate::content::models::note::{Note, NoteSummary};
+use crate::content::parsing::parse_markdown_content;
+use crate::content::schema::Content;
 use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
-use crate::notes::content::parsing::parse_markdown_content;
-use crate::notes::content::schema::Content;
-use crate::notes::models::note::{Note, NoteSummary};
 use crate::utils::list_options::ListOptions;
 use std::convert::Infallible;
 use warp::http::StatusCode;
