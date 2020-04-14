@@ -9,13 +9,14 @@ use crate::{API_VERSION, MAX_CONTENT_LENGTH_BYTES};
 use diesel::dsl::now;
 use diesel::prelude::*;
 use diesel::result::Error;
+use serde_json::json;
 use std::convert::Infallible;
 use warp::cors::Cors;
 use warp::Filter;
 
 pub fn api(db_pool: DbPool) -> impl Filter<Extract = impl warp::Reply, Error = Infallible> + Clone {
     preflight_cors()
-        .or(health_check("API service"))
+        .or(health_check("api"))
         .or(authentication(db_pool.clone()))
         .or(authenticated(db_pool))
         .map(|r| warp::reply::with_header(r, "X-API-Version", API_VERSION))
@@ -81,9 +82,14 @@ pub fn preflight_cors() -> impl Filter<Extract = impl warp::Reply, Error = warp:
 }
 
 pub fn health_check(
-    system: &'static str,
+    service_name: &'static str,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone + 'static {
-    warp::path::end().map(move || Ok(format!("{} OK, version {}", system, API_VERSION)))
+    let response = json!({
+        "service": service_name,
+        "status": "ok",
+        "version": API_VERSION
+    });
+    warp::path::end().map(move || warp::reply::json(&response))
 }
 
 pub fn cors_wrapper(cors_origin_url: &str) -> Cors {
