@@ -15,8 +15,6 @@ pub struct Job {
     pub id: i32,
     #[serde(rename = "apiId")]
     pub api_id: String,
-    #[serde(skip)]
-    pub user_id: Option<i32>,
     #[serde(rename = "createdAt")]
     pub created_at: DateTime<Utc>,
     #[serde(rename = "updatedAt")]
@@ -26,6 +24,8 @@ pub struct Job {
     #[serde(rename = "type")]
     pub job_type: String,
     pub payload: Option<serde_json::Value>,
+    #[serde(skip)]
+    pub user_id: Option<i32>,
 }
 
 #[derive(Insertable, Debug)]
@@ -64,11 +64,11 @@ impl Job {
         conn: &PgConnection,
         job_type: JobType,
         payload: Option<serde_json::Value>,
-        user_id: Option<i32>
+        user_id: Option<i32>,
     ) -> Result<Job, ApiError> {
         JobCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Job),
-            user_id: user_id,
+            user_id,
             job_type: format!("{}", job_type).to_string(),
             payload,
         }

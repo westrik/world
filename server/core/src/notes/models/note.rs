@@ -21,7 +21,7 @@ pub struct Note {
     pub created_at: DateTime<Utc>,
     #[serde(rename = "updatedAt")]
     pub updated_at: DateTime<Utc>,
-    pub content: serde_json::Value,
+    // pub content: serde_json::Value,
     // TODO: add title and description columns
     //  fallback: generate title from content (first header element)
     //  fallback: generate description from content (first non-header text element)
@@ -42,7 +42,7 @@ pub struct NoteSummary {
 pub struct NoteCreateSpec {
     pub api_id: String,
     pub user_id: i32,
-    pub content: serde_json::Value,
+    // pub content: serde_json::Value,
 }
 impl NoteCreateSpec {
     pub fn insert(&self, conn: &PgConnection) -> Result<Note, ApiError> {
@@ -58,7 +58,7 @@ impl NoteCreateSpec {
 #[table_name = "notes"]
 pub struct NoteUpdateSpec {
     pub updated_at: DateTime<Utc>,
-    pub content: Option<serde_json::Value>,
+    // pub content: Option<serde_json::Value>,
 }
 impl NoteUpdateSpec {
     pub fn update(
@@ -104,12 +104,12 @@ impl Note {
     pub fn create(
         conn: &PgConnection,
         session: Session,
-        content: serde_json::Value,
+        _content: serde_json::Value,
     ) -> Result<Note, ApiError> {
         NoteCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Note),
             user_id: session.user_id,
-            content,
+            // content,
         }
         .insert(conn)
     }
@@ -120,16 +120,16 @@ impl Note {
         api_id: String,
         content: Option<Content>,
     ) -> Result<Note, ApiError> {
-        let mut content_update = None;
+        let mut _content_update = None;
         if let Some(content_data) = content {
-            content_update = Some(
+            _content_update = Some(
                 serde_json::to_value(content_data)
                     .map_err(|_| ApiError::InternalError("Bad content conversion".to_string()))?,
             );
         }
         NoteUpdateSpec {
             updated_at: Utc::now(),
-            content: content_update,
+            // content: content_update,
         }
         .update(conn, api_id, session.user_id)
     }

@@ -1,13 +1,34 @@
 table! {
+    block_versions (id) {
+        id -> Int4,
+        block_id -> Int4,
+        created_at -> Timestamptz,
+        content -> Jsonb,
+    }
+}
+
+table! {
+    blocks (id) {
+        id -> Int4,
+        api_id -> Varchar,
+        user_id -> Int4,
+        note_id -> Nullable<Int4>,
+        position -> Int4,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
+    }
+}
+
+table! {
     jobs (id) {
         id -> Int4,
         api_id -> Varchar,
-        user_id -> Nullable<Int4>,
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
         status -> Varchar,
         job_type -> Varchar,
         payload -> Nullable<Jsonb>,
+        user_id -> Nullable<Int4>,
     }
 }
 
@@ -18,7 +39,6 @@ table! {
         user_id -> Int4,
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
-        content -> Jsonb,
     }
 }
 
@@ -57,15 +77,11 @@ table! {
     }
 }
 
+joinable!(blocks -> notes (note_id));
+joinable!(blocks -> users (user_id));
 joinable!(jobs -> users (user_id));
 joinable!(notes -> users (user_id));
 joinable!(sessions -> users (user_id));
 joinable!(tasks -> users (user_id));
 
-allow_tables_to_appear_in_same_query!(
-    jobs,
-    notes,
-    sessions,
-    tasks,
-    users,
-);
+allow_tables_to_appear_in_same_query!(block_versions, blocks, jobs, notes, sessions, tasks, users,);
