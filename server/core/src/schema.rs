@@ -63,6 +63,7 @@ table! {
         sibling_id -> Nullable<Int4>,
         parent_id -> Nullable<Int4>,
         is_collapsed -> Bool,
+        block_id -> Int4,
     }
 }
 
@@ -82,6 +83,7 @@ joinable!(blocks -> users (user_id));
 joinable!(jobs -> users (user_id));
 joinable!(notes -> users (user_id));
 joinable!(sessions -> users (user_id));
+joinable!(tasks -> blocks (block_id));
 joinable!(tasks -> users (user_id));
 
 allow_tables_to_appear_in_same_query!(block_versions, blocks, jobs, notes, sessions, tasks, users,);

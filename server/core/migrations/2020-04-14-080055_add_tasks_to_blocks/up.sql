@@ -1,0 +1,2 @@
+DELETE FROM tasks;
+ALTER TABLE tasks ADD COLUMN block_id INT NOT NULL, ADD FOREIGN KEY (block_id) REFERENCES blocks (id);

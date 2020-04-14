@@ -21,6 +21,7 @@ pub struct Task {
     pub sibling_id: Option<i32>,
     pub parent_id: Option<i32>,
     pub is_collapsed: bool,
+    pub block_id: i32,
 }
 pub struct LoadedTask {
     pub task: Task,
@@ -33,6 +34,7 @@ pub struct LoadedTask {
 pub struct TaskCreateSpec {
     pub api_id: String,
     pub user_id: i32,
+    pub block_id: i32,
     pub description: String,
 }
 impl TaskCreateSpec {
@@ -55,6 +57,7 @@ pub struct TaskUpdateSpec {
     pub is_collapsed: Option<bool>,
     pub parent_id: Option<Option<i32>>,
     pub sibling_id: Option<Option<i32>>,
+    pub block_id: Option<i32>,
 }
 impl TaskUpdateSpec {
     pub fn update(
@@ -157,6 +160,7 @@ impl Task {
         let new_task = TaskCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Task),
             user_id: session.user_id,
+            block_id: 1, // TODO: block ID
             description,
         };
         new_task.insert(conn)
@@ -169,6 +173,7 @@ impl Task {
         spec: ApiTaskUpdateSpec,
     ) -> Result<Task, ApiError> {
         TaskUpdateSpec {
+            block_id: None,
             updated_at: Utc::now(),
             completed_at: match spec.is_completed {
                 Some(is_completed) => {
