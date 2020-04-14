@@ -17,14 +17,11 @@ fmt:
 prepush:
 	make fmt && make check
 
-watch_check:
-	cd server && cargo watch -x check -s 'touch ../.trigger'
+check_and_test:
+	cd server && cargo watch -x check -x test -s 'touch ../.trigger'
 
-watch_run_server:
+run_server:
 	cd server && cargo watch --no-gitignore -w ../.trigger -x 'run --bin run_server'
-
-watch_run_tests:
-	cd server && cargo watch --no-gitignore -w ../.trigger -x test
 
 run_client:
 	cd client-web && yarn start

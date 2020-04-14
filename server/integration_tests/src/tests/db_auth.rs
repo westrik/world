@@ -1,5 +1,5 @@
 use crate::db::{get_conn, DbPool};
-use crate::fixtures::{
+use crate::fixtures::auth::{
     get_test_user, TEST_USER_EMAIL_ADDRESS, TEST_USER_FULL_NAME, TEST_USER_PASSWORD,
 };
 use chrono::{Duration, Utc};

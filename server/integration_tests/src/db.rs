@@ -1,8 +1,12 @@
-use crate::fixtures::{create_test_session, create_test_user};
 use diesel::Connection;
 use dotenv::dotenv;
 use std::{env, io};
-pub use westrikworld_core::db::{get_conn, init_pool, DbPool, DbPooledConnection as DbConnection};
+
+pub use westrikworld_core::db::{
+    begin_txn, get_conn, init_pool, rollback_txn, DbPool, DbPooledConnection as DbConnection,
+};
+
+use crate::fixtures::*;
 
 embed_migrations!("../core/migrations");
 
@@ -25,20 +29,15 @@ pub fn create_test_db() -> DbPool {
     pool
 }
 
-pub fn begin_txn(pool: &DbPool) {
-    get_conn(&pool).unwrap().execute("BEGIN").unwrap();
-}
-
-pub fn rollback_txn(pool: &DbPool) {
-    get_conn(&pool).unwrap().execute("ROLLBACK").unwrap();
-}
-
 pub fn destroy_test_db(pool: &DbPool) {
     let conn = get_conn(&pool).unwrap();
     println!("🪓 destroying test database...");
-    conn.execute("ROLLBACK").unwrap();
-    conn.execute("DROP TABLE IF EXISTS notes").unwrap();
+    rollback_txn(&conn).unwrap();
+    // TODO: automatically drop tables in the right order
     conn.execute("DROP TABLE IF EXISTS tasks").unwrap();
+    conn.execute("DROP TABLE IF EXISTS block_versions").unwrap();
+    conn.execute("DROP TABLE IF EXISTS blocks").unwrap();
+    conn.execute("DROP TABLE IF EXISTS notes").unwrap();
     conn.execute("DROP TABLE IF EXISTS sessions").unwrap();
     conn.execute("DROP TABLE IF EXISTS jobs").unwrap();
     conn.execute("DROP TABLE IF EXISTS users").unwrap();

@@ -1,4 +1,4 @@
-use crate::notes::content::schema::{
+use crate::content::schema::{
     CodeBlockData, ColumnType, Content, Element, ElementType, HeadingType, LinkData, LinkType,
     ListData, TableData, TaskListMarkerData,
 };
@@ -204,11 +204,11 @@ pub fn parse_markdown_content(input: String) -> Content {
 #[cfg(test)]
 pub mod markdown_parsing {
     use super::*;
-    use crate::notes::content::schema::ColumnType::*;
-    use crate::notes::content::schema::ElementType::*;
-    use crate::notes::content::schema::HeadingType::*;
-    use crate::notes::content::schema::LinkType::*;
-    use crate::notes::content::schema::*;
+    use crate::content::schema::ColumnType::*;
+    use crate::content::schema::ElementType::*;
+    use crate::content::schema::HeadingType::*;
+    use crate::content::schema::LinkType::*;
+    use crate::content::schema::*;
 
     const TEST_URL: &str = "http://example.com";
 

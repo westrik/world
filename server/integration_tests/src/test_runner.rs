@@ -1,4 +1,4 @@
-use crate::db::{begin_txn, create_test_db, destroy_test_db, rollback_txn, DbPool};
+use crate::db::*;
 use std::io::{stdout, Write};
 
 #[cfg(test)]
@@ -11,9 +11,9 @@ pub fn runner(tests: &[&dyn Fn(&DbPool)]) {
 
     for test in tests {
         let pool = pool.clone();
-        begin_txn(&pool);
+        begin_txn(&get_conn(&pool).unwrap()).unwrap();
         test(&pool);
-        rollback_txn(&pool);
+        rollback_txn(&get_conn(&pool).unwrap()).unwrap();
         print!(".");
         stdout().flush().unwrap();
     }

@@ -1640,7 +1640,7 @@ lazy_static! {
     static ref NUM_MNEMONIC_WORDS: usize = MNEMONIC_WORDS.len();
 }
 
-pub const DEFAULT_MNEMONIC_LENGTH: usize = 3;
+pub const DEFAULT_MNEMONIC_LENGTH: usize = 2;
 
 pub fn generate_mnemonic(length: usize) -> String {
     let mnemonic_words: Vec<&'static str> =
@@ -1655,6 +1655,13 @@ pub fn generate_mnemonic(length: usize) -> String {
 pub mod mnemonic_generation {
     use super::*;
     use regex::Regex;
+
+    #[test]
+    fn count_permutations() {
+        let num_permutations = (*NUM_MNEMONIC_WORDS).pow(DEFAULT_MNEMONIC_LENGTH as u32);
+        println!("permutations: {}", num_permutations);
+        assert!(num_permutations > 100_000);
+    }
 
     #[test]
     fn mnemonic_generation() {

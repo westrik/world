@@ -6,10 +6,14 @@ use std::fmt;
 pub enum ResourceType {
     User,
     Job,
-    Task,
     Note,
+    Block,
+    Task,
     Tag,
     Link,
+    // Diagram,
+    // Image,
+    // Video,
 }
 
 impl fmt::Display for ResourceType {
@@ -47,6 +51,11 @@ pub mod resource_identifiers {
         assert!(Regex::new(r"^note_[A-Za-z0-9]{8}$")
             .unwrap()
             .is_match(&note_id));
+
+        let block_id = generate_resource_identifier(Block);
+        assert!(Regex::new(r"^block_[A-Za-z0-9]{8}$")
+            .unwrap()
+            .is_match(&block_id));
 
         let tag_id = generate_resource_identifier(Tag);
         assert!(Regex::new(r"^tag_[A-Za-z0-9]{8}$")

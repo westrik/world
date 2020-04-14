@@ -1,8 +1,8 @@
 use crate::auth::filters::routes as auth_routes;
 use crate::auth::models::session::Session;
+use crate::content::filters::routes as note_routes;
 use crate::db::{get_conn, DbPool};
 use crate::errors::{handle_rejection, ApiError};
-use crate::notes::filters::routes as note_routes;
 use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
 use crate::tasks::filters::routes as task_routes;
 use crate::{API_VERSION, MAX_CONTENT_LENGTH_BYTES};

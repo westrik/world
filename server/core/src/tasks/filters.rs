@@ -1,7 +1,7 @@
+use crate::content::models::task::{ApiTaskCreateSpec, ApiTaskUpdateSpec};
 use crate::db::DbPool;
 use crate::routes::{json_body, with_db, with_session};
 use crate::tasks::handlers;
-use crate::tasks::models::task::{ApiTaskCreateSpec, ApiTaskUpdateSpec};
 use crate::utils::list_options::ListOptions;
 use warp::Filter;
 

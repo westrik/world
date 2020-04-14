@@ -20,7 +20,7 @@ pub mod utils;
 
 // TODO: move DB operations to an async thread pool (tokio?)
 pub mod auth;
-pub mod notes;
+pub mod content;
 pub mod tasks;
 
 pub static API_VERSION: &str = "0.1.x";
