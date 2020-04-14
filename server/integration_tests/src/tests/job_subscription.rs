@@ -10,5 +10,6 @@ fn test_enqueued_job_is_completed(pool: &DbPool) {
         &conn,
         JobType::SYSTEM,
         Some(serde_json::from_str("{}").unwrap()),
+        user_id: None,
     );
 }
