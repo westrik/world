@@ -39,6 +39,7 @@ table! {
         user_id -> Int4,
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
+        name -> Varchar,
     }
 }
 

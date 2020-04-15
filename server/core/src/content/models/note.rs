@@ -6,6 +6,7 @@ use crate::content::schema::Content;
 use crate::errors::ApiError;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{notes, notes::dsl::notes as all_notes};
+use crate::utils::mnemonic::{generate_mnemonic, DEFAULT_MNEMONIC_LENGTH};
 use diesel::prelude::*;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
@@ -21,9 +22,8 @@ pub struct Note {
     pub created_at: DateTime<Utc>,
     #[serde(rename = "updatedAt")]
     pub updated_at: DateTime<Utc>,
-    // TODO: add title and description columns
-    //  fallback: generate title from content (first header element)
-    //  fallback: generate description from content (first non-header text element)
+    pub name: String,
+    // TODO: denormalized full-text summary
 }
 
 #[derive(Queryable, Serialize, Deserialize, Debug)]
@@ -40,6 +40,7 @@ pub struct NoteSummary {
 #[table_name = "notes"]
 pub struct NoteCreateSpec {
     pub api_id: String,
+    pub name: String,
     pub user_id: i32,
     // pub content: serde_json::Value,
 }
@@ -107,6 +108,7 @@ impl Note {
     ) -> Result<Note, ApiError> {
         NoteCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Note),
+            name: generate_mnemonic(DEFAULT_MNEMONIC_LENGTH),
             user_id: session.user_id,
             // content,
         }

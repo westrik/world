@@ -1,5 +1,7 @@
 use chrono::{DateTime, Utc};
+use diesel::PgConnection;
 
+use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
 // use crate::schema::{blocks, blocks::dsl::blocks as all_blocks};
 use crate::schema::blocks;
@@ -20,4 +22,8 @@ pub struct Block {
     pub created_at: DateTime<Utc>,
     #[serde(rename = "updatedAt")]
     pub updated_at: DateTime<Utc>,
+}
+
+impl Block {
+    pub fn create(conn: &PgConnection, session: Session) -> Block {}
 }
