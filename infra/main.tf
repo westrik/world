@@ -23,6 +23,10 @@ module "build_resources" {
 
 // TODO: create module.network and move VPC, SG, etc. config from module.api
 
+// TODO: module.admin for user management (e.g. for KMS)
+
+
+
 module "api" {
   source = "./modules/api"
 

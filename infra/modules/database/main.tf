@@ -7,17 +7,85 @@ resource "random_password" "password" {
   override_special = "_%"
 }
 
+resource "aws_kms_key" "app_db" {
+  description             = "app database encryption key"
+  deletion_window_in_days = 7
+  enable_key_rotation     = false # TODO: enable
+  policy                  = data.aws_iam_policy_document.rds_access_to_kms.json
+}
+
+data "aws_iam_user" "admin_user" {
+  user_name = "mwestrik-mbp"
+}
+
+data "aws_iam_policy_document" "rds_access_to_kms" {
+  statement {
+    sid = "1"
+
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = [data.aws_iam_user.admin_user.arn]
+    }
+
+    resources = ["*"]
+
+    actions = [
+      "kms:Create*",
+      "kms:Describe*",
+      "kms:Enable*",
+      "kms:List*",
+      "kms:Put*",
+      "kms:Update*",
+      "kms:Revoke*",
+      "kms:Disable*",
+      "kms:Get*",
+      "kms:Delete*",
+      "kms:ScheduleKeyDeletion",
+      "kms:CancelKeyDeletion"
+    ]
+  }
+  statement {
+    sid = "2"
+
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["rds.amazonaws.com"]
+    }
+
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:CreateGrant",
+      "kms:ListGrants",
+      "kms:DescribeKey"
+    ]
+  }
+}
+
+
 resource "aws_db_instance" "app" {
-  allocated_storage    = 5
-  storage_type         = "gp2"
   engine               = "postgres"
   engine_version       = "11.5"
-  instance_class       = "db.t2.micro"
-  identifier           = "${var.project_name}-app"
-  name                 = "${var.project_name}_app"
-  username             = var.db_username
-  password             = random_password.password.result
+  instance_class       = "db.t3.micro"
   parameter_group_name = "default.postgres11"
+
+  identifier = "${var.project_name}-app"
+  name       = "${var.project_name}_app"
+
+  username = var.db_username
+  password = random_password.password.result
+
+  allocated_storage  = 5
+  storage_type       = "gp2"
+  storage_encrypted  = true
+  kms_key_id         = aws_kms_key.app_db.arn
+  ca_cert_identifier = "rds-ca-2019"
 
   skip_final_snapshot = true # TODO: remove and set final_snapshot_identifier
 
@@ -26,16 +94,15 @@ resource "aws_db_instance" "app" {
 
   iam_database_authentication_enabled = true
 
-  //  storage_encrypted = true
-  //  kms_key_id = "KMS_ENCRYPTION_KEY_ARN"
+  // TODO: use as read replica for DB in us-west-1
+  //  replicate_source_db = ""
 
+  enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
   //  monitoring_role_arn = "IAM_ROLE_ARN"
-  //  enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
-
   //  deletion_protection = true
 
-  //  maintenance_window = "Mon:00:00-Mon:03:00"
-  //  backup_window      = "03:00-06:00"
+  maintenance_window = "Mon:00:00-Mon:03:00"
+  backup_window      = "03:00-06:00"
 
   backup_retention_period = 0 # TODO: disable after testing
 

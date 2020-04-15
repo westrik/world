@@ -181,6 +181,8 @@ resource "aws_instance" "app" {
   subnet_id              = aws_subnet.app_az1.id
   iam_instance_profile   = aws_iam_instance_profile.app_host.name
 
+  # TODO: encrypt EBS with KMS key? or figure out how to avoid saving things to disk
+
   tags = {
     Name        = "app"
     Environment = "production"
@@ -371,16 +373,16 @@ resource "aws_iam_role_policy_attachment" "role_attach_lambda_secrets_manager" {
   policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
 }
 
-data "aws_lambda_invocation" "renew_certificate" {
-  function_name = aws_lambda_function.renew_certificate.function_name
-  depends_on    = [aws_lambda_function.renew_certificate]
-
-  input = <<JSON
-{
-  "domains": ["${var.api_domain_name}"],
-  "email": "${var.admin_email}",
-  "secret_id": "${aws_secretsmanager_secret.westrikworld_api_cert.name}"
-}
-JSON
-}
-
+//data "aws_lambda_invocation" "renew_certificate" {
+//  function_name = aws_lambda_function.renew_certificate.function_name
+//  depends_on    = [aws_lambda_function.renew_certificate]
+//
+//  input = <<JSON
+//{
+//  "domains": ["${var.api_domain_name}"],
+//  "email": "${var.admin_email}",
+//  "secret_id": "${aws_secretsmanager_secret.westrikworld_api_cert.name}"
+//}
+//JSON
+//}
+//
