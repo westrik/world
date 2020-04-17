@@ -6,11 +6,14 @@ use std::fmt;
 pub enum ResourceType {
     User,
     Job,
-    Task,
     Note,
     Block,
+    Task,
     Tag,
     Link,
+    // Diagram,
+    // Image,
+    // Video,
 }
 
 impl fmt::Display for ResourceType {
