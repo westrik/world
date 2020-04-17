@@ -11,5 +11,5 @@ output "app_vpc" {
 }
 
 output "app_deploy_hosts" {
-  value = [aws_instance.app.id]
+  value = aws_instance.app.*.id
 }

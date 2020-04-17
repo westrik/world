@@ -4,18 +4,14 @@
 // - Request a TLS certificate from ACM for the LB
 // - Point Route 53 DNS at the LB
 
-/*
-TODO(later):
-  - [ ] handle IPv6
-  - [ ] provision ACM private cert to use with NLB
-*/
-
 provider "aws" {
   region = var.aws_region
 }
 
 resource "aws_vpc" "app" {
   cidr_block = "10.0.0.0/16"
+  // TODO: enable if/when NLBs support IPv6
+  //  assign_generated_ipv6_cidr_block = true
 
   tags = {
     Name        = "app_vpc"
@@ -175,6 +171,8 @@ resource "aws_instance" "app" {
   # TODO: [harden] change default login and SSH config for AMI (no password)
   # TODO?: configure with a stored keypair to allow login via bastion
 
+  count = var.num_app_instances
+
   instance_type          = "t3a.micro"
   ami                    = data.aws_ami.app.id
   vpc_security_group_ids = [aws_security_group.app_inbound.id, aws_security_group.app_outbound.id, aws_security_group.app_outbound_s3.id]
@@ -260,8 +258,9 @@ resource "aws_lb_target_group" "app_insecure" {
   vpc_id   = aws_vpc.app.id
 }
 resource "aws_lb_target_group_attachment" "app_insecure" {
+  count            = var.num_app_instances
+  target_id        = aws_instance.app[count.index].id
   target_group_arn = aws_lb_target_group.app_insecure.arn
-  target_id        = aws_instance.app.id
   port             = 80
 }
 resource "aws_lb_listener" "app_insecure" {
@@ -283,8 +282,9 @@ resource "aws_lb_target_group" "app" {
   vpc_id   = aws_vpc.app.id
 }
 resource "aws_lb_target_group_attachment" "app" {
+  count            = var.num_app_instances
+  target_id        = aws_instance.app[count.index].id
   target_group_arn = aws_lb_target_group.app.arn
-  target_id        = aws_instance.app.id
   port             = 443
 }
 resource "aws_lb_listener" "app" {

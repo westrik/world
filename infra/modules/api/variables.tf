@@ -26,3 +26,9 @@ variable "api_domain_name" {
 variable "root_domain_name" {
   type = string
 }
+
+variable "num_app_instances" {
+  type    = number
+  default = 1
+}
+
