@@ -1,9 +1,11 @@
 use chrono::{DateTime, Utc};
-use diesel::PgConnection;
+use diesel::prelude::*;
 
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
 // use crate::schema::{blocks, blocks::dsl::blocks as all_blocks};
+use crate::errors::ApiError;
+use crate::resource_identifier::*;
 use crate::schema::blocks;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
@@ -24,6 +26,33 @@ pub struct Block {
     pub updated_at: DateTime<Utc>,
 }
 
+#[derive(Insertable, Debug)]
+#[table_name = "blocks"]
+struct BlockCreateSpec {
+    pub api_id: String,
+    pub user_id: i32,
+    pub note_id: Option<i32>,
+    pub position: Option<i32>,
+}
+impl BlockCreateSpec {
+    pub fn insert(&self, conn: &PgConnection) -> Result<Block, ApiError> {
+        info!("creating block: {:?}", self);
+        Ok(diesel::insert_into(blocks::table)
+            .values(self)
+            .get_result(conn)
+            .map_err(ApiError::DatabaseError)?)
+    }
+}
+
 impl Block {
-    pub fn create(conn: &PgConnection, session: Session) -> Block {}
+    pub fn create(conn: &PgConnection, session: Session) -> Result<Block, ApiError> {
+        BlockCreateSpec {
+            api_id: generate_resource_identifier(ResourceType::Block),
+            user_id: session.user_id,
+            note_id: None,  // TODO: pass in link to note
+            position: None, // TODO: move to BlockVersion?
+        }
+        .insert(conn)
+        // TODO: insert an initial BlockVersion in the same txn
+    }
 }

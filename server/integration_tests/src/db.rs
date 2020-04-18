@@ -1,8 +1,10 @@
-use crate::fixtures::{create_test_session, create_test_user};
 use diesel::Connection;
 use dotenv::dotenv;
 use std::{env, io};
+
 pub use westrikworld_core::db::{get_conn, init_pool, DbPool, DbPooledConnection as DbConnection};
+
+use crate::fixtures::*;
 
 embed_migrations!("../core/migrations");
 
@@ -38,9 +40,9 @@ pub fn destroy_test_db(pool: &DbPool) {
     println!("🪓 destroying test database...");
     conn.execute("ROLLBACK").unwrap();
     conn.execute("DROP TABLE IF EXISTS block_versions").unwrap();
+    conn.execute("DROP TABLE IF EXISTS tasks").unwrap();
     conn.execute("DROP TABLE IF EXISTS blocks").unwrap();
     conn.execute("DROP TABLE IF EXISTS notes").unwrap();
-    conn.execute("DROP TABLE IF EXISTS tasks").unwrap();
     conn.execute("DROP TABLE IF EXISTS sessions").unwrap();
     conn.execute("DROP TABLE IF EXISTS jobs").unwrap();
     conn.execute("DROP TABLE IF EXISTS users").unwrap();
