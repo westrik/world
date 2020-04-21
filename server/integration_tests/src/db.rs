@@ -39,8 +39,9 @@ pub fn destroy_test_db(pool: &DbPool) {
     let conn = get_conn(&pool).unwrap();
     println!("🪓 destroying test database...");
     conn.execute("ROLLBACK").unwrap();
-    conn.execute("DROP TABLE IF EXISTS block_versions").unwrap();
+    // TODO: automatically drop tables in the right order
     conn.execute("DROP TABLE IF EXISTS tasks").unwrap();
+    conn.execute("DROP TABLE IF EXISTS block_versions").unwrap();
     conn.execute("DROP TABLE IF EXISTS blocks").unwrap();
     conn.execute("DROP TABLE IF EXISTS notes").unwrap();
     conn.execute("DROP TABLE IF EXISTS sessions").unwrap();
