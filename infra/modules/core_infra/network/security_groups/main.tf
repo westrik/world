@@ -42,9 +42,9 @@ resource "aws_security_group" "app_outbound_s3" {
 
   # Outbound HTTPS access to S3 (via VPC endpoint)
   egress {
-    from_port = 443
-    to_port   = 443
-    protocol  = "tcp"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
     prefix_list_ids = var.prefix_list_ids
   }
 
@@ -54,7 +54,7 @@ resource "aws_security_group" "app_outbound_s3" {
     to_port   = 53
     protocol  = "tcp"
     cidr_blocks = [
-      "0.0.0.0/0"]
+    "0.0.0.0/0"]
     # TODO: specify CIDR for DNS
   }
 }
@@ -78,7 +78,7 @@ resource "aws_security_group" "app_outbound" {
     to_port   = 5432
     protocol  = "tcp"
     cidr_blocks = [
-      "10.0.0.0/16"]
+    "10.0.0.0/16"]
   }
 }
 
