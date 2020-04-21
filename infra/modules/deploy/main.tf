@@ -36,21 +36,6 @@ resource "aws_codedeploy_deployment_group" "app" {
   }
 }
 
-resource "random_string" "deploy_bucket_hash" {
-  length  = 6
-  special = false
-  upper = false
-}
-// TODO: add ACL and lifecycle rule
-resource "aws_s3_bucket" "app_deploy" {
-  bucket = "${var.project_name}-deploy-${random_string.deploy_bucket_hash.result}"
-  acl    = "private"
-
-  versioning {
-    enabled = true
-  }
-}
-
 resource "aws_iam_access_key" "deploy_upload" {
   user    = aws_iam_user.deploy_upload.name
 }
@@ -73,29 +58,13 @@ resource "aws_iam_user_policy" "deploy_upload" {
         "s3:PutObject*"
       ],
       "Effect": "Allow",
-      "Resource": ["${aws_s3_bucket.app_deploy.arn}/*"]
+      "Resource": ["${var.deploy_bucket_arn}/*"]
     }
   ]
 }
 EOF
 }
 
-resource "aws_s3_bucket" "app_deploy_cloudfront" {
-  bucket = "${var.project_name}-public-${random_string.deploy_bucket_hash.result}"
-  acl    = "public-read"
-
-  versioning {
-    enabled = true
-  }
-
-  cors_rule {
-    allowed_headers = ["*"]
-    allowed_methods = ["GET"]
-    allowed_origins = ["http://westrik.world", "https://staging.westrikworld.com"]
-    expose_headers  = ["ETag"]
-    max_age_seconds = 3000
-  }
-}
 
 resource "aws_iam_role" "codedeploy" {
   name               = "codedeploy"
@@ -168,9 +137,9 @@ resource "aws_iam_role_policy" "codepipeline" {
         "s3:PutObject*"
       ],
       "Resource": [
-        "${aws_s3_bucket.app_deploy.arn}",
-        "${aws_s3_bucket.app_deploy.arn}/*",
-        "${aws_s3_bucket.app_deploy_cloudfront.arn}/*"
+        "${var.deploy_bucket_arn}",
+        "${var.deploy_bucket_arn}/*",
+        "${var.deploy_cloudfront_bucket_arn}/*"
       ]
     },
     {
@@ -196,7 +165,7 @@ resource "aws_codepipeline" "app" {
   // https://www.terraform.io/docs/providers/aws/r/cloudwatch_event_rule.html
 
   artifact_store {
-    location = aws_s3_bucket.app_deploy.bucket
+    location = var.deploy_bucket
     type     = "S3"
   }
 
@@ -213,7 +182,7 @@ resource "aws_codepipeline" "app" {
       output_artifacts = ["westrikworld_app"]
 
       configuration = {
-        S3Bucket = aws_s3_bucket.app_deploy.bucket
+        S3Bucket = var.deploy_bucket
         S3ObjectKey = "westrikworld_app.zip"
         PollForSourceChanges = true # TODO: disable when setting up CloudWatch event triggers
         // TODO: add KMSEncryptionKeyARN
@@ -256,7 +225,7 @@ resource "aws_codepipeline" "app" {
       input_artifacts = ["westrikworld_app"]
 
       configuration = {
-        BucketName = aws_s3_bucket.app_deploy_cloudfront.bucket
+        BucketName = var.deploy_cloudfront_bucket
         Extract = true
         CannedACL = "public-read"
       }
@@ -266,7 +235,7 @@ resource "aws_codepipeline" "app" {
 
 resource "aws_cloudfront_distribution" "app" {
   origin {
-    domain_name = aws_s3_bucket.app_deploy_cloudfront.bucket_domain_name
+    domain_name = var.deploy_cloudfront_bucket_domain_name
     origin_id   = "public"
     origin_path = "/public"
 

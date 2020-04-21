@@ -15,9 +15,12 @@ provider "aws" {
 }
 
 // TODO: module.admin for user management (e.g. for KMS)
+data "aws_iam_user" "admin_user" {
+  user_name = "mwestrik-mbp"
+}
 
-module "build_resources" {
-  source = "./modules/build_resources"
+module "ami_sandbox" {
+  source = "./modules/ami_sandbox"
 
   aws_az     = var.aws_az1
   aws_region = var.aws_region
@@ -26,7 +29,8 @@ module "build_resources" {
 module "deploy_buckets" {
   source = "./modules/deploy_buckets"
 
-  aws_region = var.aws_region
+  aws_region   = var.aws_region
+  project_name = var.project_name
 }
 
 module "deploy_lambdas" {
@@ -52,6 +56,7 @@ module "database" {
   app_subnet_ids      = module.network.app_subnet_ids
   app_security_groups = module.network.app_security_group_ids
   app_vpc_id          = module.network.app_vpc_id
+  admin_user_arn      = data.aws_iam_user.admin_user.arn
 }
 
 module "api" {
@@ -72,7 +77,14 @@ module "api" {
 
 module "deploy" {
   source           = "./modules/deploy"
-  app_deploy_hosts = module.api.app_deploy_hosts
   aws_region       = var.aws_region
   root_domain_name = var.root_domain_name
+
+  app_deploy_hosts = module.api.app_deploy_hosts
+
+  deploy_bucket                        = module.deploy_buckets.app_deploy_bucket
+  deploy_bucket_arn                    = module.deploy_buckets.app_deploy_bucket_arn
+  deploy_cloudfront_bucket             = module.deploy_buckets.app_deploy_cloudfront_bucket
+  deploy_cloudfront_bucket_arn         = module.deploy_buckets.app_deploy_cloudfront_bucket_arn
+  deploy_cloudfront_bucket_domain_name = module.deploy_buckets.app_deploy_cloudfront_bucket_domain_name
 }

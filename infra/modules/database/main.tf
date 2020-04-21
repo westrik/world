@@ -14,10 +14,6 @@ resource "aws_kms_key" "app_db" {
   policy                  = data.aws_iam_policy_document.rds_access_to_kms.json
 }
 
-data "aws_iam_user" "admin_user" {
-  user_name = "mwestrik-mbp"
-}
-
 data "aws_iam_policy_document" "rds_access_to_kms" {
   statement {
     sid = "1"
@@ -26,7 +22,7 @@ data "aws_iam_policy_document" "rds_access_to_kms" {
 
     principals {
       type        = "AWS"
-      identifiers = [data.aws_iam_user.admin_user.arn]
+      identifiers = [var.admin_user_arn]
     }
 
     resources = ["*"]
@@ -90,7 +86,7 @@ resource "aws_db_instance" "app" {
   skip_final_snapshot = true # TODO: remove and set final_snapshot_identifier
 
   db_subnet_group_name   = aws_db_subnet_group.app.name
-  vpc_security_group_ids = [aws_security_group.app.id]
+  vpc_security_group_ids = [aws_security_group.app_db.id]
 
   iam_database_authentication_enabled = true
 
@@ -123,7 +119,7 @@ resource "aws_db_subnet_group" "app" {
   }
 }
 
-resource "aws_security_group" "app" {
+resource "aws_security_group" "app_db" {
   name        = "app_db_sg"
   description = "${var.project_name}_app_db"
   vpc_id      = var.app_vpc_id

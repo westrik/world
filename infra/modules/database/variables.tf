@@ -8,6 +8,10 @@ variable "db_username" {
   default = "westrikworld_admin"
 }
 
+variable "admin_user_arn" {
+  type = string
+}
+
 # output from module.network
 variable "app_subnet_ids" {
   type = list(string)

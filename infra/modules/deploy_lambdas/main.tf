@@ -17,17 +17,17 @@ resource "aws_security_group" "lambda_provision" {
 
   # Outbound HTTPS access
   egress {
-    from_port = 443
-    to_port   = 443
-    protocol  = "tcp"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   # Outbound DNS access
   egress {
-    from_port = 53
-    to_port   = 53
-    protocol  = "tcp"
+    from_port   = 53
+    to_port     = 53
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
@@ -35,7 +35,7 @@ resource "aws_security_group" "lambda_provision" {
 resource "random_string" "lambda_deploy_bucket_hash" {
   length  = 6
   special = false
-  upper = false
+  upper   = false
 }
 resource "aws_s3_bucket" "lambda_deploy" {
   bucket = "lambda-deploy-${random_string.lambda_deploy_bucket_hash.result}"
@@ -47,7 +47,7 @@ resource "aws_s3_bucket" "lambda_deploy" {
 }
 
 resource "aws_iam_access_key" "lambda_deploy_upload" {
-  user    = aws_iam_user.lambda_deploy_upload.name
+  user = aws_iam_user.lambda_deploy_upload.name
 }
 
 resource "aws_iam_user" "lambda_deploy_upload" {
@@ -85,7 +85,7 @@ data "aws_ami" "lambda_provision" {
 }
 
 resource "aws_instance" "app" {
-  count = var.provisioning? 1 : 0
+  count = var.provisioning ? 1 : 0
 
   instance_type          = "t3a.micro"
   ami                    = data.aws_ami.lambda_provision.id
