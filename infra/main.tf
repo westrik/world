@@ -14,6 +14,8 @@ provider "aws" {
   region = var.aws_region
 }
 
+// TODO: module.admin for user management (e.g. for KMS)
+
 module "build_resources" {
   source = "./modules/build_resources"
 
@@ -21,11 +23,28 @@ module "build_resources" {
   aws_region = var.aws_region
 }
 
-// TODO: create module.network and move VPC, SG, etc. config from module.api
+module "deploy_buckets" {
+  source = "./modules/deploy_buckets"
 
-// TODO: module.admin for user management (e.g. for KMS)
+  aws_region = var.aws_region
+}
 
+//module "deploy_lambdas" {
+//  source = "./modules/deploy_lambdas"
+//
+//  aws_region = var.aws_region
+//  app_subnet_ids = module.network.app_subnet_ids
+//  vpc_id = module.network.app_vpc_id
+//}
 
+module "network" {
+  source = "./modules/network"
+
+  aws_region   = var.aws_region
+  aws_az1      = var.aws_az1
+  aws_az2      = var.aws_az2
+  project_name = var.project_name
+}
 
 module "api" {
   source = "./modules/api"
@@ -36,13 +55,18 @@ module "api" {
   api_domain_name  = var.api_domain_name
   root_domain_name = var.root_domain_name
   admin_email      = var.admin_email
+  project_name     = var.project_name
+
+  instance_security_group_ids = module.network.instance_security_group_ids
+  app_subnet_ids              = module.network.app_subnet_ids
+  vpc_id                      = module.network.app_vpc_id
 }
 
 module "database" {
   source              = "./modules/database"
-  app_subnets         = module.api.app_subnets
-  app_security_groups = module.api.app_security_groups
-  app_vpc             = module.api.app_vpc
+  app_subnet_ids      = module.network.app_subnet_ids
+  app_security_groups = module.network.app_security_groups
+  app_vpc_id          = module.network.app_vpc_id
 }
 
 module "deploy" {

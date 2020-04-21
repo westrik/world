@@ -115,7 +115,7 @@ resource "aws_db_instance" "app" {
 
 resource "aws_db_subnet_group" "app" {
   name       = "app_db_subnet_group"
-  subnet_ids = var.app_subnets
+  subnet_ids = var.app_subnet_ids
 
   tags = {
     Name        = "app_db_subnet_group"
@@ -126,7 +126,7 @@ resource "aws_db_subnet_group" "app" {
 resource "aws_security_group" "app" {
   name        = "app_db_sg"
   description = "${var.project_name}_app_db"
-  vpc_id      = var.app_vpc
+  vpc_id      = var.app_vpc_id
 
   ingress {
     from_port   = 5432
@@ -203,7 +203,7 @@ resource "aws_lambda_function" "create_db_user_with_iam_role" {
 
   vpc_config {
     security_group_ids = var.app_security_groups
-    subnet_ids         = var.app_subnets
+    subnet_ids         = var.app_subnet_ids
   }
 }
 

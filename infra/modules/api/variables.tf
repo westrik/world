@@ -1,6 +1,5 @@
 variable "project_name" {
-  type    = string
-  default = "westrikworld"
+  type = string
 }
 
 variable "admin_email" {
@@ -25,6 +24,18 @@ variable "api_domain_name" {
 
 variable "root_domain_name" {
   type = string
+}
+
+variable "vpc_id" {
+  type = string
+}
+
+variable "instance_security_group_ids" {
+  type = list(string)
+}
+
+variable "app_subnet_ids" {
+  type = list(string)
 }
 
 variable "num_app_instances" {

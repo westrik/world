@@ -8,17 +8,17 @@ variable "db_username" {
   default = "westrikworld_admin"
 }
 
-# output from module.api
-variable "app_subnets" {
+# output from module.network
+variable "app_subnet_ids" {
   type = list(string)
 }
 
-# output from module.api
+# output from module.network
 variable "app_security_groups" {
   type = list(string)
 }
 
-# output from module.api
-variable "app_vpc" {
+# output from module.network
+variable "app_vpc_id" {
   type = string
 }

@@ -18,5 +18,8 @@ fmt:
 	terraform fmt
 	terraform fmt modules/api
 	terraform fmt modules/build_resources
+	terraform fmt modules/deploy_buckets
+	terraform fmt modules/deploy_buckets
 	terraform fmt modules/database
+	terraform fmt modules/network
 	terraform fmt modules/state

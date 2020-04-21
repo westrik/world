@@ -10,6 +10,10 @@ variable "aws_az2" {
   default = "us-east-1b"
 }
 
+variable "project_name" {
+  default = "westrikworld"
+}
+
 variable "api_domain_name" {
   default = "api.westrikworld.com"
 }
@@ -19,5 +23,6 @@ variable "root_domain_name" {
 }
 
 variable "admin_email" {
-  type = string
+  type    = string
+  default = "m+wwadmin@ttwestrik.com"
 }
