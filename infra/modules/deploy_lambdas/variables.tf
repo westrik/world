@@ -9,3 +9,7 @@ variable "vpc_id" {
 variable "app_subnet_ids" {
   type = list(string)
 }
+
+variable "provisioning" {
+  type = bool
+}

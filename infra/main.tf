@@ -29,13 +29,14 @@ module "deploy_buckets" {
   aws_region = var.aws_region
 }
 
-//module "deploy_lambdas" {
-//  source = "./modules/deploy_lambdas"
-//
-//  aws_region = var.aws_region
-//  app_subnet_ids = module.network.app_subnet_ids
-//  vpc_id = module.network.app_vpc_id
-//}
+module "deploy_lambdas" {
+  source = "./modules/deploy_lambdas"
+
+  aws_region     = var.aws_region
+  app_subnet_ids = module.network.app_subnet_ids
+  vpc_id         = module.network.app_vpc_id
+  provisioning   = var.provisioning_lambda
+}
 
 module "network" {
   source = "./modules/network"
@@ -44,6 +45,13 @@ module "network" {
   aws_az1      = var.aws_az1
   aws_az2      = var.aws_az2
   project_name = var.project_name
+}
+
+module "database" {
+  source              = "./modules/database"
+  app_subnet_ids      = module.network.app_subnet_ids
+  app_security_groups = module.network.app_security_group_ids
+  app_vpc_id          = module.network.app_vpc_id
 }
 
 module "api" {
@@ -57,16 +65,9 @@ module "api" {
   admin_email      = var.admin_email
   project_name     = var.project_name
 
-  instance_security_group_ids = module.network.instance_security_group_ids
-  app_subnet_ids              = module.network.app_subnet_ids
-  vpc_id                      = module.network.app_vpc_id
-}
-
-module "database" {
-  source              = "./modules/database"
-  app_subnet_ids      = module.network.app_subnet_ids
-  app_security_groups = module.network.app_security_groups
-  app_vpc_id          = module.network.app_vpc_id
+  app_security_group_ids = module.network.app_security_group_ids
+  app_subnet_ids         = module.network.app_subnet_ids
+  vpc_id                 = module.network.app_vpc_id
 }
 
 module "deploy" {

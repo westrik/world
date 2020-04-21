@@ -26,3 +26,8 @@ variable "admin_email" {
   type    = string
   default = "m+wwadmin@ttwestrik.com"
 }
+
+variable "provisioning_lambda" {
+  type    = bool
+  default = false
+}

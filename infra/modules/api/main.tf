@@ -41,7 +41,7 @@ resource "aws_instance" "app" {
 
   instance_type          = "t3a.micro"
   ami                    = data.aws_ami.app.id
-  vpc_security_group_ids = var.instance_security_group_ids
+  vpc_security_group_ids = var.app_security_group_ids
   subnet_id              = var.app_subnet_ids[0]
   iam_instance_profile   = aws_iam_instance_profile.app_host.name
 
@@ -198,11 +198,14 @@ resource "aws_lambda_function" "renew_certificate" {
   // TODO: zip needs to be built on ami-0080e4c5bc078760e
   // see https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
   filename = "./lambda/renew_certificate.zip"
-  handler  = "renew_certificate.lambda_handler"
-  runtime  = "python3.7"
+  // TODO: pull from S3
+  //  s3_bucket = ""
+  //  s3_key = ""
+  handler = "renew_certificate.lambda_handler"
+  runtime = "python3.7"
 
   vpc_config {
-    security_group_ids = var.instance_security_group_ids
+    security_group_ids = var.app_security_group_ids
     subnet_ids         = var.app_subnet_ids
   }
 }

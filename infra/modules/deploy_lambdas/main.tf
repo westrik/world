@@ -79,13 +79,14 @@ data "aws_ami" "lambda_provision" {
   owners      = ["137112412989"]
 
   filter {
-    name   = "image_id"
+    name   = "image-id"
     values = ["ami-0080e4c5bc078760e"]
   }
 }
 
 resource "aws_instance" "app" {
-  count = 0
+  count = var.provisioning? 1 : 0
+
   instance_type          = "t3a.micro"
   ami                    = data.aws_ami.lambda_provision.id
   vpc_security_group_ids = [aws_security_group.lambda_provision.id]
