@@ -21,8 +21,8 @@ fmt:
 	terraform fmt modules/app_instances
 	terraform fmt modules/app_load_balancer
 	terraform fmt modules/database
-	terraform fmt modules/deploy_buckets
 	terraform fmt modules/deploy_lambdas
 	terraform fmt modules/deploy_pipeline
 	terraform fmt modules/network
+	terraform fmt modules/s3_buckets
 	terraform fmt modules/state

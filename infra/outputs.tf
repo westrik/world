@@ -12,5 +12,5 @@ output "deploy_upload_access_key" {
 }
 
 output "deploy_upload_bucket" {
-  value = module.deploy_buckets.app_deploy_bucket
+  value = module.s3_buckets.app_deploy_bucket
 }

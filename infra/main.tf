@@ -26,8 +26,8 @@ module "ami_sandbox" {
   aws_region = var.aws_region
 }
 
-module "deploy_buckets" {
-  source = "./modules/deploy_buckets"
+module "s3_buckets" {
+  source = "./modules/s3_buckets"
 
   aws_region   = var.aws_region
   project_name = var.project_name
@@ -36,6 +36,7 @@ module "deploy_buckets" {
 module "deploy_lambdas" {
   source = "./modules/deploy_lambdas"
 
+  // OQ: should this use the same VPC/subnet as app instances?
   aws_region     = var.aws_region
   app_subnet_ids = module.network.app_subnet_ids
   vpc_id         = module.network.app_vpc_id
@@ -90,7 +91,7 @@ module "app_cloudfront" {
   source                               = "./modules/app_cloudfront"
   aws_region                           = var.aws_region
   root_domain_name                     = var.root_domain_name
-  deploy_cloudfront_bucket_domain_name = module.deploy_buckets.app_deploy_cloudfront_bucket_domain_name
+  deploy_cloudfront_bucket_domain_name = module.s3_buckets.app_deploy_cloudfront_bucket_domain_name
 }
 
 module "deploy_pipeline" {
@@ -98,9 +99,9 @@ module "deploy_pipeline" {
   aws_region       = var.aws_region
   root_domain_name = var.root_domain_name
 
-  deploy_bucket                = module.deploy_buckets.app_deploy_bucket
-  deploy_bucket_arn            = module.deploy_buckets.app_deploy_bucket_arn
-  deploy_cloudfront_bucket     = module.deploy_buckets.app_deploy_cloudfront_bucket
-  deploy_cloudfront_bucket_arn = module.deploy_buckets.app_deploy_cloudfront_bucket_arn
+  deploy_bucket                = module.s3_buckets.app_deploy_bucket
+  deploy_bucket_arn            = module.s3_buckets.app_deploy_bucket_arn
+  deploy_cloudfront_bucket     = module.s3_buckets.app_deploy_cloudfront_bucket
+  deploy_cloudfront_bucket_arn = module.s3_buckets.app_deploy_cloudfront_bucket_arn
 }
 
