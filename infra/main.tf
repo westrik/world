@@ -59,32 +59,48 @@ module "database" {
   admin_user_arn      = data.aws_iam_user.admin_user.arn
 }
 
-module "api" {
-  source = "./modules/api"
+module "app_load_balancer" {
+  source = "./modules/app_load_balancer"
 
+  aws_region       = var.aws_region
   aws_az1          = var.aws_az1
   aws_az2          = var.aws_az2
-  aws_region       = var.aws_region
-  api_domain_name  = var.api_domain_name
-  root_domain_name = var.root_domain_name
-  admin_email      = var.admin_email
   project_name     = var.project_name
+  root_domain_name = var.root_domain_name
+  api_domain_name  = var.api_domain_name
+
+  app_vpc_id             = module.network.app_vpc_id
+  app_instance_ids       = module.app_instances.instance_ids
+  app_security_group_ids = module.network.app_security_group_ids
+  app_subnet_ids         = module.network.app_subnet_ids
+}
+
+module "app_instances" {
+  source = "./modules/app_instances"
+
+  aws_region   = var.aws_region
+  project_name = var.project_name
 
   app_security_group_ids = module.network.app_security_group_ids
   app_subnet_ids         = module.network.app_subnet_ids
-  vpc_id                 = module.network.app_vpc_id
+  num_app_instances      = var.num_app_instances
 }
 
-module "deploy" {
-  source           = "./modules/deploy"
+module "app_cloudfront" {
+  source                               = "./modules/app_cloudfront"
+  aws_region                           = var.aws_region
+  root_domain_name                     = var.root_domain_name
+  deploy_cloudfront_bucket_domain_name = module.deploy_buckets.app_deploy_cloudfront_bucket_domain_name
+}
+
+module "deploy_pipeline" {
+  source           = "./modules/deploy_pipeline"
   aws_region       = var.aws_region
   root_domain_name = var.root_domain_name
 
-  app_deploy_hosts = module.api.app_deploy_hosts
-
-  deploy_bucket                        = module.deploy_buckets.app_deploy_bucket
-  deploy_bucket_arn                    = module.deploy_buckets.app_deploy_bucket_arn
-  deploy_cloudfront_bucket             = module.deploy_buckets.app_deploy_cloudfront_bucket
-  deploy_cloudfront_bucket_arn         = module.deploy_buckets.app_deploy_cloudfront_bucket_arn
-  deploy_cloudfront_bucket_domain_name = module.deploy_buckets.app_deploy_cloudfront_bucket_domain_name
+  deploy_bucket                = module.deploy_buckets.app_deploy_bucket
+  deploy_bucket_arn            = module.deploy_buckets.app_deploy_bucket_arn
+  deploy_cloudfront_bucket     = module.deploy_buckets.app_deploy_cloudfront_bucket
+  deploy_cloudfront_bucket_arn = module.deploy_buckets.app_deploy_cloudfront_bucket_arn
 }
+

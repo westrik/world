@@ -2,10 +2,6 @@ variable "project_name" {
   type = string
 }
 
-variable "admin_email" {
-  type = string
-}
-
 variable "aws_region" {
   type = string
 }
@@ -26,7 +22,7 @@ variable "root_domain_name" {
   type = string
 }
 
-variable "vpc_id" {
+variable "app_vpc_id" {
   type = string
 }
 
@@ -38,8 +34,6 @@ variable "app_subnet_ids" {
   type = list(string)
 }
 
-variable "num_app_instances" {
-  type    = number
-  default = 1
+variable "app_instance_ids" {
+  type = list(string)
 }
-

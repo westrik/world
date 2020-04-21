@@ -1,4 +1,4 @@
-output "app_deploy_hosts" {
+output "instance_ids" {
   value = aws_instance.app.*.id
 }
 

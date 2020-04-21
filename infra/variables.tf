@@ -31,3 +31,8 @@ variable "provisioning_lambda" {
   type    = bool
   default = false
 }
+
+variable "num_app_instances" {
+  type    = number
+  default = 1
+}
