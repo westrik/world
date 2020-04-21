@@ -2,11 +2,9 @@ use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use serde_json::json;
 
-use crate::auth::models::session::Session;
 use crate::content::models::block::Block;
 // use crate::schema::{block_versions, block_versions::dsl::block_versions as all_block_versions};
 use crate::errors::ApiError;
-use crate::resource_identifier::*;
 use crate::schema::block_versions;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
@@ -38,7 +36,7 @@ impl BlockVersionCreateSpec {
 }
 
 impl BlockVersion {
-    pub fn create(conn: &PgConnection, block: Block) -> Result<BlockVersion, ApiError> {
+    pub fn create(conn: &PgConnection, block: &Block) -> Result<BlockVersion, ApiError> {
         BlockVersionCreateSpec {
             block_id: block.id,
             content: json!({"elements": []}),
