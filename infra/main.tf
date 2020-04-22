@@ -38,9 +38,8 @@ module "database" {
 }
 
 module "deploy_pipeline" {
-  source           = "./modules/deploy_pipeline"
-  aws_region       = var.aws_region
-  root_domain_name = var.root_domain_name
+  source     = "./modules/deploy_pipeline"
+  aws_region = var.aws_region
 
   deploy_bucket                = module.core_infra.app_deploy_bucket
   deploy_bucket_arn            = module.core_infra.app_deploy_bucket_arn

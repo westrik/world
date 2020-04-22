@@ -7,10 +7,6 @@ variable "aws_region" {
   type = string
 }
 
-variable "root_domain_name" {
-  type = string
-}
-
 variable "deploy_bucket" {
   type = string
 }
