@@ -15,4 +15,4 @@ tokio = { version = "^0.2", features = ["macros", "rt-threaded"] }
 warp = "^0.2"
 westrikworld_core = { path = "../core" }
 fallible-iterator="^0.1"
-postgres="^0.13"
+postgres="^0.17"
