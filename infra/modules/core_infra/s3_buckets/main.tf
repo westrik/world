@@ -9,7 +9,7 @@ resource "random_string" "deploy_bucket_hash" {
 }
 // TODO: add ACL and lifecycle rule
 resource "aws_s3_bucket" "app_deploy" {
-  bucket = "${var.project_name}-deploy-${random_string.deploy_bucket_hash.result}"
+  bucket = "${var.project_slug}-deploy-${random_string.deploy_bucket_hash.result}"
   acl    = "private"
 
   versioning {
@@ -18,7 +18,7 @@ resource "aws_s3_bucket" "app_deploy" {
 }
 
 resource "aws_s3_bucket" "app_deploy_cloudfront" {
-  bucket = "${var.project_name}-public-${random_string.deploy_bucket_hash.result}"
+  bucket = "${var.project_slug}-public-${random_string.deploy_bucket_hash.result}"
   acl    = "public-read"
 
   versioning {

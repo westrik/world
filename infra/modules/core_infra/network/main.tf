@@ -14,7 +14,8 @@ resource "aws_vpc" "app" {
 
   tags = {
     Name        = "app_vpc"
-    Environment = "production"
+    Environment = var.deploy_name
+    Project     = var.project_name
   }
 }
 
@@ -24,7 +25,8 @@ resource "aws_vpc_endpoint" "s3" {
   route_table_ids = [aws_vpc.app.main_route_table_id]
 
   tags = {
-    Environment = "production"
+    Environment = var.deploy_name
+    Project     = var.project_name
   }
 }
 
@@ -47,7 +49,8 @@ resource "aws_subnet" "app_az1" {
 
   tags = {
     Name        = "app"
-    Environment = "production"
+    Environment = var.deploy_name
+    Project     = var.project_name
   }
 }
 
@@ -58,14 +61,16 @@ resource "aws_subnet" "app_az2" {
 
   tags = {
     Name        = "app"
-    Environment = "production"
+    Environment = var.deploy_name
+    Project     = var.project_name
   }
 }
 
 module "security_groups" {
   source = "./security_groups"
 
-  project_name    = var.project_name
+  project_slug    = var.project_slug
+  deploy_name     = var.deploy_name
   vpc_id          = aws_vpc.app.id
   prefix_list_ids = [aws_vpc_endpoint.s3.prefix_list_id]
 }

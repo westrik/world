@@ -1,7 +1,11 @@
-variable "aws_region" {
+variable "project_slug" {
   type = string
 }
 
-variable "project_name" {
+variable "deploy_name" {
+  type = string
+}
+
+variable "aws_region" {
   type = string
 }

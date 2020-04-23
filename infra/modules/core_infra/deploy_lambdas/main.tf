@@ -97,6 +97,6 @@ resource "aws_instance" "app" {
 
   tags = {
     Name        = "app"
-    Environment = "admin"
+    Environment = "deploy"
   }
 }

@@ -27,7 +27,8 @@ resource "aws_lb" "app" {
   //    }
 
   tags = {
-    Environment = "production"
+    Environment = var.deploy_name
+    Project     = var.project_name
   }
 }
 
@@ -100,8 +101,8 @@ resource "aws_route53_record" "app_caa" {
 
 
 
-resource "aws_secretsmanager_secret" "westrikworld_api_cert" {
-  name                    = "westrikworld_api_cert"
+resource "aws_secretsmanager_secret" "api_cert" {
+  name                    = "${var.project_slug}_api_cert"
   recovery_window_in_days = 0
 }
 
@@ -163,7 +164,7 @@ resource "aws_iam_role_policy_attachment" "role_attach_lambda_secrets_manager" {
 //{
 //  "domains": ["${var.api_domain_name}"],
 //  "email": "${var.admin_email}",
-//  "secret_id": "${aws_secretsmanager_secret.westrikworld_api_cert.name}"
+//  "secret_id": "${aws_secretsmanager_secret.api_cert.name}"
 //}
 //JSON
 //}

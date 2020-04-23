@@ -71,8 +71,8 @@ resource "aws_db_instance" "app" {
   instance_class       = "db.t3.micro"
   parameter_group_name = "default.postgres11"
 
-  identifier = "${var.project_name}-app"
-  name       = "${var.project_name}_app"
+  identifier = "${var.project_slug}-app"
+  name       = "${var.project_slug}_app"
 
   username = var.db_username
   password = random_password.password.result
@@ -104,7 +104,7 @@ resource "aws_db_instance" "app" {
 
   tags = {
     Name        = "app_db"
-    Environment = "production"
+    Environment = var.deploy_name
     Project     = var.project_name
   }
 }
@@ -115,13 +115,14 @@ resource "aws_db_subnet_group" "app" {
 
   tags = {
     Name        = "app_db_subnet_group"
-    Environment = "production"
+    Environment = var.deploy_name
+    Project     = var.project_name
   }
 }
 
 resource "aws_security_group" "app_db" {
   name        = "app_db_sg"
-  description = "${var.project_name}_app_db"
+  description = "${var.project_slug}_app_db"
   vpc_id      = var.app_vpc_id
 
   ingress {
@@ -133,7 +134,7 @@ resource "aws_security_group" "app_db" {
 }
 
 resource "aws_secretsmanager_secret" "db_url" {
-  name                    = "westrikworld_database_url"
+  name                    = "${var.project_slug}_database_url"
   recovery_window_in_days = 0
 }
 resource "aws_secretsmanager_secret_version" "db_url" {
@@ -142,7 +143,7 @@ resource "aws_secretsmanager_secret_version" "db_url" {
 }
 
 resource "aws_secretsmanager_secret" "db_user" {
-  name                    = "westrikworld_database_username"
+  name                    = "${var.project_slug}_database_username"
   recovery_window_in_days = 0
 }
 resource "aws_secretsmanager_secret_version" "db_user" {
@@ -151,7 +152,7 @@ resource "aws_secretsmanager_secret_version" "db_user" {
 }
 
 resource "aws_secretsmanager_secret" "db_name" {
-  name                    = "westrikworld_database_name"
+  name                    = "${var.project_slug}_database_name"
   recovery_window_in_days = 0
 }
 resource "aws_secretsmanager_secret_version" "db_name" {
@@ -160,7 +161,7 @@ resource "aws_secretsmanager_secret_version" "db_name" {
 }
 
 resource "aws_secretsmanager_secret" "db_password" {
-  name                    = "westrikworld_database_password"
+  name                    = "${var.project_slug}_database_password"
   recovery_window_in_days = 0
 }
 resource "aws_secretsmanager_secret_version" "db_password" {
@@ -169,7 +170,7 @@ resource "aws_secretsmanager_secret_version" "db_password" {
 }
 
 resource "aws_secretsmanager_secret" "password_salt" {
-  name                    = "westrikworld_password_hash_salt"
+  name                    = "${var.project_slug}_password_hash_salt"
   recovery_window_in_days = 0
 }
 resource "random_string" "password_salt" {

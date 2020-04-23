@@ -62,7 +62,8 @@ resource "aws_cloudfront_distribution" "app" {
   }
 
   tags = {
-    Environment = "production"
+    Environment = var.deploy_name
+    Project     = var.project_name
   }
 
   viewer_certificate {
@@ -77,7 +78,8 @@ resource "aws_acm_certificate" "cloudfront" {
   validation_method = "DNS"
 
   tags = {
-    Environment = "production"
+    Environment = var.deploy_name
+    Project     = var.project_name
   }
 
   lifecycle {

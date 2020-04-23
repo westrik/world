@@ -15,7 +15,7 @@ data "aws_ami" "app" {
 
   filter {
     name   = "tag:Environment"
-    values = ["production"]
+    values = [var.deploy_name]
   }
 
   filter {
@@ -40,7 +40,8 @@ resource "aws_instance" "app" {
 
   tags = {
     Name        = "app"
-    Environment = "production"
+    Environment = var.deploy_name
+    Project     = var.project_name
   }
 }
 

@@ -11,12 +11,12 @@ CodeDeploy
 */
 
 resource "aws_codedeploy_app" "app" {
-  name = "${var.project_name}_app"
+  name = "${var.project_slug}_app"
 }
 
 resource "aws_codedeploy_deployment_group" "app" {
   app_name              = aws_codedeploy_app.app.name
-  deployment_group_name = "${var.project_name}_app"
+  deployment_group_name = "${var.project_slug}_app"
   service_role_arn      = aws_iam_role.codedeploy.arn
 
   //  deployment_config_name = "CodeDeployDefault.OneAtATime"
@@ -156,7 +156,7 @@ EOF
 
 // docs: https://www.terraform.io/docs/providers/aws/r/codepipeline.html
 resource "aws_codepipeline" "app" {
-  name     = "${var.project_name}_prod"
+  name     = "${var.project_slug}_${var.deploy_name}"
   role_arn = aws_iam_role.codepipeline.arn
 
   // TODO: use CloudWatch S3 events for change detection (requires a CloudTrail and a CloudWatch Events rule)

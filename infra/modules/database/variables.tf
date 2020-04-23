@@ -1,6 +1,13 @@
 variable "project_name" {
-  type    = string
-  default = "westrikworld"
+  type = string
+}
+
+variable "project_slug" {
+  type = string
+}
+
+variable "deploy_name" {
+  type = string
 }
 
 variable "db_username" {

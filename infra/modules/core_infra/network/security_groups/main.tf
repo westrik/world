@@ -6,7 +6,7 @@ Security groups for app instances
 
 resource "aws_security_group" "app_inbound" {
   name        = "app_in_sg"
-  description = "Primary ${var.project_name} production SG (inbound)"
+  description = "[${var.project_slug}-${var.deploy_name}] inbound app instance security group"
   vpc_id      = var.vpc_id
 
   # SSH access from me
@@ -37,7 +37,7 @@ resource "aws_security_group" "app_inbound" {
 }
 resource "aws_security_group" "app_outbound_s3" {
   name        = "app_out_s3_sg"
-  description = "Primary ${var.project_name} production SG (outbound for s3)"
+  description = "[${var.project_slug}-${var.deploy_name}] app instance security group for traffic outbound to S3"
   vpc_id      = var.vpc_id
 
   # Outbound HTTPS access to S3 (via VPC endpoint)
@@ -61,7 +61,7 @@ resource "aws_security_group" "app_outbound_s3" {
 
 resource "aws_security_group" "app_outbound" {
   name        = "app_out_sg"
-  description = "Primary ${var.project_name} production SG (outbound)"
+  description = "[${var.project_slug}-${var.deploy_name}] app instance security group for outbound traffic"
   vpc_id      = var.vpc_id
 
   # Outbound HTTPS to AWS (CodeDeploy)
