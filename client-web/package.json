@@ -42,7 +42,7 @@
     "sinon": "^8.0",
     "stylelint": "^13.0.0",
     "stylelint-config-standard": "^19.0.0",
-    "ts-node": "^8.6",
+    "ts-node": "^8.10",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.7.3"
   },
