@@ -1,6 +1,13 @@
 variable "project_name" {
-  type    = string
-  default = "westrikworld"
+  type = string
+}
+
+variable "project_slug" {
+  type = string
+}
+
+variable "deploy_name" {
+  type = string
 }
 
 variable "db_username" {
@@ -8,17 +15,21 @@ variable "db_username" {
   default = "westrikworld_admin"
 }
 
-# output from module.api
-variable "app_subnets" {
+variable "admin_user_arn" {
+  type = string
+}
+
+# output from module.network
+variable "app_subnet_ids" {
   type = list(string)
 }
 
-# output from module.api
+# output from module.network
 variable "app_security_groups" {
   type = list(string)
 }
 
-# output from module.api
-variable "app_vpc" {
+# output from module.network
+variable "app_vpc_id" {
   type = string
 }

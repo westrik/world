@@ -1,3 +1,15 @@
+variable "project_name" {
+  default = "westrikworld"
+}
+
+variable "project_slug" {
+  default = "westrikworld"
+}
+
+variable "deploy_name" {
+  default = "production"
+}
+
 variable "aws_region" {
   default = "us-east-1"
 }
@@ -19,5 +31,16 @@ variable "root_domain_name" {
 }
 
 variable "admin_email" {
-  type = string
+  type    = string
+  default = "m+wwadmin@ttwestrik.com"
+}
+
+variable "provisioning_lambda" {
+  type    = bool
+  default = false
+}
+
+variable "num_app_instances" {
+  type    = number
+  default = 1
 }

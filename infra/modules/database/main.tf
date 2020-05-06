@@ -14,10 +14,6 @@ resource "aws_kms_key" "app_db" {
   policy                  = data.aws_iam_policy_document.rds_access_to_kms.json
 }
 
-data "aws_iam_user" "admin_user" {
-  user_name = "mwestrik-mbp"
-}
-
 data "aws_iam_policy_document" "rds_access_to_kms" {
   statement {
     sid = "1"
@@ -26,7 +22,7 @@ data "aws_iam_policy_document" "rds_access_to_kms" {
 
     principals {
       type        = "AWS"
-      identifiers = [data.aws_iam_user.admin_user.arn]
+      identifiers = [var.admin_user_arn]
     }
 
     resources = ["*"]
@@ -75,8 +71,8 @@ resource "aws_db_instance" "app" {
   instance_class       = "db.t3.micro"
   parameter_group_name = "default.postgres11"
 
-  identifier = "${var.project_name}-app"
-  name       = "${var.project_name}_app"
+  identifier = "${var.project_slug}-app"
+  name       = "${var.project_slug}_app"
 
   username = var.db_username
   password = random_password.password.result
@@ -90,7 +86,7 @@ resource "aws_db_instance" "app" {
   skip_final_snapshot = true # TODO: remove and set final_snapshot_identifier
 
   db_subnet_group_name   = aws_db_subnet_group.app.name
-  vpc_security_group_ids = [aws_security_group.app.id]
+  vpc_security_group_ids = [aws_security_group.app_db.id]
 
   iam_database_authentication_enabled = true
 
@@ -108,25 +104,26 @@ resource "aws_db_instance" "app" {
 
   tags = {
     Name        = "app_db"
-    Environment = "production"
+    Environment = var.deploy_name
     Project     = var.project_name
   }
 }
 
 resource "aws_db_subnet_group" "app" {
   name       = "app_db_subnet_group"
-  subnet_ids = var.app_subnets
+  subnet_ids = var.app_subnet_ids
 
   tags = {
     Name        = "app_db_subnet_group"
-    Environment = "production"
+    Environment = var.deploy_name
+    Project     = var.project_name
   }
 }
 
-resource "aws_security_group" "app" {
+resource "aws_security_group" "app_db" {
   name        = "app_db_sg"
-  description = "${var.project_name}_app_db"
-  vpc_id      = var.app_vpc
+  description = "${var.project_slug}_app_db"
+  vpc_id      = var.app_vpc_id
 
   ingress {
     from_port   = 5432
@@ -137,7 +134,7 @@ resource "aws_security_group" "app" {
 }
 
 resource "aws_secretsmanager_secret" "db_url" {
-  name                    = "westrikworld_database_url"
+  name                    = "${var.project_slug}_database_url"
   recovery_window_in_days = 0
 }
 resource "aws_secretsmanager_secret_version" "db_url" {
@@ -146,7 +143,7 @@ resource "aws_secretsmanager_secret_version" "db_url" {
 }
 
 resource "aws_secretsmanager_secret" "db_user" {
-  name                    = "westrikworld_database_username"
+  name                    = "${var.project_slug}_database_username"
   recovery_window_in_days = 0
 }
 resource "aws_secretsmanager_secret_version" "db_user" {
@@ -155,7 +152,7 @@ resource "aws_secretsmanager_secret_version" "db_user" {
 }
 
 resource "aws_secretsmanager_secret" "db_name" {
-  name                    = "westrikworld_database_name"
+  name                    = "${var.project_slug}_database_name"
   recovery_window_in_days = 0
 }
 resource "aws_secretsmanager_secret_version" "db_name" {
@@ -164,7 +161,7 @@ resource "aws_secretsmanager_secret_version" "db_name" {
 }
 
 resource "aws_secretsmanager_secret" "db_password" {
-  name                    = "westrikworld_database_password"
+  name                    = "${var.project_slug}_database_password"
   recovery_window_in_days = 0
 }
 resource "aws_secretsmanager_secret_version" "db_password" {
@@ -173,7 +170,7 @@ resource "aws_secretsmanager_secret_version" "db_password" {
 }
 
 resource "aws_secretsmanager_secret" "password_salt" {
-  name                    = "westrikworld_password_hash_salt"
+  name                    = "${var.project_slug}_password_hash_salt"
   recovery_window_in_days = 0
 }
 resource "random_string" "password_salt" {
@@ -203,7 +200,7 @@ resource "aws_lambda_function" "create_db_user_with_iam_role" {
 
   vpc_config {
     security_group_ids = var.app_security_groups
-    subnet_ids         = var.app_subnets
+    subnet_ids         = var.app_subnet_ids
   }
 }
 
