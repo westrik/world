@@ -527,6 +527,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "eb7217124812dc5672b7476d0c2d20cfe9f7c0f1ba0904b674a9762a0212f72e"
 
 [[package]]
+name = "fallible-iterator"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4443176a9f2c162692bd3d352d745ef9413eec5782a80d8fd6f8a1ac692a07f7"
+
+[[package]]
 name = "flame"
 version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1299,7 +1305,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "115dde90ef51af573580c035857badbece2aa5cde3de1dfb3c932969ca92a6c5"
 dependencies = [
  "bytes 0.4.12",
- "fallible-iterator",
+ "fallible-iterator 0.1.6",
  "log 0.4.8",
  "postgres-protocol",
  "postgres-shared",
@@ -1315,7 +1321,7 @@ dependencies = [
  "base64 0.6.0",
  "byteorder",
  "bytes 0.4.12",
- "fallible-iterator",
+ "fallible-iterator 0.1.6",
  "generic-array 0.9.0",
  "hmac",
  "md5",
@@ -1331,7 +1337,7 @@ version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ffac35b3e0029b404c24a3b82149b4e904f293e8ca4a327eefa24d3ca50df36f"
 dependencies = [
- "fallible-iterator",
+ "fallible-iterator 0.1.6",
  "hex",
  "phf",
  "postgres-protocol",
@@ -1698,7 +1704,7 @@ dependencies = [
  "diesel",
  "diesel_migrations",
  "dotenv 0.14.1",
- "fallible-iterator",
+ "fallible-iterator 0.2.0",
  "log 0.4.8",
  "postgres",
  "pretty_env_logger 0.3.1",
