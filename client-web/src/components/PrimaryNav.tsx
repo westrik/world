@@ -33,7 +33,7 @@ const SECTIONS: Array<Section> = [
 export default function PrimaryNav(): h.JSX.Element {
     const currentRoute = window.location.pathname;
     const sectionIndex = SECTIONS.findIndex(
-        section => currentRoute == section.route || (currentRoute.includes(section.route) && !section.mobileOnly),
+        (section) => currentRoute == section.route || (currentRoute.includes(section.route) && !section.mobileOnly),
     );
 
     return (

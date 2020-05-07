@@ -18,7 +18,7 @@ function TaskList(): h.JSX.Element {
 
     useEffect(() => {
         if (!tasks) {
-            listTasks(authContext, tasks => {
+            listTasks(authContext, (tasks) => {
                 if (tasks) {
                     setTasks(tasks);
                 } else {

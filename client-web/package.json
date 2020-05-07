@@ -37,7 +37,7 @@
     "jsdom": "^16.2.0",
     "mocha": "^7.0.0",
     "parcel-bundler": "^1.12.4",
-    "prettier": "^1.19.1",
+    "prettier": "^2.0",
     "sass": "^1.24",
     "sinon": "^9.0",
     "stylelint": "^13.0.0",

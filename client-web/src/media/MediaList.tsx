@@ -17,7 +17,7 @@ function MediaList(): h.JSX.Element {
 
     useEffect(() => {
         if (!mediaSummaries) {
-            listMedia(authContext, notes => {
+            listMedia(authContext, (notes) => {
                 if (notes) {
                     setMediaSummaries(notes);
                 } else {

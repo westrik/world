@@ -169,8 +169,8 @@ function Table(props: TableProps): h.JSX.Element {
     if (!props.cxn) {
         return <table />;
     }
-    const tableHeaders = props.cxn.filter(el => isTableHead(el.element));
-    const tableRows = props.cxn.filter(el => isTableRow(el.element));
+    const tableHeaders = props.cxn.filter((el) => isTableHead(el.element));
+    const tableRows = props.cxn.filter((el) => isTableRow(el.element));
     return (
         <table>
             {tableHeaders.length > 0 ? (

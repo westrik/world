@@ -3,7 +3,5 @@ export function stripApiId(apiId: string): string {
 }
 
 export function randomIdentifier(): string {
-    return Math.random()
-        .toString(36)
-        .substring(2, 15);
+    return Math.random().toString(36).substring(2, 15);
 }

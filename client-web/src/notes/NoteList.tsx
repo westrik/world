@@ -16,7 +16,7 @@ function NoteList(): h.JSX.Element {
 
     useEffect(() => {
         if (!noteSummaries) {
-            listNotes(authContext, notes => {
+            listNotes(authContext, (notes) => {
                 if (notes) {
                     setNotes(notes);
                 } else {
