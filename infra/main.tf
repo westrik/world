@@ -34,13 +34,15 @@ module "core_infra" {
 module "database" {
   source = "./modules/database"
 
-  project_name        = var.project_name
-  project_slug        = var.project_slug
-  deploy_name         = var.deploy_name
-  app_subnet_ids      = module.core_infra.app_subnet_ids
-  app_security_groups = module.core_infra.app_security_group_ids
-  app_vpc_id          = module.core_infra.app_vpc_id
-  admin_user_arn      = data.aws_iam_user.admin_user.arn
+  project_name                                 = var.project_name
+  project_slug                                 = var.project_slug
+  deploy_name                                  = var.deploy_name
+  app_subnet_ids                               = module.core_infra.app_subnet_ids
+  app_security_group_ids                       = module.core_infra.app_security_group_ids
+  app_vpc_id                                   = module.core_infra.app_vpc_id
+  admin_user_arn                               = data.aws_iam_user.admin_user.arn
+  lambda_iam_role_arn__create_db_with_iam_role = module.core_infra.lambda_iam_role_arn__create_db_with_iam_role
+  lambda_deploy_bucket                         = module.core_infra.lambda_deploy_bucket
 }
 
 module "deploy_pipeline" {
@@ -85,6 +87,9 @@ module "app_load_balancer" {
   app_instance_ids       = module.app_instances.instance_ids
   app_security_group_ids = module.core_infra.app_security_group_ids
   app_subnet_ids         = module.core_infra.app_subnet_ids
+
+  lambda_deploy_bucket                   = module.core_infra.lambda_deploy_bucket
+  lambda_iam_role_arn__renew_certificate = module.core_infra.lambda_iam_role_arn__renew_certificate
 }
 
 module "app_instances" {

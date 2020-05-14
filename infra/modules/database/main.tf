@@ -192,6 +192,20 @@ Using this approach lets us avoid having to store and rotate DB passwords on app
 Since RDS is closed to outside connections, the easiest way to create the DB user is with a Lambda running in our VPC.
 */
 
+resource "aws_lambda_function" "create_db_user_with_iam_role" {
+  function_name = "create_db_user_with_iam_role"
+  role          = var.lambda_iam_role_arn__create_db_with_iam_role
+  s3_bucket     = var.lambda_deploy_bucket
+  s3_key        = "create_db_user_with_iam_role.zip"
+  handler       = "handler.lambda_handler"
+  runtime       = "python3.8"
+
+  vpc_config {
+    security_group_ids = var.app_security_group_ids
+    subnet_ids         = var.app_subnet_ids
+  }
+}
+
 data "aws_lambda_invocation" "create_db_user_with_iam_role" {
   function_name = "create_db_user_with_iam_role"
 

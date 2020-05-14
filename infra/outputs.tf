@@ -18,19 +18,3 @@ output "app_deploy_bucket" {
 output "lambda_deploy_bucket" {
   value = module.core_infra.lambda_deploy_bucket
 }
-
-output "lambda_iam_role_arn__create_db_user_with_iam_role" {
-  value = module.core_infra.lambda_iam_role_arn__create_db_user_with_iam_role
-}
-
-output "lambda_iam_role_arn__renew_certificate" {
-  value = module.core_infra.lambda_iam_role_arn__renew_certificate
-}
-
-output "app_security_group_ids" {
-  value = module.core_infra.app_security_group_ids
-}
-
-output "app_subnet_ids" {
-  value = module.core_infra.app_subnet_ids
-}

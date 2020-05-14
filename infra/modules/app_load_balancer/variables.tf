@@ -49,3 +49,13 @@ variable "app_subnet_ids" {
 variable "app_instance_ids" {
   type = list(string)
 }
+
+# output from module.core_infra.lambda_iam_roles
+variable "lambda_iam_role_arn__renew_certificate" {
+  type = string
+}
+
+# output from module.core_infra.s3_buckets
+variable "lambda_deploy_bucket" {
+  type = string
+}

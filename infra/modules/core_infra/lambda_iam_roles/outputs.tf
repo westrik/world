@@ -1,4 +1,4 @@
-output "lambda_iam_role_arn__create_db_user_with_iam_role" {
+output "lambda_iam_role_arn__create_db_with_iam_role" {
   value = aws_iam_role.lambda_create_db_user_with_iam_role.arn
 }
 

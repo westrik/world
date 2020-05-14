@@ -25,11 +25,21 @@ variable "app_subnet_ids" {
 }
 
 # output from module.network
-variable "app_security_groups" {
+variable "app_security_group_ids" {
   type = list(string)
 }
 
 # output from module.network
 variable "app_vpc_id" {
+  type = string
+}
+
+# output from module.core_infra.lambda_iam_roles
+variable "lambda_iam_role_arn__create_db_with_iam_role" {
+  type = string
+}
+
+# output from module.core_infra.s3_buckets
+variable "lambda_deploy_bucket" {
   type = string
 }
