@@ -28,3 +28,6 @@ fmt:
 	terraform fmt modules/database
 	terraform fmt modules/deploy_pipeline
 	terraform fmt modules/state
+
+deploy_lambdas:
+	PROJECT_ROOT=.. bash lambda/deploy_lambdas.sh

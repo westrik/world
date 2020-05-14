@@ -1,12 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -euxo pipefail
 
 SERVICE_CONF="/etc/systemd/system/app.service"
 SERVICE_D="$SERVICE_CONF.d"
 SECRETS_ENV_FILE="$SERVICE_D/production.conf"
 SERVER_BIN_FILE=/usr/bin/run_server
 CORS_ORIGIN_URL="https://westrikworld.com"
-
-set -euxo pipefail
 
 if ! [ "$(systemctl is-active --quiet nginx)" ]; then
   echo "nginx was not up? starting..."

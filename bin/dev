@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # command runner
 # - thin shell wrapper around rust runner binary
