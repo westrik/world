@@ -1,9 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  renew-certificate
+  create_db_user_with_iam_role
 
-  Sample SAM Template for renew-certificate
+  Sample SAM Template for create_db_user_with_iam_role
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:

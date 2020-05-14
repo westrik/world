@@ -30,4 +30,5 @@ fmt:
 	terraform fmt modules/state
 
 deploy_lambdas:
-	PROJECT_ROOT=.. bash lambda/deploy_lambdas.sh
+	LAMBDA_FOLDER=lambda/create_db_user_with_iam_role bash lambda/deploy_lambda.sh
+	LAMBDA_FOLDER=lambda/renew_certificate bash lambda/deploy_lambda.sh
