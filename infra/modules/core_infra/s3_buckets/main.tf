@@ -34,3 +34,11 @@ resource "aws_s3_bucket" "app_deploy_cloudfront" {
   }
 }
 
+resource "aws_s3_bucket" "lambda_deploy" {
+  bucket = "${var.project_slug}-lambda-deploy-${random_string.deploy_bucket_hash.result}"
+  acl    = "private"
+
+  versioning {
+    enabled = true
+  }
+}

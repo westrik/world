@@ -18,6 +18,10 @@ output "app_deploy_bucket_arn" {
   value = module.s3_buckets.app_deploy_bucket_arn
 }
 
+output "lambda_deploy_bucket" {
+  value = module.s3_buckets.lambda_deploy_bucket
+}
+
 output "app_deploy_cloudfront_bucket" {
   value = module.s3_buckets.app_deploy_cloudfront_bucket
 }

@@ -6,6 +6,10 @@ output "app_deploy_bucket_arn" {
   value = aws_s3_bucket.app_deploy.arn
 }
 
+output "lambda_deploy_bucket" {
+  value = aws_s3_bucket.lambda_deploy.bucket
+}
+
 output "app_deploy_cloudfront_bucket" {
   value = aws_s3_bucket.app_deploy_cloudfront.bucket
 }

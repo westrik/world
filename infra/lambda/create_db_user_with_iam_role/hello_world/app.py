@@ -1,42 +1,40 @@
-import json
-
-# import requests
-
+import pg8000
 
 def lambda_handler(event, context):
-    """Sample pure Lambda function
+    # sm = boto3.client('secretsmanager')
+    # response = sm.get_secret_value(SecretId='db_password_westrikworld_app')
+    # if 'SecretString' in response:
+    #     info = response['SecretString']
+    # else:
+    #     info = base64.b64decode(response['SecretBinary'])
+    # for now, get secret from env. TODO: get from secretsmanager
 
-    Parameters
-    ----------
-    event: dict, required
-        API Gateway Lambda Proxy Input Format
-
-        Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
-
-    context: object, required
-        Lambda Context runtime methods and attributes
-
-        Context doc: https://docs.aws.amazon.com/lambda/latest/dg/python-context-object.html
-
-    Returns
-    ------
-    API Gateway Lambda Proxy Output Format: dict
-
-        Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
-    """
-
-    # try:
-    #     ip = requests.get("http://checkip.amazonaws.com/")
-    # except requests.RequestException as e:
-    #     # Send some context about this error to Lambda Logs
-    #     print(e)
-
-    #     raise e
-
-    return {
-        "statusCode": 200,
-        "body": json.dumps({
-            "message": "hello world",
-            # "location": ip.text.replace("\n", "")
-        }),
-    }
+    database = event['database']
+    conn = pg8000.core.Connection(
+        application_name='lambda-create_db_user_with_iam_role',
+        user=event['username'],
+        host=event['host'],
+        port=int(event['port']),
+        database=database,
+        password=event['password'],
+        ssl=False,
+        unix_sock=None,
+        timeout=1,
+        max_prepared_statements=100,
+        tcp_keepalive=True
+    )
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT 1 FROM pg_user WHERE usename = 'westrikworld_app'")
+        if len(list(cursor)):
+            return {"status":"exists"}
+        else:
+            cursor.execute("CREATE USER westrikworld_app with login createdb")
+            conn.commit()
+            cursor.execute("GRANT rds_iam TO westrikworld_app")
+            conn.commit()
+            cursor.execute("ALTER DATABASE %s OWNER TO westrikworld_app" % database)
+            conn.commit()
+            return {"status":"created"}
+    finally:
+        conn.close()
