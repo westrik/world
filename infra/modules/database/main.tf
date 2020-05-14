@@ -191,6 +191,7 @@ Using this approach lets us avoid having to store and rotate DB passwords on app
 
 Since RDS is closed to outside connections, the easiest way to create the DB user is with a Lambda running in our VPC.
 */
+# TODO: remove this
 resource "aws_lambda_function" "create_db_user_with_iam_role" {
   function_name = "create_db_user_with_iam_role"
   role          = aws_iam_role.lambda_create_db_user_with_iam_role.arn
@@ -205,7 +206,9 @@ resource "aws_lambda_function" "create_db_user_with_iam_role" {
 }
 
 data "aws_lambda_invocation" "create_db_user_with_iam_role" {
-  function_name = aws_lambda_function.create_db_user_with_iam_role.function_name
+  # TODO: uncomment
+  #  function_name = "create-db-user-with-iam-role"
+  function_name = "create_db_user_with_iam_role"
   depends_on    = [aws_lambda_function.create_db_user_with_iam_role]
 
   input = <<JSON
@@ -234,6 +237,7 @@ data "aws_iam_policy_document" "lambda_assume_roles" {
   }
 }
 
+# TODO: move this IAM role stuff to `core_infra` so SAM CLI can run before this
 resource "aws_iam_role" "lambda_create_db_user_with_iam_role" {
   name               = "lambda_create_db_user_with_iam_role"
   path               = "/"

@@ -19,7 +19,9 @@ poetry install
 
 ### deploying
 
+- Install [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html).
+
 ```sh
-# Deploy lambdas to S3 via temporary EC2 instance
-make deploy_lambdas
+sam build --use-container
+sam package --s3-bucket [...]
 ```

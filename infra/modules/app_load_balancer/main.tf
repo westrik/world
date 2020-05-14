@@ -107,6 +107,7 @@ resource "aws_secretsmanager_secret" "api_cert" {
 }
 
 /** Lambda for renewing certificate with Let's Encrypt */
+# TODO: remove this
 resource "aws_lambda_function" "renew_certificate" {
   function_name = "renew_certificate"
   role          = aws_iam_role.lambda_renew_certificate.arn
@@ -140,6 +141,7 @@ data "aws_iam_policy_document" "lambda_renew_certificate" {
   }
 }
 
+# TODO: move this IAM role stuff to `core_infra` so SAM CLI can run before this
 resource "aws_iam_role" "lambda_renew_certificate" {
   name               = "lambda_renew_certificate"
   path               = "/"
@@ -156,6 +158,7 @@ resource "aws_iam_role_policy_attachment" "role_attach_lambda_secrets_manager" {
   policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
 }
 
+# TODO: uncomment this once SAM CLI stuff is done
 //data "aws_lambda_invocation" "renew_certificate" {
 //  function_name = aws_lambda_function.renew_certificate.function_name
 //  depends_on    = [aws_lambda_function.renew_certificate]
