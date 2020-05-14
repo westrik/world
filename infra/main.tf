@@ -26,9 +26,9 @@ module "core_infra" {
   aws_az1    = var.aws_az1
   aws_az2    = var.aws_az2
 
-  project_name        = var.project_name
-  project_slug        = var.project_slug
-  deploy_name         = var.deploy_name
+  project_name = var.project_name
+  project_slug = var.project_slug
+  deploy_name  = var.deploy_name
 }
 
 module "database" {

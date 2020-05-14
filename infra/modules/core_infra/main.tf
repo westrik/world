@@ -26,6 +26,6 @@ module "network" {
 }
 
 module "lambda_iam_roles" {
-  source       = "./lambda_iam_roles"
-  aws_region   = var.aws_region
+  source     = "./lambda_iam_roles"
+  aws_region = var.aws_region
 }
