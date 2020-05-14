@@ -192,18 +192,18 @@ Using this approach lets us avoid having to store and rotate DB passwords on app
 Since RDS is closed to outside connections, the easiest way to create the DB user is with a Lambda running in our VPC.
 */
 # TODO: remove this
-resource "aws_lambda_function" "create_db_user_with_iam_role" {
-  function_name = "create_db_user_with_iam_role"
-  role          = aws_iam_role.lambda_create_db_user_with_iam_role.arn
-  filename      = "./lambda/create_db_user_with_iam_role.zip"
-  handler       = "create_db_user_with_iam_role.lambda_handler"
-  runtime       = "python3.7"
-
-  vpc_config {
-    security_group_ids = var.app_security_groups
-    subnet_ids         = var.app_subnet_ids
-  }
-}
+# resource "aws_lambda_function" "create_db_user_with_iam_role" {
+#   function_name = "create_db_user_with_iam_role"
+#   role          = aws_iam_role.lambda_create_db_user_with_iam_role.arn
+#   filename      = "./lambda/create_db_user_with_iam_role.zip"
+#   handler       = "create_db_user_with_iam_role.lambda_handler"
+#   runtime       = "python3.7"
+#
+#   vpc_config {
+#     security_group_ids = var.app_security_groups
+#     subnet_ids         = var.app_subnet_ids
+#   }
+# }
 
 data "aws_lambda_invocation" "create_db_user_with_iam_role" {
   # TODO: uncomment
@@ -222,34 +222,3 @@ data "aws_lambda_invocation" "create_db_user_with_iam_role" {
 JSON
 }
 
-data "aws_iam_policy_document" "lambda_assume_roles" {
-  statement {
-    sid = "1"
-
-    actions = [
-      "sts:AssumeRole",
-    ]
-
-    principals {
-      identifiers = ["lambda.amazonaws.com"]
-      type        = "Service"
-    }
-  }
-}
-
-# TODO: move this IAM role stuff to `core_infra` so SAM CLI can run before this
-resource "aws_iam_role" "lambda_create_db_user_with_iam_role" {
-  name               = "lambda_create_db_user_with_iam_role"
-  path               = "/"
-  assume_role_policy = data.aws_iam_policy_document.lambda_assume_roles.json
-}
-
-resource "aws_iam_role_policy_attachment" "role_attach_lambda_vpc" {
-  role       = aws_iam_role.lambda_create_db_user_with_iam_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
-}
-
-resource "aws_iam_role_policy_attachment" "role_attach_lambda_rds" {
-  role       = aws_iam_role.lambda_create_db_user_with_iam_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
-}

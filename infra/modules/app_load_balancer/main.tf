@@ -106,69 +106,19 @@ resource "aws_secretsmanager_secret" "api_cert" {
   recovery_window_in_days = 0
 }
 
-/** Lambda for renewing certificate with Let's Encrypt */
-# TODO: remove this
-resource "aws_lambda_function" "renew_certificate" {
-  function_name = "renew_certificate"
-  role          = aws_iam_role.lambda_renew_certificate.arn
-  // TODO: zip needs to be built on ami-0080e4c5bc078760e
-  // see https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
-  filename = "./lambda/renew_certificate.zip"
-  // TODO: pull from S3
-  //  s3_bucket = ""
-  //  s3_key = ""
-  handler = "renew_certificate.lambda_handler"
-  runtime = "python3.7"
-
-  vpc_config {
-    security_group_ids = var.app_security_group_ids
-    subnet_ids         = var.app_subnet_ids
-  }
-}
-
-data "aws_iam_policy_document" "lambda_renew_certificate" {
-  statement {
-    sid = "1"
-
-    actions = [
-      "sts:AssumeRole",
-    ]
-
-    principals {
-      identifiers = ["lambda.amazonaws.com"]
-      type        = "Service"
-    }
-  }
-}
-
-# TODO: move this IAM role stuff to `core_infra` so SAM CLI can run before this
-resource "aws_iam_role" "lambda_renew_certificate" {
-  name               = "lambda_renew_certificate"
-  path               = "/"
-  assume_role_policy = data.aws_iam_policy_document.lambda_renew_certificate.json
-}
-
-resource "aws_iam_role_policy_attachment" "role_attach_lambda_vpc" {
-  role       = aws_iam_role.lambda_renew_certificate.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
-}
-
-resource "aws_iam_role_policy_attachment" "role_attach_lambda_secrets_manager" {
-  role       = aws_iam_role.lambda_renew_certificate.name
-  policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
-}
-
-# TODO: uncomment this once SAM CLI stuff is done
-//data "aws_lambda_invocation" "renew_certificate" {
-//  function_name = aws_lambda_function.renew_certificate.function_name
-//  depends_on    = [aws_lambda_function.renew_certificate]
-//
-//  input = <<JSON
-//{
-//  "domains": ["${var.api_domain_name}"],
-//  "email": "${var.admin_email}",
-//  "secret_id": "${aws_secretsmanager_secret.api_cert.name}"
-//}
-//JSON
-//}
-//
+# /**
+# Invoke Lambda to renew Let's Encrypt certificate
+# Expects the lambda to have been deployed with the SAM CLI (see infra/lambda/README.md)
+# */
+# data "aws_lambda_invocation" "renew_certificate" {
+#   function_name = "renew-certificate"
+#   depends_on    = [aws_secretsmanager_secret.api_cert]
+#
+#   input = <<JSON
+# {
+#   "domains": ["${var.api_domain_name}"],
+#   "email": "${var.admin_email}",
+#   "secret_id": "${aws_secretsmanager_secret.api_cert.name}"
+# }
+# JSON
+# }

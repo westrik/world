@@ -4,8 +4,8 @@ init_state:
 ami:
 	packer build amis/westrikworld_production.json
 
-apply_packer_infra:
-	terraform apply -target=module.ami_sandbox
+apply_core_infra:
+	terraform apply -target=module.core_infra
 
 apply:
 	terraform apply

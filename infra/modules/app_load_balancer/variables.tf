@@ -30,6 +30,10 @@ variable "root_domain_name" {
   type = string
 }
 
+variable "admin_email" {
+  type = string
+}
+
 variable "app_vpc_id" {
   type = string
 }

@@ -15,17 +15,6 @@ module "s3_buckets" {
   deploy_name  = var.deploy_name
 }
 
-module "deploy_lambdas" {
-  source = "./deploy_lambdas"
-
-  // OQ: should this use the same VPC/subnet as app instances?
-  aws_region     = var.aws_region
-  app_subnet_ids = module.network.app_subnet_ids
-  vpc_id         = module.network.app_vpc_id
-  provisioning   = var.provisioning_lambda
-  deploy_name    = ""
-}
-
 module "network" {
   source       = "./network"
   aws_region   = var.aws_region
@@ -34,4 +23,9 @@ module "network" {
   project_name = var.project_name
   deploy_name  = ""
   project_slug = ""
+}
+
+module "lambda_iam_roles" {
+  source       = "./lambda_iam_roles"
+  aws_region   = var.aws_region
 }

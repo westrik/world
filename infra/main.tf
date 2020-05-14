@@ -29,7 +29,6 @@ module "core_infra" {
   project_name        = var.project_name
   project_slug        = var.project_slug
   deploy_name         = var.deploy_name
-  provisioning_lambda = var.provisioning_lambda
 }
 
 module "database" {
@@ -80,6 +79,7 @@ module "app_load_balancer" {
   deploy_name      = var.deploy_name
   root_domain_name = var.root_domain_name
   api_domain_name  = var.api_domain_name
+  admin_email      = var.admin_email
 
   app_vpc_id             = module.core_infra.app_vpc_id
   app_instance_ids       = module.app_instances.instance_ids
