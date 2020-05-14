@@ -21,6 +21,9 @@ LAMBDAS=(
 # OQ: can this be a lambda instead?????
 # - more secure (no SSH), faster to deploy
 
+# OR!!!!: just use the AWS SAM CLI
+# - https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-build.html
+
 for lambda in "${LAMBDAS[@]}"; do
   echo "Deploying $lambda";
   SOURCE_BUNDLE="$lambda.tar.gz"
