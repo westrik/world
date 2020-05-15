@@ -81,11 +81,3 @@ resource "aws_security_group" "app_outbound" {
     "10.0.0.0/16"]
   }
 }
-
-/*
---------------------------------------------------
-Security groups for lambda provisioning instances
---------------------------------------------------
-*/
-
-// TODO

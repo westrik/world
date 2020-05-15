@@ -95,11 +95,9 @@ resource "aws_route53_record" "app_caa" {
   zone_id = data.aws_route53_zone.app.id
   name    = var.api_domain_name
   type    = "CAA"
-  records = ["0 issue \"amazon.com\""]
+  records = ["0 issue \"letsencrypt.org\""]
   ttl     = 60
 }
-
-
 
 resource "aws_secretsmanager_secret" "api_cert" {
   name                    = "${var.project_slug}_api_cert"
@@ -109,31 +107,26 @@ resource "aws_secretsmanager_secret" "api_cert" {
 /**
 Deploy Lambda to renew Let's Encrypt certificate
 */
+resource "aws_lambda_function" "renew_certificate" {
+  function_name = "renew_certificate"
+  role          = var.lambda_iam_role_arn__renew_certificate
+  s3_bucket     = var.lambda_deploy_bucket
+  s3_key        = "renew_certificate.zip"
+  handler       = "app.lambda_handler"
+  runtime       = "python3.8"
+  timeout       = 60
+}
 
-//resource "aws_lambda_function" "renew_certificate" {
+// TODO: uncomment this on 2020-05-22 & tf apply
+//data "aws_lambda_invocation" "renew_certificate" {
 //  function_name = "renew_certificate"
-//  role          = var.lambda_iam_role_arn__renew_certificate
-//  s3_bucket     = var.lambda_deploy_bucket
-//  s3_key        = "renew_certificate.zip"
-//  handler       = "handler.lambda_handler"
-//  runtime       = "python3.8"
+//  depends_on    = [aws_lambda_function.renew_certificate, aws_secretsmanager_secret.api_cert]
 //
-//  vpc_config {
-//    security_group_ids = var.app_security_group_ids
-//    subnet_ids         = var.app_subnet_ids
-//  }
+//  input = <<JSON
+//{
+//  "domains": ["${var.api_domain_name}"],
+//  "email": "${var.admin_email}",
+//  "secret_id": "${aws_secretsmanager_secret.api_cert.name}"
 //}
-
-# TODO: uncomment this
-# data "aws_lambda_invocation" "renew_certificate" {
-#   function_name = "renew-certificate"
-#   depends_on    = [aws_secretsmanager_secret.api_cert]
-#
-#   input = <<JSON
-# {
-#   "domains": ["${var.api_domain_name}"],
-#   "email": "${var.admin_email}",
-#   "secret_id": "${aws_secretsmanager_secret.api_cert.name}"
-# }
-# JSON
-# }
+//JSON
+//}

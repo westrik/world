@@ -29,15 +29,19 @@ data "aws_iam_policy_document" "lambda_renew_certificate" {
   }
 }
 
-
-resource "aws_iam_role_policy_attachment" "lambda_renew_certificate_role_attach_lambda_vpc" {
+resource "aws_iam_role_policy_attachment" "lambda_renew_certificate_role_attach_route53" {
   role       = aws_iam_role.lambda_renew_certificate.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonRoute53FullAccess"
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_renew_certificate_role_attach_secrets_manager" {
   role       = aws_iam_role.lambda_renew_certificate.name
   policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_renew_certificate_role_attach_exec_role" {
+  role       = aws_iam_role.lambda_renew_certificate.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
 

@@ -10,7 +10,9 @@ provider "aws" {
 }
 
 resource "aws_vpc" "app" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
 
   tags = {
     Name        = "app_vpc"
@@ -30,6 +32,19 @@ resource "aws_vpc_endpoint" "s3" {
   }
 }
 
+resource "aws_vpc_endpoint" "secretsmanager" {
+  vpc_id              = aws_vpc.app.id
+  vpc_endpoint_type   = "Interface"
+  service_name        = "com.amazonaws.${var.aws_region}.secretsmanager"
+  subnet_ids          = [aws_subnet.app_az1.id, aws_subnet.app_az2.id]
+  security_group_ids  = module.security_groups.app_security_group_ids
+  private_dns_enabled = true
+
+  tags = {
+    Environment = var.deploy_name
+    Project     = var.project_name
+  }
+}
 
 resource "aws_internet_gateway" "app" {
   vpc_id = aws_vpc.app.id
