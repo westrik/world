@@ -1,33 +1,28 @@
 # westrikworld infra: AWS Lambda
 
-### install poetry 
+### dependencies & testing
+
+- Install [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html) and Docker.
 
 ```sh
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+# from /infra/create_db_user_with_iam_role:
+sam build --use-container
+sam local invoke "CreateDBUserWithIAMRoleFunction" -e events/event.json
 ```
 
-### local dependency management
+### deploying
 
 ```sh
-python3 -m venv ./venv
-source .venv/bin/activate
-cd "$LAMBDA_FOLDER";
-poetry install
+# from /infra/:
+LAMBDA_DEPLOY_BUCKET=westrikworld-lambda-deploy-ABCDEF make package_lambdas
+terraform apply
 ```
 
-### packaging
+### re-deploying
 
 ```sh
-cd "$LAMBDA_FOLDER"
-pip install -r requirements.txt -t .
-zip -r "../$LAMBDA_FOLDER" .
-```
-
-### update python code only
-
-```sh
-cd "$LAMBDA_FOLDER"
-zip -g "../$LAMBDA_FOLDER" $PYTHON_FILE
-cd $TF_ROOT
-terraform taint "module.database.aws_lambda_function.$LAMBDA_NAME"
+# from /infra/:
+LAMBDA_DEPLOY_BUCKET=westrikworld-lambda-deploy-ABCDEF make package_lambdas
+terraform taint "module.database.aws_lambda_function.create_db_user_with_iam_role"
+terraform apply
 ```

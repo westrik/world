@@ -26,22 +26,23 @@ module "core_infra" {
   aws_az1    = var.aws_az1
   aws_az2    = var.aws_az2
 
-  project_name        = var.project_name
-  project_slug        = var.project_slug
-  deploy_name         = var.deploy_name
-  provisioning_lambda = var.provisioning_lambda
+  project_name = var.project_name
+  project_slug = var.project_slug
+  deploy_name  = var.deploy_name
 }
 
 module "database" {
   source = "./modules/database"
 
-  project_name        = var.project_name
-  project_slug        = var.project_slug
-  deploy_name         = var.deploy_name
-  app_subnet_ids      = module.core_infra.app_subnet_ids
-  app_security_groups = module.core_infra.app_security_group_ids
-  app_vpc_id          = module.core_infra.app_vpc_id
-  admin_user_arn      = data.aws_iam_user.admin_user.arn
+  project_name                                 = var.project_name
+  project_slug                                 = var.project_slug
+  deploy_name                                  = var.deploy_name
+  app_subnet_ids                               = module.core_infra.app_subnet_ids
+  app_security_group_ids                       = module.core_infra.app_security_group_ids
+  app_vpc_id                                   = module.core_infra.app_vpc_id
+  admin_user_arn                               = data.aws_iam_user.admin_user.arn
+  lambda_iam_role_arn__create_db_with_iam_role = module.core_infra.lambda_iam_role_arn__create_db_with_iam_role
+  lambda_deploy_bucket                         = module.core_infra.lambda_deploy_bucket
 }
 
 module "deploy_pipeline" {
@@ -80,11 +81,15 @@ module "app_load_balancer" {
   deploy_name      = var.deploy_name
   root_domain_name = var.root_domain_name
   api_domain_name  = var.api_domain_name
+  admin_email      = var.admin_email
 
   app_vpc_id             = module.core_infra.app_vpc_id
   app_instance_ids       = module.app_instances.instance_ids
   app_security_group_ids = module.core_infra.app_security_group_ids
   app_subnet_ids         = module.core_infra.app_subnet_ids
+
+  lambda_deploy_bucket                   = module.core_infra.lambda_deploy_bucket
+  lambda_iam_role_arn__renew_certificate = module.core_infra.lambda_iam_role_arn__renew_certificate
 }
 
 module "app_instances" {

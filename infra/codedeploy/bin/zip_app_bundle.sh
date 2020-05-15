@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -euo pipefail
 
 bundle_name="westrikworld_app"
-
-set -euxo pipefail
 
 mkdir $bundle_name
 cd $bundle_name

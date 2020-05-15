@@ -11,14 +11,13 @@
 - Run:
 
 ```sh
-# Create encrypted S3 bucket for Terraform state, then initialize
-make init_state
+
+make init_state        # create encrypted S3 bucket for TF state
 terraform init
-# Set up required infra, then build AMI with Packer
-make apply_packer_infra
-make ami
-# Provision everything else
-make apply
+make apply_core_infra  # set up security groups, networking, S3 buckets, and IAM roles
+make ami               # build app instance AMI (with Packer)
+make package_lambdas   # build Lambdas and upload to S3 (with SAM CLI + Docker)
+terraform apply        # apply all remaining changes
 ```
 
 To deploy in a different AZ, e.g. `us-west-2a`:

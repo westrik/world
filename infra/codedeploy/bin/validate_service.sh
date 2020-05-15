@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -euo pipefail
 
 TEST_URL="http://localhost:8080/"
 TEST_ITERATIONS=5

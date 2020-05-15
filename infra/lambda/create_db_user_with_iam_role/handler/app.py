@@ -1,8 +1,4 @@
 import pg8000
-# import boto3
-# import os
-# import base64
-import json
 
 def lambda_handler(event, context):
     # sm = boto3.client('secretsmanager')

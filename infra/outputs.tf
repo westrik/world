@@ -11,6 +11,10 @@ output "deploy_upload_access_key" {
   value = module.deploy_pipeline.deploy_upload_access_key
 }
 
-output "deploy_upload_bucket" {
+output "app_deploy_bucket" {
   value = module.core_infra.app_deploy_bucket
+}
+
+output "lambda_deploy_bucket" {
+  value = module.core_infra.lambda_deploy_bucket
 }

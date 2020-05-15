@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  create_db_user_with_iam_role
+
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  CreateDBUserWithIAMRoleFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handler/

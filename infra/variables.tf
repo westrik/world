@@ -22,6 +22,11 @@ variable "aws_az2" {
   default = "us-east-1b"
 }
 
+/* -----------------------------------------------------------------------------
+ changes to defaults above this line must be synced with core_infra/variables.tf
+ TODO: refactor this to avoid duplication
+ */
+
 variable "api_domain_name" {
   default = "api.westrikworld.com"
 }
@@ -33,11 +38,6 @@ variable "root_domain_name" {
 variable "admin_email" {
   type    = string
   default = "m+wwadmin@ttwestrik.com"
-}
-
-variable "provisioning_lambda" {
-  type    = bool
-  default = false
 }
 
 variable "num_app_instances" {

@@ -1,11 +1,11 @@
-#/bin/bash
+#!/usr/bin/env bash
 
 BRANCH=$1
 if [ -z "$BRANCH" ]; then
   BRANCH="master"
 fi
 
-set -euxo pipefail
+set -euo pipefail
 
 PROJECT_PATH="/home/matt/src/world"
 # TODO: check for dependencies

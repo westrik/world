@@ -1,27 +1,26 @@
+# defaults in this file are duplicated from ../../variables.tf
+# TODO: refactor this to avoid duplication
+
 variable "project_name" {
-  type = string
+  default = "westrikworld"
 }
 
 variable "project_slug" {
-  type = string
+  default = "westrikworld"
 }
 
 variable "deploy_name" {
-  type = string
+  default = "production"
 }
 
 variable "aws_region" {
-  type = string
+  default = "us-east-1"
 }
 
 variable "aws_az1" {
-  type = string
+  default = "us-east-1a"
 }
 
 variable "aws_az2" {
-  type = string
-}
-
-variable "provisioning_lambda" {
-  type = bool
+  default = "us-east-1b"
 }
