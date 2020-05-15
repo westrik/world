@@ -20,7 +20,10 @@
     - name: Set up firewall
       import_tasks: config/ufw.yml
 
-    - name: Configure app server
+    - name: Configure secrets service
+      import_tasks: config/secrets.yml
+
+    - name: Configure app service
       import_tasks: config/app.yml
 
     - name: Configure nginx

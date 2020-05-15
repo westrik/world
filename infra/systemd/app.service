@@ -1,8 +1,13 @@
 [Unit]
 Description=westrikworld API server
+Requires=secrets.target
+After=secrets.target
 
 [Service]
 Type=simple
+User=app
+Group=app
+EnvironmentFile=/secrets/app.env
 ExecStart=/usr/bin/run_server
 
 [Install]

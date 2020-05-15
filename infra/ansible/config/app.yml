@@ -1,9 +1,29 @@
-- name: Copy service systemd config file
+- name: Create 'app' group
+  group:
+    name: app
+    state: present
+    system: yes
+
+- name: Create 'app' user
+  user:
+    name: app
+    group: app
+    state: present
+    system: yes
+
+- name: Copy app service systemd config
   copy:
     src: ../../systemd/app.service
     dest: /etc/systemd/system/app.service
+    mode: 0644
 
-- name: Ensure service is disabled until it receives a deploy
+- name: Copy app target systemd config
+  copy:
+    src: ../../systemd/app.target
+    dest: /etc/systemd/system/app.target
+    mode: 0644
+
+- name: Enable app service
   service:
     name: app
-    enabled: no
+    enabled: yes
