@@ -12,10 +12,14 @@ mkdir -p $RAMFS_MOUNT_DIR
 if ! mountpoint -q -- $RAMFS_MOUNT_DIR; then
   mount -t tmpfs -o size=$RAMFS_SIZE,mode=0700,uid=1000,gid=1 ramfs $RAMFS_MOUNT_DIR
 else
+  # TODO: don't delete everything, but check for changes and selectively reload
+  #     - then, this can be run e.g. every 15 seconds
+  #     - then, we can add a thing to pull the RDS creds via IAM
   # shellcheck disable=SC2115
   rm -rf "${RAMFS_MOUNT_DIR}/*"
 fi
 
+# TODO: pass this in as variable from ansible (or does us-east-1 work from everywhere?)
 aws configure set region us-east-1
 
 function get_secret() {
@@ -44,8 +48,8 @@ chown app:app $RAMFS_MOUNT_DIR/app.env
 chmod 660 $RAMFS_MOUNT_DIR/app.env
 
 echo "$api_cert_data" | jq -r '.certificate' > $RAMFS_MOUNT_DIR/cert.pem
+echo "$api_cert_data" | jq -r '.certificate_chain' >> $RAMFS_MOUNT_DIR/cert.pem
 echo "$api_cert_data" | jq -r '.private_key' > $RAMFS_MOUNT_DIR/privkey.pem
-echo "$api_cert_data" | jq -r '.certificate_chain' > $RAMFS_MOUNT_DIR/chain.pem
 chmod 600 $RAMFS_MOUNT_DIR/*.pem
 
 systemctl start nginx app
