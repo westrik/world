@@ -29,5 +29,5 @@ fmt:
 	terraform fmt modules/deploy_pipeline
 	terraform fmt modules/state
 
-deploy_lambdas:
+package_lambdas:
 	LAMBDA_FOLDER=./lambda LAMBDA_DEPLOY_BUCKET=$$LAMBDA_DEPLOY_BUCKET bash lambda/deploy_lambdas.sh

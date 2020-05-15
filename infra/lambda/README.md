@@ -14,16 +14,15 @@ sam local invoke "CreateDBUserWithIAMRoleFunction" -e events/event.json
 
 ```sh
 # from /infra/:
-export LAMBDA_DEPLOY_BUCKET=westrikworld-lambda-deploy-ABCDEF
-make deploy_lambdas
+LAMBDA_DEPLOY_BUCKET=westrikworld-lambda-deploy-ABCDEF make package_lambdas
+terraform apply
 ```
 
 ### re-deploying
 
 ```sh
 # from /infra/:
-export LAMBDA_DEPLOY_BUCKET=westrikworld-lambda-deploy-ABCDEF
-make deploy_lambdas
+LAMBDA_DEPLOY_BUCKET=westrikworld-lambda-deploy-ABCDEF make package_lambdas
 terraform taint "module.database.aws_lambda_function.create_db_user_with_iam_role"
 terraform apply
 ```
