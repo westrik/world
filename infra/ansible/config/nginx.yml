@@ -1,12 +1,19 @@
-- name: Start nginx
+- name: Disable nginx
   service:
     name: nginx
-    enabled: yes
+    enabled: no
+
+- name: Copy service systemd config file
+  copy:
+    src: ../../systemd/nginx.service
+    dest: /etc/systemd/system/nginx.service
+    mode: 0644
 
 - name: Copy nginx config file
   copy:
     src: ../../nginx/westrikworld_api.conf
     dest: /etc/nginx/sites-available/westrikworld_api.conf
+    mode: 0644
 
 - name: Symlink config to sites-enabled
   file:
@@ -14,7 +21,9 @@
     dest: /etc/nginx/sites-enabled/default
     state: link
 
-- name: Restart nginx
-  service:
+- name: Reload & enable nginx
+  systemd:
+    enabled: yes
+    daemon_reload: yes
     name: nginx
-    state: restarted
+

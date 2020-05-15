@@ -9,14 +9,14 @@ resource "aws_security_group" "app_inbound" {
   description = "[${var.project_slug}-${var.deploy_name}] inbound app instance security group"
   vpc_id      = var.vpc_id
 
-  # SSH access from me
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    //    cidr_blocks = ["10.0.0.0/16"]
-  }
+  # TODO: remove this
+  //  # SSH access
+  //  ingress {
+  //    from_port   = 22
+  //    to_port     = 22
+  //    protocol    = "tcp"
+  //    cidr_blocks = ["0.0.0.0/0"]
+  //  }
 
   # Inbound HTTP via NLB
   ingress {

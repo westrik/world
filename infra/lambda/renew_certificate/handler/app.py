@@ -17,6 +17,7 @@ def provision_cert(email, domains):
         response = certbot.main.main([
             'certonly',                # Obtain a cert but don't install it
             '-n',                      # Run in non-interactive mode
+            '--reuse-key',             # Don't rotate the private key
             '--agree-tos',             # Agree to the terms of service,
             '--email', email,          # Email
             '--dns-route53',           # Use dns challenge with route53
