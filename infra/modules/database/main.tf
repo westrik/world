@@ -197,7 +197,7 @@ resource "aws_lambda_function" "create_db_user_with_iam_role" {
   role          = var.lambda_iam_role_arn__create_db_with_iam_role
   s3_bucket     = var.lambda_deploy_bucket
   s3_key        = "create_db_user_with_iam_role.zip"
-  handler       = "handler.lambda_handler"
+  handler       = "app.lambda_handler"
   runtime       = "python3.8"
 
   vpc_config {
@@ -208,6 +208,7 @@ resource "aws_lambda_function" "create_db_user_with_iam_role" {
 
 data "aws_lambda_invocation" "create_db_user_with_iam_role" {
   function_name = "create_db_user_with_iam_role"
+  depends_on    = [aws_lambda_function.create_db_user_with_iam_role]
 
   input = <<JSON
 {

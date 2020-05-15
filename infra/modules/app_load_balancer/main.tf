@@ -110,19 +110,19 @@ resource "aws_secretsmanager_secret" "api_cert" {
 Deploy Lambda to renew Let's Encrypt certificate
 */
 
-resource "aws_lambda_function" "renew_certificate" {
-  function_name = "renew_certificate"
-  role          = var.lambda_iam_role_arn__renew_certificate
-  s3_bucket     = var.lambda_deploy_bucket
-  s3_key        = "renew_certificate.zip"
-  handler       = "handler.lambda_handler"
-  runtime       = "python3.8"
-
-  vpc_config {
-    security_group_ids = var.app_security_group_ids
-    subnet_ids         = var.app_subnet_ids
-  }
-}
+//resource "aws_lambda_function" "renew_certificate" {
+//  function_name = "renew_certificate"
+//  role          = var.lambda_iam_role_arn__renew_certificate
+//  s3_bucket     = var.lambda_deploy_bucket
+//  s3_key        = "renew_certificate.zip"
+//  handler       = "handler.lambda_handler"
+//  runtime       = "python3.8"
+//
+//  vpc_config {
+//    security_group_ids = var.app_security_group_ids
+//    subnet_ids         = var.app_subnet_ids
+//  }
+//}
 
 # TODO: uncomment this
 # data "aws_lambda_invocation" "renew_certificate" {

@@ -1,27 +1,29 @@
 # westrikworld infra: AWS Lambda
 
-### dependency management for local development
+### dependencies & testing
 
-##### install poetry
-
-```sh
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-```
-
-##### install lambda deps in virtualenv
+- Install [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html) and Docker.
 
 ```sh
-python3 -m venv ./venv
-source .venv/bin/activate
-cd "$LAMBDA_FOLDER";
-poetry install
+# from /infra/create_db_user_with_iam_role:
+sam build --use-container
+sam local invoke "CreateDBUserWithIAMRoleFunction" -e events/event.json
 ```
 
 ### deploying
 
-- Install [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html).
+```sh
+# from /infra/:
+export LAMBDA_DEPLOY_BUCKET=westrikworld-lambda-deploy-ABCDEF
+make deploy_lambdas
+```
+
+### re-deploying
 
 ```sh
-sam build --use-container
-sam package --s3-bucket [...]
+# from /infra/:
+export LAMBDA_DEPLOY_BUCKET=westrikworld-lambda-deploy-ABCDEF
+make deploy_lambdas
+terraform taint "module.database.aws_lambda_function.create_db_user_with_iam_role"
+terraform apply
 ```
