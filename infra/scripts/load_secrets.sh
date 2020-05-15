@@ -46,7 +46,6 @@ chmod 660 $RAMFS_MOUNT_DIR/app.env
 echo "$api_cert_data" | jq -r '.certificate' > $RAMFS_MOUNT_DIR/cert.pem
 echo "$api_cert_data" | jq -r '.private_key' > $RAMFS_MOUNT_DIR/privkey.pem
 echo "$api_cert_data" | jq -r '.certificate_chain' > $RAMFS_MOUNT_DIR/chain.pem
-chown nginx:nginx $RAMFS_MOUNT_DIR/*.pem
-chmod 660 $RAMFS_MOUNT_DIR/*.pem
+chmod 600 $RAMFS_MOUNT_DIR/*.pem
 
 systemctl start nginx app

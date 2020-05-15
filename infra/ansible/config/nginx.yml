@@ -3,19 +3,6 @@
     name: nginx
     enabled: no
 
-- name: Create 'nginx' group
-  group:
-    name: nginx
-    state: present
-    system: yes
-
-- name: Create 'nginx' user
-  user:
-    name: nginx
-    group: nginx
-    state: present
-    system: yes
-
 - name: Copy service systemd config file
   copy:
     src: ../../systemd/nginx.service

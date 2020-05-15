@@ -1,6 +1,5 @@
 # modified from: /lib/systemd/system/nginx.service
 # changes:
-# - add user & group
 # - add dependency on app.target
 # --------------------------------------------------
 
@@ -14,8 +13,6 @@ After=app.target network.target nss-lookup.target
 
 [Service]
 Type=forking
-User=nginx
-Group=nginx
 PIDFile=/run/nginx.pid
 ExecStartPre=/usr/sbin/nginx -t -q -g 'daemon on; master_process on;'
 ExecStart=/usr/sbin/nginx -g 'daemon on; master_process on;'

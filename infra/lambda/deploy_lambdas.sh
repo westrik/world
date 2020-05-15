@@ -35,6 +35,8 @@ function deploy_lambda() {
 
   log "Finished deploying $lambda_name!"
   printf "\n"
+
+  cd -
 }
 
 LAMBDA_NAMES=(
