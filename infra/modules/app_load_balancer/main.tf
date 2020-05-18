@@ -38,12 +38,6 @@ resource "aws_lb_target_group" "app_insecure" {
   protocol = "TCP"
   vpc_id   = var.app_vpc_id
 }
-resource "aws_lb_target_group_attachment" "app_insecure" {
-  count            = length(var.app_instance_ids)
-  target_id        = var.app_instance_ids[count.index]
-  target_group_arn = aws_lb_target_group.app_insecure.arn
-  port             = 80
-}
 resource "aws_lb_listener" "app_insecure" {
   load_balancer_arn = aws_lb.app.arn
   port              = 80
@@ -56,17 +50,11 @@ resource "aws_lb_listener" "app_insecure" {
 }
 
 
-resource "aws_lb_target_group" "app" {
+resource "aws_lb_target_group" "app_secure" {
   name     = "app-lb-target-group"
   port     = 443
   protocol = "TCP_UDP"
   vpc_id   = var.app_vpc_id
-}
-resource "aws_lb_target_group_attachment" "app" {
-  count            = length(var.app_instance_ids)
-  target_id        = var.app_instance_ids[count.index]
-  target_group_arn = aws_lb_target_group.app.arn
-  port             = 443
 }
 resource "aws_lb_listener" "app" {
   load_balancer_arn = aws_lb.app.arn
@@ -75,7 +63,7 @@ resource "aws_lb_listener" "app" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.app.arn
+    target_group_arn = aws_lb_target_group.app_secure.arn
   }
 }
 

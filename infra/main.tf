@@ -83,10 +83,10 @@ module "app_load_balancer" {
   api_domain_name  = var.api_domain_name
   admin_email      = var.admin_email
 
-  app_vpc_id             = module.core_infra.app_vpc_id
-  app_instance_ids       = module.app_instances.instance_ids
-  app_security_group_ids = module.core_infra.app_security_group_ids
-  app_subnet_ids         = module.core_infra.app_subnet_ids
+  app_vpc_id               = module.core_infra.app_vpc_id
+  app_autoscaling_group_id = module.app_instances.app_autoscaling_group_id
+  app_security_group_ids   = module.core_infra.app_security_group_ids
+  app_subnet_ids           = module.core_infra.app_subnet_ids
 
   lambda_deploy_bucket                   = module.core_infra.lambda_deploy_bucket
   lambda_iam_role_arn__renew_certificate = module.core_infra.lambda_iam_role_arn__renew_certificate
@@ -96,6 +96,8 @@ module "app_instances" {
   source = "./modules/app_instances"
 
   aws_region = var.aws_region
+  aws_az1    = var.aws_az1
+  aws_az2    = var.aws_az2
 
   project_name = var.project_name
   deploy_name  = var.deploy_name
@@ -103,4 +105,5 @@ module "app_instances" {
   app_security_group_ids = module.core_infra.app_security_group_ids
   app_subnet_ids         = module.core_infra.app_subnet_ids
   num_app_instances      = var.num_app_instances
+  app_target_group_arns  = module.app_load_balancer.app_target_group_arns
 }

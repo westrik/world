@@ -70,9 +70,10 @@ resource "aws_subnet" "app_az1" {
 }
 
 resource "aws_subnet" "app_az2" {
-  availability_zone = var.aws_az2
-  vpc_id            = aws_vpc.app.id
-  cidr_block        = "10.0.2.0/24"
+  availability_zone       = var.aws_az2
+  vpc_id                  = aws_vpc.app.id
+  cidr_block              = "10.0.2.0/24"
+  map_public_ip_on_launch = true
 
   tags = {
     Name        = "app"
