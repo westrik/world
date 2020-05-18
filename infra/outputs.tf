@@ -18,7 +18,3 @@ output "app_deploy_bucket" {
 output "lambda_deploy_bucket" {
   value = module.core_infra.lambda_deploy_bucket
 }
-
-output "instance_ips" {
-  value = module.app_instances.instance_ips
-}
