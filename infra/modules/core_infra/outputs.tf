@@ -41,4 +41,3 @@ output "lambda_iam_role_arn__create_db_with_iam_role" {
 output "lambda_iam_role_arn__renew_certificate" {
   value = module.lambda_iam_roles.lambda_iam_role_arn__renew_certificate
 }
-

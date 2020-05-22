@@ -14,16 +14,16 @@ extension StoryboardLoadable where Self: UIViewController {
     static func StoryboardName() -> String {
         return String(describing: Self.self)
     }
-    
+
     static func StoryboardIdentifier() -> String {
         return String(describing: Self.self)
     }
 }
 
 private class UIStoryboardFactory {
-    
+
     static var storyboards: [String: UIStoryboard] = [String: UIStoryboard]()
-    
+
     static func storyboard(_ name: String) -> UIStoryboard {
         if UIStoryboardFactory.storyboards.index(forKey: name) != nil {
             return UIStoryboardFactory.storyboards[name]!
@@ -43,7 +43,7 @@ extension UIStoryboard {
         }
         return navigationController.viewControllers.first as! T
     }
-    
+
     static func loadViewController<T>() -> T where T: StoryboardLoadable, T: UIViewController {
         return UIStoryboard(name: T.StoryboardName(), bundle: nil).instantiateViewController(withIdentifier: T.StoryboardIdentifier()) as! T
     }

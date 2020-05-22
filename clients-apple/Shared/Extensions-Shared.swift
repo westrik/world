@@ -38,7 +38,7 @@ extension TimeInterval {
 }
 
 extension Date {
-    
+
     // let d = Date() -> Mar 12, 2020 at 1:51 PM
     // d.stringify() -> "1584039099.486827"
     func stringify() -> String {
@@ -85,9 +85,9 @@ extension String {
             case Normal
             case InsideAQuote
         }
-        
+
         let theString = self.trimmingCharacters(in: .whitespacesAndNewlines)
-        
+
         var tokens = [String]()
         var state = State.Normal
         let delimeters = CharacterSet.whitespacesAndNewlines.union(CharacterSet(charactersIn: "\""))
@@ -95,7 +95,7 @@ extension String {
 
         let scanner = Scanner(string: theString)
         scanner.charactersToBeSkipped = .none
-        
+
         while !scanner.isAtEnd {
             if state == .Normal {
                 if let token = scanner.scanCharacters(from: delimeters.inverted) {

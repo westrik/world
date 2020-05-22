@@ -103,7 +103,7 @@ extension NSImage {
 
         return true
     }
-    
+
     func writePNGToURL(_ url: URL) -> Bool {
         guard let imageData = self.tiffRepresentation else { return false }
         guard let imageRep = NSBitmapImageRep(data: imageData) else { return false }
@@ -134,7 +134,7 @@ extension NSImage {
 }
 
 extension NSOutlineView {
-    
+
     var selectedItem: OutlineItem? {
         get {
             if selectedRow == -1 {
@@ -144,7 +144,7 @@ extension NSOutlineView {
             if let item = item(atRow: selectedRow) as? OutlineItem {
                 return item
             }
-            
+
             return nil
         }
     }

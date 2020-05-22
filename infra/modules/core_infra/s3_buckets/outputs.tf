@@ -21,4 +21,3 @@ output "app_deploy_cloudfront_bucket_arn" {
 output "app_deploy_cloudfront_bucket_domain_name" {
   value = aws_s3_bucket.app_deploy_cloudfront.bucket_domain_name
 }
-

@@ -21,4 +21,3 @@ variable "app_subnet_ids" {
 variable "num_app_instances" {
   type = number
 }
-

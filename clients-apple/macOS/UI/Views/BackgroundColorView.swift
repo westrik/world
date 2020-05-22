@@ -20,7 +20,7 @@ class BackgroundColorView: NSView {
             updateLayer()
         }
     }
-    
+
     override func updateLayer() {
         if let color = NSColor(named: NSColor.Name(namedBackgroundColor)) {
             layer?.backgroundColor = color.cgColor

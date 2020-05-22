@@ -32,15 +32,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         registerDefaults()
-        
+
         // Enable Microsoft AppCenter
         // MSCrashes.setDelegate(self)
         // MSAppCenter.start("", withServices:[MSAnalytics.self, MSCrashes.self])
-        
+
         Constants.getHostname()
 
         NSApp.registerForRemoteNotifications(matching: .init(rawValue: 0))
-        
+
         #if SPARKLE
         setupForNonMASBuild()
         #endif
@@ -59,7 +59,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         showMainWindow(nil)
     }
-    
+
     // Perform any tasks that are specific to non-Mac App Store builds.
     func setupForNonMASBuild() {
         #if SPARKLE
@@ -116,11 +116,11 @@ extension AppDelegate {
     @IBAction func showMainWindow(_ sender: AnyObject?) {
         mainWindowController.showWindow(sender)
     }
-    
+
     @IBAction func showPrefs(_ sender: AnyObject?) {
         prefsWindowController.showWindow(sender)
     }
-    
+
     @IBAction func checkForUpdates(_ sender: AnyObject?) {
         #if SPARKLE
         SUUpdater.shared()?.checkForUpdates(nil)

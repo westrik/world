@@ -35,4 +35,3 @@ resource "aws_dynamodb_table" "tfstate_lock" {
   }
 }
 // TODO: DynamoDB ACL
-

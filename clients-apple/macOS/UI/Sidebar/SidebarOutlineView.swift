@@ -10,7 +10,7 @@ import AppKit
 // This NSOutlineView subclass coordinates with the RootItem and OutlineItem
 // classes to (easily?) populate the tree.
 class SidebarOutlinewView: NSOutlineView {
-    
+
     static var shared: SidebarOutlinewView?
 
     var rootItem = RootItem()
@@ -24,11 +24,11 @@ class SidebarOutlinewView: NSOutlineView {
 
         // Regsiter your own custom cells here...
         register(NSNib(nibNamed: String(describing: SidebarTableCellView.self), bundle: nil), forIdentifier: NSUserInterfaceItemIdentifier(String(describing: SidebarTableCellView.self)))
-        
+
         delegate = self
         dataSource = self
     }
-    
+
     @objc func reloadViaNotification(_ notification: Notification) {
         reloadData()
     }
@@ -40,12 +40,12 @@ class SidebarOutlinewView: NSOutlineView {
                     self.isReloading = true
 
                     let previousSelectedRowIndexes = self.selectedRowIndexes
-                    
+
                     super.reloadData()
-                    
+
                     self.expandItem(nil, expandChildren: true)
                     self.selectRowIndexes(previousSelectedRowIndexes, byExtendingSelection: false)
-                    
+
                     if self.selectedRow == -1 {
                         self.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
                     }
@@ -62,14 +62,14 @@ class SidebarOutlinewView: NSOutlineView {
             item.setExpanded?()
         }
     }
-    
+
     override func collapseItem(_ item: Any?, collapseChildren: Bool) {
         super.collapseItem(item, collapseChildren: collapseChildren)
         if let item = item as? OutlineItem {
             item.setCollapsed?()
         }
     }
-    
+
     // Hide the disclosure triangle when the item is not expandable.
     override func frameOfOutlineCell(atRow row: Int) -> NSRect {
         if let item = item(atRow: row) as? OutlineItem {
@@ -80,18 +80,18 @@ class SidebarOutlinewView: NSOutlineView {
                 return .zero
             }
         }
-        
+
         return .zero
     }
 }
 
 extension SidebarOutlinewView: NSOutlineViewDelegate {
-    
+
     func outlineView(_ outlineView: NSOutlineView, shouldSelectItem item: Any) -> Bool {
         let outlineItem = item as! OutlineItem
         return outlineItem.isSelectable
     }
-    
+
     func outlineView(_ outlineView: NSOutlineView, shouldExpandItem item: Any) -> Bool {
         if isReloading, let item = item as? OutlineItem {
             return item.isExpanded?() ?? true
@@ -123,7 +123,7 @@ extension SidebarOutlinewView: NSOutlineViewDelegate {
 }
 
 extension SidebarOutlinewView: NSOutlineViewDataSource {
-    
+
     func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
         if item == nil {
             return rootItem.children[index]

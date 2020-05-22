@@ -27,7 +27,7 @@ class MenuBarStatusItem {
             statusItem?.button?.sendAction(on: [.leftMouseDown, .rightMouseDown])
         }
     }
-    
+
     func removeStatusItem() {
         if let statusItem = statusItem {
             NSStatusBar.system.removeStatusItem(statusItem)
@@ -37,11 +37,11 @@ class MenuBarStatusItem {
     func setTitle(_ title: String?) {
         statusItem?.button?.title = title ?? ""
     }
-    
+
     func setImage(_ image: NSImage?) {
         statusItem?.button?.image = image
     }
-    
+
     func setImageNamed(_ imageName: String?) {
         if let imageName = imageName {
             let image = NSImage(named: imageName)
@@ -55,11 +55,11 @@ class MenuBarStatusItem {
     func setMenu(_ menu: NSMenu?) {
         statusItem?.menu = menu
     }
-    
+
     func show() {
         statusItem?.isVisible = true
     }
-    
+
     func hide() {
         statusItem?.isVisible = false
     }

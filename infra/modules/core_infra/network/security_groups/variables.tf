@@ -13,4 +13,3 @@ variable "vpc_id" {
 variable "prefix_list_ids" {
   type = list(string)
 }
-

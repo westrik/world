@@ -5,9 +5,9 @@ set -euo pipefail
 sed -i 's/local   all             postgres                                peer/host    all             all             127.0.0.1\/32            trust/g' /etc/postgresql/10/main/pg_hba.conf
 service postgresql restart
 apt-get install -y sudo
-echo "select 'create database westrikworld_test' where not exists (select from pg_database where datname = 'westrikworld_test')\\gexec" | sudo -u postgres psql postgres -w -h localhost  
+echo "select 'create database westrikworld_test' where not exists (select from pg_database where datname = 'westrikworld_test')\\gexec" | sudo -u postgres psql postgres -w -h localhost
 echo "select 'create user westrikworld_user with encrypted password ''PASSWORD''' where not exists (select from pg_user where usename = 'westrikworld_user')
-\\gexec" | sudo -u postgres psql postgres -w -h localhost  
+\\gexec" | sudo -u postgres psql postgres -w -h localhost
 sudo -u postgres psql postgres -w -h localhost -c "grant all privileges on database westrikworld_test to westrikworld_user;"
 rm -rf .env
 touch .env

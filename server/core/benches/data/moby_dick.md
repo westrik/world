@@ -135,11 +135,11 @@ Henry._*
 
 “Very like a whale.” — *_Hamlet._*
 
-> Which to secure, no skill of leach’s art   
-> Mote him availle, but to returne againe   
-> To his wound’s worker, that with lowly dart,   
-> Dinting his breast, had bred his restless paine,   
-> Like as the wounded whale to shore flies thro’ the maine.   
+> Which to secure, no skill of leach’s art  
+> Mote him availle, but to returne againe  
+> To his wound’s worker, that with lowly dart,  
+> Dinting his breast, had bred his restless paine,  
+> Like as the wounded whale to shore flies thro’ the maine.  
 > *— _The Faerie Queen._*
 
 “Immense as whales, the motion of whose vast bodies can in a peaceful calm
@@ -150,12 +150,12 @@ _Gondibert._*
 work of thirty years, saith plainly, _Nescio quid sit._” — *Sir T. Browne. _Of
 Sperma Ceti and the Sperma Ceti Whale. Vide his V.E._*
 
-> Like Spencer’s Talus with his modern flail   
-> He threatens ruin with his ponderous tail.   
-> ...   
-> Their fixed jav’lins in his side he wears,   
-> And on his back a grove of pikes appears.   
-> *— Waller’s _Battle of the Summer Islands._*   
+> Like Spencer’s Talus with his modern flail  
+> He threatens ruin with his ponderous tail.  
+> ...  
+> Their fixed jav’lins in his side he wears,  
+> And on his back a grove of pikes appears.  
+> *— Waller’s _Battle of the Summer Islands._*  
 
 “By art is created that great Leviathan, called a Commonwealth or State” — in
 Latin, _Civitas_) which is but an artificial man. *— opening sentence of
@@ -164,24 +164,24 @@ Hobbes’s _Leviathan._*
 “Silly Mansoul swallowed it without chewing, as if it had been a sprat in the
 mouth of a whale.” — *_Pilgrim’s Progress._*
 
-> That sea beast   
-> Leviathan, which God of all his works   
-> Created hugest that swim the ocean stream.   
-> *— _Paradise Lost._*   
-   
-> There Leviathan,      
-> Hugest of living creatures, in the deep   
-> Stretched like a promontory sleeps or swims,   
-> And seems a moving land; and at his gills   
-> Draws in, and at his breath spouts out a sea.   
-> *— Ibid.*   
+> That sea beast  
+> Leviathan, which God of all his works  
+> Created hugest that swim the ocean stream.  
+> *— _Paradise Lost._*  
+
+> There Leviathan,  
+> Hugest of living creatures, in the deep  
+> Stretched like a promontory sleeps or swims,  
+> And seems a moving land; and at his gills  
+> Draws in, and at his breath spouts out a sea.  
+> *— Ibid.*  
 
 “The mighty whales which swim in a sea of water, and have a sea of oil swimming
 in them.” — *Fulller’s _Profane and Holy State._*
 
-> So close behind some promontory lie   
-> The huge Leviathan to attend their prey,   
-> And give no chance, but swallow in the fry,   
+> So close behind some promontory lie  
+> The huge Leviathan to attend their prey,  
+> And give no chance, but swallow in the fry,  
 > Which through their gaping jaws mistake the way.  
 > *— Dryden’s _Annus Mirabilis._*
 
@@ -269,20 +269,20 @@ is the right to royal fish, which are whale and sturgeon.  And these, when
 either thrown ashore or caught near the coast, are the property of the king.” —
 *Blackstone.*
 
-> Soon to the sport of death the crews repair:   
-> Rodmond unerring o’er his head suspends   
-> The barbed steel, and every turn attends.   
-> — *_Falconer’s Shipwreck._* 
+> Soon to the sport of death the crews repair:  
+> Rodmond unerring o’er his head suspends  
+> The barbed steel, and every turn attends.  
+> — *_Falconer’s Shipwreck._*
 
-> Bright shone the roofs, the domes, the spires,   
-> And rockets blew self driven,   
-> To hang their momentary fire   
-> Around the vault of heaven.   
-    
-> So fire with water to compare,   
-> The ocean serves on high,   
-> Up-spouted by a whale in air,   
-> To express unwieldy joy.    
+> Bright shone the roofs, the domes, the spires,  
+> And rockets blew self driven,  
+> To hang their momentary fire  
+> Around the vault of heaven.  
+
+> So fire with water to compare,  
+> The ocean serves on high,  
+> Up-spouted by a whale in air,  
+> To express unwieldy joy.  
 > — *_Cowper, on the Queen’s visit to London._*
 
 “Ten or fifteen gallons of blood are thrown out of the heart at a stroke, with
@@ -301,27 +301,27 @@ first of May, the sea being then covered with them.” — *Colnett’s _Voyage 
 the Purpose of Extending the Spermaceti Whale Fishery._*
 
 
-> In the free element beneath me swam,    
-> Floundered and dived, in play, in chace, in battle,    
-> Fishes of every colour, form, and kind;    
-> Which language cannot paint, and mariner    
-> Had never seen; from dread Leviathan    
-> To insect millions peopling every wave:    
-> Gather’d in shoals immense, like floating islands,    
-> Led by mysterious instincts through that waste    
-> And trackless region, though on every side    
-> Assaulted by voracious enemies,    
-> Whales, sharks, and monsters, arm’d in front or jaw,    
-> With swords, saws, spiral horns, or hooked fangs.    
-> — *Montgomery’s _World Before the Flood._*    
+> In the free element beneath me swam,  
+> Floundered and dived, in play, in chace, in battle,  
+> Fishes of every colour, form, and kind;  
+> Which language cannot paint, and mariner  
+> Had never seen; from dread Leviathan  
+> To insect millions peopling every wave:  
+> Gather’d in shoals immense, like floating islands,  
+> Led by mysterious instincts through that waste  
+> And trackless region, though on every side  
+> Assaulted by voracious enemies,  
+> Whales, sharks, and monsters, arm’d in front or jaw,  
+> With swords, saws, spiral horns, or hooked fangs.  
+> — *Montgomery’s _World Before the Flood._*  
 
 
-> Io!  Paean!  Io! sing.    
-> To the finny people’s king.    
-> Not a mightier whale than this    
-> In the vast Atlantic is;    
-> Not a fatter fish than he,    
-> Flounders round the Polar Sea.    
+> Io!  Paean!  Io! sing.  
+> To the finny people’s king.  
+> Not a mightier whale than this  
+> In the vast Atlantic is;  
+> Not a fatter fish than he,  
+> Flounders round the Polar Sea.  
 > — *Charles Lamb’s _Triumph of the Whale._*
 
 “In the year 1690 some persons were on a high hill observing the whales spouting
@@ -348,11 +348,11 @@ whale.’” — *_Narrative of the Shipwreck of the Whale Ship Essex of Nantuck
 Which was Attacked and Finally Destroyed by a Large Sperm Whale in the Pacific
 Ocean. By Owen Chace of Nantucket, First Mate of Said Vessel._ New York, 1821*
 
-> A mariner sat in the shrouds one night,    
-> The wind was piping free;    
-> Now bright, now dimmed, was the moonlight pale,    
-> And the phospher gleamed in the wake of the whale,    
-> As it floundered in the sea.    
+> A mariner sat in the shrouds one night,  
+> The wind was piping free;  
+> Now bright, now dimmed, was the moonlight pale,  
+> And the phospher gleamed in the wake of the whale,  
+> As it floundered in the sea.  
 > — *Elizabeth Oakes Smith.*
 
 “The quantity of line withdrawn from the boats engaged in the capture of this
@@ -381,20 +381,20 @@ mischievous, as to lead to its being regarded as the most dangerous to attack of
 all the known species of the whale tribe.” — *Frederick Debell Bennett’s
 _Whaling Voyage Round the Globe,_ 1840*
 
-> October 13.  “There she blows,” was sung out from the mast-head.    
-> “Where away?” demanded the captain.    
-> “Three points off the lee bow, sir.”    
-> “Raise up your wheel.  Steady!”  “Steady, sir.”    
-> “Mast-head ahoy!  Do you see that whale now?”    
-> “Ay ay, sir!  A shoal of Sperm Whales!  There she blows!  There she    
-> breaches!”    
-> “Sing out! sing out every time!”    
+> October 13.  “There she blows,” was sung out from the mast-head.  
+> “Where away?” demanded the captain.  
+> “Three points off the lee bow, sir.”  
+> “Raise up your wheel.  Steady!”  “Steady, sir.”  
+> “Mast-head ahoy!  Do you see that whale now?”  
+> “Ay ay, sir!  A shoal of Sperm Whales!  There she blows!  There she  
+> breaches!”  
+> “Sing out! sing out every time!”  
 > “Ay Ay, sir!  There she blows! there — there — __thar__ she blows — bowes —
-> bo-o-os!”    
-> “How far off?”    
-> “Two miles and a half.”    
-> “Thunder and lightning! so near!  Call all hands.”    
-> — *J. Ross Browne’s _Etchings of a Whaling Cruize._  1846.* 
+> bo-o-os!”  
+> “How far off?”  
+> “Two miles and a half.”  
+> “Thunder and lightning! so near!  Call all hands.”  
+> — *J. Ross Browne’s _Etchings of a Whaling Cruize._  1846.*
 
 “The Whale-ship Globe, on board of which vessel occurred the horrid transactions
 we are about to relate, belonged to the island of Nantucket.” — *“Narrative of
@@ -471,12 +471,12 @@ Killer_*
 “So be cheery, my lads, let your hearts never fail, While the bold harpooneer is
 striking the whale!” — *Nantucket Song*
 
-> Oh, the rare old Whale, mid storm and gale   
-> In his ocean home will be   
-> A giant in might, where might is right,   
-> And King of the boundless sea.”   
+> Oh, the rare old Whale, mid storm and gale  
+> In his ocean home will be  
+> A giant in might, where might is right,  
+> And King of the boundless sea.”  
 > — *Whale Song.*
-### Chapter 1. 
+### Chapter 1.
 Loomings.
 =========
 
@@ -664,7 +664,7 @@ processions of the whale, and, mid most of them all, one grand hooded phantom,
 like a snow hill in the air.
 
 
-### Chapter 2. 
+### Chapter 2.
 The Carpet-Bag.
 ===============
 
@@ -1300,7 +1300,7 @@ sleep with a sober cannibal than a drunken Christian.
 “Landlord,” said I, “tell him to stash his tomahawk there, or pipe, or whatever
 you call it; tell him to stop smoking, in short, and I will turn in with him.
 But I don’t fancy having a man smoking in bed with me.  It’s dangerous. Besides,
-I ain’t insured.” 
+I ain’t insured.”
 
 This being told to Queequeg, he at once complied, and again politely motioned me
 to get into bed — rolling over to one side as much as to say — “I won't touch a
@@ -1447,7 +1447,7 @@ a marshal’s baton.
 
 
 
-### Chapter 5. 
+### Chapter 5.
 Breakfast.
 ==========
 
@@ -1521,7 +1521,7 @@ smoking with his inseparable hat on, when I sallied out for a stroll.
 
 
 
-### Chapter 6. 
+### Chapter 6.
 The Street.
 ===========
 
@@ -1603,7 +1603,7 @@ drawing nigh the odorous Moluccas instead of the Puritanic sands.
 
 
 
-### Chapter 7. 
+### Chapter 7.
 The Chapel.
 ===========
 
@@ -1623,7 +1623,7 @@ grief were insular and incommunicable. The chaplain had not yet arrived; and
 there these silent islands of men and women sat steadfastly eyeing several
 marble tablets, with black borders, masoned into the wall on either side the
 pulpit. Three of them ran something like the following, but I do not pretend to
-quote: — 
+quote: —
 
 ----
 
@@ -1787,7 +1787,7 @@ out, and not a voyage complete; and the pulpit is its prow.
 
 
 
-### Chapter 9. 
+### Chapter 9.
 The Sermon.
 ===========
 
@@ -1807,32 +1807,32 @@ bottom of the sea.
 This ended, in prolonged solemn tones, like the continual tolling of
 a bell in a ship that is foundering at sea in a fog — in such tones he
 commenced reading the following hymn; but changing his manner towards
-the concluding stanzas, burst forth with a pealing exultation and joy — 
+the concluding stanzas, burst forth with a pealing exultation and joy —
 
->  “The ribs and terrors in the whale,   
->  Arched over me a dismal gloom,   
->  While all God’s sun-lit waves rolled by,   
->  And lift me deepening down to doom.   
->    
->  “I saw the opening maw of hell,   
->  With endless pains and sorrows there;   
->  Which none but they that feel can tell —    
->  Oh, I was plunging to despair.   
->    
->  “In black distress, I called my God,   
->  When I could scarce believe him mine,   
->  He bowed his ear to my complaints —    
->  No more the whale did me confine.   
->    
->  “With speed he flew to my relief,   
->  As on a radiant dolphin borne;   
->  Awful, yet bright, as lightning shone   
->  The face of my Deliverer God.   
->    
->  “My song for ever shall record   
->  That terrible, that joyful hour;   
->  I give the glory to my God,   
->  His all the mercy and the power.”   
+>  “The ribs and terrors in the whale,  
+>  Arched over me a dismal gloom,  
+>  While all God’s sun-lit waves rolled by,  
+>  And lift me deepening down to doom.  
+>  
+>  “I saw the opening maw of hell,  
+>  With endless pains and sorrows there;  
+>  Which none but they that feel can tell —  
+>  Oh, I was plunging to despair.  
+>  
+>  “In black distress, I called my God,  
+>  When I could scarce believe him mine,  
+>  He bowed his ear to my complaints —  
+>  No more the whale did me confine.  
+>  
+>  “With speed he flew to my relief,  
+>  As on a radiant dolphin borne;  
+>  Awful, yet bright, as lightning shone  
+>  The face of my Deliverer God.  
+>  
+>  “My song for ever shall record  
+>  That terrible, that joyful hour;  
+>  I give the glory to my God,  
+>  His all the mercy and the power.”  
 
 
 Nearly all joined in singing this hymn, which swelled high above the howling of
@@ -2099,7 +2099,7 @@ left alone in the place.
 
 
 
-### Chapter 10. 
+### Chapter 10.
 A Bosom Friend.
 ===============
 
@@ -2231,7 +2231,7 @@ Queequeg — a cosy, loving pair.
 
 
 
-### Chapter 11. 
+### Chapter 11.
 Nightgown.
 ==========
 
@@ -2375,7 +2375,7 @@ pressed his forehead against mine, and blowing out the light, we rolled over
 from each other, this way and that, and very soon were sleeping.
 
 
-### Chapter 13. 
+### Chapter 13.
 Wheelbarrow.
 ============
 
@@ -2530,7 +2530,7 @@ world, in all meridians. We cannibals must help these Christians.”
 
 
 
-### Chapter 14. 
+### Chapter 14.
 Nantucket.
 ==========
 
@@ -2600,7 +2600,7 @@ walruses and whales.
 
 
 
-### Chapter 15. 
+### Chapter 15.
 Chowder.
 ========
 
@@ -2717,7 +2717,7 @@ breakfast, men?”
 
 
 
-### Chapter 16. 
+### Chapter 16.
 The Ship.
 =========
 
@@ -3240,7 +3240,7 @@ the present dark Ahab slipped my mind.
 
 
 
-### Chapter 17. 
+### Chapter 17.
 The Ramadan.
 ============
 
@@ -3457,7 +3457,7 @@ along, and picking our teeth with halibut bones.
 
 
 
-#Chapter 18. 
+#Chapter 18.
 His Mark.
 =========
 
@@ -3524,7 +3524,7 @@ fish?”
 Without saying a word, Queequeg, in his wild sort of way, jumped upon the
 bulwarks, from thence into the bows of one of the whale-boats hanging to the
 side; and then bracing his left knee, and poising his harpoon, cried out in
-some such way as this: — 
+some such way as this: —
 
 “Cap’ain, you see him small drop tar on water dere? You see him? well, spose
 him one whale eye, well, den!” and taking sharp aim at it, he darted the iron
@@ -3552,7 +3552,7 @@ But at this question, Queequeg, who had twice or thrice before taken part in
 similar ceremonies, looked no ways abashed; but taking the offered pen, copied
 upon the paper, in the proper place, an exact counterpart of a queer round
 figure which was tattooed upon his arm; so that through Captain Peleg’s
-obstinate mistake touching his appellative, it stood something like this: — 
+obstinate mistake touching his appellative, it stood something like this: —
 
 > Quohog. his __X__ mark.
 
@@ -3601,7 +3601,7 @@ save an end of tarred twine, which otherwise might have been wasted.
 
 
 
-### Chapter 19. 
+### Chapter 19.
 The Prophet.
 ============
 
@@ -3973,7 +3973,7 @@ Captain Ahab remained invisibly enshrined within his cabin.
 
 
 
-### Chapter 22. 
+### Chapter 22.
 Merry Christmas.
 ================
 
@@ -4063,7 +4063,7 @@ elephant, vast curving icicles depended from the bows.
 
 Lank Bildad, as pilot, headed the first watch, and ever and anon, as the old
 craft deep dived into the green seas, and sent the shivering frost all over
-her, and the winds howled, and the cordage rang, his steady notes were heard, — 
+her, and the winds howled, and the cordage rang, his steady notes were heard, —
 
 > “Sweet fields beyond the swelling flood, Stand dressed in living green.  So
 > to the Jews old Canaan stood, While Jordan rolled between.”
@@ -4130,7 +4130,7 @@ cheers, and blindly plunged like fate into the lone Atlantic.
 
 
 
-### Chapter 23. 
+### Chapter 23.
 The Lee Shore.
 ==============
 
@@ -4168,7 +4168,7 @@ would craven crawl to land! Terrors of the terrible! is all this agony so vain?
 Take heart, take heart, O Bulkington! Bear thee grimly, demigod! Up from the
 spray of thy ocean-perishing — straight up, leaps thy apotheosis!
 
-### Chapter 24. 
+### Chapter 24.
 The Advocate.
 =============
 
@@ -4335,7 +4335,7 @@ Harvard.
 
 
 
-### Chapter 25. 
+### Chapter 25.
 Postscript.
 ===========
 
@@ -4367,7 +4367,7 @@ sweetest of all oils?
 Think of that, ye loyal Britons! we whalemen supply your kings and queens with
 coronation stuff!
 
-### Chapter 26. 
+### Chapter 26.
 Knights & Squires.
 ==================
 
@@ -4473,7 +4473,7 @@ commons; bear me out in it, O God!
 
 
 
-### Chapter 27. 
+### Chapter 27.
 Knights & Squires.
 ==================
 
@@ -4617,7 +4617,7 @@ called a coward here, hailed a hero there!
 
 
 
-### Chapter 28. 
+### Chapter 28.
 Ahab.
 =====
 
@@ -4739,7 +4739,7 @@ look, which, in any other man, would have soon flowered out in a smile.
 
 
 
-### Chapter 29. 
+### Chapter 29.
 Enter Ahab; to Him, Stubb.
 ==========================
 
@@ -4845,7 +4845,7 @@ plaguey juggling thinks over by daylight.”
 
 
 
-### Chapter 30. 
+### Chapter 30.
 The Pipe.
 =========
 
@@ -4879,7 +4879,7 @@ slouched hat, Ahab lurchingly paced the planks.
 
 
 
-### Chapter 31. 
+### Chapter 31.
 Queen Mab.
 ==========
 
@@ -4954,7 +4954,7 @@ bloody on his mind. But, mum; he comes this way.”
 
 
 
-### Chapter 32. 
+### Chapter 32.
 Cetology.
 =========
 
@@ -5105,13 +5105,13 @@ __Grampus__; of the *Duodecimo,* the __Porpoise.__
 
 ----
 
-### Folios. 
+### Folios.
 
 Among these I here include the following chapters: — __I. The Sperm
 Whale;__ __II. the Right Whale;__ __III. the Fin-back Whale;__ __IV. the Hump-backed
 Whale;__ __V. the Razor-back Whale;__ __VI. the Sulphur-Bottom Whale.__
 
-#### Book I. **(Folio),** Chapter I. (Sperm Whale). 
+#### Book I. **(Folio),** Chapter I. (Sperm Whale).
 
 — This whale, among the English of old vaguely known as the Trumpa whale, and
 the Physeter whale, and the Anvil Headed whale, is the present Cachalot of the
@@ -5135,7 +5135,7 @@ notion so strangely significant of its scarcity. And so the appellation must at
 last have come to be bestowed upon the whale from which this spermaceti was
 really derived.
 
-#### Book I. *(Folio),* Chapter II. (Right Whale). 
+#### Book I. *(Folio),* Chapter II. (Right Whale).
 
 — In one respect this is the most venerable of the leviathans, being the one
 first regularly hunted by man. It yields the article commonly known as
@@ -5161,7 +5161,7 @@ most inconclusive differences, that some departments of natural history become
 so repellingly intricate. The right whale will be elsewhere treated of at some
 length, with reference to elucidating the sperm whale.
 
-#### Book I. *(Folio),* Chapter III. (Fin-back). 
+#### Book I. *(Folio),* Chapter III. (Fin-back).
 
 — Under this head I reckon a monster which, by the various names of Fin-Back,
 Tall-Spout, and Long-John, has been seen almost in every sea and is commonly
@@ -5224,7 +5224,7 @@ whales bodily, in their entire liberal volume, and boldly sort them that way.
 And this is the Bibliographical system here adopted; and it is the only one
 that can possibly succeed, for it alone is practicable. To proceed.
 
-#### Book I. *(Folio)* Chapter IV. (Hump-back). 
+#### Book I. *(Folio)* Chapter IV. (Hump-back).
 
 — This whale is often seen on the northern American coast. He has been
 frequently captured there, and towed into harbor. He has a great pack on him
@@ -5234,7 +5234,7 @@ sperm whale also has a hump though a smaller one. His oil is not very valuable.
 He has baleen. He is the most gamesome and light-hearted of all the whales,
 making more gay foam and white water generally than any other of them.
 
-#### Book I. *(Folio),* Chapter V. (Razor-back). 
+#### Book I. *(Folio),* Chapter V. (Razor-back).
 
 — Of this whale little is known but his name. I have seen him at a distance off
 Cape Horn. Of a retiring nature, he eludes both hunters and philosophers.
@@ -5242,7 +5242,7 @@ Though no coward, he has never yet shown any part of him but his back, which
 rises in a long sharp ridge. Let him go. I know little more of him, nor does
 anybody else.
 
-#### Book I. *(Folio),* CHAPTER VI. (Sulphur-bottom). 
+#### Book I. *(Folio),* CHAPTER VI. (Sulphur-bottom).
 
 — Another retiring gentleman, with a brimstone belly, doubtless got by scraping
 along the Tartarian tiles in some of his profounder divings. He is seldom seen;
@@ -5256,7 +5256,7 @@ Thus ends __Book I. *(Folio),*__ and now begins __Book II. *(Octavo).*__
 
 ----
 
-### *Octavoes.*\* 
+### *Octavoes.*\*
 
 — These embrace the whales of middling magnitude, among which present may be
 numbered: — __I., the Grampus;__ __II., the Black fish;__ __III., the
@@ -5270,7 +5270,7 @@ Narwhale;__ __IV., the Thrasher;__ __V., the Killer.__
 > the shape of the *Folio* volume, but the *Octavo* volume does.
 
 
-#### Book II. *(Octavo),* Chapter I. (Grampus). 
+#### Book II. *(Octavo),* Chapter I. (Grampus).
 
 — Though this fish, whose loud sonorous breathing, or rather blowing, has
 furnished a proverb to landsmen, is so well known a denizen of the deep, yet is
@@ -5282,7 +5282,7 @@ regularly hunted, though his oil is considerable in quantity, and pretty good
 for light. By some fishermen his approach is regarded as premonitory of the
 advance of the great sperm whale.
 
-#### Book II. *(Octavo),* Chapter II. (Black fish). 
+#### Book II. *(Octavo),* Chapter II. (Black fish).
 
 — I give the popular fishermen’s names for all these fish, for generally they
 are the best.  Where any name happens to be vague or inexpressive, I shall say
@@ -5300,7 +5300,7 @@ alone by themselves, burn unsavory tallow instead of odorous wax. Though their
 blubber is very thin, some of these whales will yield you upwards of thirty
 gallons of oil.
 
-#### Book II. *(Octavo),* Chapter III. (Narwhale), that is, Nostril whale. 
+#### Book II. *(Octavo),* Chapter III. (Narwhale), that is, Nostril whale.
 
 — Another instance of a curiously named whale, so named I suppose from his
 peculiar horn being originally mistaken for a peaked nose. The creature is some
@@ -5340,7 +5340,7 @@ ground colour, dotted with round and oblong spots of black.  His oil is very
 superior, clear and fine; but there is little of it, and he is seldom hunted.
 He is mostly found in the circumpolar seas.
 
-#### Book II. *(Octavo),* Chapter IV. (Killer). 
+#### Book II. *(Octavo),* Chapter IV. (Killer).
 
 — Of this whale little is precisely known to the Nantucketer, and nothing at
 all to the professed naturalist. From what I have seen of him at a distance, I
@@ -5352,7 +5352,7 @@ be taken to the name bestowed upon this whale, on the ground of its
 indistinctness. For we are all killers, on land and on sea; Bonapartes and
 Sharks included.
 
-#### Book II. *(Octavo),* Chapter V. (Thrasher). 
+#### Book II. *(Octavo),* Chapter V. (Thrasher).
 
 — This gentleman is famous for his tail, which he uses for a ferule in
 thrashing his foes. He mounts the *Folio* whale’s back, and as he swims, he
@@ -5364,7 +5364,7 @@ Thus ends __Book II. *(Octavo),*__ and begins __Book III. *(Duodecimo).*__
 
 ----
 
-### Duodecimoes. 
+### Duodecimoes.
 
 — These include the smaller whales. __I. The Huzza Porpoise.__  __II. The
 Algerine Porpoise.__ __III. The Mealy-mouthed Porpoise.__
@@ -5376,7 +5376,7 @@ an idea of hugeness. But the creatures set down above as *Duodecimoes* are
 infallibly whales, by the terms of my definition of what a whale is — i.e. a
 spouting fish, with a horizontal tail.
 
-#### Book III. *(Duodecimo),* Chapter 1. (Huzza Porpoise). 
+#### Book III. *(Duodecimo),* Chapter 1. (Huzza Porpoise).
 
 — This is the common porpoise found almost all over the globe. The name is of
 my own bestowal; for there are more than one sort of porpoises, and something
@@ -5396,14 +5396,14 @@ small that it is not very readily discernible. But the next time you have a
 chance, watch him; and you will then see the great Sperm whale himself in
 miniature.
 
-#### Book III. *(Duodecimo),* Chapter II. (Algerine Porpoise). 
+#### Book III. *(Duodecimo),* Chapter II. (Algerine Porpoise).
 
 — A pirate. Very savage. He is only found, I think, in the Pacific. He is
 somewhat larger than the Huzza Porpoise, but much of the same general make.
 Provoke him, and he will buckle to a shark. I have lowered for him many times,
 but never yet saw him captured.
 
-#### Book III. *(Duodecimo),* Chapter III. (Mealy-mouthed Porpoise). 
+#### Book III. *(Duodecimo),* Chapter III. (Mealy-mouthed Porpoise).
 
 — The largest kind of Porpoise; and only found in the Pacific, so far as it is
 known. The only English name, by which he has hitherto been designated, is that
@@ -5449,7 +5449,7 @@ keep me from ever completing anything. This whole book is but a draught — nay,
 but the draught of a draught. Oh, Time, Strength, Cash, and Patience!
 
 
-### Chapter 33. 
+### Chapter 33.
 The Specksnyder.
 ================
 
@@ -5729,7 +5729,7 @@ up in the caved trunk of his body, there fed upon the sullen paws of its gloom!
 
 
 
-### Chapter 35. 
+### Chapter 35.
 The Mast-Head.
 ==============
 
@@ -5906,7 +5906,7 @@ whale-fishery furnishes an asylum for many romantic, melancholy, and
 absent-minded young men, disgusted with the carking cares of earth, and seeking
 sentiment in tar and blubber. Childe Harold not unfrequently perches himself
 upon the mast-head of some luckless disappointed whale-ship, and in moody
-phrase ejaculates: — 
+phrase ejaculates: —
 
 > “Roll on, thou deep and dark blue ocean, roll! Ten thousand blubber-hunters
 > sweep over thee in vain.”
@@ -5944,7 +5944,7 @@ summer sea, no more to rise for ever. Heed it well, ye Pantheists!
 
 
 
-### Chapter 36. 
+### Chapter 36.
 The Quarter-Deck.
 =================
 
@@ -5994,7 +5994,7 @@ standpoint; and as though not a soul were nigh him resumed his heavy turns upon
 the deck. With bent head and half-slouched hat he continued to pace, unmindful
 of the wondering whispering among the men; till Stubb cautiously whispered to
 Flask, that Ahab must have summoned them there for the purpose of witnessing a
-pedestrian feat. But this did not last long. Vehemently pausing, he cried: — 
+pedestrian feat. But this did not last long. Vehemently pausing, he cried: —
 
 “What do ye do when ye see a whale, men?”
 
@@ -6018,7 +6018,7 @@ at such seemingly purposeless questions.
 
 But, they were all eagerness again, as Ahab, now half-revolving in his
 pivot-hole, with one hand reaching high up a shroud, and tightly, almost
-convulsively grasping it, addressed them thus: — 
+convulsively grasping it, addressed them thus: —
 
 “All ye mast-headers have before now heard me give orders about a white whale.
 Look ye! d’ye see this Spanish ounce of gold?” — holding up a broad bright coin
@@ -6230,7 +6230,7 @@ replenished pewter went the rounds among the frantic crew; when, waving his
 free hand to them, they all dispersed; and Ahab retired within his cabin.
 
 
-### Chapter 37. 
+### Chapter 37.
 Sunset.
 =======
 
@@ -6282,7 +6282,7 @@ mountains, under torrents’ beds, unerringly I rush! Naught’s an obstacle,
 naught’s an angle to the iron way!
 
 
-### Chapter 38. 
+### Chapter 38.
 Dusk.
 =====
 
@@ -6323,7 +6323,7 @@ feel the latent horror in thee! but ’tis not me! that horror’s out of me! an
 with the soft feeling of the human in me, yet will I try to fight ye, ye grim,
 phantom futures! Stand by me, hold me, bind me, O ye blessed influences!
 
-### Chapter 39. 
+### Chapter 39.
 First Night Watch.
 ==================
 
@@ -6367,21 +6367,21 @@ in various attitudes, all singing in chorus.]*
 
 > Farewell and adieu to you, Spanish ladies!  
 > Farewell and adieu to you, ladies of Spain!  
-> Our captain’s commanded. —   
+> Our captain’s commanded. —  
 
 *__1ST NANTUCKET SAILOR.__* Oh, boys, don’t be sentimental; it’s bad for the
 digestion! Take a tonic, follow me! *[Sings, and all follow]*
 
-> Our captain stood upon the deck,   
-> A spy-glass in his hand,   
-> A viewing of those gallant whales   
-> That blew at every strand.   
-> Oh, your tubs in your boats, my boys,   
-> And by your braces stand,   
-> And we’ll have one of those fine whales,   
-> Hand, boys, over hand!   
-> So, be cheery, my lads! may your hearts never fail!   
-> While the bold harpooner is striking the whale!   
+> Our captain stood upon the deck,  
+> A spy-glass in his hand,  
+> A viewing of those gallant whales  
+> That blew at every strand.  
+> Oh, your tubs in your boats, my boys,  
+> And by your braces stand,  
+> And we’ll have one of those fine whales,  
+> Hand, boys, over hand!  
+> So, be cheery, my lads! may your hearts never fail!  
+> While the bold harpooner is striking the whale!  
 
 *__MATE’S VOICE FROM THE QUARTER-DECK.__* Eight bells there, forward!
 
@@ -6562,7 +6562,7 @@ Oh, thou big white God aloft there somewhere in yon darkness, have mercy on
 this small black boy down here; preserve him from all men that have no bowels
 to feel fear!
 
-### Chapter 41. 
+### Chapter 41.
 Moby Dick.
 ==========
 
@@ -6892,7 +6892,7 @@ see naught in that brute but the deadliest ill.
 
 
 
-### Chapter 42. 
+### Chapter 42.
 The Whiteness of The Whale.
 ===========================
 
@@ -7226,7 +7226,7 @@ the fiery hunt?
 
 
 
-### Chapter 43. 
+### Chapter 43.
 Hark!
 =====
 
@@ -7274,7 +7274,7 @@ there was something of that sort in the wind.”
 
 
 
-### Chapter 44. 
+### Chapter 44.
 The Chart.
 ==========
 
@@ -7455,7 +7455,7 @@ feeds upon that heart for ever; that vulture the very creature he creates.
 
 
 
-### Chapter 45. 
+### Chapter 45.
 The Affidavit.
 ==============
 
@@ -7765,7 +7765,7 @@ a sperm whale.
 
 
 
-### Chapter 46. 
+### Chapter 46.
 Surmises.
 =========
 
@@ -7858,7 +7858,7 @@ reporting even a porpoise. This vigilance was not long without reward.
 
 
 
-### Chapter 47. 
+### Chapter 47.
 The Mat-Maker.
 ==============
 
@@ -7953,7 +7953,7 @@ But at this critical instant a sudden exclamation was heard that took every eye
 from the whale. With a start all glared at dark Ahab, who was surrounded by
 five dusky phantoms that seemed fresh formed out of air.
 
-### Chapter 48. 
+### Chapter 48.
 The First Lowering.
 ===================
 
@@ -8325,7 +8325,7 @@ upon some token of our perishing, — an oar or a lance pole.
 
 
 
-### Chapter 49. 
+### Chapter 49.
 The Hyena.
 ==========
 
@@ -8405,7 +8405,7 @@ the hindmost.
 
 
 
-### Chapter 50. 
+### Chapter 50.
 Ahab’s Boat and Crew. Fedallah.
 ===============================
 
@@ -8506,7 +8506,7 @@ amours.
 
 
 
-### Chapter 51. 
+### Chapter 51.
 The Spirit-Spout.
 =================
 
@@ -8644,7 +8644,7 @@ thou steadfastly eyest thy purpose.
 
 
 
-### Chapter 52. 
+### Chapter 52.
 The Albatross.
 ==============
 
@@ -8716,7 +8716,7 @@ midway leave us whelmed.
 
 
 
-### Chapter 53. 
+### Chapter 53.
 The Gam.
 ========
 
@@ -8859,7 +8859,7 @@ oarsman’s hair, and hold on there like grim death.
 
 
 
-### Chapter 54. 
+### Chapter 54.
 The *Town-Ho’s* Story.
 ====================
 
@@ -9612,7 +9612,7 @@ seen and talked with Steelkilt since the death of Radney.’”
 
 
 
-### Chapter 55. 
+### Chapter 55.
 Of the Monstrous Pictures of Whales.
 ====================================
 
@@ -9895,7 +9895,7 @@ rising up with earnest of squalls and rains, seems to quicken the activity of
 the excited seamen.
 
 
-### Chapter 57. 
+### Chapter 57.
 Of Whales in Paint; in Teeth; in Wood; in Sheet-Iron; in Stone; in Mountains; in Stars.
 ================================================================================
 
@@ -9989,7 +9989,7 @@ mortal sight!
 
 
 
-### Chapter 58. 
+### Chapter 58.
 Brit.
 =====
 
@@ -10092,7 +10092,7 @@ joy, but encompassed by all the horrors of the half known life. God keep thee!
 Push not off from that isle, thou canst never return!
 
 
-### Chapter 59. 
+### Chapter 59.
 Squid.
 ======
 
@@ -10188,7 +10188,7 @@ Anak of the tribe.
 
 
 
-### Chapter 60. 
+### Chapter 60.
 The Line.
 =========
 
@@ -10315,7 +10315,7 @@ with a poker, and not a harpoon, by your side.
 
 
 
-### Chapter 61. 
+### Chapter 61.
 Stubb Kills a Whale.
 ====================
 
@@ -10507,7 +10507,7 @@ eyeing the vast corpse he had made.
 
 
 
-### Chapter 62. 
+### Chapter 62.
 The Dart.
 =========
 
@@ -10560,7 +10560,7 @@ To insure the greatest efficiency in the dart, the harpooneers of this world
 must start to their feet from out of idleness, and not from out of toil.
 
 
-### Chapter 63. 
+### Chapter 63.
 The Crotch.
 ===========
 
@@ -10612,7 +10612,7 @@ hereafter to be painted.
 
 
 
-### Chapter 64. 
+### Chapter 64.
 Stubb’s Supper.
 ===============
 
@@ -10771,7 +10771,7 @@ preaching. That’s no way to convert sinners, cook!”
 
 “No, cook; go on, go on.”
 
-“Well, den, Belubed fellow-critters:” — 
+“Well, den, Belubed fellow-critters:” —
 
 “Right!” exclaimed Stubb, approvingly, “coax ’em to it; try that,” and Fleece
 continued.
@@ -10810,7 +10810,7 @@ and eber.”
 and I’ll away to my supper.”
 
 Upon this, Fleece, holding both hands over the fishy mob, raised his shrill
-voice, and cried — 
+voice, and cried —
 
 “Cussed fellow-critters! Kick up de damndest row as ever you can; fill your dam
 bellies ’till dey bust — and den die.”
@@ -10921,7 +10921,7 @@ with which sage ejaculation he went to his hammock.
 
 
 
-###Chapter 65. 
+###Chapter 65.
 The Whale as a Dish.
 ====================
 
@@ -11009,7 +11009,7 @@ nothing but steel pens.
 
 
 
-###Chapter 66. 
+###Chapter 66.
 The Shark Massacre.
 ===================
 
@@ -11073,7 +11073,7 @@ wat made shark must be one dam Ingin.”
 
 
 
-### Chapter 67. 
+### Chapter 67.
 Cutting In.
 ===========
 
@@ -11138,7 +11138,7 @@ occasionally, by way of assuaging the general friction.
 
 
 
-### Chapter 68. 
+### Chapter 68.
 The Blanket.
 ============
 
@@ -11244,7 +11244,7 @@ are domed like St. Peter’s! of creatures, how few vast as the whale!
 
 
 
-### Chapter 69. 
+### Chapter 69.
 The Funeral.
 ============
 
@@ -11291,7 +11291,7 @@ Cock-Lane one, and far deeper men than Doctor Johnson who believe in them.
 
 
 
-### Chapter 70. 
+### Chapter 70.
 The Sphynx.
 ===========
 
@@ -11377,7 +11377,7 @@ lives on matter, but has its cunning duplicate in mind.”
 
 
 
-### Chapter 71. 
+### Chapter 71.
 The Jeroboam’s Story.
 =====================
 
@@ -11605,7 +11605,7 @@ whale, many strange things were hinted in reference to this wild affair.
 
 
 
-### Chapter 72. 
+### Chapter 72.
 The Monkey-Rope.
 ================
 
@@ -11764,7 +11764,7 @@ waves.
 
 
 
-### Chapter 73. 
+### Chapter 73.
 Stubb and Flask Kill a Right Whale; and Then Have a Talk Over Him.
 ==================================================================
 
@@ -11982,7 +11982,7 @@ concerning all these passing things.
 
 
 
-###Chapter 74. 
+###Chapter 74.
 The Sperm Whale’s Head — Contrasted View.
 =========================================
 
@@ -12126,7 +12126,7 @@ into slabs, and piled away like joists for building houses.
 
 
 
-### Chapter 75. 
+### Chapter 75.
 The Right Whale’s Head — Contrasted View.
 ========================================
 
@@ -12240,7 +12240,7 @@ his latter years.
 
 
 
-### Chapter 76. 
+### Chapter 76.
 The Battering-Ram.
 ==================
 
@@ -12318,7 +12318,7 @@ dread goddess’s veil at Lais?
 
 
 
-### Chapter 77. 
+### Chapter 77.
 The Great Heidelburgh Tun.
 ==========================
 
@@ -12387,7 +12387,7 @@ Heidelburgh Tun is tapped.
 
 
 
-### Chapter 78. 
+### Chapter 78.
 Cistern and Buckets.
 ====================
 
@@ -12535,7 +12535,7 @@ head, and sweetly perished there?
 
 
 
-### Chapter 79. 
+### Chapter 79.
 The Prairie.
 ============
 
@@ -12619,7 +12619,7 @@ that brow before you. Read it if you can.
 
 
 
-### Chapter 80. 
+### Chapter 80.
 The Nut.
 ========
 
@@ -12703,7 +12703,7 @@ indomitable, you will yet have reason to know.
 
 
 
-### Chapter 81. 
+### Chapter 81.
 The *Pequod* Meets The Virgin.
 ============================
 
@@ -13097,7 +13097,7 @@ Oh! many are the Fin-Backs, and many are the Dericks, my friend.
 
 
 
-### Chapter 82. 
+### Chapter 82.
 The Honour and Glory of Whaling.
 ================================
 
@@ -13201,7 +13201,7 @@ you! What club but the whaleman’s can head off like that?
 
 
 
-### Chapter 83. 
+### Chapter 83.
 Jonah Historically Regarded.
 ============================
 
@@ -13274,7 +13274,7 @@ in which Mosque was a miraculous lamp that burnt without any oil.
 
 
 
-### Chapter 84. 
+### Chapter 84.
 Pitchpoling.
 ============
 
@@ -13354,7 +13354,7 @@ die.
 
 
 
-### Chapter 85. 
+### Chapter 85.
 The Fountain.
 =============
 
@@ -13529,7 +13529,7 @@ them both with equal eye.
 
 
 
-### Chapter 86. 
+### Chapter 86.
 The Tail.
 =========
 
@@ -13697,7 +13697,7 @@ face.
 
 
 
-### Chapter 87. 
+### Chapter 87.
 The Grand Armada.
 =================
 
@@ -14117,7 +14117,7 @@ the time, but only to be taken, as will hereafter be seen, by some other
 craft than the *Pequod.*
 
 
-### Chapter 88. 
+### Chapter 88.
 Schools and Schoolmasters.
 ==========================
 
@@ -14230,7 +14230,7 @@ near her and so long, as themselves to fall a prey.
 
 
 
-### Chapter 89. 
+### Chapter 89.
 Fast-Fish and Loose-Fish.
 =========================
 
@@ -14368,6 +14368,3 @@ all men’s minds and opinions but Loose-Fish? What is the principle of religiou
 belief in them but a Loose-Fish? What to the ostentatious smuggling verbalists
 are the thoughts of thinkers but Loose-Fish? What is the great globe itself but
 a Loose-Fish? And what are you, reader, but a Loose-Fish and a Fast-Fish, too?
-
-
-

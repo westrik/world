@@ -33,10 +33,10 @@ class DateTextField: NSTextField {
             if let date = self.date {
                 if #available(OSX 10.15, *) {
                     self.setRelativeDate()
-                    
+
                     let delta = Date().timeIntervalSince(date)
                     let liveUpdateInterval: TimeInterval = (delta < DateTextField.slowRefreshInterval) ? DateTextField.fastRefreshInterval : (DateTextField.slowRefreshInterval - DateTextField.buffer)
-                    
+
                     liveUpdateTimer?.invalidate()
                     liveUpdateTimer = Timer.scheduledTimer(withTimeInterval: liveUpdateInterval, repeats: true, block: { (timer) in
                         let delta = Date().timeIntervalSince(date)

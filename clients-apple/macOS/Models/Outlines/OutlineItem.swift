@@ -38,7 +38,7 @@ class OutlineItem {
     var isExpanded: (() -> (Bool))?
 
     var children = [OutlineItem]()
-    
+
     // Sorts the children by sortOrder before falling back on a dumb
     // string .compare() for ties.
     var sortedChildren: [OutlineItem] {

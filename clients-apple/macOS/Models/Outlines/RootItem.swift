@@ -33,7 +33,7 @@ import Foundation
 //
 
 class RootItem {
-    
+
     enum CellType: String {
         case Default
         case TextAndImage
@@ -71,7 +71,7 @@ class RootItem {
             item.sortOrder = 1
             return item
     }()
-    
+
     lazy var branchesItem: OutlineItem  = {
             let item = OutlineItem()
             item.cellType = CellType.TextAndImage

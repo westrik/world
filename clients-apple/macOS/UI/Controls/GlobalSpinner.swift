@@ -12,7 +12,7 @@ import Cocoa
 class GlobalSpinner: NSProgressIndicator {
 
     @IBOutlet weak var statusTextField: NSTextField?
-    
+
     static let enqueueGlobalSpinnerNotification = NSNotification.Name(rawValue: "enqueueGlobalSpinnerNotification")
     static let dequeueGlobalSpinnerNotification = NSNotification.Name(rawValue: "dequeueGlobalSpinnerNotification")
     static let setGlobalSpinnerStatusNotification = NSNotification.Name(rawValue: "setGlobalSpinnerStatusNotification")
@@ -25,11 +25,11 @@ class GlobalSpinner: NSProgressIndicator {
             }
         }
     }
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         statusTextField?.stringValue = status
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(realEnqueue(_:)), name: GlobalSpinner.enqueueGlobalSpinnerNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(realDequeue(_:)), name: GlobalSpinner.dequeueGlobalSpinnerNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(realSetStatus(_:)), name: GlobalSpinner.setGlobalSpinnerStatusNotification, object: nil)
@@ -47,7 +47,7 @@ class GlobalSpinner: NSProgressIndicator {
             }
         }
     }
-    
+
     static func dequeue() {
         NotificationCenter.default.post(name: GlobalSpinner.dequeueGlobalSpinnerNotification, object: nil, userInfo: nil)
     }
@@ -62,11 +62,11 @@ class GlobalSpinner: NSProgressIndicator {
             }
         }
     }
-    
+
     static func setStatus(_ string: String) {
         NotificationCenter.default.post(name: GlobalSpinner.setGlobalSpinnerStatusNotification, object: string)
     }
-    
+
     @objc func realSetStatus(_ notification: Notification) {
         DispatchQueue.main.async {
             if let string = notification.object as? String {

@@ -26,4 +26,3 @@
     enabled: yes
     daemon_reload: yes
     name: nginx
-

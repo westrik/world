@@ -220,4 +220,3 @@ data "aws_lambda_invocation" "create_db_user_with_iam_role" {
 }
 JSON
 }
-

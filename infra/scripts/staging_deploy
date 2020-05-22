@@ -9,7 +9,7 @@ set -euo pipefail
 
 PROJECT_PATH="/home/matt/src/world"
 # TODO: check for dependencies
-   
+
 cd "$PROJECT_PATH";
 cd server;
 git stash;
