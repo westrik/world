@@ -12,4 +12,4 @@ systemctl enable nginx.service
 chown root:root $SERVER_BIN_FILE
 chmod 755 $SERVER_BIN_FILE
 
-systemctl start app nginx
+systemctl restart secrets app nginx

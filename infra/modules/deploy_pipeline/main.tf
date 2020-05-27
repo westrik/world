@@ -15,24 +15,57 @@ resource "aws_codedeploy_app" "app" {
 }
 
 resource "aws_codedeploy_deployment_group" "app" {
-  app_name              = aws_codedeploy_app.app.name
-  deployment_group_name = "${var.project_slug}_app"
-  service_role_arn      = aws_iam_role.codedeploy.arn
-
-  //  deployment_config_name = "CodeDeployDefault.OneAtATime"
+  app_name               = aws_codedeploy_app.app.name
+  deployment_group_name  = "${var.project_slug}_app"
+  service_role_arn       = aws_iam_role.codedeploy.arn
   deployment_config_name = "CodeDeployDefault.AllAtOnce"
+  autoscaling_groups     = var.app_autoscaling_group_ids
 
-  ec2_tag_filter {
-    key   = "Environment"
-    type  = "KEY_AND_VALUE"
-    value = "production"
+  deployment_style {
+    deployment_option = "WITH_TRAFFIC_CONTROL"
+    deployment_type   = "IN_PLACE"
   }
+
+  //  deployment_style {
+  //    deployment_option = "WITH_TRAFFIC_CONTROL"
+  //    deployment_type   = "BLUE_GREEN"
+  //  }
+  //
+  //  blue_green_deployment_config {
+  //    green_fleet_provisioning_option {
+  //      action = "DISCOVER_EXISTING"
+  //    }
+  //
+  //    deployment_ready_option {
+  //      action_on_timeout = "CONTINUE_DEPLOYMENT"
+  //    }
+  //
+  //    terminate_blue_instances_on_deployment_success {
+  //      action = "KEEP_ALIVE"
+  ////      action = "TERMINATE"
+  ////      termination_wait_time_in_minutes = 5
+  //    }
+  //  }
 
   auto_rollback_configuration {
     enabled = true
     events = [
       "DEPLOYMENT_FAILURE",
     ]
+  }
+
+  load_balancer_info {
+    target_group_info {
+      name = var.app_blue_target_group_name
+    }
+  }
+
+  ec2_tag_set {
+    ec2_tag_filter {
+      key   = "Environment"
+      type  = "KEY_AND_VALUE"
+      value = "production"
+    }
   }
 }
 

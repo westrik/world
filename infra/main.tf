@@ -56,6 +56,11 @@ module "deploy_pipeline" {
   deploy_bucket_arn            = module.core_infra.app_deploy_bucket_arn
   deploy_cloudfront_bucket     = module.core_infra.app_deploy_cloudfront_bucket
   deploy_cloudfront_bucket_arn = module.core_infra.app_deploy_cloudfront_bucket_arn
+
+  app_lb_listener_arn         = module.app_load_balancer.app_lb_listener_arn
+  app_autoscaling_group_ids   = module.app_instances.app_autoscaling_group_ids
+  app_blue_target_group_name  = module.app_load_balancer.app_blue_target_group_name
+  app_green_target_group_name = module.app_load_balancer.app_green_target_group_name
 }
 
 module "app_cloudfront" {
@@ -83,10 +88,9 @@ module "app_load_balancer" {
   api_domain_name  = var.api_domain_name
   admin_email      = var.admin_email
 
-  app_vpc_id               = module.core_infra.app_vpc_id
-  app_autoscaling_group_id = module.app_instances.app_autoscaling_group_id
-  app_security_group_ids   = module.core_infra.app_security_group_ids
-  app_subnet_ids           = module.core_infra.app_subnet_ids
+  app_vpc_id             = module.core_infra.app_vpc_id
+  app_security_group_ids = module.core_infra.app_security_group_ids
+  app_subnet_ids         = module.core_infra.app_subnet_ids
 
   lambda_deploy_bucket                   = module.core_infra.lambda_deploy_bucket
   lambda_iam_role_arn__renew_certificate = module.core_infra.lambda_iam_role_arn__renew_certificate
@@ -102,8 +106,9 @@ module "app_instances" {
   project_name = var.project_name
   deploy_name  = var.deploy_name
 
-  app_security_group_ids = module.core_infra.app_security_group_ids
-  app_subnet_ids         = module.core_infra.app_subnet_ids
-  num_app_instances      = var.num_app_instances
-  app_target_group_arns  = module.app_load_balancer.app_target_group_arns
+  app_security_group_ids     = module.core_infra.app_security_group_ids
+  app_subnet_ids             = module.core_infra.app_subnet_ids
+  num_app_instances          = var.num_app_instances
+  app_blue_target_group_arn  = module.app_load_balancer.app_blue_target_group_arn
+  app_green_target_group_arn = module.app_load_balancer.app_green_target_group_arn
 }

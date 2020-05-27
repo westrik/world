@@ -46,10 +46,6 @@ variable "app_subnet_ids" {
   type = list(string)
 }
 
-variable "app_autoscaling_group_id" {
-  type = string
-}
-
 # output from module.core_infra.lambda_iam_roles
 variable "lambda_iam_role_arn__renew_certificate" {
   type = string
