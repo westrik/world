@@ -22,7 +22,7 @@ resource "aws_codedeploy_deployment_group" "app" {
   autoscaling_groups     = var.app_autoscaling_group_ids
 
   deployment_style {
-    deployment_option = "WITH_TRAFFIC_CONTROL"
+    deployment_option = "WITHOUT_TRAFFIC_CONTROL"
     deployment_type   = "IN_PLACE"
   }
 
