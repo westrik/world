@@ -1,7 +1,3 @@
-output "instance_ids" {
-  value = aws_instance.app.*.id
-}
-
-output "instance_ips" {
-  value = aws_instance.app.*.public_ip
+output "app_autoscaling_group_ids" {
+  value = [aws_autoscaling_group.app_blue.id]
 }

@@ -56,6 +56,11 @@ module "deploy_pipeline" {
   deploy_bucket_arn            = module.core_infra.app_deploy_bucket_arn
   deploy_cloudfront_bucket     = module.core_infra.app_deploy_cloudfront_bucket
   deploy_cloudfront_bucket_arn = module.core_infra.app_deploy_cloudfront_bucket_arn
+
+  app_lb_listener_arn         = module.app_load_balancer.app_lb_listener_arn
+  app_autoscaling_group_ids   = module.app_instances.app_autoscaling_group_ids
+  app_blue_target_group_name  = module.app_load_balancer.app_blue_target_group_name
+  app_green_target_group_name = module.app_load_balancer.app_green_target_group_name
 }
 
 module "app_cloudfront" {
@@ -84,7 +89,6 @@ module "app_load_balancer" {
   admin_email      = var.admin_email
 
   app_vpc_id             = module.core_infra.app_vpc_id
-  app_instance_ids       = module.app_instances.instance_ids
   app_security_group_ids = module.core_infra.app_security_group_ids
   app_subnet_ids         = module.core_infra.app_subnet_ids
 
@@ -96,11 +100,15 @@ module "app_instances" {
   source = "./modules/app_instances"
 
   aws_region = var.aws_region
+  aws_az1    = var.aws_az1
+  aws_az2    = var.aws_az2
 
   project_name = var.project_name
   deploy_name  = var.deploy_name
 
-  app_security_group_ids = module.core_infra.app_security_group_ids
-  app_subnet_ids         = module.core_infra.app_subnet_ids
-  num_app_instances      = var.num_app_instances
+  app_security_group_ids     = module.core_infra.app_security_group_ids
+  app_subnet_ids             = module.core_infra.app_subnet_ids
+  num_app_instances          = var.num_app_instances
+  app_blue_target_group_arn  = module.app_load_balancer.app_blue_target_group_arn
+  app_green_target_group_arn = module.app_load_balancer.app_green_target_group_arn
 }

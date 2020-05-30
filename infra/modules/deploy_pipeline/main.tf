@@ -15,17 +15,15 @@ resource "aws_codedeploy_app" "app" {
 }
 
 resource "aws_codedeploy_deployment_group" "app" {
-  app_name              = aws_codedeploy_app.app.name
-  deployment_group_name = "${var.project_slug}_app"
-  service_role_arn      = aws_iam_role.codedeploy.arn
-
-  //  deployment_config_name = "CodeDeployDefault.OneAtATime"
+  app_name               = aws_codedeploy_app.app.name
+  deployment_group_name  = "${var.project_slug}_app"
+  service_role_arn       = aws_iam_role.codedeploy.arn
   deployment_config_name = "CodeDeployDefault.AllAtOnce"
+  autoscaling_groups     = var.app_autoscaling_group_ids
 
-  ec2_tag_filter {
-    key   = "Environment"
-    type  = "KEY_AND_VALUE"
-    value = "production"
+  deployment_style {
+    deployment_option = "WITHOUT_TRAFFIC_CONTROL" // TODO: use WITH_TRAFFIC_CONTROL
+    deployment_type   = "IN_PLACE"                // TODO: use BLUE_GREEN
   }
 
   auto_rollback_configuration {
@@ -33,6 +31,20 @@ resource "aws_codedeploy_deployment_group" "app" {
     events = [
       "DEPLOYMENT_FAILURE",
     ]
+  }
+
+  load_balancer_info {
+    target_group_info {
+      name = var.app_blue_target_group_name
+    }
+  }
+
+  ec2_tag_set {
+    ec2_tag_filter {
+      key   = "Environment"
+      type  = "KEY_AND_VALUE"
+      value = "production"
+    }
   }
 }
 
@@ -44,7 +56,6 @@ resource "aws_iam_user" "deploy_upload" {
   name = "deploy_upload"
 }
 
-// TODO: refactor
 resource "aws_iam_user_policy" "deploy_upload" {
   name = "deploy_upload"
   user = aws_iam_user.deploy_upload.name
@@ -99,7 +110,6 @@ CodePipeline
 --------------------------------
 */
 
-// TODO: refactor
 resource "aws_iam_role" "codepipeline" {
   name = "codepipeline"
 
@@ -119,7 +129,6 @@ resource "aws_iam_role" "codepipeline" {
 EOF
 }
 
-// TODO: refactor
 resource "aws_iam_role_policy" "codepipeline" {
   name = "codepipeline_policy"
   role = aws_iam_role.codepipeline.id
@@ -154,7 +163,6 @@ resource "aws_iam_role_policy" "codepipeline" {
 EOF
 }
 
-// docs: https://www.terraform.io/docs/providers/aws/r/codepipeline.html
 resource "aws_codepipeline" "app" {
   name     = "${var.project_slug}_${var.deploy_name}"
   role_arn = aws_iam_role.codepipeline.arn
