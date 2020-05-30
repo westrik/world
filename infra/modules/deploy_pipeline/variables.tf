@@ -41,4 +41,3 @@ variable "app_green_target_group_name" {
 variable "app_autoscaling_group_ids" {
   type = list(string)
 }
-

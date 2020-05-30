@@ -22,30 +22,9 @@ resource "aws_codedeploy_deployment_group" "app" {
   autoscaling_groups     = var.app_autoscaling_group_ids
 
   deployment_style {
-    deployment_option = "WITHOUT_TRAFFIC_CONTROL"
-    deployment_type   = "IN_PLACE"
+    deployment_option = "WITHOUT_TRAFFIC_CONTROL" // TODO: use WITH_TRAFFIC_CONTROL
+    deployment_type   = "IN_PLACE"                // TODO: use BLUE_GREEN
   }
-
-  //  deployment_style {
-  //    deployment_option = "WITH_TRAFFIC_CONTROL"
-  //    deployment_type   = "BLUE_GREEN"
-  //  }
-  //
-  //  blue_green_deployment_config {
-  //    green_fleet_provisioning_option {
-  //      action = "DISCOVER_EXISTING"
-  //    }
-  //
-  //    deployment_ready_option {
-  //      action_on_timeout = "CONTINUE_DEPLOYMENT"
-  //    }
-  //
-  //    terminate_blue_instances_on_deployment_success {
-  //      action = "KEEP_ALIVE"
-  ////      action = "TERMINATE"
-  ////      termination_wait_time_in_minutes = 5
-  //    }
-  //  }
 
   auto_rollback_configuration {
     enabled = true
@@ -77,7 +56,6 @@ resource "aws_iam_user" "deploy_upload" {
   name = "deploy_upload"
 }
 
-// TODO: refactor
 resource "aws_iam_user_policy" "deploy_upload" {
   name = "deploy_upload"
   user = aws_iam_user.deploy_upload.name
@@ -132,7 +110,6 @@ CodePipeline
 --------------------------------
 */
 
-// TODO: refactor
 resource "aws_iam_role" "codepipeline" {
   name = "codepipeline"
 
@@ -152,7 +129,6 @@ resource "aws_iam_role" "codepipeline" {
 EOF
 }
 
-// TODO: refactor
 resource "aws_iam_role_policy" "codepipeline" {
   name = "codepipeline_policy"
   role = aws_iam_role.codepipeline.id
@@ -187,7 +163,6 @@ resource "aws_iam_role_policy" "codepipeline" {
 EOF
 }
 
-// docs: https://www.terraform.io/docs/providers/aws/r/codepipeline.html
 resource "aws_codepipeline" "app" {
   name     = "${var.project_slug}_${var.deploy_name}"
   role_arn = aws_iam_role.codepipeline.arn
