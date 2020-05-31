@@ -10,7 +10,7 @@ import { Note } from '~models/Note';
 import listNotes from '~notes/listNotes';
 import NoteTile from '~notes/NoteTile';
 
-function NoteList(): h.JSX.Element {
+export default function NoteList(): h.JSX.Element {
     const [noteSummaries, setNotes] = useState<Array<Note> | null>(null);
     const authContext = useContext(Auth);
 
@@ -43,5 +43,3 @@ function NoteList(): h.JSX.Element {
         </Container>
     );
 }
-
-export default NoteList;

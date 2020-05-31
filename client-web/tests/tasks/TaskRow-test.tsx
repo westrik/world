@@ -4,7 +4,7 @@ import { mount } from 'enzyme';
 
 import Config from '~config';
 import TaskRow from '~tasks/TaskRow';
-import { API_TASKS } from 'tests/fixtures/Tasks';
+import { API_TASKS } from '~fixtures/Tasks';
 
 describe('TaskRow', () => {
     it('renders', () => {
