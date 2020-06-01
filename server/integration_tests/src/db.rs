@@ -37,6 +37,7 @@ pub fn destroy_test_db(pool: &DbPool) {
     conn.execute("DROP TABLE IF EXISTS tasks").unwrap();
     conn.execute("DROP TABLE IF EXISTS block_versions").unwrap();
     conn.execute("DROP TABLE IF EXISTS blocks").unwrap();
+    conn.execute("DROP TABLE IF EXISTS note_versions").unwrap();
     conn.execute("DROP TABLE IF EXISTS notes").unwrap();
     conn.execute("DROP TABLE IF EXISTS sessions").unwrap();
     conn.execute("DROP TABLE IF EXISTS jobs").unwrap();

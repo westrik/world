@@ -1,0 +1,2 @@
+ALTER TABLE blocks DROP COLUMN position;
+ALTER TABLE block_versions ADD COLUMN position INT NOT NULL DEFAULT 0;

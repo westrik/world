@@ -20,7 +20,7 @@ pub struct ApiNoteCreateSpec {
 }
 #[derive(Debug, Deserialize)]
 pub struct ApiNoteUpdateSpec {
-    pub content: Option<Content>,
+    pub name: Option<String>,
 }
 
 #[derive(Serialize)]
@@ -80,14 +80,16 @@ fn run_create_note(
     session: Session,
     db_pool: &DbPool,
 ) -> Result<Note, ApiError> {
-    let content_json: serde_json::Value;
+    let content_json: Option<serde_json::Value>;
     if let Some(content) = spec.content_json {
-        content_json = content;
+        content_json = Some(content);
     } else if let Some(content) = spec.content_raw {
-        content_json = serde_json::to_value(&parse_markdown_content(content))
-            .map_err(|_| ApiError::InternalError("Bad content conversion".to_string()))?;
+        content_json = Some(
+            serde_json::to_value(&parse_markdown_content(content))
+                .map_err(|_| ApiError::InternalError("Bad content conversion".to_string()))?,
+        );
     } else {
-        return Err(ApiError::InvalidRequest("No specified content".to_string()));
+        content_json = None;
     }
 
     Ok(Note::create(
@@ -123,7 +125,7 @@ fn run_update_note(
         &get_conn(&pool).unwrap(),
         session,
         api_id,
-        spec.content,
+        spec.name,
     )?)
 }
 

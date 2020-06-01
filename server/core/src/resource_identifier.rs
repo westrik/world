@@ -7,6 +7,7 @@ pub enum ResourceType {
     User,
     Job,
     Note,
+    NoteVersion,
     Block,
     Task,
     Tag,
@@ -51,6 +52,11 @@ pub mod resource_identifiers {
         assert!(Regex::new(r"^note_[A-Za-z0-9]{8}$")
             .unwrap()
             .is_match(&note_id));
+
+        let note_version_id = generate_resource_identifier(NoteVersion);
+        assert!(Regex::new(r"^noteversion_[A-Za-z0-9]{8}$")
+            .unwrap()
+            .is_match(&note_version_id));
 
         let block_id = generate_resource_identifier(Block);
         assert!(Regex::new(r"^block_[A-Za-z0-9]{8}$")

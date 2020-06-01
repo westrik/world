@@ -23,7 +23,6 @@ pub struct Note {
     #[serde(rename = "updatedAt")]
     pub updated_at: DateTime<Utc>,
     pub name: String,
-    // TODO: denormalized full-text summary
 }
 
 #[derive(Queryable, Serialize, Deserialize, Debug)]
@@ -42,7 +41,6 @@ pub struct NoteCreateSpec {
     pub api_id: String,
     pub name: String,
     pub user_id: i32,
-    // pub content: serde_json::Value,
 }
 impl NoteCreateSpec {
     pub fn insert(&self, conn: &PgConnection) -> Result<Note, ApiError> {
@@ -57,8 +55,8 @@ impl NoteCreateSpec {
 #[derive(AsChangeset, Debug)]
 #[table_name = "notes"]
 pub struct NoteUpdateSpec {
-    pub updated_at: DateTime<Utc>,
-    // pub content: Option<serde_json::Value>,
+    pub updated_at: DateTime<Utc>, // TODO: use trigger to set updated_at automatically
+    pub name: Option<String>,
 }
 impl NoteUpdateSpec {
     pub fn update(
@@ -104,33 +102,30 @@ impl Note {
     pub fn create(
         conn: &PgConnection,
         session: Session,
-        _content: serde_json::Value,
+        content: Option<serde_json::Value>,
     ) -> Result<Note, ApiError> {
-        NoteCreateSpec {
+        let note_result = NoteCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Note),
             name: generate_mnemonic(DEFAULT_MNEMONIC_LENGTH),
             user_id: session.user_id,
-            // content,
         }
-        .insert(conn)
+        .insert(conn);
+
+        // if let Some(content_data) = content {
+        // TODO: enqueue job to insert blocks for content_data
+        // }
+        note_result
     }
 
     pub fn update(
         conn: &PgConnection,
         session: Session,
         api_id: String,
-        content: Option<Content>,
+        name: Option<String>,
     ) -> Result<Note, ApiError> {
-        let mut _content_update = None;
-        if let Some(content_data) = content {
-            _content_update = Some(
-                serde_json::to_value(content_data)
-                    .map_err(|_| ApiError::InternalError("Bad content conversion".to_string()))?,
-            );
-        }
         NoteUpdateSpec {
             updated_at: Utc::now(),
-            // content: content_update,
+            name,
         }
         .update(conn, api_id, session.user_id)
     }
