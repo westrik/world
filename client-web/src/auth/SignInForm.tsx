@@ -5,8 +5,6 @@ import Auth from '~auth/AuthContext';
 import { authenticate, SignInResponse } from '~auth/authenticate';
 import { SITE_NAME } from '~config';
 
-// @ts-ignore
-import logo from '../static/img/logo.png';
 import LoadingSpinner from '~components/LoadingSpinner';
 
 function SignInForm(): h.JSX.Element {
@@ -48,9 +46,9 @@ export function UnconnectedSignInForm({
                 ) : null}
                 {isLoading ? <LoadingSpinner className="fade-in" /> : null}
                 <form className={isLoading ? 'fade-out' : 'fade-in'}>
-                    <h1 className="h3">
+                    <h1>
                         <span className="sr-only">Sign-in for</span>
-                        <img src={logo} alt={SITE_NAME} />
+                        {SITE_NAME}
                     </h1>
                     <label htmlFor="inputEmail" className="sr-only">
                         Email address
