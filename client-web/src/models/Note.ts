@@ -1,6 +1,7 @@
 import { Tag } from './Tag';
 import { Resource } from './Resource';
 import { ApiResponse } from '~utils/network';
+import { h } from 'preact';
 
 export interface ApiNoteResponse extends ApiResponse {
     note: Note | null;
@@ -58,6 +59,30 @@ export type ElementData =
     | SoftBreakElement
     | HardBreakElement
     | RuleElement;
+
+export type BlockElement =
+    | HtmlElement
+    | ParagraphElement
+    | CodeBlockElement
+    | HeaderElement
+    | ImageElement
+    | ListElement
+    | FootnoteDefinitionElement
+    | TableElement
+    | SoftBreakElement
+    | HardBreakElement
+    | RuleElement;
+
+export type InlineElement =
+    | TextElement
+    | CodeElement
+    | EmphasisElement
+    | StrongElement
+    | StrikethroughElement
+    | LinkElement
+    | ListItemElement
+    | TaskListMarkerElement
+    | FootnoteReferenceElement;
 
 export interface TextElement {
     text: string;
@@ -217,4 +242,34 @@ export function isHardBreak(el: ElementData): el is HardBreakElement {
 }
 export function isRule(el: ElementData): el is RuleElement {
     return el === 'rule';
+}
+
+export function isBlockElement(el: ElementData): el is BlockElement {
+    return (
+        isHtml(el) ||
+        isParagraph(el) ||
+        isCodeBlock(el) ||
+        isHeaderElement(el) ||
+        isImage(el) ||
+        isList(el) ||
+        isFootnoteDefinition(el) ||
+        isTable(el) ||
+        isSoftBreak(el) ||
+        isHardBreak(el) ||
+        isRule(el)
+    );
+}
+
+export function isInlineElement(el: ElementData): el is InlineElement {
+    return (
+        isText(el) ||
+        isCode(el) ||
+        isEmphasis(el) ||
+        isStrong(el) ||
+        isStrikethrough(el) ||
+        isLink(el) ||
+        isListItem(el) ||
+        isTaskListMarker(el) ||
+        isFootnoteReference(el)
+    );
 }

@@ -6,10 +6,12 @@ export default { title: 'Note' };
 
 export function elements(): h.JSX.Element {
     return (
-        <div style="max-width: 35em; margin: 0 auto;">
-            {NOTE_FIXTURE.content!.elements!.map((el, key) => (
-                <ContentElement element={el} key={key} />
-            ))}
+        <div className="textEditor">
+            <div className="elements">
+                {NOTE_FIXTURE.content!.elements!.map((el, key) => (
+                    <ContentElement element={el} key={key} />
+                ))}
+            </div>
         </div>
     );
 }

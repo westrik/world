@@ -19,8 +19,6 @@
     border-radius: $tile-radius;
     border: 0;
     outline: none;
-    font-family: 'Concourse T4', -apple-system, sans-serif;
-    font-family: -apple-system, sans-serif;
     word-wrap: break-word;
     z-index: 0;
   }
@@ -40,6 +38,10 @@
 
   code {
     display: inline;
+  }
+
+  input[type="checkbox"] {
+    margin-right: 0.3em;
   }
 
   .image-container {

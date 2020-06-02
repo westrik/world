@@ -1,7 +1,11 @@
+// @ts-ignore
+import assert = require('assert');
+
 import {
     ColumnType,
     Element,
     HeaderType,
+    isBlockElement,
     isCode,
     isCodeBlock,
     isEmphasis,
@@ -11,6 +15,7 @@ import {
     isHeaderElement,
     isHtml,
     isImage,
+    isInlineElement,
     isLink,
     isList,
     isListItem,
@@ -108,6 +113,14 @@ function Image(props: LinkProps): h.JSX.Element {
     );
 }
 
+interface TaskListMarkerProps {
+    checked: boolean;
+}
+
+function TaskListMarker(props: TaskListMarkerProps): h.JSX.Element {
+    return <input type="checkbox" checked={props.checked} />;
+}
+
 interface TableHeaderProps {
     element: Element;
     columnTypes: Array<ColumnType>;
@@ -183,52 +196,25 @@ function Table(props: TableProps): h.JSX.Element {
     );
 }
 
-interface ContentElementProps {
+interface BlockElementProps {
     element: Element;
 }
-
-export default function ContentElement(props: ContentElementProps): h.JSX.Element {
-    // TODO: element components should register with the editor (via a context?)
-    //    (this will be used when applying mutations)
+function BlockElement(props: BlockElementProps): h.JSX.Element {
     const { element, children } = props.element;
-
-    if (isText(element)) {
-        return <span>{element.text}</span>;
-    } else if (isCode(element)) {
-        // eslint-disable-next-line react/no-unknown-property
-        return <code spellcheck={false}>{element.code}</code>;
-    } else if (isHtml(element)) {
+    if (isHtml(element)) {
         // TODO: strip and validate on server-side; set with dangerouslySetInnerHTML
-    } else if (isEmphasis(element)) {
-        return <em>{renderElements(children)}</em>;
     } else if (isParagraph(element)) {
         return <p>{renderElements(children)}</p>;
-    } else if (isStrong(element)) {
-        return <strong>{renderElements(children)}</strong>;
-    } else if (isStrikethrough(element)) {
-        return <del>{renderElements(children)}</del>;
     } else if (isCodeBlock(element)) {
         return <CodeBlock language={element.codeBlock.language} cxn={children} />;
     } else if (isHeaderElement(element)) {
         return <Header headerType={element.header} cxn={children} />;
-    } else if (isLink(element)) {
-        return <Link link={element.link} cxn={children} />;
     } else if (isImage(element)) {
         return <Image link={element.image} cxn={children} />;
     } else if (isList(element)) {
         return <ul>{renderElements(children)}</ul>;
-    } else if (isListItem(element)) {
-        return <li>{renderElements(children)}</li>;
-    } else if (isTaskListMarker(element)) {
-        return <span>[{element.taskListMarker.checked ? 'x' : ' '}] </span>;
     } else if (isFootnoteDefinition(element)) {
         // TODO
-    } else if (isFootnoteReference(element)) {
-        return (
-            <sup className="footnote-reference">
-                <a href={`#${element.footnoteReference}`}>{element.footnoteReference}</a>
-            </sup>
-        );
     } else if (isTable(element)) {
         return <Table data={element.table} cxn={children} />;
     } else if (isSoftBreak(element)) {
@@ -238,5 +224,52 @@ export default function ContentElement(props: ContentElementProps): h.JSX.Elemen
     } else if (isRule(element)) {
         return <hr />;
     }
-    return <span />;
+    assert(false, 'Unsupported block element!');
+}
+
+interface InlineElementProps {
+    element: Element;
+}
+function InlineElement(props: InlineElementProps): h.JSX.Element {
+    const { element, children } = props.element;
+    if (isText(element)) {
+        return <span>{element.text}</span>;
+    } else if (isCode(element)) {
+        // eslint-disable-next-line react/no-unknown-property
+        return <code spellcheck={false}>{element.code}</code>;
+    } else if (isEmphasis(element)) {
+        return <em>{renderElements(children)}</em>;
+    } else if (isStrong(element)) {
+        return <strong>{renderElements(children)}</strong>;
+    } else if (isStrikethrough(element)) {
+        return <del>{renderElements(children)}</del>;
+    } else if (isLink(element)) {
+        return <Link link={element.link} cxn={children} />;
+    } else if (isListItem(element)) {
+        return <li>{renderElements(children)}</li>;
+    } else if (isTaskListMarker(element)) {
+        return <TaskListMarker checked={element.taskListMarker.checked} />;
+    } else if (isFootnoteReference(element)) {
+        return (
+            <sup className="footnote-reference">
+                <a href={`#${element.footnoteReference}`}>{element.footnoteReference}</a>
+            </sup>
+        );
+    }
+    assert(false, 'Unsupported inline element!');
+}
+
+interface ContentElementProps {
+    element: Element;
+}
+export default function ContentElement(props: ContentElementProps): h.JSX.Element {
+    // TODO: element components should register with the editor (via a context?)
+    //    (this will be used when applying mutations)
+    const el = props.element;
+    if (isBlockElement(el.element)) {
+        return <BlockElement element={el} />;
+    } else if (isInlineElement(el.element)) {
+        return <InlineElement element={el} />;
+    }
+    assert(false, 'Unsupported element!');
 }
