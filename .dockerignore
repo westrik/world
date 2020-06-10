@@ -3,6 +3,7 @@
 .idea
 .trigger
 flamescope.json
+*.pdf
 
 # dotfiles
 .git
