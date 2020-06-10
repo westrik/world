@@ -2,6 +2,7 @@
 members = [
   "api_server",
   "core",
+  "content_export",
   "tests",
   "worker",
 ]

@@ -1,0 +1,16 @@
+[package]
+name = "content_export"
+version = "0.1.0"
+authors = ["Matt Westrik <m@ttwestrik.com>"]
+edition = "2018"
+publish = false
+
+[dependencies]
+dotenv = "^0.14"
+flame = "^0.2"
+flamescope = "^0.1"
+log = "^0.4"
+pretty_env_logger = "^0.3"
+tectonic = "0.1.12"
+tokio = { version = "^0.2", features = ["macros", "rt-threaded"] }
+westrikworld_core = { path = "../core" }
