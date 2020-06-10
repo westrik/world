@@ -1,0 +1,25 @@
+# keep in sync with .gitignore
+.env
+.idea
+.trigger
+flamescope.json
+
+# dotfiles
+.git
+**/.DS_Store
+**/.aws-sam
+**/.terraform
+
+# rust build files
+**/target
+**/benches/data
+
+# JS build files
+**/.storybook
+**/.cache
+**/dist
+**/node_modules
+**/out
+
+# swift build files
+**/Pods
