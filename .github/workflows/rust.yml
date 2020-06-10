@@ -6,16 +6,16 @@ jobs:
   build_and_test-debug:
     name: build & test all crates
     runs-on: ubuntu-latest
-    container: debian:10.4-slim
+    container: mattwestrik/ww:latest
 
     steps:
     - uses: actions/checkout@v1
-    - name: Install dependencies
-      run: bash infra/scripts/dependencies.sh
+#    - name: Install dependencies
+#      run: bash infra/scripts/dependencies.sh
     - name: Set up test DB
       run: bash .github/scripts/test_db.sh
     - name: Load ~/.cargo in PATH
-      run: echo "::add-path::$HOME/.cargo/bin"
+      run: echo "::add-path::/root/.cargo/bin"
     - name: Cache cargo registry
       uses: actions/cache@v1
       with:
