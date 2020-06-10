@@ -1,3 +1,4 @@
+# keep this file in sync with .dockerignore
 .env
 .idea
 .trigger
