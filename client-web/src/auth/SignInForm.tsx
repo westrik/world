@@ -54,7 +54,6 @@ export function UnconnectedSignInForm({
                 </h1>
                 <EmailField
                     labelText="Email address"
-                    placeholderText="me@example.com"
                     required={true}
                     autoFocus={true}
                     onChange={(event) => {
