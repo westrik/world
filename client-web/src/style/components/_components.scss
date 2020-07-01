@@ -1,4 +1,9 @@
+@import 'utils';
+
+// Components
+@import 'sign-in-form';
+
+// Elements
 @import 'input-fields';
 @import 'navigation-menu';
-@import 'sign-in-form';
 @import 'toggle-selector';

@@ -1,4 +1,11 @@
 .sign-in-form {
+  max-width: 500px;
+  margin: 0 auto;
+  vertical-align: center;
+
+  .title {
+    text-align: center;
+  }
 
   .email-field,
   .password-field {
