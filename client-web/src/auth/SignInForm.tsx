@@ -84,7 +84,8 @@ export function UnconnectedSignInForm({
                                 setErrorMessage('Invalid username or password');
                                 setLoading(false);
                             }
-                        }} />
+                        }}
+                    />
                 </form>
             </div>
         </div>
