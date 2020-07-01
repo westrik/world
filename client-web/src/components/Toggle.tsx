@@ -1,6 +1,6 @@
-import {h} from "preact";
+import { h } from 'preact';
 
-import {randomIdentifier} from "~utils/identifier";
+import { randomIdentifier } from '~utils/identifier';
 
 interface ToggleProps {
     labelText: string;
@@ -11,12 +11,7 @@ export default function Toggle(props: ToggleProps): h.JSX.Element {
     const toggleFieldId = randomIdentifier();
     return (
         <div className="toggle-field">
-            <input
-                type="checkbox"
-                id={toggleFieldId}
-                tabIndex={0}
-                onChange={(event) => props.onChange(event)}
-            />
+            <input type="checkbox" id={toggleFieldId} tabIndex={0} onChange={(event) => props.onChange(event)} />
             <label htmlFor={toggleFieldId}>{props.labelText}</label>
         </div>
     );

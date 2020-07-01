@@ -6,9 +6,9 @@ import { authenticate, SignInResponse } from '~auth/authenticate';
 import { SITE_NAME } from '~config';
 
 import LoadingSpinner from '~components/LoadingSpinner';
-import Toggle from "~components/Toggle";
-import SubmitButton from "~components/SubmitButton";
-import {EmailField, PasswordField} from "~components/InputFields";
+import Toggle from '~components/Toggle';
+import SubmitButton from '~components/SubmitButton';
+import { EmailField, PasswordField } from '~components/InputFields';
 
 function SignInForm(): h.JSX.Element {
     const authContext = useContext(Auth);
@@ -57,16 +57,22 @@ export function UnconnectedSignInForm({
                     placeholderText="me@example.com"
                     required={true}
                     autoFocus={true}
-                    onChange={(event)=> {
-                        setEmail((event.target as HTMLInputElement).value)
+                    onChange={(event) => {
+                        setEmail((event.target as HTMLInputElement).value);
                     }}
                 />
-                <PasswordField labelText="Password"  onChange={(event) => {
-                    setPassword((event.target as HTMLInputElement).value)
-                }}/>
-                <Toggle labelText="Remember me" onChange={(event) => {
-                    setRemember((event.target as HTMLInputElement).checked)
-                }}/>
+                <PasswordField
+                    labelText="Password"
+                    onChange={(event) => {
+                        setPassword((event.target as HTMLInputElement).value);
+                    }}
+                />
+                <Toggle
+                    labelText="Remember me"
+                    onChange={(event) => {
+                        setRemember((event.target as HTMLInputElement).checked);
+                    }}
+                />
                 <SubmitButton
                     text="Sign in"
                     disabled={isLoading}
