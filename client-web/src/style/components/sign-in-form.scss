@@ -1,22 +1,31 @@
 .sign-in-form {
-  max-width: 500px;
-  margin: 0 auto;
-  vertical-align: center;
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
 
-  .title {
-    text-align: center;
-  }
 
-  .email-field,
-  .password-field {
-    margin-bottom: 30px;
-  }
+  & > div {
+    max-width: 500px;
+    height: auto;
+    margin: auto;
 
-  .toggle-field {
-    margin-bottom: 20px;
-  }
+    .title {
+      text-align: center;
+    }
 
-  .submit-button {
-    margin-top: 10px;
+    .email-field,
+    .password-field {
+      margin-bottom: 30px;
+    }
+
+    .toggle-field {
+      margin-bottom: 20px;
+    }
+
+    .submit-button {
+      margin-top: 10px;
+    }
   }
 }

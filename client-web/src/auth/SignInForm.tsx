@@ -41,51 +41,52 @@ export function UnconnectedSignInForm({
 
     return (
         <div className="sign-in-form">
-            {errorMessage ? (
-                <div className={`alert danger ${isLoading ? 'fade-out' : 'fade-in'}`} role="alert">
-                    {errorMessage}
-                </div>
-            ) : null}
-            {isLoading ? <LoadingSpinner className="fade-in" /> : null}
-            <form className={isLoading ? 'fade-out' : 'fade-in'}>
-                <h1 className="title">
-                    <span className="sr-only">Sign-in for</span>
-                    {SITE_NAME}
-                </h1>
-                <EmailField
-                    labelText="Email address"
-                    required={true}
-                    autoFocus={true}
-                    onChange={(event) => {
-                        setEmail((event.target as HTMLInputElement).value);
-                    }}
-                />
-                <PasswordField
-                    labelText="Password"
-                    onChange={(event) => {
-                        setPassword((event.target as HTMLInputElement).value);
-                    }}
-                />
-                <Toggle
-                    labelText="Remember me"
-                    onChange={(event) => {
-                        setRemember((event.target as HTMLInputElement).checked);
-                    }}
-                />
-                <SubmitButton
-                    text="Sign in"
-                    disabled={isLoading}
-                    onButtonPress={async (event): Promise<void> => {
-                        event.preventDefault();
-                        setLoading(true);
-                        const res = await handleSignIn(email, password, remember);
-                        if (!res) {
-                            setErrorMessage('Invalid username or password');
-                            setLoading(false);
-                        }
-                    }}
-                />
-            </form>
+            <div>
+                {errorMessage ? (
+                    <div className={`alert danger ${isLoading ? 'fade-out' : 'fade-in'}`} role="alert">
+                        {errorMessage}
+                    </div>
+                ) : null}
+                {isLoading ? <LoadingSpinner className="fade-in" /> : null}
+                <form className={isLoading ? 'fade-out' : 'fade-in'}>
+                    <h1 className="title">
+                        <span className="sr-only">Sign-in for</span>
+                        {SITE_NAME}
+                    </h1>
+                    <EmailField
+                        labelText="Email address"
+                        required={true}
+                        autoFocus={true}
+                        onChange={(event) => {
+                            setEmail((event.target as HTMLInputElement).value);
+                        }}
+                    />
+                    <PasswordField
+                        labelText="Password"
+                        onChange={(event) => {
+                            setPassword((event.target as HTMLInputElement).value);
+                        }}
+                    />
+                    <Toggle
+                        labelText="Remember me"
+                        onChange={(event) => {
+                            setRemember((event.target as HTMLInputElement).checked);
+                        }}
+                    />
+                    <SubmitButton
+                        text="Sign in"
+                        disabled={isLoading}
+                        onButtonPress={async (event): Promise<void> => {
+                            event.preventDefault();
+                            setLoading(true);
+                            const res = await handleSignIn(email, password, remember);
+                            if (!res) {
+                                setErrorMessage('Invalid username or password');
+                                setLoading(false);
+                            }
+                        }} />
+                </form>
+            </div>
         </div>
     );
 }
