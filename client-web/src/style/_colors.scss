@@ -1,0 +1,135 @@
+
+:root {
+  --main-bg-color: #fdfdfd;
+  --main-text-color: rgba(0, 0, 0, 0.85);
+  --primary-accent-color: hsl(269, 100%, 70%);
+  --secondary-accent-color: hsl(269, 100%, 50%);
+  --h1-shadow-color: rgba(0, 0, 0, 0.05);
+  --h2-shadow-color: rgba(0, 0, 0, 0.04);
+  --h3-shadow-color: rgba(0, 0, 0, 0.03);
+  --h4-shadow-color: rgba(0, 0, 0, 0.03);
+  --blockquote-border-color: rgba(0, 0, 0, 0.15);
+  --code-bg-color: rgba(0, 0, 0, 0.08);
+  --code-text-color: #111;
+  --kbd-bg-color: #f7f7f7;
+  --kbd-shadow-color: rgba(0, 0, 0, 0.45);
+  --pre-bg-color: #eee;
+  --pre-border-color: rgba(0, 0, 0, 0.15);
+  --footnotes-border-color: rgba(0, 0, 0, 0.15);
+  --input-border-color_default: rgba(0, 0, 0, 0.85);
+  --input-border-color_focus: rgba(0, 0, 0, 0.75);
+  --button-bg-color_default: rgba(0, 0, 0, 0.85);
+  --button-bg-color_hover: rgba(0, 0, 0, 0.75);
+  --button-bg-color_active: rgba(0, 0, 0, 0.65);
+  --button-border-color_hover: rgba(0, 0, 0, 0.65);
+  --button-border-color_active: rgba(0, 0, 0, 0.45);
+  --alert-bg-color: hsl(50, 100%, 74%);
+  --alert-shadow-color: transparent;
+  --box-bg-color: hsl(170, 61%, 89%);
+  --box-shadow-color: transparent;
+  --note-bg-color: hsl(311, 63%, 86%);
+  --note-shadow-color: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --main-bg-color: #020202;
+    --main-text-color: rgba(255, 255, 255, 0.85);
+    --primary-accent-color: hsl(269, 100%, 60%);
+    --secondary-accent-color: hsl(269, 100%, 40%);
+    --h1-shadow-color: rgba(0, 0, 0, 0.5);
+    --h2-shadow-color: rgba(0, 0, 0, 0.4);
+    --h3-shadow-color: rgba(0, 0, 0, 0.3);
+    --h4-shadow-color: rgba(0, 0, 0, 0.3);
+    --blockquote-border-color: rgba(255, 255, 255, 0.15);
+    --code-bg-color: #444;
+    --code-text-color: #eee;
+    --kbd-bg-color: #333;
+    --kbd-shadow-color: hsla(269, 100%, 80%, 0.5);
+    --pre-bg-color: #444;
+    --pre-border-color: rgba(255, 255, 255, 0.15);
+    --footnotes-border-color: rgba(255, 255, 255, 0.15);
+    --input-border-color_default: rgba(255, 255, 255, 0.85);
+    --input-border-color_focus: rgba(255, 255, 255, 0.75);
+    --button-bg-color_default: rgba(255, 255, 255, 0.85);
+    --button-bg-color_hover: rgba(255, 255, 255, 0.8);
+    --button-bg-color_active: rgba(255, 255, 255, 0.75);
+    --button-border-color_hover: rgba(255, 255, 255, 0.25);
+    --button-border-color_active: rgba(255, 255, 255, 0.15);
+    --alert-bg-color: #222;
+    --alert-shadow-color: hsl(50, 100%, 65%);
+    --box-bg-color: #222;
+    --box-shadow-color: hsl(170, 61%, 65%);
+    --note-bg-color: #222;
+    --note-shadow-color: hsl(311, 63%, 65%);
+  }
+}
+
+body {
+  background-color: var(--main-bg-color);
+  color: var(--main-text-color);
+}
+
+a {
+  color: var(--primary-accent-color);
+}
+
+h1 {
+  text-shadow: 1px 1px 5px var(--h1-shadow-color);
+}
+
+h2 {
+  text-shadow: 1px 1px 4px var(--h2-shadow-color);
+}
+
+h3 {
+  text-shadow: 1px 1px 3px var(--h3-shadow-color);
+}
+
+h4,
+h5,
+h6 {
+  text-shadow: 1px 1px 1px var(--h4-shadow-color);
+}
+
+blockquote {
+  border-color: var(--blockquote-border-color);
+}
+
+code,
+kbd,
+pre {
+  background-color: var(--code-bg-color);
+  color: var(--code-text-color);
+}
+
+kbd {
+  background-color: var(--kbd-bg-color);
+  box-shadow: 0 0 4px 0 var(--kbd-shadow-color);
+}
+
+pre {
+  background-color: var(--pre-bg-color);
+  border-color: var(--pre-border-color);
+}
+
+.footnotes {
+  border-color: var(--footnotes-border-color);
+}
+
+// ---------- ALERT BOXES ---------- //
+
+.alert {
+  background-color: var(--alert-bg-color);
+  box-shadow: 0 0 5px var(--alert-shadow-color);
+}
+
+.note {
+  background-color: var(--note-bg-color);
+  box-shadow: 0 0 5px var(--note-shadow-color);
+}
+
+.box {
+  background-color: var(--box-bg-color);
+  box-shadow: 0 0 5px var(--box-shadow-color);
+}

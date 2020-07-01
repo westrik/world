@@ -52,8 +52,8 @@ h2,
 h3,
 h4,
 p,
-ul,
-ol,
+ul[class],
+ol[class],
 dl,
 li,
 blockquote,
@@ -66,26 +66,6 @@ select,
 textarea {
   /* Remove the default margin for these elements in all browsers. [1],[4] */
   margin: 0;
-}
-
-ul,
-ol,
-dl {
-  padding: 0;
-
-  ul,
-  ol,
-  dl {
-    /* Re-apply padding above nested lists */
-    margin-top: 12px;
-  }
-}
-
-ul[class],
-ol[class],
-dl[class] {
-  /* Reset list style for lists with class attributes. [4] */
-  list-style: none;
 }
 
 main,
@@ -138,14 +118,20 @@ samp {
 p > pre,
 p > code,
 p > kbd,
-p > samp,
-li > pre,
-li > code,
-li > kbd,
-li > samp {
-  /* Render code blocks contained by <p> or <li> blocks as inline. */
+p > samp {
+  /* Render code blocks contained by <p> blocks as inline. */
   //display: inline;
   display: inline-block;
+}
+
+ul[class],
+ol[class],
+dl[class] {
+  /* Remove default padding from list elements that have a class attribute. [4] */
+  padding: 0;
+
+  /* Reset list style for lists with class attributes. [4] */
+  list-style: none;
 }
 
 a {
