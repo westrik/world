@@ -1,0 +1,194 @@
+// ---------- FONT-FACE ---------- //
+
+@font-face {
+  font-family: 'Konsole0.5';
+  font-style: normal;
+  font-weight: normal;
+  src:
+    local('Konsole0.5-Regular'),
+    url('../static/font/Konsole0.5-Regular.woff2') format('woff2'),
+    url('../static/font/Konsole0.5-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Konsole0.5';
+  font-style: normal;
+  font-weight: bold;
+  src:
+    local('Konsole0.5-Semibold'),
+    url('../static/font/Konsole0.5-Semibold.woff2') format('woff2'),
+    url('../static/font/Konsole0.5-Semibold.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Konsole0.5';
+  font-style: normal;
+  font-weight: 900;
+  src:
+    local('Konsole0.5-ExpandedBold'),
+    url('../static/font/Konsole0.5-ExpandedBold.woff2') format('woff2'),
+    url('../static/font/Konsole0.5-ExpandedBold.woff') format('woff');
+}
+
+// ---------- BASE TYPE LAYOUT (derived from Golden Ratio Typography) ---------- //
+
+body {
+  font-family: "Konsole0.5", "Lucida Grande", sans-serif;
+  font-size: 18px;
+  line-height: 30px;
+}
+
+.article {
+  max-width: 500px;
+  font-size: 15px;
+  line-height: 25px;
+  padding: 0 15px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: 31px;
+  line-height: 48px;
+  margin-bottom: 25px;
+}
+
+.title {
+  text-transform: uppercase;
+  font-size: 39px;
+  font-weight: 900;
+  line-height: 60px;
+  margin: 25px 0;
+}
+
+h2 {
+  font-size: 24px;
+  line-height: 38px;
+  margin-top: 40px;
+  margin-bottom: 15px;
+}
+
+h3 {
+  font-size: 19px;
+  line-height: 31px;
+  margin-top: 25px;
+  margin-bottom: 9px;
+}
+
+h4,
+h5,
+h6 {
+  font-size: 15px;
+  line-height: 25px;
+  margin-bottom: 6px;
+}
+
+p,
+ul,
+ol,
+blockquote,
+pre,
+.alert,
+.note,
+.box,
+.footnotes {
+  margin-bottom: 25px;
+}
+
+ul,
+ol {
+  margin-left: 25px;
+}
+
+li {
+  margin-bottom: 9px;
+}
+
+blockquote {
+  padding-left: 15px;
+  border-style: solid;
+  border-width: 0 0 0 6px;
+}
+
+sub,
+sup {
+  padding: 0 1px;
+}
+
+code,
+pre,
+kbd {
+  font-size: 14px;
+}
+
+code {
+  padding: 0 4px;
+  border-radius: 4px;
+  margin: 0 1px;
+  vertical-align: middle;
+}
+
+pre {
+  padding: 9px;
+  border-style: solid;
+  border-width: 0 0 0 6px;
+  border-radius: 4px;
+}
+
+kbd {
+  padding: 0 4px;
+  border-radius: 4px;
+  margin: 0 1px;
+  vertical-align: middle;
+}
+
+.alert,
+.note,
+.box {
+  padding: 15px;
+  border-radius: 6px;
+}
+
+.footnotes {
+  font-size: 12px;
+  line-height: 21px;
+  padding-top: 15px;
+  border-top-style: dotted;
+  border-top-width: 1px;
+}
+
+.footnotes p {
+  margin-bottom: 15px;
+}
+
+ul ul,
+ul ol,
+ol ul,
+ol ol,
+blockquote.right p,
+blockquote.left p,
+.alert :last-child,
+.note :last-child,
+.box :last-child,
+.footnotes :last-child {
+  margin-bottom: 0;
+}
+
+hr {
+  margin: 25px 0;
+}
+
+@media all and (min-width: 550px) {
+  .article {
+    padding: 0 25px;
+  }
+}

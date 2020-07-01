@@ -6,6 +6,9 @@ import { authenticate, SignInResponse } from '~auth/authenticate';
 import { SITE_NAME } from '~config';
 
 import LoadingSpinner from '~components/LoadingSpinner';
+import Toggle from '~components/Toggle';
+import SubmitButton from '~components/SubmitButton';
+import { EmailField, PasswordField } from '~components/InputFields';
 
 function SignInForm(): h.JSX.Element {
     const authContext = useContext(Auth);
@@ -38,7 +41,7 @@ export function UnconnectedSignInForm({
 
     return (
         <div className="sign-in-form">
-            <div className="tile">
+            <div>
                 {errorMessage ? (
                     <div className={`alert danger ${isLoading ? 'fade-out' : 'fade-in'}`} role="alert">
                         {errorMessage}
@@ -46,45 +49,34 @@ export function UnconnectedSignInForm({
                 ) : null}
                 {isLoading ? <LoadingSpinner className="fade-in" /> : null}
                 <form className={isLoading ? 'fade-out' : 'fade-in'}>
-                    <h1>
+                    <h1 className="title">
                         <span className="sr-only">Sign-in for</span>
                         {SITE_NAME}
                     </h1>
-                    <label htmlFor="inputEmail" className="sr-only">
-                        Email address
-                    </label>
-                    <input
-                        type="email"
-                        id="inputEmail"
-                        className="form-control"
-                        placeholder="Email address"
-                        required
-                        autoFocus
-                        onChange={(e): void => setEmail((e.target as HTMLInputElement).value)}
+                    <EmailField
+                        labelText="Email address"
+                        required={true}
+                        autoFocus={true}
+                        onChange={(event) => {
+                            setEmail((event.target as HTMLInputElement).value);
+                        }}
                     />
-                    <label htmlFor="inputPassword" className="sr-only">
-                        Password
-                    </label>
-                    <input
-                        type="password"
-                        id="inputPassword"
-                        className="form-control"
-                        placeholder="Password"
-                        required
-                        onChange={(e): void => setPassword((e.target as HTMLInputElement).value)}
+                    <PasswordField
+                        labelText="Password"
+                        onChange={(event) => {
+                            setPassword((event.target as HTMLInputElement).value);
+                        }}
                     />
-                    <div className="checkbox">
-                        <label>
-                            <input
-                                type="checkbox"
-                                value="remember-me"
-                                onClick={(e): void => setRemember((e.target as HTMLInputElement).checked)}
-                            />{' '}
-                            Remember me
-                        </label>
-                    </div>
-                    <button
-                        onClick={async (event): Promise<void> => {
+                    <Toggle
+                        labelText="Remember me"
+                        onChange={(event) => {
+                            setRemember((event.target as HTMLInputElement).checked);
+                        }}
+                    />
+                    <SubmitButton
+                        text="Sign in"
+                        disabled={isLoading}
+                        onButtonPress={async (event): Promise<void> => {
                             event.preventDefault();
                             setLoading(true);
                             const res = await handleSignIn(email, password, remember);
@@ -93,12 +85,7 @@ export function UnconnectedSignInForm({
                                 setLoading(false);
                             }
                         }}
-                        className="button lg"
-                        type="submit"
-                        disabled={isLoading}
-                    >
-                        Sign in
-                    </button>
+                    />
                 </form>
             </div>
         </div>

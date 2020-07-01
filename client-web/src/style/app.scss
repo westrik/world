@@ -1,13 +1,5 @@
 @import 'reset';
-@import 'layout';
-@import 'utils';
-@import 'components/alerts';
-@import 'components/buttons';
-@import 'components/container';
-@import 'components/lists';
-@import 'components/loading-spinner';
-@import 'components/tile';
-@import 'auth';
-@import 'notes';
-@import 'tasks';
-@import 'theme';
+@import 'container';
+@import 'typography';
+@import 'colors';
+@import 'components/_components';

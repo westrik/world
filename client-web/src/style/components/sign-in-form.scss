@@ -1,0 +1,31 @@
+.sign-in-form {
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+
+
+  & > div {
+    max-width: 500px;
+    height: auto;
+    margin: auto;
+
+    .title {
+      text-align: center;
+    }
+
+    .email-field,
+    .password-field {
+      margin-bottom: 30px;
+    }
+
+    .toggle-field {
+      margin-bottom: 20px;
+    }
+
+    .submit-button {
+      margin-top: 10px;
+    }
+  }
+}

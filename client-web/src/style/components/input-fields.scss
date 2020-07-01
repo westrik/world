@@ -1,0 +1,71 @@
+.email-field ,
+.password-field,
+.submit-button {
+  border: 0;
+  margin: 0;
+  padding: 0;
+
+  & > label {
+    margin-top: 30px;
+    font-weight: bold;
+  }
+
+  & > input, & > button {
+    display: block;
+    width: 100%;
+    font-size: 17px;
+    height: 48px;
+    padding: 0 15px;
+    border: 1px solid var(--input-border-color_default);
+    transition: background 0.25s ease-in-out,
+    box-shadow 0.15s ease-in-out;
+    background: var(--main-bg-color);
+    color: var(--main-text-color);
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  }
+
+  & > input {
+    margin-top: 10px;
+
+    &:focus, &:active {
+      outline: 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1),
+      0 1px 2px rgba(0,0,0,0.06),
+      0 0 0 .2rem var(--primary-accent-color);
+      border-color: var(--primary-accent-color);
+    }
+
+    &:invalid, &.error {
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1),
+      0 1px 2px rgba(0,0,0,0.06),
+      0 0 0 .2rem var(--secondary-accent-color);
+      border-color: var(--secondary-accent-color);
+    }
+  }
+}
+
+.submit-button > button[type=submit] {
+  position: relative;
+  background: var(--button-bg-color_default);
+  color: var(--main-bg-color);
+  font-weight: bold;
+  font-size: 20px;
+
+  &:hover, &:focus {
+    outline: 0;
+    background: var(--button-bg-color_hover);
+    border-color: var(--input-border-color_focus);
+  }
+
+  &:focus, &:active {
+    box-shadow: 0 0 0 .2rem var(--primary-accent-color);
+  }
+
+  &:active {
+    background: var(--button-bg-color_active);
+    border-color: var(--button-border-color_active);
+    top: 0.5px;
+  }
+}
+
