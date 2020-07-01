@@ -1,0 +1,3 @@
+[submodule "client-web/src/static/font"]
+	path = client-web/src/static/font
+	url = git@github.com:westrik/world-fonts.git
