@@ -17,7 +17,9 @@
   --pre-border-color: rgba(0, 0, 0, 0.15);
   --footnotes-border-color: rgba(0, 0, 0, 0.15);
   --input-border-color_default: rgba(0, 0, 0, 0.85);
-  --input-border-color_focus: rgba(0, 0, 0, 0.75);
+  --input-border-color_focus: rgba(255, 255, 255, 0.4);
+  --input-border-color_error: rgba(255, 0, 0, 0.4);
+  --input-border-color_focus_error: rgba(255, 0, 0, 0.6);
   --button-bg-color_default: rgba(0, 0, 0, 0.85);
   --button-bg-color_hover: rgba(0, 0, 0, 0.75);
   --button-bg-color_active: rgba(0, 0, 0, 0.65);
@@ -33,10 +35,10 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --main-bg-color: #020202;
+    --main-bg-color: #111;
     --main-text-color: rgba(255, 255, 255, 0.85);
-    --primary-accent-color: hsl(269, 100%, 60%);
-    --secondary-accent-color: hsl(269, 100%, 40%);
+    --primary-accent-color: hsl(269, 100%, 70%);
+    --secondary-accent-color: hsl(269, 100%, 50%);
     --h1-shadow-color: rgba(0, 0, 0, 0.5);
     --h2-shadow-color: rgba(0, 0, 0, 0.4);
     --h3-shadow-color: rgba(0, 0, 0, 0.3);
@@ -50,14 +52,17 @@
     --pre-border-color: rgba(255, 255, 255, 0.15);
     --footnotes-border-color: rgba(255, 255, 255, 0.15);
     --input-border-color_default: rgba(255, 255, 255, 0.85);
-    --input-border-color_focus: rgba(255, 255, 255, 0.75);
+    --input-border-color_focus: rgba(255, 255, 255, 0.4);
+    --input-border-color_error: rgba(255, 0, 0, 0.4);
+    --input-border-color_focus_error: rgba(255, 0, 0, 0.6);
     --button-bg-color_default: rgba(255, 255, 255, 0.85);
     --button-bg-color_hover: rgba(255, 255, 255, 0.8);
     --button-bg-color_active: rgba(255, 255, 255, 0.75);
     --button-border-color_hover: rgba(255, 255, 255, 0.25);
     --button-border-color_active: rgba(255, 255, 255, 0.15);
-    --alert-bg-color: #222;
-    --alert-shadow-color: hsl(50, 100%, 65%);
+    --alert-bg-color: rgba(255, 0, 0, 0.4);
+    //--alert-shadow-color: hsl(50, 100%, 65%);
+    --alert-shadow-color: transparent;
     --box-bg-color: #222;
     --box-shadow-color: hsl(170, 61%, 65%);
     --note-bg-color: #222;

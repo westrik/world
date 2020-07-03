@@ -5,10 +5,10 @@ import Auth from '~auth/AuthContext';
 import { authenticate, SignInResponse } from '~auth/authenticate';
 import { SITE_NAME } from '~config';
 
-import LoadingSpinner from '~components/LoadingSpinner';
-import Toggle from '~components/Toggle';
-import SubmitButton from '~components/SubmitButton';
 import { EmailField, PasswordField } from '~components/InputFields';
+import LoadingSpinner from '~components/LoadingSpinner';
+import SubmitButton from '~components/SubmitButton';
+import Toggle from '~components/Toggle';
 
 function SignInForm(): h.JSX.Element {
     const authContext = useContext(Auth);
@@ -57,13 +57,13 @@ export function UnconnectedSignInForm({
                         labelText="Email address"
                         required={true}
                         autoFocus={true}
-                        onChange={(event) => {
+                        onChange={(event: Event) => {
                             setEmail((event.target as HTMLInputElement).value);
                         }}
                     />
                     <PasswordField
                         labelText="Password"
-                        onChange={(event) => {
+                        onChange={(event: Event) => {
                             setPassword((event.target as HTMLInputElement).value);
                         }}
                     />
@@ -76,7 +76,7 @@ export function UnconnectedSignInForm({
                     <SubmitButton
                         text="Sign in"
                         disabled={isLoading}
-                        onButtonPress={async (event): Promise<void> => {
+                        onButtonPress={async (event: Event): Promise<void> => {
                             event.preventDefault();
                             setLoading(true);
                             const res = await handleSignIn(email, password, remember);

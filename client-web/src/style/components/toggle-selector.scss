@@ -37,7 +37,8 @@
         top: 1px;
         left: 0;
         transition: background 0.25s ease-in-out,
-            border 0.15s ease-in-out;
+            border 0.15s ease-in-out,
+            box-shadow 0.15s ease-in-out;
       }
 
       &:after {
@@ -67,15 +68,9 @@
 
     &:focus ~ label {
       &:before {
-        border-color: var(--secondary-accent-color);
+        //border-color: var(--secondary-accent-color);
+        box-shadow: 0 0 0 .2rem var(--input-border-color_focus);
       }
-      &:after {
-        background:  var(--primary-accent-color);
-      }
-    }
-
-    &:focus:checked ~ label:after {
-      background: var(--primary-accent-color);
     }
   }
 }
