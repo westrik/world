@@ -2,6 +2,6 @@
 members = [
   "core",
   "integration_tests",
-  "run_server",
-  "run_worker",
+  "api_server",
+  "worker",
 ]

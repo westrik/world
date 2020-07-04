@@ -17,7 +17,7 @@ const DB_POOL_SIZE: u32 = 15;
 async fn main() {
     dotenv().ok();
     if env::var("RUST_LOG").is_err() {
-        env::set_var("RUST_LOG", "westrikworld_core=debug,run_server=debug");
+        env::set_var("RUST_LOG", "westrikworld_core=debug,api_server=debug");
     }
     pretty_env_logger::init();
 
@@ -31,7 +31,7 @@ async fn main() {
 
     let api = routes::api(pool.clone());
     let routes = api
-        .with(warp::log("run_server::routing"))
+        .with(warp::log("api_server::routing"))
         .with(cors_wrapper(&cors_origin_url));
     warp::serve(routes).run(([127, 0, 0, 1], 8080)).await;
 }

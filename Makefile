@@ -24,7 +24,7 @@ check_and_test:
 	cargo watch -x check -x test -s 'touch ../.trigger'
 
 run_server:
-	cargo watch --no-gitignore -w ../.trigger -x 'run --bin run_server'
+	cargo watch --no-gitignore -w ../.trigger -x 'run --bin api_server'
 
 run_client:
 	cd web-client && yarn start
