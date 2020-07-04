@@ -32,7 +32,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-yarn-
     - name: Install, build, and test
-      working-directory: ./client-web
+      working-directory: ./web-client
       run: |
         yarn install
         yarn build
@@ -40,14 +40,14 @@ jobs:
       env:
         CI: true
     - name: Type-check
-      working-directory: ./client-web
+      working-directory: ./web-client
       run: |
         yarn typecheck
     - name: Lint TypeScript
-      working-directory: ./client-web
+      working-directory: ./web-client
       run: |
         yarn lint:ts
     - name: Lint styles
-      working-directory: ./client-web
+      working-directory: ./web-client
       run: |
         yarn lint:style

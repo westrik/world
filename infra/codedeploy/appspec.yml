@@ -1,7 +1,7 @@
 version: 0.0
 os: linux
 files:
-  - source: bin/run_server
+  - source: bin/api_server
     destination: /usr/bin/
 hooks:
   ApplicationStop:

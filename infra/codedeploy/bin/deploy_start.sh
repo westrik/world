@@ -2,7 +2,7 @@
 
 set -euxo pipefail
 
-SERVER_BIN_FILE=/usr/bin/run_server
+SERVER_BIN_FILE=/usr/bin/api_server
 
 systemctl daemon-reload
 systemctl enable secrets.service secrets.target secrets.timer

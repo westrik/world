@@ -8,7 +8,7 @@ Type=simple
 User=app
 Group=app
 EnvironmentFile=/secrets/app.env
-ExecStart=/usr/bin/run_server
+ExecStart=/usr/bin/api_server
 
 [Install]
 WantedBy=multi-user.target
