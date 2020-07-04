@@ -1,10 +1,10 @@
-name: Rust (Test)
+name: Rust (test - release)
 
 on: [push]
 
 jobs:
-  test_rust:
-    name: test (debug)
+  rust_test_release:
+    name: test (release)
     runs-on: ubuntu-latest
     container: mattwestrik/ww:latest
 
@@ -30,6 +30,4 @@ jobs:
         path: ./target
         key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}-debug
     - name: Run tests
-      run: cargo test --verbose
-      #- name: Run clippy
-      #run: cargo clippy
+      run: cargo test --verbose --release
