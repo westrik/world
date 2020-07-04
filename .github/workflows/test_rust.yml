@@ -1,4 +1,4 @@
-name: Rust
+name: Rust (Test - Debug)
 
 on: [push]
 
@@ -10,8 +10,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-#    - name: Install dependencies
-#      run: bash infra/scripts/dependencies.sh
     - name: Set up test DB
       run: bash .github/scripts/test_db.sh
     - name: Load ~/.cargo in PATH
@@ -31,9 +29,7 @@ jobs:
       with:
         path: ./target
         key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}-debug
-    - name: Build
-      run: cargo build --verbose --release
     - name: Run tests
-      run: cargo test --verbose --release
+      run: cargo test --verbose
       #- name: Run clippy
       #run: cargo clippy
