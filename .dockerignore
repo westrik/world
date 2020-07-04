@@ -13,6 +13,7 @@ flamescope.json
 # rust build files
 **/target
 **/benches/data
+**/*.rs.bk
 
 # JS build files
 **/.storybook
@@ -23,3 +24,6 @@ flamescope.json
 
 # swift build files
 **/Pods
+
+/target/
+**/target/

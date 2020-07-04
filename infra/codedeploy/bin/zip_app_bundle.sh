@@ -9,7 +9,7 @@ cd $bundle_name
 
 cp ../infra/codedeploy/appspec.yml .
 cp -r ../infra/codedeploy/bin .
-cp ../server/target/release/run_server ./bin/
+cp ../target/release/run_server ./bin/
 cp -r ../web-client/dist ./public
 cp -r ../web-client/vendor ./public/
 
