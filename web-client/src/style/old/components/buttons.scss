@@ -1,0 +1,143 @@
+/* stylelint-disable at-rule-no-unknown */
+@use "sass:color";
+@import '../config';
+
+/**
+ * Button styling. All buttons start with the "outline" style defined in
+ * milligram.css [2]. Buttons with a "submit" type or a "default" attribute
+ * or class get the default style defined in milligram.
+ */
+
+
+$button-border-color-default: color.adjust($button-color-default, $lightness: -10%);
+$button-border-color-active: color.adjust($button-color-active, $lightness: -10%);
+$button-border-color-default-inverted: color.adjust($button-color-default-inverted, $lightness: -10%);
+
+
+.button, button, [type="button"], [type="reset"], [type="submit"] {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1rem;
+  font-size: $button-font-size;
+  font-weight: $button-font-weight;
+  letter-spacing: $button-letter-spacing;
+  line-height: $button-line-height;
+  background-color: $button-color-default;
+  border: 0.1rem solid $button-border-color-default;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 0.4rem;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.9);
+  vertical-align: text-bottom;
+  -webkit-appearance: none;
+  transition:
+          0.05s linear background-color,
+          0.05s linear border-color,
+          0.05s linear box-shadow;
+
+
+  &.xs {
+    font-size: 0.9rem;
+    padding: 0.2rem 0.3rem;
+    letter-spacing: 0;
+  }
+
+  &.sm {
+    font-size: 1.0rem;
+    padding: 0.7rem 1rem;
+  }
+
+  &.md {
+    font-size: 1.2rem;
+    padding: 0.9rem 1.3rem;
+  }
+
+  &.lg {
+    font-size: 1.4rem;
+    padding: 1.1rem 1.6rem;
+  }
+
+  &:focus, &:hover {
+    outline: 0;
+    background-color: $button-color-active;
+    border-color: $button-border-color-active;
+  }
+
+  &.inverted {
+    background-color: $button-color-default-inverted;
+    border-color: $button-border-color-default-inverted;
+    color: hsla(0, 0%, 10%, 0.8);
+
+    &:focus, &:hover {
+      background-color: $button-color-default-inverted;
+      border-color: $button-border-color-default-inverted;
+      color: hsla(0, 0%, 10%, 0.8);
+      box-shadow: 0 0 0.3rem rgba(0,0,0,0.1);
+    }
+  }
+
+  &:active {
+    top: 0.05rem;
+
+    $button-active-shadow-color: rgba(0, 0, 0, 0.2);
+
+    &.xs {
+      box-shadow: 0 0.05rem 0.5rem $button-active-shadow-color;
+    }
+    &.sm {
+      box-shadow: 0 0.1rem 0.7rem $button-active-shadow-color;
+    }
+    &.md {
+      box-shadow: 0 0.15rem 0.9rem $button-active-shadow-color;
+    }
+    &.lg {
+      box-shadow: 0 0.2rem 1.1rem $button-active-shadow-color;
+    }
+  }
+
+  &.default, &[default] {
+    background-color: $button-color-default;
+    color: #fff;
+
+    &:focus, &:hover {
+      background-color: $button-color-active;
+      border-color: $button-color-active;
+    }
+
+    &.inverted {
+      background-color: $button-color-default-inverted;
+
+      &:focus, &:hover {
+        background-color: $button-color-default-inverted;
+        border-color: $button-color-default-inverted;
+        color: $link-font-color-default;
+      }
+    }
+  }
+
+  &[disabled] {
+    opacity: 0.5;
+
+    &:focus, &:hover, &:active {
+      border-color: $button-border-color-default;
+      background-color: $button-color-default;
+      box-shadow: none;
+      top: 0;
+
+      &.inverted {
+        border-color: $button-border-color-default-inverted;
+        background-color: $button-color-default-inverted;
+      }
+    }
+  }
+}
+
+[type="submit"] {
+  background-color: $button-color-default;
+  color: #fff;
+
+  &.inverted {
+    background-color: $button-color-default-inverted;
+  }
+}

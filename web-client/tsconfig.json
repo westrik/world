@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "jsx": "react",
+    "jsxFactory": "h",
+    "target": "es6",
+    "moduleResolution": "node",
+    "baseUrl": "./",
+    "outDir": "./out",
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "paths": {
+      "~*": ["./src/*"],
+      "tests/*": ["./tests/*"]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "tests/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

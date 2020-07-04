@@ -1,0 +1,20 @@
+@import '../config';
+
+.tile {
+  display: inline-block;
+  padding: 1em;
+  min-height: 5em;
+  min-width: 5em;
+  border-radius: $tile-radius;
+  border: 1px solid #dedede;
+  background: #fdfdfd;
+
+  &:focus {
+    box-shadow: 0 0 1rem rgba(50, 50, 180, 0.3);
+    outline: 0;
+  }
+
+  a {
+    outline: 0;
+  }
+}

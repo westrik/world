@@ -1,0 +1,370 @@
+/******************************************************************************
+*
+*  RESET
+*
+*  Following rules are intended to fix layout quirks in different browsers.
+*
+******************************************************************************/
+
+*,
+*::after,
+*::before {
+  /* Set universal box sizing with inheritance. [3] */
+  box-sizing: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    /* Prevent animations and transitions for users that want that. [4] */
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html {
+  /* Fix the line height in all browsers. [1] */
+  line-height: 1.15;
+
+  /* Set universal box sizing with inheritance. [3] */
+  box-sizing: border-box;
+}
+
+body {
+  /* Smoothly scroll between anchors. [4] */
+  scroll-behavior: smooth;
+
+  /* Prevent adjustments of font size after orientation changes in iOS. [1] */
+  -webkit-text-size-adjust: 100%;
+
+  /* optimizeLegibility may cause some performance issues in some browsers
+       (https://marco.org/2012/11/15/text-rendering-optimize-legibility) -- not sure if
+       this is still current. Probably safe to assume that an appropriately legible
+       font will be used anyway. [4] */
+  //text-rendering: optimizeSpeed;
+  text-rendering: optimizeLegibility;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+li,
+blockquote,
+figure,
+figcaption,
+button,
+input,
+optgroup,
+select,
+textarea {
+  /* Remove the default margin for these elements in all browsers. [1],[4] */
+  margin: 0;
+}
+
+ul,
+ol,
+dl {
+  padding: 0;
+
+  ul,
+  ol,
+  dl {
+    /* Re-apply padding above nested lists */
+    margin-top: 12px;
+  }
+}
+
+ul[class],
+ol[class],
+dl[class] {
+  /* Reset list style for lists with class attributes. [4] */
+  list-style: none;
+}
+
+main,
+details {
+  /* Render <main> consistently in IE and add the correct display for <details>
+       in Edge, IE 10+, and Firefox. [1] */
+  display: block;
+}
+
+summary {
+  /* Add the correct display in all browsers. [1] */
+  display: list-item;
+}
+
+template {
+  /* Add the correct display in IE 10+. [1] */
+  display: none;
+}
+
+hr {
+  /* Add the correct box sizing in Firefox. [1] */
+  box-sizing: content-box;
+  height: 0;
+
+  /* Show the overflow in Edge and IE. [1] */
+  overflow: visible;
+}
+
+pre,
+code,
+kbd,
+samp {
+  /* Fix the inheritance and scaling of font size in all browsers. [1] */
+  font-family: monospace;
+
+  /* Fix the odd 'em' font sizing in all browsers. [1] */
+  font-size: 1em;
+
+  /* Ensure that these are block-level elements by default. */
+  display: block;
+
+  /* Ensure that these elements don't soft-wrap by default. [2] */
+  white-space: pre;
+
+  /* Since white-space is set to "pre", ensure that the element has
+       scrollbars as necessary. */
+  overflow: auto;
+}
+
+p > pre,
+p > code,
+p > kbd,
+p > samp,
+li > pre,
+li > code,
+li > kbd,
+li > samp {
+  /* Render code blocks contained by <p> or <li> blocks as inline. */
+  //display: inline;
+  display: inline-block;
+}
+
+a {
+  /* Remove the gray background on active links in IE 10. [1] */
+  background-color: transparent;
+}
+
+a:not([class]) {
+  /* Makes links a bit more readable while avoiding conflicts. [4] */
+  text-decoration-skip-ink: auto;
+}
+
+abbr[title] {
+  /* Remove the bottom border in Chrome 57-. [1] */
+  border-bottom: none;
+
+  /* Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari. [1] */
+  text-decoration: underline;
+  text-decoration: underline dotted;
+}
+
+b,
+strong {
+  /* Add the correct font weight in Chrome, Edge, and Safari. [1] */
+
+  /* This has been changed from [1] because the 'bolder' value is not well
+       enough supported in common fonts: https://css-tricks.com/almanac/properties/f/font-weight/ */
+  font-weight: bold;
+}
+
+small {
+  /* Enforce the correct font size in all browsers. [1] */
+  font-size: 80%;
+}
+
+sub,
+sup {
+  /* Prevent 'sub' and 'sup' elements from affecting the line height
+       in all browsers. [1] */
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  /* Enforce 'sub' positioning in all browsers. [1] */
+  bottom: -0.25em;
+}
+
+sup {
+  /* Enforce 'sup' positioning in all browsers. [1] */
+  top: -0.5em;
+}
+
+body img {
+  /* Remove the border on images inside links in IE 10. [1] */
+  border-style: none;
+
+  /* Go ahead and make these block-level elements. I'm not sure about this. [4] */
+  display: block;
+
+  /* [2] */
+  width: 100%;
+  max-width: 100%;
+}
+
+td:not([align]),
+th:not([align]) {
+  /* Borrow a rule from [5], modifying a rule from [2] to give table cells
+       a default left alignment unless alignment is specified in the element. */
+  text-align: left;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  /* Set the font styles to match the rest of the document in
+       all browsers. [1],[4] */
+  font: inherit;
+  line-height: 1.15;
+
+  /* Remove the margin in Firefox and Safari. [1] */
+  margin: 0;
+}
+
+button,
+input {
+  /* Show the overflow in Edge. [1] */
+  overflow: visible;
+}
+
+button,
+select {
+  /* Remove the inheritance of text transform in Edge, Firefox, and IE. [1] */
+  text-transform: none;
+}
+
+.button,
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+  /* Fix the inability to style clickable types in iOS and Safari. [1] */
+  -webkit-appearance: button;
+
+  /* Set the correct cursor for these elements. [2] */
+  cursor: pointer;
+}
+
+.button[disabled],
+button[disabled],
+[type="button"][disabled],
+[type="reset"][disabled],
+[type="submit"][disabled] {
+  /* Reset the cursor for disabled button elements. [2] */
+  cursor: default;
+}
+
+button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner {
+  /* Remove the inner border and padding in Firefox. [1] */
+  border-style: none;
+  padding: 0;
+}
+
+button:-moz-focusring,
+[type="button"]:-moz-focusring,
+[type="reset"]:-moz-focusring,
+[type="submit"]:-moz-focusring {
+  /* Restore the focus styles unset by the previous rule. [1] */
+  outline: 1px dotted ButtonText;
+}
+
+fieldset {
+  /* Fix 'fieldset' padding in Firefox. [1] */
+  padding: 0.35em 0.75em 0.625em;
+}
+
+legend {
+  /* Fix text wrapping in Edge and IE. [1] */
+  box-sizing: border-box;
+  display: table;
+  max-width: 100%;
+  white-space: normal;
+
+  /* Fix color inheritance from 'fieldset' elements in IE. [1] */
+  color: inherit;
+
+  /* Remove padding so developer are not surprised when they zero out
+       'fieldset' elements in all browsers. [1] */
+  padding: 0;
+}
+
+textarea {
+  /* Remove the default vertical scrollbar in IE 10+. [1] */
+  overflow: auto;
+}
+
+[type="checkbox"],
+[type="radio"] {
+  /* Add the correct box sizing in IE 10. [1] */
+  box-sizing: border-box;
+
+  /* Remove the padding present in IE 10. [1] */
+  padding: 0;
+}
+
+[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
+  /* Fix the cursor style of increment and decrement buttons in Chrome. [1] */
+  height: auto;
+}
+
+[type="search"] {
+  /* Fix appearance in Chrome and Safari. [1] */
+  -webkit-appearance: textfield;
+
+  /* Fix the outline style in Safari. [1] */
+  outline-offset: -2px;
+}
+
+[type="search"]::-webkit-search-decoration {
+  /* Remove the inner padding in Chrome and Safari on MacOS. [1] */
+  -webkit-appearance: none;
+}
+
+::-webkit-file-upload-button {
+  /* Fix the inability to style clickable types in iOS and Safari. [1] */
+  -webkit-appearance: button;
+
+  /* Fix the font properties in Safari. [1] */
+  font: inherit;
+}
+
+progress {
+  /* Add the correct vertical alignment in Chrome, Firefox, and Opera. [1] */
+  vertical-align: baseline;
+}
+
+[hidden] {
+  /* Add the correct display in IE 10. [1] */
+  display: none;
+}
+
+/******************************************************************************
+*
+*   CREDITS
+*
+*   Adapted primarily from sccaffold.css, https://github.com/robsheldon/sscaffold-css
+*   [1] normalize.css, https://github.com/necolas/normalize.css/
+*   [2] milligram.css, https://github.com/milligram/milligram/
+*   [3] https://css-tricks.com/box-sizing/
+*   [4] https://hankchizljaw.com/wrote/a-modern-css-reset/
+*   [5] https://github.com/jgthms/minireset.css/
+*   [6] skeleton.css, https://github.com/dhg/Skeleton
+*
+******************************************************************************/
