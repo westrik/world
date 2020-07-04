@@ -1,9 +1,9 @@
-name: Rust (Build)
+name: Rust (build - release)
 
 on: [push]
 
 jobs:
-  build_rust:
+  rust_build_release:
     name: build (release)
     runs-on: ubuntu-latest
     container: mattwestrik/ww:latest
