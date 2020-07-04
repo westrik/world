@@ -29,14 +29,11 @@ jobs:
     - name: Cache cargo build
       uses: actions/cache@v1
       with:
-        path: ./server/target
+        path: ./target
         key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}-debug
     - name: Build
-      working-directory: ./server
       run: cargo build --verbose --release
     - name: Run tests
-      working-directory: ./server
       run: cargo test --verbose --release
       #- name: Run clippy
-      #working-directory: ./server
       #run: cargo clippy
