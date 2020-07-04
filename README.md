@@ -5,7 +5,11 @@
 <img alt="iOS app build status" src="https://build.appcenter.ms/v0.1/apps/15506d1c-dcc0-4479-8cf8-3aac8622f128/branches/master/badge">
 <img alt="macOS app build status" src="https://build.appcenter.ms/v0.1/apps/9af600b8-a4ba-4807-a8cd-931a3965bcbc/branches/master/badge">
 </p>
-# westrikworld server
+
+
+-------------
+
+## API server
 
 ### DB setup
 
