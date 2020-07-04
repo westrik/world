@@ -1,4 +1,4 @@
-name: Rust (Build - Release)
+name: Rust (Build)
 
 on: [push]
 

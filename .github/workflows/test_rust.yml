@@ -1,10 +1,10 @@
-name: Rust (Test - Debug)
+name: Rust (Test)
 
 on: [push]
 
 jobs:
-  build_and_test-debug:
-    name: build & test all crates
+  test_rust:
+    name: test (debug)
     runs-on: ubuntu-latest
     container: mattwestrik/ww:latest
 
