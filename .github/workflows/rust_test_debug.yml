@@ -1,0 +1,35 @@
+name: Rust (test - debug)
+
+on: [push]
+
+jobs:
+  rust_test_debug:
+    name: test (debug)
+    runs-on: ubuntu-latest
+    container: mattwestrik/ww:latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up test DB
+      run: bash .github/scripts/test_db.sh
+    - name: Load ~/.cargo in PATH
+      run: echo "::add-path::/root/.cargo/bin"
+    - name: Cache cargo registry
+      uses: actions/cache@v1
+      with:
+        path: ~/.cargo/registry
+        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}-debug
+    - name: Cache cargo index
+      uses: actions/cache@v1
+      with:
+        path: ~/.cargo/git
+        key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}-debug
+    - name: Cache cargo build
+      uses: actions/cache@v1
+      with:
+        path: ./target
+        key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}-debug
+    - name: Run tests
+      run: cargo test --verbose
+      #- name: Run clippy
+      #run: cargo clippy

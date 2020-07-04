@@ -1,17 +1,15 @@
-name: Rust
+name: Rust (test - release)
 
 on: [push]
 
 jobs:
-  build_and_test-debug:
-    name: build & test all crates
+  rust_test_release:
+    name: test (release)
     runs-on: ubuntu-latest
     container: mattwestrik/ww:latest
 
     steps:
     - uses: actions/checkout@v1
-#    - name: Install dependencies
-#      run: bash infra/scripts/dependencies.sh
     - name: Set up test DB
       run: bash .github/scripts/test_db.sh
     - name: Load ~/.cargo in PATH
@@ -31,9 +29,5 @@ jobs:
       with:
         path: ./target
         key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}-debug
-    - name: Build
-      run: cargo build --verbose --release
     - name: Run tests
       run: cargo test --verbose --release
-      #- name: Run clippy
-      #run: cargo clippy
