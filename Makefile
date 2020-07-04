@@ -9,6 +9,8 @@ check:
 	cd client-web && yarn test
 	cd infra && terraform validate
 
+fix: fmt
+
 fmt:
 	cd server && cargo fmt
 	cd client-web && yarn fix

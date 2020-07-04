@@ -1,15 +1,22 @@
 .sign-in-form {
   display: flex;
   align-items: center;
-  min-height: 100vh;
-  padding-top: 4rem;
-  padding-bottom: 4rem;
+  min-height: calc(100vh - 4rem);
+  padding: 4rem 0;
 
+  .alert {
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    top: -55px;
+  }
 
   & > div {
-    max-width: 500px;
+    min-width: 30%;
+    max-width: 90%;
     height: auto;
     margin: auto;
+    position: relative;
 
     .title {
       text-align: center;
@@ -27,5 +34,12 @@
     .submit-button {
       margin-top: 10px;
     }
+  }
+}
+
+@media all and (min-width: 1500px) {
+  .sign-in-form > div {
+    min-width: 400px;
+    max-width: 450px;
   }
 }

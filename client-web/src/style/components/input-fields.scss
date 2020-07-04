@@ -12,8 +12,8 @@
 
   & > input, & > button {
     display: block;
-    width: 100%;
     font-size: 17px;
+    width: 100%;
     height: 48px;
     padding: 0 15px;
     border: 1px solid var(--input-border-color_default);
@@ -21,7 +21,7 @@
     box-shadow 0.15s ease-in-out;
     background: var(--main-bg-color);
     color: var(--main-text-color);
-    border-radius: 2px;
+    border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
   }
 
@@ -32,15 +32,22 @@
       outline: 0;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1),
       0 1px 2px rgba(0,0,0,0.06),
-      0 0 0 .2rem var(--primary-accent-color);
-      border-color: var(--primary-accent-color);
+      0 0 0 .2rem var(--input-border-color_focus);
+      border-color: var(--input-border-color_focus);
     }
 
     &:invalid, &.error {
       box-shadow: 0 1px 3px rgba(0,0,0,0.1),
       0 1px 2px rgba(0,0,0,0.06),
-      0 0 0 .2rem var(--secondary-accent-color);
-      border-color: var(--secondary-accent-color);
+      0 0 0 .2rem var(--input-border-color_error);
+      border-color: var(--input-border-color_error);
+
+      &:hover, &:focus {
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1),
+        0 1px 2px rgba(0,0,0,0.06),
+        0 0 0 .2rem var(--input-border-color_focus_error);
+        border-color: var(--input-border-color_focus_error);
+      }
     }
   }
 }
@@ -59,7 +66,7 @@
   }
 
   &:focus, &:active {
-    box-shadow: 0 0 0 .2rem var(--primary-accent-color);
+    box-shadow: 0 0 0 .2rem var(--input-border-color_focus);
   }
 
   &:active {
