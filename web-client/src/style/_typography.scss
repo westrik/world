@@ -187,6 +187,13 @@ hr {
   margin: 25px 0;
 }
 
+@media all and (max-width: 500px) {
+  h1.title {
+    font-size: 31px;
+    line-height: 48px;
+  }
+}
+
 @media all and (min-width: 550px) {
   .article {
     padding: 0 25px;

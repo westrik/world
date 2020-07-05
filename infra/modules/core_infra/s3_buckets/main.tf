@@ -28,7 +28,7 @@ resource "aws_s3_bucket" "app_deploy_cloudfront" {
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET"]
-    allowed_origins = ["http://westrik.world", "https://staging.westrikworld.com"]
+    allowed_origins = ["https://local.westrik.world", "https://staging.westrik.world"]
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }

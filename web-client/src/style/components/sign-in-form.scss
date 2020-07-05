@@ -12,8 +12,7 @@
   }
 
   & > div {
-    min-width: 30%;
-    max-width: 90%;
+    min-width: 85%;
     height: auto;
     margin: auto;
     position: relative;
@@ -37,9 +36,9 @@
   }
 }
 
-@media all and (min-width: 1500px) {
+@media all and (min-width: 520px) {
   .sign-in-form > div {
-    min-width: 400px;
-    max-width: 450px;
+    min-width: 0;
+    width: 450px;
   }
 }

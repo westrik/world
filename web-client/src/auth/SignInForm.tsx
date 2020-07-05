@@ -55,7 +55,7 @@ export function UnconnectedSignInForm({
                     </h1>
                     <EmailField
                         labelText="Email address"
-                        required={true}
+                        // required={true}
                         autoFocus={true}
                         onChange={(event: Event) => {
                             setEmail((event.target as HTMLInputElement).value);
@@ -63,6 +63,7 @@ export function UnconnectedSignInForm({
                     />
                     <PasswordField
                         labelText="Password"
+                        // required={true}
                         onChange={(event: Event) => {
                             setPassword((event.target as HTMLInputElement).value);
                         }}

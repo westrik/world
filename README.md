@@ -40,7 +40,7 @@ postgres=# \q
 ### Local setup
 
 ```sh
-~/world » echo "CORS_ORIGIN_URL=\"https://westrik.world\"" >> .env
+~/world » echo "CORS_ORIGIN_URL=\"https://local.westrik.world\"" >> .env
 ~/world » echo "PASSWORD_HASH_SALT=\"$(gpg --gen-random --armor 0 32)\"" >> .env
 ~/world »
 ~/world » # Generate self-signed certs
@@ -58,6 +58,8 @@ postgres=# \q
 ~/world » sudo nginx -t
 ~/world » sudo brew services restart nginx
 ```
+
+Then open [local.westrik.world](https://local.westrik.world) in your browser.
 
 
 ### Adding migrations
