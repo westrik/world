@@ -56,7 +56,7 @@ resource "aws_autoscaling_group" "app_blue" {
   }
 
   lifecycle {
-    create_before_destroy = true
+    create_before_destroy = false # true
   }
 
   tags = [

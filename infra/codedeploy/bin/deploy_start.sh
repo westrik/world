@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euxo pipefail
+set -euo pipefail
 
 SERVER_BIN_FILE=/usr/bin/api_server
 
@@ -12,4 +12,23 @@ systemctl enable secrets.service secrets.target secrets.timer
 systemctl enable app.service app.target
 systemctl enable nginx.service
 
-systemctl restart secrets app nginx
+if systemctl restart secrets; then
+  print "secrets restarted OK"
+else
+  print "secrets failed to restart"
+  systemctl status secrets
+fi
+
+if systemctl restart app; then
+  print "app restarted OK"
+else
+  print "app failed to restart"
+  systemctl status app
+fi
+
+if systemctl restart nginx; then
+  print "nginx restarted OK"
+else
+  print "nginx failed to restart"
+  systemctl status nginx
+fi
