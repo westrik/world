@@ -15,6 +15,10 @@ function test_service() {
 echo "waiting $INITIAL_SLEEP_TIME sec for services to start"
 sleep $INITIAL_SLEEP_TIME
 
+echo "service logs:"
+journalctl --no-pager -u app -b
+journalctl --no-pager -u nginx -b
+
 for i in $(seq 1 $TEST_ITERATIONS)
 do
   printf "making a request to %s... " "$TEST_URL"
@@ -28,9 +32,5 @@ do
 done
 
 echo "all requests failed"
-
-echo "service logs:"
-journalctl --no-pager -u app -b
-journalctl --no-pager -u nginx -b
 
 exit 1
