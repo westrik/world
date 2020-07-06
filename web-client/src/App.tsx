@@ -6,9 +6,10 @@ import { AdminAuthedRoute } from '~auth/AdminAuthedRoute';
 import { AuthProvider } from '~auth/AuthContext';
 import { AuthedRoute } from '~auth/AuthedRoute';
 import SignInForm from '~auth/SignInForm';
+import BranchList from '~branches/BranchList';
 import ErrorScreen from '~components/ErrorScreen';
 import Dashboard from '~dashboard/Dashboard';
-import MediaList from '~media/MediaList';
+import LibraryItemList from '~library/LibraryItemList';
 import Note from '~notes/Note';
 import NoteList from '~notes/NoteList';
 import TaskList from '~tasks/TaskList';
@@ -23,7 +24,8 @@ export default function App(): h.JSX.Element {
                 <AuthedRoute path="/notes" component={NoteList} />
                 <AuthedRoute path="/notes/new" component={Note} />
                 <AuthedRoute path="/notes/:strippedApiId" component={Note} />
-                <AuthedRoute path="/media" component={MediaList} />
+                <AuthedRoute path="/library" component={LibraryItemList} />
+                <AuthedRoute path="/branches" component={BranchList} />
                 <AdminAuthedRoute path="/users" component={UserList} />
                 <Route default component={ErrorScreen} />
             </Router>
