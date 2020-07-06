@@ -14,10 +14,10 @@ function test_service() {
 echo "waiting $INITIAL_SLEEP_TIME sec for services to start"
 sleep $INITIAL_SLEEP_TIME
 
-for i in $( eval echo {1..$TEST_ITERATIONS} )
+for i in $(seq 1 $TEST_ITERATIONS)
 do
   status_code=$(test_service $TEST_URL)
-  printf "making a request to $TEST_URL... "
+  printf "making a request to %s... " "$TEST_URL"
   if [[ status_code -eq 200 ]] ; then
     echo "succeeded"
     exit 0
