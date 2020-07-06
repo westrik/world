@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -euxo pipefail
 
 TEST_URL="http://localhost:8080/"
 TEST_ITERATIONS=5
@@ -12,8 +12,9 @@ function test_service() {
   curl -v "$1"
 }
 
-echo "waiting $INITIAL_SLEEP_TIME sec for services to start"
+echo "pausing $INITIAL_SLEEP_TIME sec to wait for services to start"
 sleep $INITIAL_SLEEP_TIME
+echo "done pausing"
 
 echo "service logs:"
 journalctl --no-pager -u app -b

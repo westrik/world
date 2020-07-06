@@ -42,5 +42,5 @@ variable "admin_email" {
 
 variable "num_app_instances" {
   type    = number
-  default = 2
+  default = 1
 }
