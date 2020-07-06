@@ -1,8 +1,9 @@
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
+use std::collections::HashMap;
 use std::fmt;
 
-#[derive(Debug)]
+#[derive(Debug, Eq, Hash, PartialEq)]
 pub enum ResourceType {
     User,
     Job,
@@ -12,16 +13,26 @@ pub enum ResourceType {
     Task,
     Tag,
     Link,
-    // Diagram,
-    // Image,
-    // Video,
+    Image,
+}
+
+lazy_static! {
+    static ref RESOURCE_TYPE_TO_PREFIX: HashMap<ResourceType, &'static str> = {
+        let mut m = HashMap::new();
+        m.insert(ResourceType::NoteVersion, "notev");
+        m.insert(ResourceType::Image, "img");
+        m
+    };
 }
 
 impl fmt::Display for ResourceType {
-    // TODO: write macro to add Debug and this impl
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let type_str = format!("{:?}", self);
-        write!(f, "{}", type_str.to_ascii_lowercase())
+        if let Some(prefix) = (*RESOURCE_TYPE_TO_PREFIX).get(self) {
+            write!(f, "{}", prefix)
+        } else {
+            write!(f, "{}", type_str.to_ascii_lowercase())
+        }
     }
 }
 
@@ -54,7 +65,7 @@ pub mod resource_identifiers {
             .is_match(&note_id));
 
         let note_version_id = generate_resource_identifier(NoteVersion);
-        assert!(Regex::new(r"^noteversion_[A-Za-z0-9]{8}$")
+        assert!(Regex::new(r"^notev_[A-Za-z0-9]{8}$")
             .unwrap()
             .is_match(&note_version_id));
 
@@ -72,6 +83,11 @@ pub mod resource_identifiers {
         assert!(Regex::new(r"^link_[A-Za-z0-9]{8}$")
             .unwrap()
             .is_match(&link_id));
+
+        let img_id = generate_resource_identifier(Image);
+        assert!(Regex::new(r"^img_[A-Za-z0-9]{8}$")
+            .unwrap()
+            .is_match(&img_id));
 
         let job_id = generate_resource_identifier(Job);
         assert!(Regex::new(r"^job_[A-Za-z0-9]{8}$")
