@@ -1,10 +1,10 @@
 name: Release
-on: push
-        #   push:
-        #     tags:
-        #       - v*
-        #   release:
-        #     types: [created, edited, published]
+on:
+   push:
+     tags:
+       - v*
+   release:
+     types: [created, edited, published]
  
 jobs:
   deploy-aws:
