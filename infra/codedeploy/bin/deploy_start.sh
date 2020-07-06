@@ -13,3 +13,8 @@ chown root:root $SERVER_BIN_FILE
 chmod 755 $SERVER_BIN_FILE
 
 systemctl restart secrets app nginx
+
+sleep 3
+systemctl status secrets
+systemctl status app
+systemctl status nginx
