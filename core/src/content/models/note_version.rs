@@ -17,8 +17,7 @@ pub struct NoteVersion {
     pub note_id: i32,
     #[serde(rename = "createdAt")]
     pub created_at: DateTime<Utc>,
-    #[serde(rename = "updatedAt")]
-    pub updated_at: DateTime<Utc>,
+    pub content: serde_json::Value,
 }
 
 #[derive(Insertable, Debug)]
@@ -26,6 +25,7 @@ pub struct NoteVersion {
 struct NoteVersionCreateSpec {
     pub api_id: String,
     pub note_id: i32,
+    pub content: serde_json::Value,
 }
 impl NoteVersionCreateSpec {
     pub fn insert(&self, conn: &PgConnection) -> Result<NoteVersion, ApiError> {
@@ -38,10 +38,11 @@ impl NoteVersionCreateSpec {
 }
 
 impl NoteVersion {
-    pub fn create(conn: &PgConnection, note: &Note) -> Result<NoteVersion, ApiError> {
+    pub fn create(conn: &PgConnection, note_id: i32, content: serde_json::Value) -> Result<NoteVersion, ApiError> {
         NoteVersionCreateSpec {
-            note_id: note.id,
+            note_id,
             api_id: generate_resource_identifier(ResourceType::NoteVersion),
+            content,
         }
         .insert(conn)
     }

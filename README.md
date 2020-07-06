@@ -69,9 +69,10 @@ Then open [local.westrik.world](https://local.westrik.world) in your browser.
 cargo install diesel_cli --no-default-features --feature postgres
 ```
 
-Generate `up.sql` and `down.sql` in a new sub-folder.
+Generate `up.sql` and `down.sql` in a new sub-folder of `core/migrations`.
 
 ```sh
+cd core
 diesel migration generate create_users
 ```
 

@@ -1,7 +1,6 @@
 use crate::auth::models::session::Session;
 use crate::content::models::note::{Note, NoteSummary};
 use crate::content::parsing::parse_markdown_content;
-use crate::content::schema::Content;
 use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
 use crate::utils::list_options::ListOptions;
