@@ -13,7 +13,3 @@ systemctl enable app.service app.target
 systemctl enable nginx.service
 
 systemctl restart secrets app nginx
-
-sleep 3
-systemctl status app
-systemctl status nginx
