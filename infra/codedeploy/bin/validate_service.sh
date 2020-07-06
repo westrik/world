@@ -11,13 +11,18 @@ function test_service() {
   curl --silent --output /dev/null --write-out "%{http_code}" "$1"
 }
 
-echo "waiting $INITIAL_SLEEP_TIME sec for services to start"
+echo "pausing $INITIAL_SLEEP_TIME sec to wait for services to start"
 sleep $INITIAL_SLEEP_TIME
+echo "done pausing"
 
-for i in $( eval echo {1..$TEST_ITERATIONS} )
+echo "service logs:"
+journalctl --no-pager -u app -b
+journalctl --no-pager -u nginx -b
+
+for i in $(seq 1 $TEST_ITERATIONS)
 do
+  printf "making a request to %s... " "$TEST_URL"
   status_code=$(test_service $TEST_URL)
-  printf "making a request to $TEST_URL... "
   if [[ status_code -eq 200 ]] ; then
     echo "succeeded"
     exit 0
@@ -27,9 +32,5 @@ do
 done
 
 echo "all requests failed"
-
-echo "service logs:"
-journalctl --no-pager -u app -b
-journalctl --no-pager -u nginx -b
 
 exit 1

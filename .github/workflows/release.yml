@@ -1,11 +1,11 @@
 name: Release
 on:
-  push:
-    tags:
-      - v*
-  release:
-    types: [created, edited, published]
-
+   push:
+     tags:
+       - v*
+   release:
+     types: [created, edited, published]
+ 
 jobs:
   deploy-aws:
     name: deploy to AWS
