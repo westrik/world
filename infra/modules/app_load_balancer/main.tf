@@ -111,7 +111,7 @@ data "aws_lambda_invocation" "renew_certificate" {
 
   input = <<JSON
 {
-  "domains": ["${var.api_domain_name}"],
+  "domains": ["${var.api_domain_name}", "${var.api_alternate_domain_name}"],
   "email": "${var.admin_email}",
   "secret_id": "${aws_secretsmanager_secret.api_cert.name}"
 }

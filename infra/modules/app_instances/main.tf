@@ -24,11 +24,17 @@ data "aws_ami" "app" {
   }
 }
 
+resource "aws_key_pair" "test_key" {
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC8u441SFCy5higGr/0mWsSfGsiJyzpouDvcVW6WO8tNqC24DCnVF8LOfGZvFH2bWNCrFFeMwj3PCd3B6CeLuGP3iLE5WLZqutb6+ca8/hrYlwSF1hzt451k5/4tXL5O1rRkmVbosmjjuJzm/vib9nDHeF8ebXabSBjvE+V8nhj26UpOoheSYTc3XDzkbDJuOj1wSSrirfMsZVVse9GgSzOMdZVVjrheZAUPxMFKbEZEL0ZIkr4DIDld78UyU7ZPsLJoZjRK+MzEFwjyZ/TNjIsvn6rgaCM+MFFeHXc2z1yG60Tv8trtPLu7KHpTcSrVVo2DUEUlbR32uQ86MvFCS4B4OfWW+cDTbYBw+5wjUkhwg6AvmvcU7Ix4N4vosSq+ny/Sj/LbxmmE4QL1r8ZUUQ+3AqtA2O0MCuzdQtt1pQDCur9v+PD5lF411KT4BsG/me+GW4xiAbJSXpzhfTgu/gsjzbIbet8onzC7+naofgRdbB0kLJEco3/2hIgHLXdVCM="
+}
+
 resource "aws_launch_template" "app_blue" {
   name_prefix            = "${var.project_name}-app-${var.deploy_name}-blue-"
   image_id               = data.aws_ami.app.id
   instance_type          = "t3a.micro"
   vpc_security_group_ids = var.app_security_group_ids
+
+  key_name = aws_key_pair.test_key.key_name
 
   # TODO: make sure EBS volume is encrypted
 
@@ -37,7 +43,8 @@ resource "aws_launch_template" "app_blue" {
   }
 
   lifecycle {
-    create_before_destroy = true
+    // create_before_destroy = true
+    create_before_destroy = false
   }
 }
 

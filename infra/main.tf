@@ -81,12 +81,13 @@ module "app_load_balancer" {
   aws_az1    = var.aws_az1
   aws_az2    = var.aws_az2
 
-  project_name     = var.project_name
-  project_slug     = var.project_slug
-  deploy_name      = var.deploy_name
-  root_domain_name = var.root_domain_name
-  api_domain_name  = var.api_domain_name
-  admin_email      = var.admin_email
+  project_name              = var.project_name
+  project_slug              = var.project_slug
+  deploy_name               = var.deploy_name
+  root_domain_name          = var.root_domain_name
+  api_domain_name           = var.api_domain_name
+  api_alternate_domain_name = var.api_alternate_domain_name
+  admin_email               = var.admin_email
 
   app_vpc_id             = module.core_infra.app_vpc_id
   app_security_group_ids = module.core_infra.app_security_group_ids

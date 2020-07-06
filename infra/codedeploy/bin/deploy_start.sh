@@ -16,19 +16,19 @@ if systemctl restart secrets; then
   echo "secrets restarted OK"
 else
   echo "secrets failed to restart"
-  systemctl status secrets
+  journalctl --no-pager -u secrets -b
 fi
 
 if systemctl restart app; then
   echo "app restarted OK"
 else
   echo "app failed to restart"
-  systemctl status app
+  journalctl --no-pager -u app -b
 fi
 
 if systemctl restart nginx; then
   echo "nginx restarted OK"
 else
   echo "nginx failed to restart"
-  systemctl status nginx
+  journalctl --no-pager -u nginx -b
 fi

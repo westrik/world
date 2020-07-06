@@ -31,6 +31,10 @@ variable "api_domain_name" {
   default = "api.westrikworld.com"
 }
 
+variable "api_alternate_domain_name" {
+  default = "api.westrik.world"
+}
+
 variable "root_domain_name" {
   default = "westrikworld.com"
 }
@@ -42,5 +46,5 @@ variable "admin_email" {
 
 variable "num_app_instances" {
   type    = number
-  default = 1
+  default = 2
 }

@@ -8,8 +8,7 @@ INITIAL_SLEEP_TIME=10
 REQUEST_SLEEP_TIME=2
 
 function test_service() {
-  # curl --silent --output /dev/null --write-out "%{http_code}" "$1"
-  curl -v "$1"
+  curl --silent --output /dev/null --write-out "%{http_code}" "$1"
 }
 
 echo "pausing $INITIAL_SLEEP_TIME sec to wait for services to start"
