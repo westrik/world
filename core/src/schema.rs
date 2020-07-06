@@ -73,11 +73,4 @@ joinable!(notes -> users (user_id));
 joinable!(sessions -> users (user_id));
 joinable!(tasks -> users (user_id));
 
-allow_tables_to_appear_in_same_query!(
-    jobs,
-    note_versions,
-    notes,
-    sessions,
-    tasks,
-    users,
-);
+allow_tables_to_appear_in_same_query!(jobs, note_versions, notes, sessions, tasks, users,);

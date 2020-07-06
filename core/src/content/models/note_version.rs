@@ -38,7 +38,11 @@ impl NoteVersionCreateSpec {
 }
 
 impl NoteVersion {
-    pub fn create(conn: &PgConnection, note_id: i32, content: serde_json::Value) -> Result<NoteVersion, ApiError> {
+    pub fn create(
+        conn: &PgConnection,
+        note_id: i32,
+        content: serde_json::Value,
+    ) -> Result<NoteVersion, ApiError> {
         NoteVersionCreateSpec {
             note_id,
             api_id: generate_resource_identifier(ResourceType::NoteVersion),

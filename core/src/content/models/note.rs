@@ -2,13 +2,13 @@ use chrono::{DateTime, Utc};
 
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
+use crate::content::models::note_version::NoteVersion;
+use crate::db::{begin_txn, commit_txn, rollback_txn};
 use crate::errors::ApiError;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{notes, notes::dsl::notes as all_notes};
 use crate::utils::mnemonic::{generate_mnemonic, DEFAULT_MNEMONIC_LENGTH};
 use diesel::prelude::*;
-use crate::db::{begin_txn, commit_txn, rollback_txn};
-use crate::content::models::note_version::NoteVersion;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(User)]
@@ -124,7 +124,9 @@ impl Note {
                 } else {
                     // TODO: handle failure
                     rollback_txn(conn).unwrap();
-                    Err(ApiError::InternalError("Failed to create note version".to_string()))
+                    Err(ApiError::InternalError(
+                        "Failed to create note version".to_string(),
+                    ))
                 }
             } else {
                 Ok(created_note)
