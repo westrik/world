@@ -8,7 +8,6 @@ import LoadingSpinner from '~components/LoadingSpinner';
 import Header from '~components/Header';
 import { Note } from '~models/Note';
 import listNotes from '~notes/listNotes';
-import NoteTile from '~notes/NoteTile';
 
 export default function NoteList(): h.JSX.Element {
     const [noteSummaries, setNotes] = useState<Array<Note> | null>(null);
@@ -33,7 +32,7 @@ export default function NoteList(): h.JSX.Element {
                 <ListContainer className="notes">
                     {noteSummaries.map((note, key) => (
                         <li draggable={true} className="note-item" key={key}>
-                            <NoteTile note={note} />
+                            {note.apiId}
                         </li>
                     ))}
                 </ListContainer>
