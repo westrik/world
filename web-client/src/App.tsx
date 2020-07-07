@@ -7,7 +7,7 @@ import { AuthProvider } from '~auth/AuthContext';
 import { AuthedRoute } from '~auth/AuthedRoute';
 import SignInForm from '~auth/SignInForm';
 import BranchList from '~branches/BranchList';
-import ComponentLibraryPreview from "~components/previews/ComponentLibraryPreview";
+import ComponentLibraryPreview from '~components/previews/ComponentLibraryPreview';
 import ErrorScreen from '~components/ErrorScreen';
 import Dashboard from '~dashboard/Dashboard';
 import LibraryItemList from '~library/LibraryItemList';

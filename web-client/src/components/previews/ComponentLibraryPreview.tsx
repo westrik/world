@@ -1,5 +1,5 @@
-import {h} from "preact";
+import { h } from 'preact';
 
 export default function ComponentLibraryPreview(): h.JSX.Element {
-    return <div>Hello world!</div>
+    return <div>Hello world!</div>;
 }
