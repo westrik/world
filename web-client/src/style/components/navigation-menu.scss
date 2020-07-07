@@ -17,6 +17,7 @@ header {
 .brand {
   font-weight: 900;
   text-transform: uppercase;
+  line-height: 47px;
   width: auto;
   float: left;
   z-index: 5;
@@ -126,7 +127,7 @@ header {
     position: absolute;
     top: 0;
     right: 0;
-    line-height: 60px;
+    line-height: 50px;
     cursor: pointer;
   }
 
