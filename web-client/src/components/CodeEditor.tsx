@@ -1,5 +1,10 @@
 import { h } from 'preact';
-import { useEffect } from 'preact/hooks';
+import * as CodeMirror from 'codemirror';
+import 'codemirror/mode/markdown/markdown';
+import 'codemirror/keymap/vim';
+
+import { useEffect, useRef, useState } from 'preact/hooks';
+import { EditorFromTextArea } from 'codemirror';
 
 export enum EditorLanguage {
     MARKDOWN = 'markdown',
@@ -10,17 +15,28 @@ interface CodeEditorProps {
 }
 
 export default function CodeEditor(props: CodeEditorProps): h.JSX.Element {
-    useEffect(() => {
-        // TODO: set up CodeMirror
+    const textareaNode = useRef<HTMLTextAreaElement>(null);
+    const [codeMirror, setCodeMirror] = useState<EditorFromTextArea | null>(null);
 
-        return () => {
-            // TODO: tear down CodeMirror
-        };
-    }, []);
+    useEffect(() => {
+        if (codeMirror) {
+            return () => {
+                codeMirror.toTextArea();
+            };
+        } else {
+            setCodeMirror(
+                CodeMirror.fromTextArea(textareaNode.current, {
+                    lineNumbers: true,
+                    mode: props.language,
+                    keyMap: 'vim',
+                }),
+            );
+        }
+    }, [codeMirror]);
 
     return (
         <div className="code-editor">
-            <textarea data-language={props.language}>Hello world!</textarea>
+            <textarea ref={textareaNode}>Hello world!</textarea>
         </div>
     );
 }
