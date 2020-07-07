@@ -31,6 +31,42 @@
   --box-shadow-color: transparent;
   --note-bg-color: hsl(311, 63%, 86%);
   --note-shadow-color: transparent;
+
+  // ------ Apple colors: ------
+  --rgb-color-red: #FF3B30;
+  --color-red: hsl(3, 100%, 59.4%);
+  --rgb-color-orange: #FF9500;
+  --color-orange: hsl(35, 100%, 50%);
+  --rgb-color-yellow: #FFCC00;
+  --color-yellow: hsl(48, 100%, 50%);
+  --rgb-color-green: #34C759;
+  --color-green: hsl(135, 58.6%, 49.2%);
+  --rgb-color-teal: #5AC8FA;
+  --color-teal: hsl(198, 94.1%, 66.7%);
+  --rgb-color-blue: #007AFF;
+  --color-blue: hsl(211, 100%, 50%);
+  --rgb-color-indigo: #5856D6;
+  --color-indigo: hsl(240, 61%, 58.8%);
+  --rgb-color-purple: #AF52DE;
+  --color-purple: hsl(279, 68%, 59.6%);
+  --rgb-color-pink: #FF2D55;
+  --color-pink: hsl(348, 100%, 58.8%);
+
+  --rgb-color-grey: #8E8E93;
+  --color-grey: hsl(240,2.3%,56.7%);
+  --rgb-color-grey2: #AEAEB2;
+  --color-grey2: hsl(240,2.5%,69%);
+  --rgb-color-grey3: #C7C7CC;
+  --color-grey3: hsl(240,4.7%,79%);
+  --rgb-color-grey4: #D1D1D6;
+  --color-grey4: hsl(240,5.7%,82.9%);
+  --rgb-color-grey5: #E5E5EA;
+  --color-grey5: hsl(240,10.6%,90.8%);
+  --rgb-color-grey6: #F2F2F7;
+  --color-grey6: hsl(240,23.8%,95.9%);
+
+  --color-material-primary: #6505EE;
+  --color-material-secondary: #07868A;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -67,6 +103,42 @@
     --box-shadow-color: hsl(170, 61%, 65%);
     --note-bg-color: #222;
     --note-shadow-color: hsl(311, 63%, 65%);
+
+    // ------ Apple colors: ------
+    --rgb-color-red: #FF3B30;
+    --color-red: hsl(3, 100%, 59.4%);
+    --rgb-color-orange: #FF9F0A;
+    --color-orange: hsl(36, 100%, 52%);
+    --rgb-color-yellow: #FFD60A;
+    --color-yellow: hsl(50, 100%, 52%);
+    --rgb-color-green: #32D74B;
+    --color-green: hsl(129, 67.3%, 52%);
+    --rgb-color-teal: #64D2FF;
+    --color-teal: hsl(197, 100%, 69.6%);
+    --rgb-color-blue: #0A84FF;
+    --color-blue: hsl(210, 100%, 52%);
+    --rgb-color-indigo: #5E5CE6;
+    --color-indigo: hsl(240, 73.4%, 63.1%);
+    --rgb-color-purple: #BF5AF2;
+    --color-purple: hsl(279, 85.4%, 65.1%);
+    --rgb-color-pink: #FF375F;
+    --color-pink: hsl(348, 100%, 60.8%);
+
+    --rgb-color-grey: #8E8E93;
+    --color-grey: hsl(240, 2.3%, 56.7%);
+    --rgb-color-grey2: #636366;
+    --color-grey2: hsl(240, 1.5%, 39.4%);
+    --rgb-color-grey3: #48484A;
+    --color-grey3: hsl(240, 1.4%, 28.6%);
+    --rgb-color-grey4: #3A3A3C;
+    --color-grey4: hsl(240, 1.7%, 23.1%);
+    --rgb-color-grey5: #2C2C2E;
+    --color-grey5: hsl(240, 2.2%, 17.6%);
+    --rgb-color-grey6: #1C1C1E;
+    --color-grey6: hsl(240, 3.4%, 11.4%);
+
+    --color-material-primary: #BA85FC;
+    --color-material-secondary: #03DAC6;
   }
 }
 
