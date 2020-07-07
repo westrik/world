@@ -1,10 +1,9 @@
-import { h } from 'preact';
 import * as CodeMirror from 'codemirror';
+import { EditorFromTextArea } from 'codemirror';
 import 'codemirror/mode/markdown/markdown';
 import 'codemirror/keymap/vim';
-
+import { h } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
-import { EditorFromTextArea } from 'codemirror';
 
 export enum EditorLanguage {
     MARKDOWN = 'markdown',
