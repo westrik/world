@@ -7,7 +7,7 @@
     "start": "yarn parcel src/index.html",
     "build": "yarn parcel build src/index.html",
     "lint": "yarn lint:ts;yarn lint:style",
-    "lint:ts": "yarn eslint . --ext .ts,.tsx",
+    "lint:ts": "yarn eslint . --ext .ts,.tsx --max-warnings=0",
     "lint:style": "yarn stylelint src/**/*.scss",
     "fix": "yarn lint:ts --fix;yarn lint:style --fix",
     "test": "yarn mocha -r ts-node/register -r tsconfig-paths/register -r tests/setup.js tests/{**/,}*-test.ts{,x}",
