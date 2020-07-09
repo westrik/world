@@ -2,11 +2,11 @@ import { h } from 'preact';
 
 import NavBar from './NavBar';
 
-interface Props {
+interface AppContainerProps {
     children: h.JSX.Element | Array<h.JSX.Element>;
 }
 
-function Container(props: Props): h.JSX.Element {
+export default function AppContainer(props: AppContainerProps): h.JSX.Element {
     return (
         <div className="app-container">
             <NavBar />
@@ -15,5 +15,3 @@ function Container(props: Props): h.JSX.Element {
         </div>
     );
 }
-
-export default Container;

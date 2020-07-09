@@ -1,11 +1,11 @@
 import { h } from 'preact';
 
-import Container from '~components/Container';
+import AppContainer from '~components/AppContainer';
 
 export default function Dashboard(): h.JSX.Element {
     return (
-        <Container>
+        <AppContainer>
             <span>dashboard goes here</span>
-        </Container>
+        </AppContainer>
     );
 }

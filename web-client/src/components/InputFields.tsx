@@ -16,7 +16,7 @@ interface FieldProps {
     autoFocus?: boolean;
 }
 
-function InputField(props: FieldProps & { type: FieldType }) {
+function InputField(props: FieldProps & { type: FieldType }): h.JSX.Element {
     const fieldId = randomIdentifier();
     return (
         <fieldset className={`${props.type}-field`}>
@@ -28,7 +28,7 @@ function InputField(props: FieldProps & { type: FieldType }) {
                 placeholder={props.placeholderText}
                 required={props.required}
                 autoFocus={props.autoFocus}
-                onChange={(event) => props.onChange(event)}
+                onChange={(event): void => props.onChange(event)}
             />
         </fieldset>
     );

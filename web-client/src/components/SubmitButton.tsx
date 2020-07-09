@@ -13,7 +13,7 @@ export default function SubmitButton(props: SubmitButtonProps): h.JSX.Element {
                 type="submit"
                 tabIndex={0}
                 disabled={props.disabled}
-                onClick={(event) => props.onButtonPress(event)}
+                onClick={(event): void => props.onButtonPress(event)}
             >
                 {props.text}
             </button>

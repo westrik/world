@@ -1,6 +1,5 @@
 import { h } from 'preact';
 import { Link } from 'preact-router/match';
-import { route } from 'preact-router';
 import { useContext } from 'preact/hooks';
 
 import Auth from '~auth/AuthContext';

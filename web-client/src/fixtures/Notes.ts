@@ -75,8 +75,9 @@ export const NOTE_FIXTURE: Note = {
     updatedAt: new Date('2020-03-12T05:28:44.562426Z'),
     content: {
         elements: [
-            createHeader(HeaderType.H1, 'Test document'),
-            createHeader(HeaderType.H2, 'sub-heading'),
+            createHeader(HeaderType.H1, 'Example of headline level one'),
+            createHeader(HeaderType.H2, 'Headline level two'),
+            createHeader(HeaderType.H3, 'Headline level three'),
             createParagraph([
                 createText(
                     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
@@ -99,6 +100,7 @@ export const NOTE_FIXTURE: Note = {
                     ' dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ',
                 ),
             ]),
+            createHeader(HeaderType.H4, 'Headline level four'),
             createParagraph([
                 createImage({
                     destinationUrl: 'https://placedog.net/1000',
@@ -106,6 +108,7 @@ export const NOTE_FIXTURE: Note = {
                     type: LinkType.Inline,
                 }),
             ]),
+            createHeader(HeaderType.H5, 'Headline level five'),
             createList(
                 {
                     numberOfFirstItem: null,
@@ -115,6 +118,7 @@ export const NOTE_FIXTURE: Note = {
                     createListItem([createTaskListMarker(true), createText('world')]),
                 ],
             ),
+            createHeader(HeaderType.H6, 'Headline level six'),
             {
                 children: [
                     {

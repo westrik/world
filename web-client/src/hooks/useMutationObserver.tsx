@@ -25,6 +25,6 @@ export default function useMutationObserver(
             observer.disconnect();
         }
 
-        return () => observer.disconnect();
+        return (): void => observer.disconnect();
     }, [isActive, observer]);
 }

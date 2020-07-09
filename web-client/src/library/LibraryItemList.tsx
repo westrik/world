@@ -1,12 +1,12 @@
 import { h } from 'preact';
 
-import Container from '~components/Container';
+import AppContainer from '~components/AppContainer';
 
 function LibraryItemList(): h.JSX.Element {
     return (
-        <Container>
+        <AppContainer>
             <div>library goes here</div>
-        </Container>
+        </AppContainer>
     );
 }
 

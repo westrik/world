@@ -1,18 +1,18 @@
 import { h } from 'preact';
 
 import CodeEditor, { EditorLanguage } from '~components/CodeEditor';
-import Container from '~components/Container';
+import PageContainer from '~components/PageContainer';
 import Sheet from '~components/Sheet';
 
-export default { title: 'Code Editor' };
+export default { title: 'Markdown Editor' };
 
 export function normal(): h.JSX.Element {
     return (
-        <Container>
+        <PageContainer>
             <Sheet>
-                <h1>Code Editor</h1>
-                <CodeEditor language={EditorLanguage.MARKDOWN} />
+                <h1>Markdown Editor</h1>
+                <CodeEditor language={EditorLanguage.MARKDOWN} content={'# Hello world\nthis is a note'} />
             </Sheet>
-        </Container>
+        </PageContainer>
     );
 }

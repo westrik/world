@@ -2,10 +2,9 @@ import { h } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
 
 import Auth from '~auth/AuthContext';
-import Container from '~components/Container';
+import AppContainer from '~components/AppContainer';
 import ListContainer from '~components/ListContainer';
 import LoadingSpinner from '~components/LoadingSpinner';
-import Header from '~components/Header';
 import { Note } from '~models/Note';
 import listNotes from '~notes/listNotes';
 
@@ -26,8 +25,7 @@ export default function NoteList(): h.JSX.Element {
     });
 
     return (
-        <Container>
-            <Header title="notes" fixed={true} />
+        <AppContainer>
             {noteSummaries ? (
                 <ListContainer className="notes">
                     {noteSummaries.map((note, key) => (
@@ -39,6 +37,6 @@ export default function NoteList(): h.JSX.Element {
             ) : (
                 <LoadingSpinner />
             )}
-        </Container>
+        </AppContainer>
     );
 }

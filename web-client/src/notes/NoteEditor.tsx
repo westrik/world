@@ -1,14 +1,14 @@
 import { h } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
-import { ApiNote, Content, Element } from '~/models/Note';
-import ContentElement from '~/notes/ContentElement';
-import Container from '~components/Container';
-import Header from '~components/Header';
+
 import Auth from '~auth/AuthContext';
+import AppContainer from '~components/AppContainer';
 import LoadingSpinner from '~components/LoadingSpinner';
-import fetchNote from '~notes/fetchNote';
-import Editing from '~notes/EditingContext';
 import useMutationObserver from '~hooks/useMutationObserver';
+import { ApiNote, Content, Element } from '~models/Note';
+import fetchNote from '~notes/fetchNote';
+import ContentElement from '~notes/ContentElement';
+import Editing from '~notes/EditingContext';
 import { randomIdentifier } from '~utils/identifier';
 
 interface Props {
@@ -19,16 +19,17 @@ export default function NoteEditor(props: Props): h.JSX.Element {
     const [content, setContent] = useState<Content | null>(null);
     const authContext = useContext(Auth);
     const editingContext = useContext(Editing);
-    const [isMutationObserverActive, setIsMutationObserverActive] = useState(true);
     const editorId = `editor-${randomIdentifier()}`;
 
-    useMutationObserver(isMutationObserverActive, editorId, (mutations: Array<MutationRecord>) => {
+    useMutationObserver(true, editorId, (mutations: Array<MutationRecord>) => {
         // TODO: apply mutations to `content`
         // TODO: then call `setContent`
         // TODO: then call debounced DAO helper to sync w/ server
 
         console.log(`got ${mutations.length} mutations`);
         for (const mutation of mutations) {
+            // TODO: fix type for this object
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const mutationData: any = {
                 type: mutation.type,
                 oldValue: mutation.oldValue,
@@ -67,13 +68,7 @@ export default function NoteEditor(props: Props): h.JSX.Element {
     });
 
     return (
-        <Container>
-            <Header
-                title={`${props.strippedApiId ? props.strippedApiId : 'new document'}`}
-                fixed={true}
-                backLink="/notes"
-                backLinkTitle="notes"
-            />
+        <AppContainer>
             <div className="textEditor">
                 {content ? (
                     <div id={editorId} className="elements" contentEditable={editingContext.isEditing} tabIndex={0}>
@@ -85,6 +80,6 @@ export default function NoteEditor(props: Props): h.JSX.Element {
                     <LoadingSpinner />
                 )}
             </div>
-        </Container>
+        </AppContainer>
     );
 }

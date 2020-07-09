@@ -2,14 +2,12 @@ import { h } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
 
 import Auth from '~auth/AuthContext';
-import Container from '~components/Container';
-import Header from '~components/Header';
+import AppContainer from '~components/AppContainer';
 import ListContainer from '~components/ListContainer';
 import LoadingSpinner from '~components/LoadingSpinner';
 import { ApiTask, Task } from '~models/Task';
 
 import listTasks from './listTasks';
-import NewTaskForm from './NewTaskForm';
 import TaskRow from './TaskRow';
 
 function TaskList(): h.JSX.Element {
@@ -53,16 +51,7 @@ function TaskList(): h.JSX.Element {
     // TODO: set up keyboard event handlers (up/down, etc.)
 
     return (
-        <Container>
-            <Header title="tasks" fixed={true}>
-                <button type="button" className="btn btn-sm btn-outline-secondary">
-                    show completed
-                </button>
-                <button type="button" className="btn btn-sm btn-outline-secondary">
-                    generate report
-                </button>
-            </Header>
-
+        <AppContainer>
             {tasks ? (
                 <ListContainer className="tasks">
                     {tasks.map((task: Task, key: number) => (
@@ -81,7 +70,7 @@ function TaskList(): h.JSX.Element {
             ) : (
                 <LoadingSpinner />
             )}
-        </Container>
+        </AppContainer>
     );
 }
 

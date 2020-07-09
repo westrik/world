@@ -11,6 +11,7 @@ export enum EditorLanguage {
 
 interface CodeEditorProps {
     language?: EditorLanguage;
+    content?: string;
 }
 
 export default function CodeEditor(props: CodeEditorProps): h.JSX.Element {
@@ -19,7 +20,7 @@ export default function CodeEditor(props: CodeEditorProps): h.JSX.Element {
 
     useEffect(() => {
         if (codeMirror) {
-            return () => {
+            return (): void => {
                 codeMirror.toTextArea();
             };
         } else {
@@ -35,7 +36,7 @@ export default function CodeEditor(props: CodeEditorProps): h.JSX.Element {
 
     return (
         <div className="code-editor">
-            <textarea ref={textareaNode}>Hello world!</textarea>
+            <textarea ref={textareaNode}>{props.content}</textarea>
         </div>
     );
 }

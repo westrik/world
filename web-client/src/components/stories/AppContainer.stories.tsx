@@ -1,16 +1,16 @@
 import { h } from 'preact';
-import Container from '~components/Container';
+import AppContainer from '~components/AppContainer';
 import ListContainer from '~components/ListContainer';
 
-export default { title: 'Container' };
+export default { title: 'App Container' };
 
 export function normal(): h.JSX.Element {
     return (
-        <Container>
+        <AppContainer>
             <ListContainer>
                 <li>Hello</li>
                 <li>World</li>
             </ListContainer>
-        </Container>
+        </AppContainer>
     );
 }

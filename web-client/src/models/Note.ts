@@ -1,7 +1,6 @@
 import { Tag } from './Tag';
 import { Resource } from './Resource';
 import { ApiResponse } from '~utils/network';
-import { h } from 'preact';
 
 export interface ApiNoteResponse extends ApiResponse {
     note: Note | null;

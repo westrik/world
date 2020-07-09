@@ -2,6 +2,8 @@ import { h } from 'preact';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
 
+// This import needs to be in at least one test file (✨ to make Enzyme + TypeScript play nice)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Config from '~config';
 import TaskRow from '~tasks/TaskRow';
 import { API_TASKS } from '~fixtures/Tasks';

@@ -1,6 +1,9 @@
 .sheet-container {
+  display: flex;
   max-width: 90%;
   margin: 0 auto;
+
+  flex-direction: column;
 
   // TODO: more styling
 }

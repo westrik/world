@@ -1,13 +1,12 @@
 import { h } from 'preact';
 
-import Container from '~components/Container';
-import Header from '~components/Header';
+import AppContainer from '~components/AppContainer';
 
 function UserList(): h.JSX.Element {
     return (
-        <Container>
-            <Header title="users" fixed={false} />
-        </Container>
+        <AppContainer>
+            <div>admin user list goes here</div>
+        </AppContainer>
     );
 }
 

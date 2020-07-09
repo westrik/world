@@ -1,12 +1,12 @@
 import { h } from 'preact';
 
-import Container from '~components/Container';
+import AppContainer from '~components/AppContainer';
 
 function BranchList(): h.JSX.Element {
     return (
-        <Container>
+        <AppContainer>
             <div>branches go here</div>
-        </Container>
+        </AppContainer>
     );
 }
 

@@ -1,6 +1,5 @@
 import { h } from 'preact';
 import Button, { ButtonSize } from '~components/Button';
-import { createPopper } from '@popperjs/core';
 import Popover from '~components/Popover';
 
 export default { title: 'Button' };
@@ -42,7 +41,7 @@ export function normal(): h.JSX.Element {
 }
 
 export function withPopover(): h.JSX.Element {
-    const showPopper = () => {
+    const showPopper = (): void => {
         console.log('TODO: show popper');
     };
     return (

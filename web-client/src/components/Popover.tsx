@@ -1,7 +1,7 @@
-import { h, RefObject } from 'preact';
+import { h } from 'preact';
 import { Manager, Popper, Reference } from 'react-popper';
 import { ReactText } from 'react';
-import PopperButton, { ButtonProps } from '~components/Button';
+import { ButtonProps } from '~components/Button';
 import noop from '~utils/noop';
 
 interface Props {
@@ -13,7 +13,7 @@ type Styles = { [key: string]: ReactText };
 export function PopoverButton(props: ButtonProps): h.JSX.Element {
     return (
         <Reference>
-            {({ ref }) => (
+            {({ ref }): h.JSX.Element => (
                 <button
                     ref={ref!}
                     disabled={props.disabled}
@@ -27,14 +27,14 @@ export function PopoverButton(props: ButtonProps): h.JSX.Element {
     );
 }
 
-export default function Popover(props: Props) {
+export default function Popover(props: Props): h.JSX.Element {
     return (
         <Manager>
             <PopoverButton title="lol button" />
             <Popper placement="top-end">
-                {({ ref, style, placement, arrowProps }) => (
+                {({ ref, style, placement, arrowProps }): h.JSX.Element => (
                     <div ref={ref!} style={style as Styles} data-placement={placement}>
-                        Popper element
+                        {props.children}
                         <div ref={arrowProps.ref!} style={arrowProps.style as Styles} />
                     </div>
                 )}

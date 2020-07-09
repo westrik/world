@@ -49,28 +49,26 @@ export function UnconnectedSignInForm({
                 ) : null}
                 {isLoading ? <LoadingSpinner className="fade-in" /> : null}
                 <form className={isLoading ? 'fade-out' : 'fade-in'}>
-                    <h1 className="title">
+                    <h1>
                         <span className="sr-only">Sign-in for</span>
                         {SITE_NAME}
                     </h1>
                     <EmailField
                         labelText="Email address"
-                        // required={true}
                         autoFocus={true}
-                        onChange={(event: Event) => {
+                        onChange={(event: Event): void => {
                             setEmail((event.target as HTMLInputElement).value);
                         }}
                     />
                     <PasswordField
                         labelText="Password"
-                        // required={true}
-                        onChange={(event: Event) => {
+                        onChange={(event: Event): void => {
                             setPassword((event.target as HTMLInputElement).value);
                         }}
                     />
                     <Toggle
                         labelText="Remember me"
-                        onChange={(event) => {
+                        onChange={(event): void => {
                             setRemember((event.target as HTMLInputElement).checked);
                         }}
                     />
