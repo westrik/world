@@ -7,6 +7,7 @@ apt-get update
 apt-get install -y sudo curl
 # install rust toolchain
 rustup default nightly
+rustup component add clippy
 # other toolchain dependencies
 apt-get install -y build-essential
 # postgres dependencies (needed to build diesel w/ pg enabled)
