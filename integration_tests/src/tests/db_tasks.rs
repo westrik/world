@@ -6,7 +6,7 @@ use westrikworld_core::resource_identifier::{generate_resource_identifier, Resou
 //  - test update logic
 //  - test parent-child logic
 
-pub fn create_n_tasks(conn: &DbConnection, n: i32, user_id: i32) {
+pub fn _create_n_tasks(conn: &DbConnection, n: i32, user_id: i32) {
     for id in 0..n {
         let new_task = TaskCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Task),

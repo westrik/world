@@ -331,7 +331,7 @@ pub mod markdown_parsing {
     #[test]
     fn link_elements() {
         assert_eq!(
-            markdown_to_elements(format!("[hello]({} \"the title\")", TEST_URL).to_string()),
+            markdown_to_elements(format!("[hello]({} \"the title\")", TEST_URL)),
             vec![Element {
                 element: Paragraph,
                 children: Some(vec![Element {
@@ -349,7 +349,7 @@ pub mod markdown_parsing {
         );
 
         assert_eq!(
-            markdown_to_elements(format!("<{}>", TEST_URL).to_string()),
+            markdown_to_elements(format!("<{}>", TEST_URL)),
             vec![Element {
                 element: Paragraph,
                 children: Some(vec![Element {
@@ -373,14 +373,14 @@ pub mod markdown_parsing {
         assert_eq!(
             markdown_to_elements(format!(
                 "![test image]({} \"the title\")",
-                image_url.to_string()
+                image_url
             )),
             vec![Element {
                 element: Paragraph,
                 children: Some(vec![Element {
                     element: Image(LinkData {
                         link_type: Inline,
-                        destination_url: image_url.to_string(),
+                        destination_url: image_url,
                         title: "the title".to_string()
                     }),
                     children: Some(vec![Element {

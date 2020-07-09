@@ -28,4 +28,4 @@ jobs:
         path: ./target
         key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}-debug
     - name: Run clippy
-      run: cargo clippy
+      run: cargo clippy --all-targets --all-features -- -D warnings

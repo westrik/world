@@ -19,5 +19,5 @@ pub fn runner(tests: &[&dyn Fn(&DbPool)]) {
     }
     print!("\n\n");
     destroy_test_db(&pool);
-    print!("\n");
+    println!();
 }
