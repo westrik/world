@@ -78,25 +78,25 @@ pub async fn handle_rejection(err: Rejection) -> Result<impl Reply, Infallible> 
             // Error::AlreadyInTransaction => {},
             // Error::__Nonexhaustive => {},
         }
-    } else if let Some(_) = err.find::<warp::reject::MethodNotAllowed>() {
+    } else if err.find::<warp::reject::MethodNotAllowed>().is_some() {
         code = StatusCode::METHOD_NOT_ALLOWED;
         message = "HTTP method not allowed".to_string();
-    } else if let Some(_) = err.find::<warp::reject::InvalidQuery>() {
+    } else if err.find::<warp::reject::InvalidQuery>().is_some() {
         code = StatusCode::BAD_REQUEST;
         message = "Invalid query string".to_string();
-    } else if let Some(_) = err.find::<warp::reject::InvalidHeader>() {
+    } else if err.find::<warp::reject::InvalidHeader>().is_some() {
         code = StatusCode::BAD_REQUEST;
         message = "Invalid header".to_string();
-    } else if let Some(_) = err.find::<warp::reject::MissingHeader>() {
+    } else if err.find::<warp::reject::MissingHeader>().is_some() {
         code = StatusCode::BAD_REQUEST;
         message = "Missing header".to_string();
-    } else if let Some(_) = err.find::<warp::reject::LengthRequired>() {
+    } else if err.find::<warp::reject::LengthRequired>().is_some() {
         code = StatusCode::BAD_REQUEST;
         message = "A content-length header is required".to_string();
-    } else if let Some(_) = err.find::<warp::reject::PayloadTooLarge>() {
+    } else if err.find::<warp::reject::PayloadTooLarge>().is_some() {
         code = StatusCode::BAD_REQUEST;
         message = "Request payload is too large".to_string();
-    } else if let Some(_) = err.find::<warp::reject::UnsupportedMediaType>() {
+    } else if err.find::<warp::reject::UnsupportedMediaType>().is_some() {
         code = StatusCode::BAD_REQUEST;
         message = "Request content-type is not supported".to_string();
     } else {
@@ -107,7 +107,7 @@ pub async fn handle_rejection(err: Rejection) -> Result<impl Reply, Infallible> 
 
     Ok(warp::reply::with_status(
         warp::reply::json(&GenericError {
-            error_message: message.into(),
+            error_message: message,
         }),
         code,
     ))

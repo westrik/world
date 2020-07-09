@@ -1,17 +1,15 @@
-name: Rust (test - debug)
+name: Rust (lint)
 
 on: [push]
 
 jobs:
-  rust_test_debug:
-    name: test (debug)
+  rust_clippy:
+    name: run clippy
     runs-on: ubuntu-latest
     container: mattwestrik/ww:latest
 
     steps:
     - uses: actions/checkout@v1
-    - name: Set up test DB
-      run: bash .github/scripts/test_db.sh
     - name: Load ~/.cargo in PATH
       run: echo "::add-path::/root/.cargo/bin"
     - name: Cache cargo registry
@@ -29,5 +27,5 @@ jobs:
       with:
         path: ./target
         key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}-debug
-    - name: Run tests
-      run: cargo test --verbose
+    - name: Run clippy
+      run: cargo clippy

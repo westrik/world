@@ -69,7 +69,7 @@ impl Job {
         JobCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Job),
             user_id,
-            job_type: format!("{}", job_type).to_string(),
+            job_type: format!("{}", job_type),
             payload,
         }
         .insert(conn)
