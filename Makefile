@@ -5,12 +5,13 @@ all:
 check:
 	cargo check
 	cargo clippy
-	cargo test
+	cargo clippy --tests
 	cd web-client && yarn lint
-	cd web-client && yarn test
 	cd infra && terraform validate
 
-fix: fmt
+test:
+	cargo test
+	cd web-client && yarn test
 
 fmt:
 	cargo fmt
@@ -20,7 +21,7 @@ fmt:
 prepush:
 	make fmt && make check
 
-check_and_test:
+run_server_restart_trigger:
 	cargo watch -x check -x test -s 'touch .trigger'
 
 run_server:
@@ -28,3 +29,11 @@ run_server:
 
 run_client:
 	cd web-client && yarn start
+
+chk: check
+
+lint: check
+
+prepush_checks: check test
+
+fix: fmt
