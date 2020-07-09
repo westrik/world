@@ -2,7 +2,8 @@ use chrono::{DateTime, Utc};
 
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
-use crate::content::schema::Content;
+use crate::content::models::note_version::NoteVersion;
+use crate::db::{begin_txn, commit_txn, rollback_txn};
 use crate::errors::ApiError;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{notes, notes::dsl::notes as all_notes};
@@ -104,6 +105,8 @@ impl Note {
         session: Session,
         content: Option<serde_json::Value>,
     ) -> Result<Note, ApiError> {
+        begin_txn(conn).unwrap();
+
         let note_result = NoteCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Note),
             name: generate_mnemonic(DEFAULT_MNEMONIC_LENGTH),
@@ -111,10 +114,28 @@ impl Note {
         }
         .insert(conn);
 
-        // if let Some(content_data) = content {
-        // TODO: enqueue job to insert blocks for content_data
-        // }
-        note_result
+        if let Ok(created_note) = note_result {
+            if let Some(content_data) = content {
+                let note_version = NoteVersion::create(conn, created_note.id, content_data);
+                if let Ok(_created_note_version) = note_version {
+                    // TODO: log note version creation
+                    commit_txn(conn).unwrap();
+                    Ok(created_note)
+                } else {
+                    // TODO: handle failure
+                    rollback_txn(conn).unwrap();
+                    Err(ApiError::InternalError(
+                        "Failed to create note version".to_string(),
+                    ))
+                }
+            } else {
+                Ok(created_note)
+            }
+        } else {
+            // TODO: handle failure
+            rollback_txn(conn).unwrap();
+            Err(ApiError::InternalError("Failed to create note".to_string()))
+        }
     }
 
     pub fn update(
