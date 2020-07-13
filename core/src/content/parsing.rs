@@ -371,10 +371,7 @@ pub mod markdown_parsing {
     fn image_elements() {
         let image_url = format!("{}/image.jpg", TEST_URL);
         assert_eq!(
-            markdown_to_elements(format!(
-                "![test image]({} \"the title\")",
-                image_url
-            )),
+            markdown_to_elements(format!("![test image]({} \"the title\")", image_url)),
             vec![Element {
                 element: Paragraph,
                 children: Some(vec![Element {
