@@ -70,14 +70,13 @@ export default function NavBar(): h.JSX.Element {
                     </ul>
                     <ul className="nav-action-list">
                         <li>
-                            <a
-                                href="#"
+                            <button
                                 onClick={(): void => {
                                     authContext.handleSignOut();
                                 }}
                             >
                                 sign out
-                            </a>
+                            </button>
                         </li>
                     </ul>
                 </div>

@@ -32,7 +32,7 @@ export default function CodeEditor(props: CodeEditorProps): h.JSX.Element {
                 }),
             );
         }
-    }, [codeMirror]);
+    }, [codeMirror, props.language]);
 
     return (
         <div className="code-editor">

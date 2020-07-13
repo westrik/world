@@ -8,7 +8,6 @@ import useMutationObserver from '~hooks/useMutationObserver';
 import { ApiNote, Content, Element } from '~models/Note';
 import fetchNote from '~notes/fetchNote';
 import ContentElement from '~notes/ContentElement';
-import Editing from '~notes/EditingContext';
 import { randomIdentifier } from '~utils/identifier';
 
 interface Props {
@@ -18,7 +17,6 @@ interface Props {
 export default function NoteEditor(props: Props): h.JSX.Element {
     const [content, setContent] = useState<Content | null>(null);
     const authContext = useContext(Auth);
-    const editingContext = useContext(Editing);
     const editorId = `editor-${randomIdentifier()}`;
 
     useMutationObserver(true, editorId, (mutations: Array<MutationRecord>) => {
@@ -50,9 +48,6 @@ export default function NoteEditor(props: Props): h.JSX.Element {
         if (!content && props.strippedApiId) {
             fetchNote(authContext, `note_${props.strippedApiId}`, (note: ApiNote) => {
                 if (note.content) {
-                    if (!editingContext.isEditing) {
-                        editingContext.toggleEditing();
-                    }
                     setContent(note.content);
                 } else {
                     // TODO: error toast
@@ -65,13 +60,13 @@ export default function NoteEditor(props: Props): h.JSX.Element {
                 schemaVersion: 'v0.1.x',
             });
         }
-    });
+    }, [authContext, content, props.strippedApiId]);
 
     return (
         <AppContainer>
             <div className="textEditor">
                 {content ? (
-                    <div id={editorId} className="elements" contentEditable={editingContext.isEditing} tabIndex={0}>
+                    <div id={editorId} className="elements">
                         {content.elements.map((el: Element, key: number) => (
                             <ContentElement key={key} element={el} />
                         ))}

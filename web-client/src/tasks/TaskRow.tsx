@@ -57,39 +57,42 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
     return !deleted ? (
         <li className="task" style="font-size: 1.5rem; min-height: 2em;">
             {/*<div className={false ? 'drag before' : ''} />*/}
-            <input
-                checked={completed}
-                id={checkboxId}
-                type="checkbox"
-                className="mt-3"
-                onChange={handleToggleCompleted}
-            />
             <label
                 htmlFor={checkboxId}
                 draggable={!editing}
                 onDragStart={props.handleDragStart}
                 onDragOver={props.handleDragOver}
                 onDragEnd={props.handleDragEnd}
-            />
-            <span
-                tabIndex={0}
-                contentEditable={true}
-                onClick={handleToggle}
-                onFocus={handleToggle}
-                onKeyDown={(e): void => {
-                    if (e.keyCode === 13 && !e.shiftKey) {
-                        e.preventDefault();
-                        (e.target as HTMLSpanElement).blur();
-                        // TODO: focus the next task
-                    }
-                }}
-                onBlur={handleSetContent}
-                /* TODO: handle contenteditable redo/undo?
-                     or: implement custom undo/redo */
-                className={completed ? 'completed' : ''}
             >
-                {description}
-            </span>
+                <input
+                    checked={completed}
+                    id={checkboxId}
+                    type="checkbox"
+                    className="mt-3"
+                    onChange={handleToggleCompleted}
+                />
+                <span
+                    role="checkbox"
+                    aria-checked={completed}
+                    tabIndex={0}
+                    contentEditable={true}
+                    onClick={handleToggle}
+                    onFocus={handleToggle}
+                    onKeyDown={(e): void => {
+                        if (e.keyCode === 13 && !e.shiftKey) {
+                            e.preventDefault();
+                            (e.target as HTMLSpanElement).blur();
+                            // TODO: focus the next task
+                        }
+                    }}
+                    onBlur={handleSetContent}
+                    /* TODO: handle contenteditable redo/undo?
+                         or: implement custom undo/redo */
+                    className={completed ? 'completed' : ''}
+                >
+                    {description}
+                </span>
+            </label>
 
             {props.childTasks.length > 0 ? (
                 <ul className="child_task_list">

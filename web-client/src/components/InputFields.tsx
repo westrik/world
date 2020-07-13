@@ -13,7 +13,6 @@ interface FieldProps {
     placeholderText?: string;
     onChange: (event: Event) => void;
     required?: boolean;
-    autoFocus?: boolean;
 }
 
 function InputField(props: FieldProps & { type: FieldType }): h.JSX.Element {
@@ -27,7 +26,6 @@ function InputField(props: FieldProps & { type: FieldType }): h.JSX.Element {
                 tabIndex={0}
                 placeholder={props.placeholderText}
                 required={props.required}
-                autoFocus={props.autoFocus}
                 onChange={(event): void => props.onChange(event)}
             />
         </fieldset>
