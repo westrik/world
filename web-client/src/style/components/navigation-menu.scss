@@ -8,6 +8,10 @@ header {
     text-decoration: none;
   }
 
+  button {
+    border: 0;
+  }
+
   ul {
     list-style: none;
   }
@@ -53,7 +57,7 @@ header {
       }
     }
 
-    a {
+    a, button {
       display: inline-block;
       width: 100%;
       height: inherit;
@@ -111,7 +115,7 @@ header {
         }
       }
 
-      a {
+      a, button {
         text-align: left;
         transition: background-color 0.2s;
         padding: 0 5%;
@@ -139,43 +143,51 @@ header {
 // ---------- COLORS ---------- //
 // TODO: clean up & refactor to use predefined color variables
 
-.menu ul a {
-  background-color: rgba(0, 0, 0, 0);
-  color: var(--main-text-color);
-
-  &.active, &:focus, &:hover{
-    background-color: rgba(0, 0, 0, 0.2);
+.menu ul {
+  a, button {
+    background-color: rgba(0, 0, 0, 0);
     color: var(--main-text-color);
+
+    &.active, &:focus, &:hover{
+      background-color: rgba(0, 0, 0, 0.2);
+      color: var(--main-text-color);
+    }
   }
 }
 
 @media screen and (max-width: 768px) {
-  .menu ul a {
-    background-color: rgba(0, 0, 0, 0.2);
+  .menu ul {
+    a, button {
+      background-color: rgba(0, 0, 0, 0.2);
 
-    &.active,
-    &:focus,
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.4);
+      &.active,
+      &:focus,
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.4);
+      }
     }
   }
 }
 
 @media (prefers-color-scheme: dark) {
-  .menu ul a {
-    &.active, &:hover {
-      background-color: rgba(0, 0, 0, 0.5);
+  .menu ul {
+    a, button {
+      &.active, &:hover {
+        background-color: rgba(0, 0, 0, 0.5);
+      }
     }
   }
 
   @media screen and (max-width: 768px) {
-    .menu ul a {
-      background-color: rgba(0, 0, 0, 0.3);
+    .menu ul {
+      a, button {
+        background-color: rgba(0, 0, 0, 0.3);
 
-      &.active,
-      &:focus,
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.7);
+        &.active,
+        &:focus,
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.7);
+        }
       }
     }
   }

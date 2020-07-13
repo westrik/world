@@ -26,5 +26,5 @@ export default function useMutationObserver(
         }
 
         return (): void => observer.disconnect();
-    }, [isActive, observer]);
+    }, [isActive, observer, elementId]);
 }

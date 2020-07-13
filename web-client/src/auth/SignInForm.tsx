@@ -55,7 +55,6 @@ export function UnconnectedSignInForm({
                     </h1>
                     <EmailField
                         labelText="Email address"
-                        autoFocus={true}
                         onChange={(event: Event): void => {
                             setEmail((event.target as HTMLInputElement).value);
                         }}

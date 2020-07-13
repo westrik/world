@@ -34,8 +34,6 @@ import {
     TableData,
 } from '~/models/Note';
 import { h } from 'preact';
-import { useContext } from 'preact/hooks';
-import Editing from '~notes/EditingContext';
 
 function renderElements(cxn: Array<Element> | null): Array<h.JSX.Element> | null {
     return cxn ? cxn.map((el, key) => <ContentElement element={el} key={key} />) : null;
@@ -80,23 +78,12 @@ interface LinkProps extends ElementWithChildrenProps {
 
 function Link(props: LinkProps): h.JSX.Element {
     const { destinationUrl, title } = props.link;
-    const editingContext = useContext(Editing);
 
     {
         /* TODO: open internal links in new ww_tab */
     }
     return (
-        <a contentEditable={false} href={destinationUrl} target="_blank" rel="noopener noreferrer" title={title}>
-            {editingContext.isEditing ? (
-                <span
-                    onClick={(ev): void => {
-                        ev.preventDefault();
-                    }}
-                    className="link-edit-tooltip"
-                >
-                    edit
-                </span>
-            ) : null}
+        <a href={destinationUrl} target="_blank" rel="noopener noreferrer" title={title}>
             {renderElements(props.cxn)}
         </a>
     );
