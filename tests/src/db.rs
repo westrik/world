@@ -2,7 +2,7 @@ use diesel::Connection;
 use dotenv::dotenv;
 use std::{env, io};
 
-pub use westrikworld_core::db::{
+pub use world_core::db::{
     begin_txn, get_conn, init_pool, rollback_txn, DbPool, DbPooledConnection as DbConnection,
 };
 

@@ -25,20 +25,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "api_server"
-version = "0.1.0"
-dependencies = [
- "diesel",
- "diesel_migrations",
- "dotenv 0.14.1",
- "log 0.4.8",
- "pretty_env_logger 0.3.1",
- "tokio",
- "warp",
- "westrikworld_core",
-]
-
-[[package]]
 name = "argon2rs"
 version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -935,24 +921,6 @@ name = "instant"
 version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5b141fdc7836c525d4d594027d318c84161ca17aaf8113ab1f81ab93ae897485"
-
-[[package]]
-name = "integration_tests"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "diesel",
- "diesel_migrations",
- "dotenv 0.14.1",
- "lazy_static 1.4.0",
- "rand 0.7.3",
- "regex",
- "serde",
- "serde_derive",
- "serde_json",
- "warp",
- "westrikworld_core",
-]
 
 [[package]]
 name = "iovec"
@@ -2400,31 +2368,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "westrikworld_core"
-version = "0.1.0"
-dependencies = [
- "argon2rs",
- "chrono",
- "criterion",
- "diesel",
- "diesel_migrations",
- "dotenv 0.15.0",
- "flame",
- "flamescope",
- "lazy_static 1.4.0",
- "log 0.4.8",
- "pretty_env_logger 0.4.0",
- "pulldown-cmark",
- "rand 0.7.3",
- "regex",
- "serde",
- "serde_derive",
- "serde_json",
- "tokio",
- "warp",
-]
-
-[[package]]
 name = "winapi"
 version = "0.2.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2468,7 +2411,64 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
 
 [[package]]
-name = "worker"
+name = "world_api_server"
+version = "0.1.0"
+dependencies = [
+ "diesel",
+ "diesel_migrations",
+ "dotenv 0.14.1",
+ "log 0.4.8",
+ "pretty_env_logger 0.3.1",
+ "tokio",
+ "warp",
+ "world_core",
+]
+
+[[package]]
+name = "world_core"
+version = "0.1.0"
+dependencies = [
+ "argon2rs",
+ "chrono",
+ "criterion",
+ "diesel",
+ "diesel_migrations",
+ "dotenv 0.15.0",
+ "flame",
+ "flamescope",
+ "lazy_static 1.4.0",
+ "log 0.4.8",
+ "pretty_env_logger 0.4.0",
+ "pulldown-cmark",
+ "rand 0.7.3",
+ "regex",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "tokio",
+ "warp",
+]
+
+[[package]]
+name = "world_tests"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "diesel",
+ "diesel_migrations",
+ "dotenv 0.14.1",
+ "lazy_static 1.4.0",
+ "rand 0.7.3",
+ "regex",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "warp",
+ "world_core",
+]
+
+[[package]]
+name = "world_worker"
 version = "0.1.0"
 dependencies = [
  "diesel",
@@ -2480,7 +2480,7 @@ dependencies = [
  "pretty_env_logger 0.3.1",
  "tokio",
  "warp",
- "westrikworld_core",
+ "world_core",
 ]
 
 [[package]]

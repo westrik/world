@@ -1,9 +1,9 @@
 use diesel::prelude::*;
 use diesel::PgConnection;
-use westrikworld_core::auth::models::session::Session;
-use westrikworld_core::auth::models::user::{ApiUserCreateSpec, User};
-use westrikworld_core::schema::{sessions, sessions::dsl::sessions as all_sessions};
-use westrikworld_core::schema::{users, users::dsl::users as all_users};
+use world_core::auth::models::session::Session;
+use world_core::auth::models::user::{ApiUserCreateSpec, User};
+use world_core::schema::{sessions, sessions::dsl::sessions as all_sessions};
+use world_core::schema::{users, users::dsl::users as all_users};
 
 pub const TEST_USER_EMAIL_ADDRESS: &str = "dolores@westrikworld.com";
 pub const TEST_USER_FULL_NAME: &str = "Dolores Abernathy";

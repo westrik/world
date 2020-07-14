@@ -1,7 +1,7 @@
 [workspace]
 members = [
-  "core",
-  "integration_tests",
   "api_server",
+  "core",
+  "tests",
   "worker",
 ]

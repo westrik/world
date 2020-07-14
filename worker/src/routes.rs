@@ -1,7 +1,7 @@
 use warp::Filter;
-use westrikworld_core::db::DbPool;
-use westrikworld_core::routes::{health_check, preflight_cors};
-use westrikworld_core::API_VERSION;
+use world_core::db::DbPool;
+use world_core::routes::{health_check, preflight_cors};
+use world_core::API_VERSION;
 
 pub fn worker_api(
     _db_pool: DbPool,

@@ -3,8 +3,8 @@ use crate::fixtures::auth::{
     get_test_user, TEST_USER_EMAIL_ADDRESS, TEST_USER_FULL_NAME, TEST_USER_PASSWORD,
 };
 use chrono::{Duration, Utc};
-use westrikworld_core::auth::models::session::Session;
-use westrikworld_core::auth::models::user::User;
+use world_core::auth::models::session::Session;
+use world_core::auth::models::user::User;
 
 #[test_case]
 fn test_get_user(pool: &DbPool) {

@@ -1,5 +1,5 @@
 [package]
-name = "api_server"
+name = "world_api_server"
 version = "0.1.0"
 authors = ["Matt Westrik <m@ttwestrik.com>"]
 edition = "2018"
@@ -13,4 +13,4 @@ log = "^0.4"
 pretty_env_logger = "^0.3"
 tokio = { version = "^0.2", features = ["macros", "rt-threaded"] }
 warp = "^0.2"
-westrikworld_core = { path = "../core" }
+world_core = { path = "../core" }

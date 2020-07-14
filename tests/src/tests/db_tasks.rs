@@ -1,6 +1,6 @@
 use crate::db::DbConnection;
-use westrikworld_core::content::models::task::TaskCreateSpec;
-use westrikworld_core::resource_identifier::{generate_resource_identifier, ResourceType};
+use world_core::content::models::task::TaskCreateSpec;
+use world_core::resource_identifier::{generate_resource_identifier, ResourceType};
 
 // TODO:
 //  - test update logic

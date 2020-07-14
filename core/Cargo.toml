@@ -1,5 +1,5 @@
 [package]
-name = "westrikworld_core"
+name = "world_core"
 version = "0.1.0"
 authors = ["Matt Westrik <m@ttwestrik.com>"]
 edition = "2018"

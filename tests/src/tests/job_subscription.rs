@@ -1,6 +1,6 @@
 use crate::db::{get_conn, DbPool};
-use westrikworld_core::jobs::job_type::JobType;
-use westrikworld_core::jobs::models::job::Job;
+use world_core::jobs::job_type::JobType;
+use world_core::jobs::models::job::Job;
 
 #[test_case]
 fn test_enqueued_job_is_completed(pool: &DbPool) {

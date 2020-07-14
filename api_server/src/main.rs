@@ -6,8 +6,8 @@ use dotenv::dotenv;
 use std::env;
 use warp::Filter;
 
-use westrikworld_core::routes::cors_wrapper;
-use westrikworld_core::{db, routes};
+use world_core::routes::cors_wrapper;
+use world_core::{db, routes};
 
 embed_migrations!("../core/migrations");
 
@@ -17,7 +17,7 @@ const DB_POOL_SIZE: u32 = 15;
 async fn main() {
     dotenv().ok();
     if env::var("RUST_LOG").is_err() {
-        env::set_var("RUST_LOG", "westrikworld_core=debug,api_server=debug");
+        env::set_var("RUST_LOG", "world_core=debug,api_server=debug");
     }
     pretty_env_logger::init();
 

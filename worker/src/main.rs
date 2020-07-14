@@ -8,7 +8,7 @@ use dotenv::dotenv;
 use std::{env, thread};
 use warp::Filter;
 
-use westrikworld_core::db;
+use world_core::db;
 
 mod routes;
 mod subscribe;
@@ -21,7 +21,7 @@ const DB_POOL_SIZE: u32 = 15;
 async fn main() {
     dotenv().ok();
     if env::var("RUST_LOG").is_err() {
-        env::set_var("RUST_LOG", "westrikworld_core=debug,worker=debug");
+        env::set_var("RUST_LOG", "world_core=debug,worker=debug");
     }
     pretty_env_logger::init();
 
