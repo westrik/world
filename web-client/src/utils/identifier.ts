@@ -1,5 +1,5 @@
-export function stripApiId(apiId: string): string {
-    return apiId.slice(apiId.indexOf('_') + 1);
+export function stripPrefixFromId(id: string): string {
+    return id.slice(id.indexOf('_') + 1);
 }
 
 export function randomIdentifier(): string {

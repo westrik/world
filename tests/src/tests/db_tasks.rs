@@ -1,5 +1,5 @@
 use crate::db::DbConnection;
-use world_core::content::models::task::TaskCreateSpec;
+use world_core::tasks::models::task::TaskCreateSpec;
 use world_core::resource_identifier::{generate_resource_identifier, ResourceType};
 
 // TODO:

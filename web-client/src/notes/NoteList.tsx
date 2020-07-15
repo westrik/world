@@ -7,6 +7,7 @@ import ListContainer from '~components/ListContainer';
 import LoadingSpinner from '~components/LoadingSpinner';
 import { Note } from '~models/Note';
 import listNotes from '~notes/listNotes';
+import { stripPrefixFromId } from '~utils/identifier';
 
 export default function NoteList(): h.JSX.Element {
     const [noteSummaries, setNotes] = useState<Array<Note> | null>(null);
@@ -30,7 +31,7 @@ export default function NoteList(): h.JSX.Element {
                 <ListContainer className="notes">
                     {noteSummaries.map((note, key) => (
                         <li draggable={true} className="note-item" key={key}>
-                            {note.apiId}
+                            <a href={`/notes/${stripPrefixFromId(note.id)}`}>{note.name}</a>
                         </li>
                     ))}
                 </ListContainer>

@@ -70,7 +70,8 @@ function createTaskListMarker(checked: boolean): Element {
 }
 
 export const NOTE_FIXTURE: Note = {
-    apiId: 'note_xsOqTy6c',
+    id: 'note_xsOqTy6c',
+    name: 'test note',
     createdAt: new Date('2020-03-12T05:28:44.562426Z'),
     updatedAt: new Date('2020-03-12T05:28:44.562426Z'),
     content: {

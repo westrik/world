@@ -13,8 +13,8 @@ export default function mapTaskListToTaskTree(
         taskIdToTask: Map<string, ApiTask>,
         task: ApiTask,
     ) {
-        // TODO: assert(!(task.apiId in taskIdToTask));
-        taskIdToTask.set(task.apiId, task);
+        // TODO: assert(!(task.id in taskIdToTask));
+        taskIdToTask.set(task.id, task);
         return taskIdToTask;
     },
     new Map<string, ApiTask>());
@@ -22,7 +22,7 @@ export default function mapTaskListToTaskTree(
     function computeTaskToChildMap(): TaskIdToTasksMap {
         const _taskIdToChildApiTasks: TaskIdToTasksMap = {};
         tasks.forEach(function (task: ApiTask) {
-            const parentId = task.parentApiId ? task.parentApiId : LIST_ROOT;
+            const parentId = task.parentId ? task.parentId : LIST_ROOT;
             if (!_taskIdToChildApiTasks[parentId]) {
                 _taskIdToChildApiTasks[parentId] = [];
             }
@@ -33,11 +33,11 @@ export default function mapTaskListToTaskTree(
     const taskIdToChildren = taskIdToChildApiTasks ? taskIdToChildApiTasks : computeTaskToChildMap();
 
     return tasks
-        .filter((task) => !task.parentApiId || !taskIdToApiTask.get(task.parentApiId))
+        .filter((task) => !task.parentId || !taskIdToApiTask.get(task.parentId))
         .map((task) => {
             return {
                 ...task,
-                childTasks: mapTaskListToTaskTree(taskIdToChildren[task.apiId] || [], taskIdToChildren), // TODO: look up childTasks
+                childTasks: mapTaskListToTaskTree(taskIdToChildren[task.id] || [], taskIdToChildren), // TODO: look up childTasks
             };
         });
 }

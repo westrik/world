@@ -7,13 +7,13 @@ export interface ApiTaskResponse extends ApiResponse {
 }
 
 export interface ApiTask {
-    apiId: string;
+    id: string;
     description: string;
     createdAt: Date;
     updatedAt: Date;
     completedAt: Date | null;
-    siblingApiId: string | null;
-    parentApiId: string | null;
+    siblingId: string | null;
+    parentId: string | null;
     isCollapsed: boolean;
 }
 

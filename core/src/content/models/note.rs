@@ -17,7 +17,7 @@ use diesel::prelude::*;
 pub struct NoteSummary {
     #[serde(skip)]
     pub id: i32,
-    #[serde(rename = "apiId")]
+    #[serde(rename = "id")]
     pub api_id: String,
     #[serde(skip)]
     pub user_id: i32,
@@ -30,15 +30,15 @@ pub struct NoteSummary {
 
 #[derive(Queryable, Serialize, Debug)]
 pub struct Note {
-    #[serde(rename = "apiId")]
+    #[serde(rename = "id")]
     pub api_id: String,
+    #[serde(rename = "versionId")]
+    pub version_api_id: String,
     #[serde(rename = "createdAt")]
     pub created_at: DateTime<Utc>,
     #[serde(rename = "updatedAt")]
     pub updated_at: DateTime<Utc>,
     pub name: String,
-    #[serde(rename = "versionApiId")]
-    pub version_api_id: String,
     pub content: serde_json::Value,
 }
 
@@ -98,15 +98,15 @@ impl Note {
             .inner_join(notes::table)
             .select((
                 notes::api_id,
+                note_versions::api_id,
                 notes::created_at,
                 notes::updated_at,
                 notes::name,
-                note_versions::api_id,
                 note_versions::content,
             ))
             .filter(notes::user_id.eq(session.user_id))
             .filter(notes::api_id.eq(&api_id))
-            .order(note_versions::created_at.desc())
+            .order(note_versions::id.desc())
             .limit(1)
             .first::<Note>(conn)
             .map_err(|e| match e {

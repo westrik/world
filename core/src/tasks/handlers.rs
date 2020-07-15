@@ -1,5 +1,5 @@
 use crate::auth::models::session::Session;
-use crate::content::models::task::{ApiTask, ApiTaskCreateSpec, ApiTaskUpdateSpec, Task};
+use crate::tasks::models::task::{ApiTask, ApiTaskCreateSpec, ApiTaskUpdateSpec, Task};
 use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
 use crate::utils::list_options::ListOptions;

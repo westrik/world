@@ -9,12 +9,12 @@ interface TaskUpdateSpec {
 
 export default async function updateTask(
     authContext: AuthContext,
-    apiId: string,
+    taskId: string,
     updateSpec: TaskUpdateSpec,
 ): Promise<ApiTask | null> {
     const responseJson = await request<TaskUpdateSpec, ApiTaskResponse>(
         RequestMethod.PATCH,
-        `/task/${apiId}`,
+        `/task/${taskId}`,
         authContext,
         updateSpec,
     );

@@ -11,7 +11,7 @@ use crate::schema::note_versions;
 pub struct NoteVersion {
     #[serde(skip)]
     pub id: i32,
-    #[serde(rename = "apiId")]
+    #[serde(rename = "id")]
     pub api_id: String,
     #[serde(skip)]
     pub note_id: i32,

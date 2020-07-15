@@ -7,12 +7,14 @@ export interface ApiNoteResponse extends ApiResponse {
 }
 
 export interface ApiNoteSummary {
-    apiId: string;
+    id: string;
     createdAt: Date;
     updatedAt: Date;
+    name: string;
 }
 
 export interface ApiNote extends ApiNoteSummary {
+    versionId: string;
     content: Content;
 }
 

@@ -13,7 +13,7 @@ use crate::schema::{jobs, jobs::dsl::jobs as all_jobs};
 pub struct Job {
     #[serde(skip)]
     pub id: i32,
-    #[serde(rename = "apiId")]
+    #[serde(rename = "id")]
     pub api_id: String,
     #[serde(rename = "createdAt")]
     pub created_at: DateTime<Utc>,

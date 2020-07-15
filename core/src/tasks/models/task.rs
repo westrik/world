@@ -77,7 +77,7 @@ impl TaskUpdateSpec {
 
 #[derive(Serialize)]
 pub struct ApiTask {
-    #[serde(rename = "apiId")]
+    #[serde(rename = "id")]
     pub api_id: String,
     pub description: String,
     #[serde(rename = "createdAt")]
@@ -86,9 +86,9 @@ pub struct ApiTask {
     pub updated_at: DateTime<Utc>,
     #[serde(rename = "completedAt")]
     pub completed_at: Option<DateTime<Utc>>,
-    #[serde(rename = "siblingApiId")]
+    #[serde(rename = "siblingId")]
     pub sibling_api_id: Option<String>,
-    #[serde(rename = "parentApiId")]
+    #[serde(rename = "parentId")]
     pub parent_api_id: Option<String>,
     #[serde(rename = "isCollapsed")]
     pub is_collapsed: bool,
@@ -101,9 +101,9 @@ pub struct ApiTaskCreateSpec {
 #[allow(clippy::option_option)]
 pub struct ApiTaskUpdateSpec {
     pub description: Option<String>,
-    #[serde(rename = "parentApiId")]
+    #[serde(rename = "parentId")]
     pub parent_api_id: Option<Option<String>>,
-    #[serde(rename = "siblingApiId")]
+    #[serde(rename = "siblingId")]
     pub sibling_api_id: Option<Option<String>>,
     #[serde(rename = "isCompleted")]
     pub is_completed: Option<bool>,

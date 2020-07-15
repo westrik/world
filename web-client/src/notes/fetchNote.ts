@@ -8,11 +8,11 @@ export interface GetNotesResponse extends ApiResponse {
 
 export default async function fetchNote(
     authContext: AuthContext,
-    apiId: string,
+    noteId: string,
     onReceiveResponse: (note: ApiNote) => void,
 ): Promise<void> {
     // TODO: check + save to localStorage
-    const response = await request<null, GetNotesResponse>(RequestMethod.GET, `/note/${apiId}`, authContext);
+    const response = await request<null, GetNotesResponse>(RequestMethod.GET, `/note/${noteId}`, authContext);
     // TODO: handle errors
     const note = response.note;
     onReceiveResponse(note);
