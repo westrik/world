@@ -6,13 +6,15 @@ use crate::content::models::note_version::NoteVersion;
 use crate::db::{begin_txn, commit_txn, rollback_txn};
 use crate::errors::ApiError;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
+use crate::schema::note_versions;
 use crate::schema::{notes, notes::dsl::notes as all_notes};
 use crate::utils::mnemonic::{generate_mnemonic, DEFAULT_MNEMONIC_LENGTH};
 use diesel::prelude::*;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(User)]
-pub struct Note {
+#[table_name = "notes"]
+pub struct NoteSummary {
     #[serde(skip)]
     pub id: i32,
     #[serde(rename = "apiId")]
@@ -26,14 +28,18 @@ pub struct Note {
     pub name: String,
 }
 
-#[derive(Queryable, Serialize, Deserialize, Debug)]
-pub struct NoteSummary {
+#[derive(Queryable, Serialize, Debug)]
+pub struct Note {
     #[serde(rename = "apiId")]
     pub api_id: String,
     #[serde(rename = "createdAt")]
     pub created_at: DateTime<Utc>,
     #[serde(rename = "updatedAt")]
     pub updated_at: DateTime<Utc>,
+    pub name: String,
+    #[serde(rename = "versionApiId")]
+    pub version_api_id: String,
+    pub content: serde_json::Value,
 }
 
 #[derive(Insertable, Debug)]
@@ -44,7 +50,7 @@ pub struct NoteCreateSpec {
     pub user_id: i32,
 }
 impl NoteCreateSpec {
-    pub fn insert(&self, conn: &PgConnection) -> Result<Note, ApiError> {
+    pub fn insert(&self, conn: &PgConnection) -> Result<NoteSummary, ApiError> {
         info!("creating note: {:?}", self);
         Ok(diesel::insert_into(notes::table)
             .values(self)
@@ -65,7 +71,7 @@ impl NoteUpdateSpec {
         conn: &PgConnection,
         api_id: String,
         user_id: i32,
-    ) -> Result<Note, ApiError> {
+    ) -> Result<NoteSummary, ApiError> {
         info!("updating note {} with {:?}", api_id, self);
         Ok(diesel::update(
             all_notes
@@ -73,7 +79,7 @@ impl NoteUpdateSpec {
                 .filter(notes::user_id.eq(user_id)),
         )
         .set(self)
-        .get_result::<Note>(conn)
+        .get_result::<NoteSummary>(conn)
         .map_err(ApiError::DatabaseError)?)
     }
 }
@@ -81,7 +87,6 @@ impl NoteUpdateSpec {
 impl Note {
     pub fn find_all(conn: &PgConnection, session: Session) -> Result<Vec<NoteSummary>, ApiError> {
         let notes: Vec<NoteSummary> = all_notes
-            .select((notes::api_id, notes::created_at, notes::updated_at))
             .filter(notes::user_id.eq(session.user_id))
             .load(conn)
             .map_err(ApiError::DatabaseError)?;
@@ -89,10 +94,21 @@ impl Note {
     }
 
     pub fn find(conn: &PgConnection, session: Session, api_id: String) -> Result<Note, ApiError> {
-        let note = all_notes
+        let note: Note = note_versions::table
+            .inner_join(notes::table)
+            .select((
+                notes::api_id,
+                notes::created_at,
+                notes::updated_at,
+                notes::name,
+                note_versions::api_id,
+                note_versions::content,
+            ))
             .filter(notes::user_id.eq(session.user_id))
             .filter(notes::api_id.eq(&api_id))
-            .first(conn)
+            .order(note_versions::created_at.desc())
+            .limit(1)
+            .first::<Note>(conn)
             .map_err(|e| match e {
                 diesel::result::Error::NotFound => ApiError::NotFound(api_id),
                 _ => ApiError::DatabaseError(e),
@@ -104,7 +120,7 @@ impl Note {
         conn: &PgConnection,
         session: Session,
         content: Option<serde_json::Value>,
-    ) -> Result<Note, ApiError> {
+    ) -> Result<NoteSummary, ApiError> {
         begin_txn(conn).unwrap();
 
         let note_result = NoteCreateSpec {
@@ -143,7 +159,7 @@ impl Note {
         session: Session,
         api_id: String,
         name: Option<String>,
-    ) -> Result<Note, ApiError> {
+    ) -> Result<NoteSummary, ApiError> {
         NoteUpdateSpec {
             updated_at: Utc::now(),
             name,

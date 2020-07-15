@@ -25,7 +25,7 @@ run_server_restart_trigger:
 	cargo watch -x check -x test -s 'touch .trigger'
 
 run_server:
-	cargo watch --no-gitignore -w .trigger -x 'run --bin api_server'
+	cargo watch --no-gitignore -w .trigger -x 'run --bin world_api_server'
 
 run_client:
 	cd web-client && yarn start

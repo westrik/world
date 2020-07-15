@@ -34,6 +34,12 @@ pub struct GetNoteResponse {
     note: Option<Note>,
 }
 
+#[derive(Serialize)]
+pub struct UpdateNoteResponse {
+    error: Option<String>,
+    note: Option<NoteSummary>,
+}
+
 fn run_get_notes(session: Session, pool: &DbPool) -> Result<Vec<NoteSummary>, ApiError> {
     Ok(Note::find_all(&get_conn(&pool).unwrap(), session)?)
 }
@@ -78,7 +84,7 @@ fn run_create_note(
     spec: ApiNoteCreateSpec,
     session: Session,
     db_pool: &DbPool,
-) -> Result<Note, ApiError> {
+) -> Result<NoteSummary, ApiError> {
     let content_json: Option<serde_json::Value>;
     if let Some(content) = spec.content_json {
         content_json = Some(content);
@@ -106,7 +112,7 @@ pub async fn create_note(
     debug!("create_note: spec={:?}", spec);
     let note = run_create_note(spec, session, &db_pool)?;
     Ok(warp::reply::with_status(
-        warp::reply::json(&GetNoteResponse {
+        warp::reply::json(&UpdateNoteResponse {
             error: None,
             note: Some(note),
         }),
@@ -119,7 +125,7 @@ fn run_update_note(
     api_id: String,
     spec: ApiNoteUpdateSpec,
     pool: &DbPool,
-) -> Result<Note, ApiError> {
+) -> Result<NoteSummary, ApiError> {
     Ok(Note::update(
         &get_conn(&pool).unwrap(),
         session,
@@ -137,7 +143,7 @@ pub async fn update_note(
     debug!("update_note: api_id={}, spec={:?}", api_id, spec);
     let note = run_update_note(session, api_id, spec, &db_pool)?;
     Ok(warp::reply::with_status(
-        warp::reply::json(&GetNoteResponse {
+        warp::reply::json(&UpdateNoteResponse {
             error: None,
             note: Some(note),
         }),
