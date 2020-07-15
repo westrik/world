@@ -6,7 +6,7 @@ check:
 	cargo check
 	cargo clippy
 	cargo clippy --tests
-	cd web-client && yarn lint
+	cd web-client && yarn lint && yarn typecheck
 	cd infra && terraform validate
 
 test:

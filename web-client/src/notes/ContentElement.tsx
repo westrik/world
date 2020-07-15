@@ -1,6 +1,3 @@
-// @ts-ignore
-import assert = require('assert');
-
 import {
     ColumnType,
     Element,
@@ -34,6 +31,7 @@ import {
     TableData,
 } from '~/models/Note';
 import { h } from 'preact';
+import { assertCondition } from '~utils/asserts';
 
 function renderElements(cxn: Array<Element> | null): Array<h.JSX.Element> | null {
     return cxn ? cxn.map((el, key) => <ContentElement element={el} key={key} />) : null;
@@ -211,7 +209,7 @@ function BlockElement(props: BlockElementProps): h.JSX.Element {
     } else if (isRule(element)) {
         return <hr />;
     }
-    assert(false, 'Unsupported block element!');
+    assertCondition(false, 'Unsupported block element!');
 }
 
 interface InlineElementProps {
@@ -243,7 +241,7 @@ function InlineElement(props: InlineElementProps): h.JSX.Element {
             </sup>
         );
     }
-    assert(false, 'Unsupported inline element!');
+    assertCondition(false, 'Unsupported inline element!');
 }
 
 interface ContentElementProps {
@@ -258,5 +256,5 @@ export default function ContentElement(props: ContentElementProps): h.JSX.Elemen
     } else if (isInlineElement(el.element)) {
         return <InlineElement element={el} />;
     }
-    assert(false, 'Unsupported element!');
+    assertCondition(false, 'Unsupported element!');
 }

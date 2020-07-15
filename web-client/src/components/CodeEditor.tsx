@@ -5,13 +5,15 @@ import 'codemirror/keymap/vim';
 import { h } from 'preact';
 import { useEffect, useRef, useState } from 'preact/hooks';
 
+import { Maybe } from '~utils/types';
+
 export enum EditorLanguage {
     MARKDOWN = 'markdown',
 }
 
 interface CodeEditorProps {
     language?: EditorLanguage;
-    content?: string;
+    content: Maybe<string>;
 }
 
 export default function CodeEditor(props: CodeEditorProps): h.JSX.Element {
