@@ -1,7 +1,7 @@
 import { h } from 'preact';
 
-import PageContainer from '~components/PageContainer';
-import Sheet from '~components/Sheet';
+import Sheet from '~components/layout/Sheet';
+import PageContainer from '~components/layout/PageContainer';
 
 interface ErrorScreenProps {
     errorDescriptionText?: string;

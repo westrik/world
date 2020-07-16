@@ -1,8 +1,15 @@
 @import "../../node_modules/codemirror/lib/codemirror.css";
 
 .code-editor {
+  min-height: 200px;
+
   textarea {
     width: 100%;
-    min-height: 200px;
+    height: 100%;
   }
+}
+
+.CodeMirror {
+  font-family: "JetBrains Mono", monospace;
+  height: 100%;
 }

@@ -1,7 +1,14 @@
 @import 'utils';
 
-// Components
+// Layout Components
+@import 'layout/horizontal-stack';
+@import 'layout/page-container';
+@import 'layout/sheet-container';
+@import 'layout/vertical-stack';
+
+// Content Components
 @import 'sign-in-form';
+@import 'split-note-editor';
 
 // Elements
 @import 'app-container';
@@ -9,6 +16,4 @@
 @import 'input-fields';
 @import 'loading-spinner';
 @import 'navigation-menu';
-@import 'page-container';
-@import 'sheet-container';
 @import 'toggle-selector';

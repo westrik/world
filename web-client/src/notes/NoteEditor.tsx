@@ -5,10 +5,11 @@ import Auth from '~auth/AuthContext';
 import AppContainer from '~components/AppContainer';
 import CodeEditor, { EditorLanguage } from '~components/CodeEditor';
 import LoadingSpinner from '~components/LoadingSpinner';
-import { ApiNote, Content, Element } from '~models/Note';
+import { ApiNote, Content } from '~models/Note';
 import fetchNote from '~notes/fetchNote';
-import ContentElement from '~notes/ContentElement';
 import renderedContentToMarkdown from '~notes/renderedContentToMarkdown';
+import Stack, { StackOrientation } from '~components/layout/Stack';
+import NoteContent from '~notes/NoteContent';
 
 interface Props {
     strippedApiId?: string;
@@ -40,14 +41,14 @@ export default function NoteEditor(props: Props): h.JSX.Element {
     }, [authContext, rawContent, renderedContent, props.strippedApiId]);
 
     return (
-        <AppContainer>
-            {rawContent ? <CodeEditor language={EditorLanguage.MARKDOWN} content={rawContent} /> : <LoadingSpinner />}
-            {renderedContent ? (
-                <div className="article elements">
-                    {renderedContent.elements.map((el: Element, key: number) => (
-                        <ContentElement key={key} element={el} />
-                    ))}
-                </div>
+        <AppContainer contentClassName="split-note-editor">
+            {rawContent && renderedContent ? (
+                <Stack orientation={StackOrientation.HORIZONTAL}>
+                    <CodeEditor language={EditorLanguage.MARKDOWN} content={rawContent} />
+                    <div className="note-preview">
+                        <NoteContent elements={renderedContent.elements} />
+                    </div>
+                </Stack>
             ) : (
                 <LoadingSpinner />
             )}

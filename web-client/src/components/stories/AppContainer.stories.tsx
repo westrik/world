@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import AppContainer from '~components/AppContainer';
-import ListContainer from '~components/ListContainer';
+import ListContainer from '~components/layout/ListContainer';
 
 export default { title: 'App Container' };
 

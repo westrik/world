@@ -1,8 +1,8 @@
 import { h } from 'preact';
 
 import CodeEditor, { EditorLanguage } from '~components/CodeEditor';
-import PageContainer from '~components/PageContainer';
-import Sheet from '~components/Sheet';
+import PageContainer from '~components/layout/PageContainer';
+import Sheet from '~components/layout/Sheet';
 
 export default { title: 'Markdown Editor' };
 

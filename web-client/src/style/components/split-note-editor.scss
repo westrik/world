@@ -1,0 +1,18 @@
+@import 'navigation-menu';
+
+.split-note-editor {
+  min-height: calc(100vh - #{$navigation-menu-header-height});
+  display: flex;
+  align-items: stretch;
+
+  .note-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .note-preview, .code-editor {
+    max-height: calc(100vh - #{$navigation-menu-header-height});
+    overflow-y: auto;
+  }
+}

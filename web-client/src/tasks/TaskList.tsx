@@ -3,8 +3,8 @@ import { useContext, useEffect, useState } from 'preact/hooks';
 
 import Auth from '~auth/AuthContext';
 import AppContainer from '~components/AppContainer';
-import ListContainer from '~components/ListContainer';
 import LoadingSpinner from '~components/LoadingSpinner';
+import ListContainer from '~components/layout/ListContainer';
 import { ApiTask, Task } from '~models/Task';
 
 import listTasks from './listTasks';

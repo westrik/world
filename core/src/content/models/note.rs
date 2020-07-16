@@ -165,6 +165,7 @@ impl Note {
             name,
         }
         .update(conn, api_id, session.user_id)
+        // TODO: create new NoteVersion
     }
 }
 

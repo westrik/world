@@ -1,7 +1,7 @@
 import { h } from 'preact';
 
-import PageContainer from '~components/PageContainer';
-import Sheet from '~components/Sheet';
+import PageContainer from '~components/layout/PageContainer';
+import Sheet from '~components/layout/Sheet';
 import { NOTE_FIXTURE } from '~fixtures/Notes';
 import ContentElement from '~notes/ContentElement';
 

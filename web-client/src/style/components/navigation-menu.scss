@@ -1,7 +1,11 @@
+$navigation-menu-header-height: 50px;
+$navigation-menu-mobile-max-height: 350px;
+$navigation-menu-brand-top-margin: 3px;
+
 header {
   width: 100%;
-  height: 50px;
-  line-height: 50px;
+  height: $navigation-menu-header-height;
+  line-height: $navigation-menu-header-height;
   text-align: center;
 
   a {
@@ -21,11 +25,11 @@ header {
 .brand {
   font-weight: 900;
   text-transform: uppercase;
-  line-height: 47px;
+  line-height: $navigation-menu-header-height - $navigation-menu-brand-top-margin;
   width: auto;
   float: left;
   z-index: 5;
-  margin: 3px 0 0 5%;
+  margin: $navigation-menu-brand-top-margin 0 0 5%;
 
   a {
     color: #fff;
@@ -90,7 +94,7 @@ header {
     & > div {
       position: fixed;
       display: block;
-      top: 50px;
+      top: $navigation-menu-header-height;
       max-height: 0;
       overflow: hidden;
       width: 100%;
@@ -103,7 +107,7 @@ header {
 
       li {
         display: block;
-        height: 50px;
+        height: $navigation-menu-header-height;
         margin: 0;
         width: 100%;
 
@@ -131,12 +135,12 @@ header {
     position: absolute;
     top: 0;
     right: 0;
-    line-height: 50px;
+    line-height: $navigation-menu-header-height;
     cursor: pointer;
   }
 
   #menuToggle:checked ~ div {
-    max-height: 350px;
+    max-height: $navigation-menu-mobile-max-height;
   }
 }
 

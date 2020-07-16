@@ -1,0 +1,9 @@
+.horizontal-stack {
+  display: flex;
+  flex-direction: row;
+  min-width: 100%;
+
+  & > * {
+    flex: 1;
+  }
+}
