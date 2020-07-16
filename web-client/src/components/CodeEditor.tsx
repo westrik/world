@@ -1,5 +1,5 @@
 import * as CodeMirror from 'codemirror';
-import { EditorFromTextArea } from 'codemirror';
+import { Editor, EditorFromTextArea } from 'codemirror';
 import 'codemirror/mode/markdown/markdown';
 import 'codemirror/keymap/vim';
 import { h } from 'preact';
@@ -14,6 +14,7 @@ export enum EditorLanguage {
 interface CodeEditorProps {
     language?: EditorLanguage;
     content: Maybe<string>;
+    onChange: (content: string) => void;
 }
 
 export default function CodeEditor(props: CodeEditorProps): h.JSX.Element {
@@ -26,15 +27,19 @@ export default function CodeEditor(props: CodeEditorProps): h.JSX.Element {
                 codeMirror.toTextArea();
             };
         } else {
-            setCodeMirror(
-                CodeMirror.fromTextArea(textareaNode.current, {
-                    lineNumbers: true,
-                    mode: props.language,
-                    keyMap: 'vim',
-                }),
-            );
+            const newCodeMirror = CodeMirror.fromTextArea(textareaNode.current, {
+                lineNumbers: true,
+                mode: props.language,
+                keyMap: 'vim',
+            });
+            newCodeMirror.on('change', (editor: Editor): void => {
+                const currentContent = editor.getValue();
+                props.onChange(currentContent);
+            });
+            setCodeMirror(newCodeMirror);
         }
-    }, [codeMirror, props.language]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [codeMirror]);
 
     return (
         <div className="code-editor">
