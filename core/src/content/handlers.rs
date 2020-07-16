@@ -20,6 +20,8 @@ pub struct ApiNoteCreateSpec {
 #[derive(Debug, Deserialize)]
 pub struct ApiNoteUpdateSpec {
     pub name: Option<String>,
+    #[serde(rename = "contentRaw")]
+    pub content_raw: Option<String>,
 }
 
 #[derive(Serialize)]
@@ -37,7 +39,7 @@ pub struct GetNoteResponse {
 #[derive(Serialize)]
 pub struct UpdateNoteResponse {
     error: Option<String>,
-    note: Option<NoteSummary>,
+    note: Option<Note>,
 }
 
 fn run_get_notes(session: Session, pool: &DbPool) -> Result<Vec<NoteSummary>, ApiError> {
@@ -84,7 +86,7 @@ fn run_create_note(
     spec: ApiNoteCreateSpec,
     session: Session,
     db_pool: &DbPool,
-) -> Result<NoteSummary, ApiError> {
+) -> Result<Note, ApiError> {
     let content_json: Option<serde_json::Value>;
     if let Some(content) = spec.content_json {
         content_json = Some(content);
@@ -125,12 +127,23 @@ fn run_update_note(
     api_id: String,
     spec: ApiNoteUpdateSpec,
     pool: &DbPool,
-) -> Result<NoteSummary, ApiError> {
+) -> Result<Note, ApiError> {
+    let content_json: Option<serde_json::Value>;
+    if let Some(content_raw) = spec.content_raw {
+        content_json = Some(
+            serde_json::to_value(&parse_markdown_content(content_raw))
+                .map_err(|_| ApiError::InternalError("Bad content conversion".to_string()))?,
+        );
+    } else {
+        content_json = None;
+    }
+
     Ok(Note::update(
         &get_conn(&pool).unwrap(),
         session,
         api_id,
         spec.name,
+        content_json,
     )?)
 }
 

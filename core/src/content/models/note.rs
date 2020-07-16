@@ -33,13 +33,13 @@ pub struct Note {
     #[serde(rename = "id")]
     pub api_id: String,
     #[serde(rename = "versionId")]
-    pub version_api_id: String,
+    pub version_api_id: Option<String>,
     #[serde(rename = "createdAt")]
     pub created_at: DateTime<Utc>,
     #[serde(rename = "updatedAt")]
     pub updated_at: DateTime<Utc>,
     pub name: String,
-    pub content: serde_json::Value,
+    pub content: Option<serde_json::Value>,
 }
 
 #[derive(Insertable, Debug)]
@@ -84,6 +84,15 @@ impl NoteUpdateSpec {
     }
 }
 
+type DbNote = (
+    String,
+    String,
+    DateTime<Utc>,
+    DateTime<Utc>,
+    String,
+    serde_json::Value,
+);
+
 impl Note {
     pub fn find_all(conn: &PgConnection, session: Session) -> Result<Vec<NoteSummary>, ApiError> {
         let notes: Vec<NoteSummary> = all_notes
@@ -94,7 +103,7 @@ impl Note {
     }
 
     pub fn find(conn: &PgConnection, session: Session, api_id: String) -> Result<Note, ApiError> {
-        let note: Note = note_versions::table
+        let result = note_versions::table
             .inner_join(notes::table)
             .select((
                 notes::api_id,
@@ -108,19 +117,26 @@ impl Note {
             .filter(notes::api_id.eq(&api_id))
             .order(note_versions::id.desc())
             .limit(1)
-            .first::<Note>(conn)
+            .first::<DbNote>(conn)
             .map_err(|e| match e {
-                diesel::result::Error::NotFound => ApiError::NotFound(api_id),
+                diesel::result::Error::NotFound => ApiError::NotFound(api_id.to_string()),
                 _ => ApiError::DatabaseError(e),
             })?;
-        Ok(note)
+        Ok(Note {
+            api_id: result.0,
+            version_api_id: Some(result.1),
+            created_at: result.2,
+            updated_at: result.3,
+            name: result.4,
+            content: Some(result.5),
+        })
     }
 
     pub fn create(
         conn: &PgConnection,
         session: Session,
         content: Option<serde_json::Value>,
-    ) -> Result<NoteSummary, ApiError> {
+    ) -> Result<Note, ApiError> {
         begin_txn(conn).unwrap();
 
         let note_result = NoteCreateSpec {
@@ -133,10 +149,17 @@ impl Note {
         if let Ok(created_note) = note_result {
             if let Some(content_data) = content {
                 let note_version = NoteVersion::create(conn, created_note.id, content_data);
-                if let Ok(_created_note_version) = note_version {
+                if let Ok(created_note_version) = note_version {
                     // TODO: log note version creation
                     commit_txn(conn).unwrap();
-                    Ok(created_note)
+                    Ok(Note {
+                        api_id: created_note.api_id,
+                        created_at: created_note.created_at,
+                        updated_at: created_note.updated_at,
+                        name: created_note.name,
+                        version_api_id: Some(created_note_version.api_id),
+                        content: Some(created_note_version.content),
+                    })
                 } else {
                     // TODO: handle failure
                     rollback_txn(conn).unwrap();
@@ -145,7 +168,14 @@ impl Note {
                     ))
                 }
             } else {
-                Ok(created_note)
+                Ok(Note {
+                    api_id: created_note.api_id,
+                    created_at: created_note.created_at,
+                    updated_at: created_note.updated_at,
+                    name: created_note.name,
+                    version_api_id: None,
+                    content: None,
+                })
             }
         } else {
             // TODO: handle failure
@@ -159,13 +189,51 @@ impl Note {
         session: Session,
         api_id: String,
         name: Option<String>,
-    ) -> Result<NoteSummary, ApiError> {
-        NoteUpdateSpec {
+        updated_content: Option<serde_json::Value>,
+    ) -> Result<Note, ApiError> {
+        begin_txn(conn).unwrap();
+        let note_result = NoteUpdateSpec {
             updated_at: Utc::now(),
             name,
         }
-        .update(conn, api_id, session.user_id)
-        // TODO: create new NoteVersion
+        .update(conn, api_id, session.user_id);
+
+        if let Ok(updated_note) = note_result {
+            if let Some(content) = updated_content {
+                let note_version = NoteVersion::create(conn, updated_note.id, content);
+                if let Ok(created_note_version) = note_version {
+                    // TODO: log note version creation
+                    commit_txn(conn).unwrap();
+                    Ok(Note {
+                        api_id: updated_note.api_id,
+                        created_at: updated_note.created_at,
+                        updated_at: updated_note.updated_at,
+                        name: updated_note.name,
+                        version_api_id: Some(created_note_version.api_id),
+                        content: Some(created_note_version.content),
+                    })
+                } else {
+                    // TODO: handle failure
+                    rollback_txn(conn).unwrap();
+                    Err(ApiError::InternalError(
+                        "Failed to create note version".to_string(),
+                    ))
+                }
+            } else {
+                Ok(Note {
+                    api_id: updated_note.api_id,
+                    created_at: updated_note.created_at,
+                    updated_at: updated_note.updated_at,
+                    name: updated_note.name,
+                    version_api_id: None,
+                    content: None,
+                })
+            }
+        } else {
+            // TODO: handle failure
+            rollback_txn(conn).unwrap();
+            Err(ApiError::InternalError("Failed to create note".to_string()))
+        }
     }
 }
 
