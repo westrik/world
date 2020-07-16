@@ -93,6 +93,48 @@ type DbNote = (
     serde_json::Value,
 );
 
+fn create_version_for_note_and_commit(
+    conn: &PgConnection,
+    note: Result<NoteSummary, ApiError>,
+    content: Option<serde_json::Value>,
+) -> Result<Note, ApiError> {
+    if let Ok(note_) = note {
+        if let Some(content_data) = content {
+            let note_version = NoteVersion::create(conn, note_.id, content_data);
+            if let Ok(created_note_version) = note_version {
+                // TODO: log note version creation
+                commit_txn(conn).unwrap();
+                Ok(Note {
+                    api_id: note_.api_id,
+                    created_at: note_.created_at,
+                    updated_at: note_.updated_at,
+                    name: note_.name,
+                    version_api_id: Some(created_note_version.api_id),
+                    content: Some(created_note_version.content),
+                })
+            } else {
+                // TODO: handle failure
+                rollback_txn(conn).unwrap();
+                Err(ApiError::InternalError(
+                    "Failed to create note version".to_string(),
+                ))
+            }
+        } else {
+            Ok(Note {
+                api_id: note_.api_id,
+                created_at: note_.created_at,
+                updated_at: note_.updated_at,
+                name: note_.name,
+                version_api_id: None,
+                content: None,
+            })
+        }
+    } else {
+        rollback_txn(conn).unwrap();
+        Err(ApiError::InternalError("Failed to create note".to_string()))
+    }
+}
+
 impl Note {
     pub fn find_all(conn: &PgConnection, session: Session) -> Result<Vec<NoteSummary>, ApiError> {
         let notes: Vec<NoteSummary> = all_notes
@@ -138,50 +180,13 @@ impl Note {
         content: Option<serde_json::Value>,
     ) -> Result<Note, ApiError> {
         begin_txn(conn).unwrap();
-
         let note_result = NoteCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Note),
             name: generate_mnemonic(DEFAULT_MNEMONIC_LENGTH),
             user_id: session.user_id,
         }
         .insert(conn);
-
-        if let Ok(created_note) = note_result {
-            if let Some(content_data) = content {
-                let note_version = NoteVersion::create(conn, created_note.id, content_data);
-                if let Ok(created_note_version) = note_version {
-                    // TODO: log note version creation
-                    commit_txn(conn).unwrap();
-                    Ok(Note {
-                        api_id: created_note.api_id,
-                        created_at: created_note.created_at,
-                        updated_at: created_note.updated_at,
-                        name: created_note.name,
-                        version_api_id: Some(created_note_version.api_id),
-                        content: Some(created_note_version.content),
-                    })
-                } else {
-                    // TODO: handle failure
-                    rollback_txn(conn).unwrap();
-                    Err(ApiError::InternalError(
-                        "Failed to create note version".to_string(),
-                    ))
-                }
-            } else {
-                Ok(Note {
-                    api_id: created_note.api_id,
-                    created_at: created_note.created_at,
-                    updated_at: created_note.updated_at,
-                    name: created_note.name,
-                    version_api_id: None,
-                    content: None,
-                })
-            }
-        } else {
-            // TODO: handle failure
-            rollback_txn(conn).unwrap();
-            Err(ApiError::InternalError("Failed to create note".to_string()))
-        }
+        create_version_for_note_and_commit(conn, note_result, content)
     }
 
     pub fn update(
@@ -197,43 +202,7 @@ impl Note {
             name,
         }
         .update(conn, api_id, session.user_id);
-
-        if let Ok(updated_note) = note_result {
-            if let Some(content) = updated_content {
-                let note_version = NoteVersion::create(conn, updated_note.id, content);
-                if let Ok(created_note_version) = note_version {
-                    // TODO: log note version creation
-                    commit_txn(conn).unwrap();
-                    Ok(Note {
-                        api_id: updated_note.api_id,
-                        created_at: updated_note.created_at,
-                        updated_at: updated_note.updated_at,
-                        name: updated_note.name,
-                        version_api_id: Some(created_note_version.api_id),
-                        content: Some(created_note_version.content),
-                    })
-                } else {
-                    // TODO: handle failure
-                    rollback_txn(conn).unwrap();
-                    Err(ApiError::InternalError(
-                        "Failed to create note version".to_string(),
-                    ))
-                }
-            } else {
-                Ok(Note {
-                    api_id: updated_note.api_id,
-                    created_at: updated_note.created_at,
-                    updated_at: updated_note.updated_at,
-                    name: updated_note.name,
-                    version_api_id: None,
-                    content: None,
-                })
-            }
-        } else {
-            // TODO: handle failure
-            rollback_txn(conn).unwrap();
-            Err(ApiError::InternalError("Failed to create note".to_string()))
-        }
+        create_version_for_note_and_commit(conn, note_result, updated_content)
     }
 }
 
