@@ -1,7 +1,7 @@
 import { h } from 'preact';
 
 interface PageContainerProps {
-    children: h.JSX.Element | Array<h.JSX.Element>;
+    children: h.JSX.Element;
 }
 
 export default function PageContainer(props: PageContainerProps): h.JSX.Element {

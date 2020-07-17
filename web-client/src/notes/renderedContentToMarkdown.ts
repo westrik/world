@@ -84,7 +84,6 @@ function renderTable(_data: TableData, _children: Array<Element>): string {
 function renderBlockElement(el: Element): string {
     const { element, children } = el;
     if (isHtml(element)) {
-        console.log('is html');
         return element.html;
     } else if (isParagraph(element)) {
         return `\n${renderElements(children)}`;

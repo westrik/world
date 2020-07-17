@@ -31,6 +31,7 @@ export default function CodeEditor(props: CodeEditorProps): h.JSX.Element {
         } else {
             const newCodeMirror = CodeMirror.fromTextArea(textareaNode.current, {
                 lineNumbers: true,
+                lineWrapping: true,
                 mode: props.language,
                 keyMap: 'vim',
                 theme: 'westrikworld',

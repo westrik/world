@@ -21,6 +21,7 @@
   }
 
   .note-preview, .code-editor {
+    min-height: 100%;
     max-height: calc(100vh - #{$navigation-menu-header-height});
     overflow-y: auto;
   }

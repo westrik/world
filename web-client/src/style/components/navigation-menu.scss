@@ -32,7 +32,7 @@ header {
   margin: $navigation-menu-brand-top-margin 0 0 5%;
 
   a {
-    color: #fff;
+    color: var(--main-text-color);
   }
 }
 
