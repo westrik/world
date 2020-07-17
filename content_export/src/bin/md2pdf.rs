@@ -1,5 +1,6 @@
-use content_export::content_to_pdf;
 use std::{env, io, process};
+
+use world_content_export::content_to_pdf;
 
 const LATEX_PRELUDE: &str = r#"
 \documentclass{article}
