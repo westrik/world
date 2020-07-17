@@ -7,6 +7,7 @@ import { AuthProvider } from '~auth/AuthContext';
 import { AuthedRoute } from '~auth/AuthedRoute';
 import SignInForm from '~auth/SignInForm';
 import BranchList from '~branches/BranchList';
+import ComponentLibraryPreview from '~components/previews/ComponentLibraryPreview';
 import ErrorScreen from '~components/ErrorScreen';
 import Dashboard from '~dashboard/Dashboard';
 import LibraryItemList from '~library/LibraryItemList';
@@ -19,6 +20,7 @@ export default function App(): h.JSX.Element {
         <AuthProvider>
             <Router>
                 <Route path="/login" component={SignInForm} />
+                <Route path="/component-library" component={ComponentLibraryPreview} />
                 <AuthedRoute path="/" component={Dashboard} />
                 <AuthedRoute path="/tasks" component={TaskList} />
                 <AuthedRoute path="/notes" component={NoteList} />
