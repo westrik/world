@@ -11,19 +11,20 @@ impl MarkdownRender for Content {
             .elements
             .iter()
             .map(|el| {
-                match el {
-                    // Event::Start(tag) => {},
-                    // Event::End(_) => {},
-                    // Event::Text(_) => {},
-                    // Event::Code(_) => {},
-                    // Event::Html(_) => {},
-                    // Event::FootnoteReference(_) => {},
-                    // Event::SoftBreak => {},
-                    // Event::HardBreak => {},
-                    // Event::Rule => {},
-                    // Event::TaskListMarker(_) => {},
-                    _ => el.to_markdown(),
-                }
+                el.to_markdown()
+                // match el {
+                //     Event::Start(tag) => {},
+                //     Event::End(_) => {},
+                //     Event::Text(_) => {},
+                //     Event::Code(_) => {},
+                //     Event::Html(_) => {},
+                //     Event::FootnoteReference(_) => {},
+                //     Event::SoftBreak => {},
+                //     Event::HardBreak => {},
+                //     Event::Rule => {},
+                //     Event::TaskListMarker(_) => {},
+                //     _ => el.to_markdown(),
+                // }
             })
             .collect();
         event_strs.join("")
