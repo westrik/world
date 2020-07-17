@@ -21,6 +21,8 @@ export default function CodeEditor(props: CodeEditorProps): h.JSX.Element {
     const textareaNode = useRef<HTMLTextAreaElement>(null);
     const [codeMirror, setCodeMirror] = useState<EditorFromTextArea | null>(null);
 
+    // Note: this component does not restart CodeMirror when props.content changes
+    // TODO: fix this ^
     useEffect(() => {
         if (codeMirror) {
             return (): void => {

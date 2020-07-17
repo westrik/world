@@ -10,10 +10,12 @@ import fetchNote from '~notes/fetchNote';
 import renderedContentToMarkdown from '~notes/renderedContentToMarkdown';
 import Stack, { StackOrientation } from '~components/layout/Stack';
 import NoteContent from '~notes/NoteContent';
+import updateNote from '~notes/updateNote';
 
 interface NoteEditorProps {
     content: Content;
     onChange: (content: string) => void;
+    onTriggerRender: () => void;
 }
 
 function NoteEditor(props: NoteEditorProps): h.JSX.Element {
@@ -22,7 +24,12 @@ function NoteEditor(props: NoteEditorProps): h.JSX.Element {
         <Stack orientation={StackOrientation.HORIZONTAL}>
             <CodeEditor language={EditorLanguage.MARKDOWN} content={originalContent} onChange={props.onChange} />
             <div className="note-preview">
-                <NoteContent elements={props.content.elements} />
+                <div className="scrolling-viewport">
+                    <NoteContent elements={props.content.elements} />
+                </div>
+                <div className="button-bar">
+                    <button onClick={props.onTriggerRender}>Render</button>
+                </div>
             </div>
         </Stack>
     );
@@ -61,9 +68,18 @@ export default function FetchingNoteEditor(props: Props): h.JSX.Element {
             {contentJson ? (
                 <NoteEditor
                     content={contentJson}
-                    onChange={(content: string): void => {
-                        console.log(content);
-                        setContentSource(content);
+                    onChange={setContentSource}
+                    onTriggerRender={(): void => {
+                        console.log(contentSource);
+                        if (contentSource) {
+                            updateNote(authContext, `note_${props.strippedApiId}`, contentSource, (note: ApiNote) => {
+                                if (note.content) {
+                                    setContentJson(note.content);
+                                } else {
+                                    // TODO: error toast
+                                }
+                            });
+                        }
                     }}
                 />
             ) : (
