@@ -1,6 +1,5 @@
 use std::fs::File;
 use std::io::Write;
-use tectonic;
 
 pub fn content_to_pdf(content: &str, output_file_path: Option<&str>) {
     // TODO: convert markdown content to latex
