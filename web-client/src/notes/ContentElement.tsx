@@ -188,6 +188,7 @@ function BlockElement(props: BlockElementProps): h.JSX.Element {
     const { element, children } = props.element;
     if (isHtml(element)) {
         // TODO: strip and validate on server-side; set with dangerouslySetInnerHTML
+        return <div className="html-container" />;
     } else if (isParagraph(element)) {
         return <p>{renderElements(children)}</p>;
     } else if (isCodeBlock(element)) {

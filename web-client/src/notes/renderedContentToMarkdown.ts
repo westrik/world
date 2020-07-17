@@ -33,7 +33,7 @@ import {
 import { assertCondition } from '~utils/asserts';
 
 function renderCodeBlock(language: string | null, children: Array<Element>): string {
-    return `\`\`\`${language}\n${renderElements(children)}\`\`\``;
+    return `\n\`\`\`${language}\n${renderElements(children)}\`\`\``;
 }
 
 function renderHeader(headerType: HeaderType, children: Array<Element>): string {
@@ -55,7 +55,7 @@ function renderHeader(headerType: HeaderType, children: Array<Element>): string 
 
 function renderLink(data: LinkData, children: Array<Element>): string {
     const { destinationUrl, title } = data;
-    const paddedTitle = title ? ` "${title}"` : null;
+    const paddedTitle = title ? ` "${title}"` : '';
     return `[${renderElements(children)}](${destinationUrl}${paddedTitle})`;
 }
 
@@ -84,7 +84,8 @@ function renderTable(_data: TableData, _children: Array<Element>): string {
 function renderBlockElement(el: Element): string {
     const { element, children } = el;
     if (isHtml(element)) {
-        // TODO: strip and validate on server-side; set with dangerouslySetInnerHTML
+        console.log('is html');
+        return element.html;
     } else if (isParagraph(element)) {
         return `\n${renderElements(children)}`;
     } else if (isCodeBlock(element)) {
@@ -106,7 +107,7 @@ function renderBlockElement(el: Element): string {
     } else if (isRule(element)) {
         return '\n-------\n';
     }
-    assertCondition(false, 'Unsupported block element!');
+    assertCondition(false, `Unsupported block element!: ${element}`);
 }
 
 function renderInlineElement(el: Element): string {

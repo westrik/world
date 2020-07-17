@@ -33,6 +33,7 @@ export default function CodeEditor(props: CodeEditorProps): h.JSX.Element {
                 lineNumbers: true,
                 mode: props.language,
                 keyMap: 'vim',
+                theme: 'westrikworld',
             });
             newCodeMirror.on('change', (editor: Editor): void => {
                 const currentContent = editor.getValue();
