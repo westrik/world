@@ -9,6 +9,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    .scrolling-viewport {
+      flex: 1;
+      display: flex;
+    }
+
+    .button-bar {
+
+    }
   }
 
   .note-preview, .code-editor {
