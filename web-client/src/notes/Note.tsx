@@ -6,7 +6,7 @@ interface Props {
     strippedApiId?: string;
 }
 
-// TODO: remove this whole component?
+// TODO: use code-splitting to load CodeMirror at runtime only
 export default function Note(props: Props): h.JSX.Element {
     return <NoteEditor strippedApiId={props.strippedApiId} />;
 }

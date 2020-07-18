@@ -51,6 +51,7 @@ export type ElementData =
     | ListElement
     | ListItemElement
     | TaskListMarkerElement
+    | BlockQuoteElement
     | FootnoteDefinitionElement
     | FootnoteReferenceElement
     | TableElement
@@ -68,6 +69,7 @@ export type BlockElement =
     | HeaderElement
     | ImageElement
     | ListElement
+    | BlockQuoteElement
     | FootnoteDefinitionElement
     | TableElement
     | SoftBreakElement
@@ -147,6 +149,7 @@ export interface TaskListMarkerElement {
 export interface TaskListMarkerData {
     checked: boolean;
 }
+export type BlockQuoteElement = 'blockQuote';
 export interface FootnoteDefinitionElement {
     footnoteDefinition: string;
 }
@@ -217,6 +220,9 @@ export function isListItem(el: ElementData): el is ListItemElement {
 export function isTaskListMarker(el: ElementData): el is TaskListMarkerElement {
     return elementDataHasProperty(el, 'taskListMarker');
 }
+export function isBlockQuote(el: ElementData): el is BlockQuoteElement {
+    return el === 'blockQuote';
+}
 export function isFootnoteDefinition(el: ElementData): el is FootnoteDefinitionElement {
     return elementDataHasProperty(el, 'footnoteDefinition');
 }
@@ -253,6 +259,7 @@ export function isBlockElement(el: ElementData): el is BlockElement {
         isHeaderElement(el) ||
         isImage(el) ||
         isList(el) ||
+        isBlockQuote(el) ||
         isFootnoteDefinition(el) ||
         isTable(el) ||
         isSoftBreak(el) ||

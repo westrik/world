@@ -3,6 +3,7 @@ import {
     Element,
     HeaderType,
     isBlockElement,
+    isBlockQuote,
     isCode,
     isCodeBlock,
     isEmphasis,
@@ -199,18 +200,25 @@ function BlockElement(props: BlockElementProps): h.JSX.Element {
         return <Image link={element.image} cxn={children} />;
     } else if (isList(element)) {
         return <ul>{renderElements(children)}</ul>;
+    } else if (isBlockQuote(element)) {
+        return <blockquote>{renderElements(children)}</blockquote>;
     } else if (isFootnoteDefinition(element)) {
         // TODO
     } else if (isTable(element)) {
         return <Table data={element.table} cxn={children} />;
     } else if (isSoftBreak(element)) {
-        return <wbr />;
+        return (
+            <span>
+                {' '}
+                <wbr />
+            </span>
+        );
     } else if (isHardBreak(element)) {
         return <br />;
     } else if (isRule(element)) {
         return <hr />;
     }
-    assertCondition(false, 'Unsupported block element!');
+    assertCondition(false, `Unsupported block element!: ${element}`);
 }
 
 interface InlineElementProps {
@@ -242,7 +250,7 @@ function InlineElement(props: InlineElementProps): h.JSX.Element {
             </sup>
         );
     }
-    assertCondition(false, 'Unsupported inline element!');
+    assertCondition(false, `Unsupported inline element!: ${element}`);
 }
 
 interface ContentElementProps {
@@ -257,5 +265,5 @@ export default function ContentElement(props: ContentElementProps): h.JSX.Elemen
     } else if (isInlineElement(el.element)) {
         return <InlineElement element={el} />;
     }
-    assertCondition(false, 'Unsupported element!');
+    assertCondition(false, `Unsupported element!: ${el.element}`);
 }
