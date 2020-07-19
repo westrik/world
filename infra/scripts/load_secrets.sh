@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # TODO: store this in secretsmanager? seems weird but it's the only non-secret env var rn
-CORS_ORIGIN_URL="https://westrikworld.com"
+CORS_ORIGIN_URL="https://westrik.world"
 
 RAMFS_MOUNT_DIR=/secrets
 RAMFS_SIZE=64M

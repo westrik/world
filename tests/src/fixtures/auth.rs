@@ -5,7 +5,7 @@ use world_core::auth::models::user::{ApiUserCreateSpec, User};
 use world_core::schema::{sessions, sessions::dsl::sessions as all_sessions};
 use world_core::schema::{users, users::dsl::users as all_users};
 
-pub const TEST_USER_EMAIL_ADDRESS: &str = "dolores@westrikworld.com";
+pub const TEST_USER_EMAIL_ADDRESS: &str = "dolores@westrik.world";
 pub const TEST_USER_FULL_NAME: &str = "Dolores Abernathy";
 pub const TEST_USER_PASSWORD: &str = "password123";
 

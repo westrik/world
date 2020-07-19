@@ -1,5 +1,5 @@
 {
-  "domains": ["api.westrikworld.com"],
+  "domains": ["api.westrik.world"],
   "email": "m+wwadmin@ttwestrik.com",
   "secret_id": "westrikworld_api_cert"
 }

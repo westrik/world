@@ -8,7 +8,7 @@ export const SITE_NAME = 'westrikworld';
 const API_HOSTS = {
     local: 'https://api.local.westrik.world',
     staging: 'https://api.staging.westrik.world',
-    production: 'https://api.westrikworld.com',
+    production: 'https://api.westrik.world',
 };
 let host = API_HOSTS.local;
 if (env === 'staging') {
