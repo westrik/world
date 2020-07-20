@@ -35,7 +35,7 @@ resource "aws_lb" "app" {
 resource "aws_lb_listener" "app" {
   load_balancer_arn = aws_lb.app.arn
   port              = 443
-  protocol          = "TCP_UDP"
+  protocol          = "TCP"
 
   default_action {
     type             = "forward"
@@ -45,25 +45,14 @@ resource "aws_lb_listener" "app" {
 
 
 resource "aws_lb_target_group" "app_blue" {
-  name     = "app-lb-target-group-blue"
+  name     = "app-lb-target-group"
   port     = 443
-  protocol = "TCP_UDP"
+  protocol = "TCP"
   vpc_id   = var.app_vpc_id
 
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-  }
-}
-resource "aws_lb_target_group" "app_green" {
-  name     = "app-lb-target-group-green"
-  port     = 443
-  protocol = "TCP_UDP"
-  vpc_id   = var.app_vpc_id
-
-  health_check {
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
+  stickiness {
+    enabled = false
+    type = "lb_cookie"
   }
 }
 
@@ -111,7 +100,7 @@ data "aws_lambda_invocation" "renew_certificate" {
 
   input = <<JSON
 {
-  "domains": ["${var.api_domain_name}", "${var.api_alternate_domain_name}"],
+  "domains": ["${var.api_domain_name}"],
   "email": "${var.admin_email}",
   "secret_id": "${aws_secretsmanager_secret.api_cert.name}"
 }

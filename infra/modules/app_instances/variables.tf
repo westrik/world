@@ -26,10 +26,6 @@ variable "app_blue_target_group_arn" {
   type = string
 }
 
-variable "app_green_target_group_arn" {
-  type = string
-}
-
 variable "app_subnet_ids" {
   type = list(string)
 }

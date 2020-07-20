@@ -31,10 +31,6 @@ variable "api_domain_name" {
   default = "api.westrik.world"
 }
 
-variable "api_alternate_domain_name" {
-  default = "api.westrikworld.com"
-}
-
 variable "root_domain_name" {
   default = "westrik.world"
 }

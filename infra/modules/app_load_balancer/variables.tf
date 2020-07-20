@@ -26,10 +26,6 @@ variable "api_domain_name" {
   type = string
 }
 
-variable "api_alternate_domain_name" {
-  type = string
-}
-
 variable "root_domain_name" {
   type = string
 }
