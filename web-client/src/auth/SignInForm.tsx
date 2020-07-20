@@ -4,11 +4,10 @@ import { useContext, useState } from 'preact/hooks';
 import Auth from '~auth/AuthContext';
 import { authenticate, SignInResponse } from '~auth/authenticate';
 import { SITE_NAME } from '~config';
-
-import { EmailField, PasswordField } from '~components/InputFields';
 import LoadingSpinner from '~components/LoadingSpinner';
-import SubmitButton from '~components/SubmitButton';
-import Toggle from '~components/Toggle';
+import { EmailField, PasswordField } from '~components/inputs/InputFields';
+import SubmitButton from '~components/inputs/SubmitButton';
+import Toggle from '~components/inputs/Toggle';
 
 function SignInForm(): h.JSX.Element {
     const authContext = useContext(Auth);

@@ -1,6 +1,6 @@
 import { h } from 'preact';
 
-import CodeEditor, { EditorLanguage } from '~components/CodeEditor';
+import CodeEditor, { EditorLanguage } from '~components/inputs/CodeEditor';
 import PageContainer from '~components/layout/PageContainer';
 import Sheet from '~components/layout/Sheet';
 import noop from '~utils/noop';

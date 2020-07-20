@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import Button, { ButtonSize } from '~components/Button';
+import Button, { ButtonSize } from '~components/inputs/Button';
 import Popover from '~components/Popover';
 
 export default { title: 'Button' };

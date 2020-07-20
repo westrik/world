@@ -3,7 +3,8 @@ import { h } from 'preact';
 import PageContainer from '~components/layout/PageContainer';
 import Sheet from '~components/layout/Sheet';
 import Stack, { StackOrientation } from '~components/layout/Stack';
-import Swatch from '~components/previews/Swatch';
+
+import Swatch from './Swatch';
 
 const COLOR_SWATCH_MATRIX = [
     ['red', 'orange', 'yellow', 'green', 'teal', 'blue', 'indigo', 'purple', 'pink'],

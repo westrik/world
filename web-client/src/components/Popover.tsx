@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { Manager, Popper, Reference } from 'react-popper';
 import { ReactText } from 'react';
-import { ButtonProps } from '~components/Button';
+import { ButtonProps } from '~components/inputs/Button';
 import noop from '~utils/noop';
 
 interface Props {

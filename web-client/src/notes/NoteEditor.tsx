@@ -3,13 +3,13 @@ import { useContext, useEffect, useMemo, useState } from 'preact/hooks';
 
 import Auth from '~auth/AuthContext';
 import AppContainer from '~components/AppContainer';
-import CodeEditor, { EditorLanguage } from '~components/CodeEditor';
 import LoadingSpinner from '~components/LoadingSpinner';
+import CodeEditor, { EditorLanguage } from '~components/inputs/CodeEditor';
+import Stack, { StackOrientation } from '~components/layout/Stack';
 import { ApiNote, Content } from '~models/Note';
+import NoteContent from '~notes/NoteContent';
 import fetchNote from '~notes/fetchNote';
 import renderedContentToMarkdown from '~notes/renderedContentToMarkdown';
-import Stack, { StackOrientation } from '~components/layout/Stack';
-import NoteContent from '~notes/NoteContent';
 import updateNote from '~notes/updateNote';
 
 interface NoteEditorProps {
