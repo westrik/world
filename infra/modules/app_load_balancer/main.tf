@@ -52,7 +52,7 @@ resource "aws_lb_target_group" "app_blue" {
 
   stickiness {
     enabled = false
-    type = "lb_cookie"
+    type    = "lb_cookie"
   }
 }
 
