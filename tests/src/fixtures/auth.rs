@@ -9,13 +9,26 @@ pub const TEST_USER_EMAIL_ADDRESS: &str = "dolores@westrik.world";
 pub const TEST_USER_FULL_NAME: &str = "Dolores Abernathy";
 pub const TEST_USER_PASSWORD: &str = "password123";
 
-pub fn create_test_user(conn: &PgConnection) {
-    println!("🤖 creating test user");
+pub const TEST_USER2_EMAIL_ADDRESS: &str = "hÉLLOwOrLd@WESTRIK.WORLD";
+pub const TEST_USER2_FULL_NAME: &str = "ﾟ･✿ヾ╲(｡◕‿◕｡)╱✿･ﾟ";
+pub const TEST_USER2_PASSWORD: &str = "dB7TR2)X/4X$YnRRAo4^2M3ETC4QpVAUn]dTtUb+q9majn>3T$Umt{dLL[jT2Xovi3rqWCy/9[(b/9nefi=W@uuv2pdL+Z7RyZMPfd4iAWEw28XyK?Mtu3FUU2,xsV^y";
+
+pub fn create_test_users(conn: &PgConnection) {
+    println!("🤖 creating test users");
     User::create(
         ApiUserCreateSpec {
             email_address: TEST_USER_EMAIL_ADDRESS.to_string(),
             full_name: Some(TEST_USER_FULL_NAME.to_string()),
             password: TEST_USER_PASSWORD.to_string(),
+        },
+        conn,
+    )
+    .unwrap();
+    User::create(
+        ApiUserCreateSpec {
+            email_address: TEST_USER2_EMAIL_ADDRESS.to_string(),
+            full_name: Some(TEST_USER2_FULL_NAME.to_string()),
+            password: TEST_USER2_PASSWORD.to_string(),
         },
         conn,
     )

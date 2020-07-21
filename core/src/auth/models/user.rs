@@ -59,7 +59,7 @@ lazy_static! {
 impl User {
     pub fn create(new_user: ApiUserCreateSpec, conn: &PgConnection) -> Result<User, ApiError> {
         let new_user = UserCreateSpec {
-            email_address: new_user.email_address,
+            email_address: new_user.email_address.to_lowercase(),
             full_name: new_user.full_name,
             password_hash: Self::hash_password(new_user.password),
         };
@@ -72,7 +72,7 @@ impl User {
         conn: &PgConnection,
     ) -> Result<User, ApiError> {
         let user: User = all_users
-            .filter(users::email_address.eq(email_address))
+            .filter(users::email_address.eq(email_address.to_lowercase()))
             .filter(users::password_hash.eq(Self::hash_password(password.to_string())))
             .first(conn)
             .map_err(|e| match e {

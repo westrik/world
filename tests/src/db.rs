@@ -23,7 +23,7 @@ pub fn create_test_db() -> DbPool {
     let conn = get_conn(&pool).unwrap();
     embedded_migrations::run_with_output(&conn, &mut io::stdout().lock())
         .expect("running migrations failed");
-    create_test_user(&conn);
+    create_test_users(&conn);
     create_test_session(&conn);
 
     pool
@@ -35,8 +35,6 @@ pub fn destroy_test_db(pool: &DbPool) {
     rollback_txn(&conn).unwrap();
     // TODO: automatically drop tables in the right order
     conn.execute("DROP TABLE IF EXISTS tasks").unwrap();
-    conn.execute("DROP TABLE IF EXISTS block_versions").unwrap();
-    conn.execute("DROP TABLE IF EXISTS blocks").unwrap();
     conn.execute("DROP TABLE IF EXISTS note_versions").unwrap();
     conn.execute("DROP TABLE IF EXISTS notes").unwrap();
     conn.execute("DROP TABLE IF EXISTS sessions").unwrap();
