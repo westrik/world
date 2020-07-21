@@ -1,6 +1,6 @@
+use crate::db::DbPool;
 use crate::notes::handlers;
 use crate::notes::handlers::{ApiNoteCreateSpec, ApiNoteUpdateSpec};
-use crate::db::DbPool;
 use crate::routes::{json_body, with_db, with_session};
 use crate::utils::list_options::ListOptions;
 use warp::Filter;

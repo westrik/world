@@ -1,7 +1,7 @@
 use crate::auth::models::session::Session;
-use crate::library::models::library_item::LibraryItem;
 use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
+use crate::library::models::library_item::LibraryItem;
 use crate::utils::list_options::ListOptions;
 use std::convert::Infallible;
 use warp::http::StatusCode;
@@ -44,7 +44,10 @@ pub struct UpdateLibraryItemResponse {
     library_item: Option<LibraryItem>,
 }
 
-fn run_get_library_items(session: Session, pool: &DbPool) -> Result<Vec<LibraryItemSummary>, ApiError> {
+fn run_get_library_items(
+    session: Session,
+    pool: &DbPool,
+) -> Result<Vec<LibraryItemSummary>, ApiError> {
     Ok(LibraryItem::find_all(&get_conn(&pool).unwrap(), session)?)
 }
 
@@ -64,8 +67,16 @@ pub async fn list_library_items(
     ))
 }
 
-fn run_get_library_item(session: Session, pool: &DbPool, api_id: String) -> Result<LibraryItem, ApiError> {
-    Ok(LibraryItem::find(&get_conn(&pool).unwrap(), session, api_id)?)
+fn run_get_library_item(
+    session: Session,
+    pool: &DbPool,
+    api_id: String,
+) -> Result<LibraryItem, ApiError> {
+    Ok(LibraryItem::find(
+        &get_conn(&pool).unwrap(),
+        session,
+        api_id,
+    )?)
 }
 
 pub async fn get_library_item(
@@ -89,10 +100,7 @@ fn run_create_library_item(
     session: Session,
     db_pool: &DbPool,
 ) -> Result<LibraryItem, ApiError> {
-    Ok(LibraryItem::create(
-        &get_conn(&db_pool).unwrap(),
-        session,
-    )?)
+    Ok(LibraryItem::create(&get_conn(&db_pool).unwrap(), session)?)
 }
 
 pub async fn create_library_item(

@@ -1,8 +1,8 @@
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 
-use crate::library::models::library_item::LibraryItem;
 use crate::errors::ApiError;
+use crate::library::models::library_item::LibraryItem;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::library_item_versions;
 
@@ -51,6 +51,6 @@ impl LibraryItemVersion {
             api_id: generate_resource_identifier(ResourceType::LibraryItemVersion),
             asset_url,
         }
-            .insert(conn)
+        .insert(conn)
     }
 }
