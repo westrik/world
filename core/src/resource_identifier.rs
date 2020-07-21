@@ -13,6 +13,7 @@ pub enum ResourceType {
     Tag,
     Link,
     LibraryItem,
+    LibraryItemVersion,
 }
 
 lazy_static! {
@@ -20,6 +21,7 @@ lazy_static! {
         let mut m = HashMap::new();
         m.insert(ResourceType::NoteVersion, "nv");
         m.insert(ResourceType::LibraryItem, "li");
+        m.insert(ResourceType::LibraryItemVersion, "liv");
         m
     };
 }
@@ -78,8 +80,13 @@ pub mod resource_identifiers {
             .unwrap()
             .is_match(&link_id));
 
-        let img_id = generate_resource_identifier(LibraryItem);
+        let li_id = generate_resource_identifier(LibraryItem);
         assert!(Regex::new(r"^li_[A-Za-z0-9]{8}$")
+            .unwrap()
+            .is_match(&img_id));
+
+        let liv_id = generate_resource_identifier(LibraryItemVersion);
+        assert!(Regex::new(r"^liv_[A-Za-z0-9]{8}$")
             .unwrap()
             .is_match(&img_id));
 
