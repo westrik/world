@@ -1,5 +1,5 @@
-use crate::content::handlers;
-use crate::content::handlers::{ApiNoteCreateSpec, ApiNoteUpdateSpec};
+use crate::library::handlers;
+use crate::library::handlers::{ApiLibraryItemCreateSpec, ApiLibraryItemUpdateSpec};
 use crate::db::DbPool;
 use crate::routes::{json_body, with_db, with_session};
 use crate::utils::list_options::ListOptions;
@@ -8,67 +8,67 @@ use warp::Filter;
 pub fn routes(
     db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    notes_list(db_pool.clone())
-        .or(note_get(db_pool.clone()))
-        .or(note_create(db_pool.clone()))
-        .or(note_update(db_pool.clone()))
-        .or(note_delete(db_pool))
+    library_items_list(db_pool.clone())
+        .or(library_item_get(db_pool.clone()))
+        .or(library_item_create(db_pool.clone()))
+        .or(library_item_update(db_pool.clone()))
+        .or(library_item_delete(db_pool))
 }
 
-/// GET /note?offset=3&limit=5
-pub fn notes_list(
+/// GET /library-item?offset=3&limit=5
+pub fn library_items_list(
     db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("note")
+    warp::path!("library-item")
         .and(warp::get())
         .and(warp::query::<ListOptions>())
         .and(with_session(db_pool.clone()))
         .and(with_db(db_pool))
-        .and_then(handlers::list_notes)
+        .and_then(handlers::list_library_items)
 }
 
-/// GET /note/:id
-pub fn note_get(
+/// GET /library-item/:id
+pub fn library_item_get(
     db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("note" / String)
+    warp::path!("library-item" / String)
         .and(warp::get())
         .and(with_session(db_pool.clone()))
         .and(with_db(db_pool))
-        .and_then(handlers::get_note)
+        .and_then(handlers::get_library_item)
 }
 
-/// POST /note with JSON body
-pub fn note_create(
+/// POST /library-item with JSON body
+pub fn library_item_create(
     db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("note")
+    warp::path!("library-item")
         .and(warp::post())
-        .and(json_body::<ApiNoteCreateSpec>())
+        .and(json_body::<ApiLibraryItemCreateSpec>())
         .and(with_session(db_pool.clone()))
         .and(with_db(db_pool))
-        .and_then(handlers::create_note)
+        .and_then(handlers::create_library_item)
 }
 
-/// PATCH /note/:id with JSON body
-pub fn note_update(
+/// PATCH /library-item/:id with JSON body
+pub fn library_item_update(
     db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("note" / String)
+    warp::path!("library-item" / String)
         .and(warp::patch())
-        .and(json_body::<ApiNoteUpdateSpec>())
+        .and(json_body::<ApiLibraryItemUpdateSpec>())
         .and(with_session(db_pool.clone()))
         .and(with_db(db_pool))
-        .and_then(handlers::update_note)
+        .and_then(handlers::update_library_item)
 }
 
-/// DELETE /note/:id
-pub fn note_delete(
+/// DELETE /library-item/:id
+pub fn library_item_delete(
     db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("note" / String)
+    warp::path!("library-item" / String)
         .and(warp::delete())
         .and(with_session(db_pool.clone()))
         .and(with_db(db_pool))
-        .and_then(handlers::delete_note)
+        .and_then(handlers::delete_library_item)
 }

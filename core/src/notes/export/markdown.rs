@@ -1,4 +1,4 @@
-use crate::content::schema::*;
+use crate::notes::schema::*;
 
 pub trait MarkdownRender {
     fn to_markdown(&self) -> String;
@@ -40,7 +40,7 @@ impl MarkdownRender for Element {
 #[cfg(test)]
 pub mod markdown_output {
     // use crate::content::schema::Content;
-    use crate::content::parsing::markdown_to_elements;
+    use crate::notes::parsing::markdown_to_elements;
 
     #[test]
     fn content_to_markdown() {
