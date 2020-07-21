@@ -1,39 +1,59 @@
 // ---------- FONT-FACE ---------- //
 
 @font-face {
-  font-family: 'Konsole0.5';
+  font-family: 'Konsole1.0';
   font-style: normal;
   font-weight: normal;
   src:
-    local('Konsole0.5-Regular'),
-    url('../static/font/Konsole0.5-Regular.woff2') format('woff2'),
-    url('../static/font/Konsole0.5-Regular.woff') format('woff');
+    local('Konsole1.0-Regular'),
+    url('../static/font/Konsole1.0-Regular.woff2') format('woff2'),
+    url('../static/font/Konsole1.0-Regular.woff') format('woff');
 }
 
 @font-face {
-  font-family: 'Konsole0.5';
+  font-family: 'Konsole1.0';
+  font-style: italic;
+  font-weight: normal;
+  src:
+    local('Konsole1.0-RegularItalic'),
+    url('../static/font/Konsole1.0-RegularItalic.woff2') format('woff2'),
+    url('../static/font/Konsole1.0-RegularItalic.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Konsole1.0';
   font-style: normal;
   font-weight: bold;
   src:
-    local('Konsole0.5-Semibold'),
-    url('../static/font/Konsole0.5-Semibold.woff2') format('woff2'),
-    url('../static/font/Konsole0.5-Semibold.woff') format('woff');
+    local('Konsole1.0-Semibold'),
+    url('../static/font/Konsole1.0-Semibold.woff2') format('woff2'),
+    url('../static/font/Konsole1.0-Semibold.woff') format('woff');
 }
 
 @font-face {
-  font-family: 'Konsole0.5';
+  font-family: 'Konsole1.0';
+  font-style: italic;
+  font-weight: bold;
+  src:
+    local('Konsole1.0-SemiboldItalic'),
+    url('../static/font/Konsole1.0-SemiboldItalic.woff2') format('woff2'),
+    url('../static/font/Konsole1.0-SemiboldItalic.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Konsole1.0';
   font-style: normal;
   font-weight: 900;
   src:
-    local('Konsole0.5-ExpandedBold'),
-    url('../static/font/Konsole0.5-ExpandedBold.woff2') format('woff2'),
-    url('../static/font/Konsole0.5-ExpandedBold.woff') format('woff');
+    local('Konsole1.0-ExpandedBold'),
+    url('../static/font/Konsole1.0-ExpandedBold.woff2') format('woff2'),
+    url('../static/font/Konsole1.0-ExpandedBold.woff') format('woff');
 }
 
 // ---------- BASE TYPE LAYOUT (derived from Golden Ratio Typography) ---------- //
 
 body {
-  font-family: "Konsole0.5", -apple-system, sans-serif;
+  font-family: "Konsole1.0", -apple-system, sans-serif;
   font-size: 18px;
   line-height: 30px;
 }
