@@ -1,8 +1,8 @@
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 
-use crate::content::models::note::Note;
 use crate::errors::ApiError;
+use crate::notes::models::note::Note;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::note_versions;
 

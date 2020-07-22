@@ -2,9 +2,9 @@ use chrono::{DateTime, Utc};
 
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
-use crate::content::models::note_version::NoteVersion;
 use crate::db::{begin_txn, commit_txn, rollback_txn};
 use crate::errors::ApiError;
+use crate::notes::models::note_version::NoteVersion;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::note_versions;
 use crate::schema::{notes, notes::dsl::notes as all_notes};

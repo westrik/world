@@ -3,7 +3,7 @@ extern crate criterion;
 
 use criterion::Criterion;
 use std::str::from_utf8;
-use world_core::content::parsing::markdown_to_elements;
+use world_core::notes::parsing::markdown_to_elements;
 
 static CRDT_BYTES: &[u8] = include_bytes!("data/xi-editor-crdt.md");
 

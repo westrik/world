@@ -9,18 +9,19 @@ pub enum ResourceType {
     Job,
     Note,
     NoteVersion,
-    Block,
     Task,
     Tag,
     Link,
-    Image,
+    LibraryItem,
+    LibraryItemVersion,
 }
 
 lazy_static! {
     static ref RESOURCE_TYPE_TO_PREFIX: HashMap<ResourceType, &'static str> = {
         let mut m = HashMap::new();
-        m.insert(ResourceType::NoteVersion, "notev");
-        m.insert(ResourceType::Image, "img");
+        m.insert(ResourceType::NoteVersion, "nv");
+        m.insert(ResourceType::LibraryItem, "li");
+        m.insert(ResourceType::LibraryItemVersion, "liv");
         m
     };
 }
@@ -65,14 +66,9 @@ pub mod resource_identifiers {
             .is_match(&note_id));
 
         let note_version_id = generate_resource_identifier(NoteVersion);
-        assert!(Regex::new(r"^notev_[A-Za-z0-9]{8}$")
+        assert!(Regex::new(r"^nv_[A-Za-z0-9]{8}$")
             .unwrap()
             .is_match(&note_version_id));
-
-        let block_id = generate_resource_identifier(Block);
-        assert!(Regex::new(r"^block_[A-Za-z0-9]{8}$")
-            .unwrap()
-            .is_match(&block_id));
 
         let tag_id = generate_resource_identifier(Tag);
         assert!(Regex::new(r"^tag_[A-Za-z0-9]{8}$")
@@ -84,10 +80,13 @@ pub mod resource_identifiers {
             .unwrap()
             .is_match(&link_id));
 
-        let img_id = generate_resource_identifier(Image);
-        assert!(Regex::new(r"^img_[A-Za-z0-9]{8}$")
+        let li_id = generate_resource_identifier(LibraryItem);
+        assert!(Regex::new(r"^li_[A-Za-z0-9]{8}$").unwrap().is_match(&li_id));
+
+        let liv_id = generate_resource_identifier(LibraryItemVersion);
+        assert!(Regex::new(r"^liv_[A-Za-z0-9]{8}$")
             .unwrap()
-            .is_match(&img_id));
+            .is_match(&liv_id));
 
         let job_id = generate_resource_identifier(Job);
         assert!(Regex::new(r"^job_[A-Za-z0-9]{8}$")
