@@ -81,14 +81,12 @@ pub mod resource_identifiers {
             .is_match(&link_id));
 
         let li_id = generate_resource_identifier(LibraryItem);
-        assert!(Regex::new(r"^li_[A-Za-z0-9]{8}$")
-            .unwrap()
-            .is_match(&img_id));
+        assert!(Regex::new(r"^li_[A-Za-z0-9]{8}$").unwrap().is_match(&li_id));
 
         let liv_id = generate_resource_identifier(LibraryItemVersion);
         assert!(Regex::new(r"^liv_[A-Za-z0-9]{8}$")
             .unwrap()
-            .is_match(&img_id));
+            .is_match(&liv_id));
 
         let job_id = generate_resource_identifier(Job);
         assert!(Regex::new(r"^job_[A-Za-z0-9]{8}$")

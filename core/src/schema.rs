@@ -14,6 +14,7 @@ table! {
 table! {
     library_item_versions (id) {
         id -> Int4,
+        api_id -> Varchar,
         user_id -> Int4,
         library_item_id -> Int4,
         created_at -> Timestamptz,

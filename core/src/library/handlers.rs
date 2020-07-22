@@ -11,16 +11,11 @@ use warp::Rejection;
 
 #[derive(Debug, Deserialize)]
 pub struct ApiLibraryItemCreateSpec {
-    #[serde(rename = "contentJson")]
-    pub content_json: Option<serde_json::Value>,
-    #[serde(rename = "contentRaw")]
-    pub content_raw: Option<String>,
+    pub name: Option<String>,
 }
 #[derive(Debug, Deserialize)]
 pub struct ApiLibraryItemUpdateSpec {
     pub name: Option<String>,
-    #[serde(rename = "contentRaw")]
-    pub content_raw: Option<String>,
 }
 
 #[derive(Serialize)]
@@ -44,10 +39,7 @@ pub struct UpdateLibraryItemResponse {
     library_item: Option<LibraryItem>,
 }
 
-fn run_get_library_items(
-    session: Session,
-    pool: &DbPool,
-) -> Result<Vec<LibraryItemSummary>, ApiError> {
+fn run_get_library_items(session: Session, pool: &DbPool) -> Result<Vec<LibraryItem>, ApiError> {
     Ok(LibraryItem::find_all(&get_conn(&pool).unwrap(), session)?)
 }
 
@@ -100,7 +92,11 @@ fn run_create_library_item(
     session: Session,
     db_pool: &DbPool,
 ) -> Result<LibraryItem, ApiError> {
-    Ok(LibraryItem::create(&get_conn(&db_pool).unwrap(), session)?)
+    Ok(LibraryItem::create(
+        &get_conn(&db_pool).unwrap(),
+        session,
+        spec.name,
+    )?)
 }
 
 pub async fn create_library_item(

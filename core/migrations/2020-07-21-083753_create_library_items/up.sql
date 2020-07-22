@@ -11,6 +11,7 @@ CREATE TABLE library_items (
 
 CREATE TABLE library_item_versions (
     id                SERIAL PRIMARY KEY,
+    api_id            VARCHAR UNIQUE NOT NULL,
     user_id           INT NOT NULL,
     library_item_id   INT NOT NULL,
     created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
