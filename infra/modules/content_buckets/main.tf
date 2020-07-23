@@ -1,38 +1,36 @@
-// Configure S3 buckets for content generated or uploaded by users.
+// Configure S3 bucket for user-uploaded content (and system-generated derivative files)
 
 provider "aws" {
   region = var.aws_region
 }
 
-//resource "aws_s3_bucket" "user_content" {
-//  bucket = "${var.project_slug}-user-content-${random_string.deploy_bucket_hash.result}"
-//  acl    = "private"
-//
-//  versioning {
-//    enabled = true
-//  }
-//}
-// TODO: remove this (not scalable to create via tf)
-//resource "aws_s3_bucket" "user_site" {
-//  bucket = "${var.project_slug}-user-site-${random_string.deploy_bucket_hash.result}"
-//  acl    = "public-read"
-//
-//  versioning {
-//    enabled = true
-//  }
-//}
-
-resource "aws_iam_access_key" "content_upload" {
-  user = aws_iam_user.content_upload.name
+resource "random_string" "content_bucket_hash" {
+  length  = 6
+  special = false
+  upper   = false
 }
 
-resource "aws_iam_user" "content_upload" {
-  name = "content_upload"
+
+resource "aws_s3_bucket" "user_uploads" {
+  bucket = "${var.project_slug}-user-uploads-${random_string.content_bucket_hash.result}"
+  acl    = "private"
+
+  versioning {
+    enabled = false
+  }
 }
 
-resource "aws_iam_user_policy" "content_upload" {
-  name = "content_upload"
-  user = aws_iam_user.content_upload.name
+resource "aws_iam_access_key" "user_content_upload" {
+  user = aws_iam_user.user_content_upload.name
+}
+
+resource "aws_iam_user" "user_content_upload" {
+  name = "user_content_upload"
+}
+
+resource "aws_iam_user_policy" "user_content_upload" {
+  name = "user_content_upload"
+  user = aws_iam_user.user_content_upload.name
 
   policy = <<EOF
 {
@@ -43,12 +41,11 @@ resource "aws_iam_user_policy" "content_upload" {
         "s3:PutObject*"
       ],
       "Effect": "Allow",
-      "Resource": ["${TODO_BUCKET_ARN}/*"]
+      "Resource": ["${aws_s3_bucket.user_uploads.arn}/*"]
     }
   ]
 }
 EOF
 }
 
-// TODO: cloudfront distribution for user site
 // TODO: cloudfront distribution for user content
