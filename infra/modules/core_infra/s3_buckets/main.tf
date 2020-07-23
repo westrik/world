@@ -8,7 +8,7 @@ resource "random_string" "deploy_bucket_hash" {
   upper   = false
 }
 
-// TODO: add lifecycle rule?
+// TODO: add lifecycle rule
 resource "aws_s3_bucket" "app_deploy" {
   bucket = "${var.project_slug}-deploy-${random_string.deploy_bucket_hash.result}"
   acl    = "private"
