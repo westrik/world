@@ -9,3 +9,7 @@ variable "deploy_name" {
 variable "aws_region" {
   type = string
 }
+
+variable "app_host_iam_role_id" {
+  type = string
+}

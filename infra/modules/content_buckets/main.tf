@@ -48,7 +48,26 @@ resource "aws_iam_user_policy" "user_content_upload" {
 EOF
 }
 
-// TODO: allow EC2 instances to access S3 bucket
+resource "aws_iam_role_policy" "app_host_allow_content_upload" {
+  name = "${var.project_slug}_app_host-user-content-upload"
+  role = var.app_host_iam_role_id
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "s3:PutObject*",
+        "s3:GetObject*"
+      ],
+      "Effect": "Allow",
+      "Resource": ["${aws_s3_bucket.user_uploads.arn}/*"]
+    }
+  ]
+}
+EOF
+}
 
 // TODO: cloudfront distribution for user content
 
