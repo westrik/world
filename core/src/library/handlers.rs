@@ -1,7 +1,9 @@
 use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
+use crate::library::content_upload::put_object_request::generate_presigned_upload_url;
 use crate::library::models::library_item::LibraryItem;
+use crate::library::models::library_item_version::LibraryItemVersion;
 use crate::utils::list_options::ListOptions;
 use std::convert::Infallible;
 use warp::http::StatusCode;
@@ -12,6 +14,8 @@ use warp::Rejection;
 #[derive(Debug, Deserialize)]
 pub struct ApiLibraryItemCreateSpec {
     pub name: Option<String>,
+    #[serde(rename = "fileSizeBytes")]
+    pub file_size_bytes: Option<i32>,
 }
 #[derive(Debug, Deserialize)]
 pub struct ApiLibraryItemUpdateSpec {
@@ -37,6 +41,14 @@ pub struct UpdateLibraryItemResponse {
     error: Option<String>,
     #[serde(rename = "libraryItem")]
     library_item: Option<LibraryItem>,
+    #[serde(rename = "uploadUrl")]
+    upload_url: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ApiLibraryItemVersionCreateSpec {
+    #[serde(rename = "fileSizeBytes")]
+    pub file_size_bytes: i32,
 }
 
 fn run_get_library_items(session: Session, pool: &DbPool) -> Result<Vec<LibraryItem>, ApiError> {
@@ -105,11 +117,18 @@ pub async fn create_library_item(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!("create_library_item: spec={:?}", spec);
+    let upload_url;
+    if let Some(file_size_bytes) = spec.file_size_bytes {
+        upload_url = Some(generate_presigned_upload_url(file_size_bytes));
+    } else {
+        upload_url = None;
+    }
     let library_item = run_create_library_item(spec, session, &db_pool)?;
     Ok(warp::reply::with_status(
         warp::reply::json(&UpdateLibraryItemResponse {
             error: None,
             library_item: Some(library_item),
+            upload_url,
         }),
         StatusCode::OK,
     ))
@@ -141,6 +160,7 @@ pub async fn update_library_item(
         warp::reply::json(&UpdateLibraryItemResponse {
             error: None,
             library_item: Some(library_item),
+            upload_url: None,
         }),
         StatusCode::OK,
     ))
@@ -154,3 +174,31 @@ pub async fn delete_library_item(
     debug!("delete_library_item: api_id={}", api_id);
     Ok(StatusCode::NO_CONTENT)
 }
+
+// fn run_create_library_item_version(
+//     spec: ApiLibraryItemVersionCreateSpec,
+//     session: Session,
+//     db_pool: &DbPool,
+// ) -> Result<LibraryItem, ApiError> {
+//     Ok(LibraryItemVersion::create(
+//         &get_conn(&db_pool).unwrap(),
+//         session,
+//         spec.name,
+//     )?)
+// }
+//
+// pub async fn create_library_item_version(
+//     spec: ApiLibraryItemVersionCreateSpec,
+//     session: Session,
+//     db_pool: DbPool,
+// ) -> Result<impl warp::Reply, Rejection> {
+//     debug!("create_library_item: spec={:?}", spec);
+//     let library_item = run_create_library_item(spec, session, &db_pool)?;
+//     Ok(warp::reply::with_status(
+//         warp::reply::json(&UpdateLibraryItemResponse {
+//             error: None,
+//             library_item: Some(library_item),
+//         }),
+//         StatusCode::OK,
+//     ))
+// }
