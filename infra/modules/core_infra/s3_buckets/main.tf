@@ -7,7 +7,8 @@ resource "random_string" "deploy_bucket_hash" {
   special = false
   upper   = false
 }
-// TODO: add ACL and lifecycle rule
+
+// TODO: add lifecycle rule
 resource "aws_s3_bucket" "app_deploy" {
   bucket = "${var.project_slug}-deploy-${random_string.deploy_bucket_hash.result}"
   acl    = "private"
@@ -17,6 +18,7 @@ resource "aws_s3_bucket" "app_deploy" {
   }
 }
 
+// TODO: add lifecycle rule?
 resource "aws_s3_bucket" "app_deploy_cloudfront" {
   bucket = "${var.project_slug}-public-${random_string.deploy_bucket_hash.result}"
   acl    = "public-read"
@@ -34,6 +36,17 @@ resource "aws_s3_bucket" "app_deploy_cloudfront" {
   }
 }
 
+// TODO: add lifecycle rule?
+resource "aws_s3_bucket" "app_logs" {
+  bucket = "${var.project_slug}-logs-${random_string.deploy_bucket_hash.result}"
+  acl    = "private"
+
+  versioning {
+    enabled = false
+  }
+}
+
+// TODO: add lifecycle rule?
 resource "aws_s3_bucket" "lambda_deploy" {
   bucket = "${var.project_slug}-lambda-deploy-${random_string.deploy_bucket_hash.result}"
   acl    = "private"

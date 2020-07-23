@@ -13,7 +13,6 @@ data "aws_route53_zone" "app" {
 /*
 TODO(later):
   - [ ] handle IPv6
-  - [ ] provision ACM private cert to use with NLB
 */
 
 resource "aws_lb" "app" {
@@ -64,7 +63,7 @@ resource "aws_route53_record" "app" {
   alias {
     name                   = aws_lb.app.dns_name
     zone_id                = aws_lb.app.zone_id
-    evaluate_target_health = false // TODO: enable?
+    evaluate_target_health = false
   }
 }
 

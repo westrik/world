@@ -94,7 +94,7 @@ resource "aws_iam_instance_profile" "app_host" {
 resource "aws_iam_role" "app_host" {
   name               = "ec2_app_host"
   path               = "/"
-  assume_role_policy = data.aws_iam_policy_document.app_rds.json
+  assume_role_policy = data.aws_iam_policy_document.ec2_assume_role.json
 }
 resource "aws_iam_role_policy_attachment" "app_rds" {
   role       = aws_iam_role.app_host.name
@@ -108,7 +108,7 @@ resource "aws_iam_role_policy_attachment" "app_secrets" {
   role       = aws_iam_role.app_host.name
   policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
 }
-data "aws_iam_policy_document" "app_rds" {
+data "aws_iam_policy_document" "ec2_assume_role" {
   statement {
     sid = "1"
 
