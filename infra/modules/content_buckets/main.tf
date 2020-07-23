@@ -12,7 +12,7 @@ resource "random_string" "content_bucket_hash" {
 
 
 resource "aws_s3_bucket" "user_uploads" {
-  bucket = "${var.project_slug}-user-uploads-${random_string.content_bucket_hash.result}"
+  bucket = "${var.project_slug}-${var.deploy_name}-user-uploads-${random_string.content_bucket_hash.result}"
   acl    = "private"
 
   versioning {
@@ -25,11 +25,11 @@ resource "aws_iam_access_key" "user_content_upload" {
 }
 
 resource "aws_iam_user" "user_content_upload" {
-  name = "user_content_upload"
+  name = "${var.project_slug}-${var.deploy_name}-user-content-upload"
 }
 
 resource "aws_iam_user_policy" "user_content_upload" {
-  name = "user_content_upload"
+  name = "${var.project_slug}-${var.deploy_name}-user-content-upload"
   user = aws_iam_user.user_content_upload.name
 
   policy = <<EOF
@@ -48,4 +48,8 @@ resource "aws_iam_user_policy" "user_content_upload" {
 EOF
 }
 
+// TODO: allow EC2 instances to access S3 bucket
+
 // TODO: cloudfront distribution for user content
+
+// TODO: cloudfront + S3 cookie generation policies?

@@ -45,6 +45,15 @@ module "database" {
   lambda_deploy_bucket                         = module.core_infra.lambda_deploy_bucket
 }
 
+module "content_buckets" {
+  source = "./modules/content_buckets"
+
+  aws_region = var.aws_region
+
+  project_slug = var.project_slug
+  deploy_name  = var.deploy_name
+}
+
 module "deploy_pipeline" {
   source = "./modules/deploy_pipeline"
 
