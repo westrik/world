@@ -5,6 +5,7 @@ use crate::library::content_upload::put_object_request::generate_presigned_uploa
 use crate::library::models::library_item::LibraryItem;
 use crate::library::models::library_item_version::LibraryItemVersion;
 use crate::utils::list_options::ListOptions;
+use std::collections::HashMap;
 use std::convert::Infallible;
 use warp::http::StatusCode;
 use warp::Rejection;
@@ -14,8 +15,8 @@ use warp::Rejection;
 #[derive(Debug, Deserialize)]
 pub struct ApiLibraryItemCreateSpec {
     pub name: Option<String>,
-    #[serde(rename = "fileSizeBytes")]
-    pub file_size_bytes: Option<i32>,
+    #[serde(rename = "fileSizesInBytes")]
+    pub file_sizes_in_bytes: Option<Vec<i32>>,
 }
 #[derive(Debug, Deserialize)]
 pub struct ApiLibraryItemUpdateSpec {
@@ -41,14 +42,14 @@ pub struct UpdateLibraryItemResponse {
     error: Option<String>,
     #[serde(rename = "libraryItem")]
     library_item: Option<LibraryItem>,
-    #[serde(rename = "uploadUrl")]
-    upload_url: Option<String>,
+    #[serde(rename = "uploadUrlsByFileSize")]
+    upload_urls_by_file_size: Option<HashMap<i32, Vec<String>>>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct ApiLibraryItemVersionCreateSpec {
-    #[serde(rename = "fileSizeBytes")]
-    pub file_size_bytes: i32,
+    #[serde(rename = "fileSizeInBytes")]
+    pub file_size_in_bytes: Option<i32>,
 }
 
 fn run_get_library_items(session: Session, pool: &DbPool) -> Result<Vec<LibraryItem>, ApiError> {
@@ -117,18 +118,29 @@ pub async fn create_library_item(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!("create_library_item: spec={:?}", spec);
-    let upload_url;
-    if let Some(file_size_bytes) = spec.file_size_bytes {
-        upload_url = Some(generate_presigned_upload_url(file_size_bytes));
+    let upload_urls_by_file_size: Option<HashMap<i32, Vec<String>>>;
+    // TODO: clean this up
+    if let Some(file_sizes_in_bytes) = &spec.file_sizes_in_bytes {
+        let mut upload_urls: HashMap<i32, Vec<String>> = HashMap::new();
+        for file_size in file_sizes_in_bytes {
+            let upload_url = generate_presigned_upload_url(*file_size);
+            match upload_urls.get_mut(file_size) {
+                Some(urls) => (*urls).push(upload_url),
+                None => {
+                    let _ = upload_urls.insert(*file_size, vec![upload_url]);
+                }
+            }
+        }
+        upload_urls_by_file_size = Some(upload_urls);
     } else {
-        upload_url = None;
+        upload_urls_by_file_size = None;
     }
     let library_item = run_create_library_item(spec, session, &db_pool)?;
     Ok(warp::reply::with_status(
         warp::reply::json(&UpdateLibraryItemResponse {
             error: None,
             library_item: Some(library_item),
-            upload_url,
+            upload_urls_by_file_size,
         }),
         StatusCode::OK,
     ))
@@ -160,7 +172,7 @@ pub async fn update_library_item(
         warp::reply::json(&UpdateLibraryItemResponse {
             error: None,
             library_item: Some(library_item),
-            upload_url: None,
+            upload_urls_by_file_size: None,
         }),
         StatusCode::OK,
     ))
