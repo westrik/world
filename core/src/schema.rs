@@ -30,6 +30,7 @@ table! {
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
         name -> Varchar,
+        upload_url -> Nullable<Varchar>,
     }
 }
 

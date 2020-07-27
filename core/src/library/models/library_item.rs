@@ -22,6 +22,8 @@ pub struct LibraryItem {
     #[serde(rename = "updatedAt")]
     pub updated_at: DateTime<Utc>,
     pub name: String,
+    #[serde(rename = "uploadUrl")]
+    pub upload_url: Option<String>,
 }
 
 #[derive(Insertable, Debug)]
