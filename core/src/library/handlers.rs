@@ -1,11 +1,9 @@
 use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
-use crate::library::content_upload::put_object_request::generate_presigned_upload_url;
 use crate::library::models::library_item::LibraryItem;
-use crate::library::models::library_item_version::LibraryItemVersion;
+// use crate::library::models::library_item_version::LibraryItemVersion;
 use crate::utils::list_options::ListOptions;
-use std::collections::HashMap;
 use std::convert::Infallible;
 use warp::http::StatusCode;
 use warp::Rejection;
@@ -15,7 +13,7 @@ use warp::Rejection;
 #[derive(Debug, Deserialize)]
 pub struct ApiLibraryItemBulkCreateSpec {
     #[serde(rename = "fileSizesInBytes")]
-    pub file_sizes_in_bytes: Option<Vec<i32>>,
+    pub file_sizes_in_bytes: Vec<i64>,
 }
 #[derive(Debug, Deserialize)]
 pub struct ApiLibraryItemUpdateSpec {
@@ -39,8 +37,8 @@ pub struct GetLibraryItemResponse {
 #[derive(Serialize)]
 pub struct BulkCreateLibraryItemsResponse {
     error: Option<String>,
-    #[serde(rename = "libraryItemsByFileSize")]
-    library_items_by_file_size: Option<HashMap<i32, Vec<LibraryItem>>>,
+    #[serde(rename = "libraryItems")]
+    library_items: Option<Vec<LibraryItem>>,
 }
 
 #[derive(Serialize)]
@@ -110,11 +108,11 @@ fn run_bulk_create_library_items(
     spec: ApiLibraryItemBulkCreateSpec,
     session: Session,
     db_pool: &DbPool,
-) -> Result<LibraryItem, ApiError> {
-    Ok(LibraryItem::create(
+) -> Result<Vec<LibraryItem>, ApiError> {
+    Ok(LibraryItem::bulk_create(
         &get_conn(&db_pool).unwrap(),
         session,
-        None,
+        spec.file_sizes_in_bytes,
     )?)
 }
 
@@ -124,37 +122,11 @@ pub async fn bulk_create_library_items(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!("bulk_create_library_items: spec={:?}", spec);
-    // let upload_urls_by_file_size: Option<HashMap<i32, Vec<String>>>;
-    // TODO: clean this up
-    // if let Some(file_sizes_in_bytes) = &spec.file_sizes_in_bytes {
-    //     let mut upload_urls: HashMap<i32, Vec<String>> = HashMap::new();
-    //     for file_size in file_sizes_in_bytes {
-    //         let upload_url = generate_presigned_upload_url(
-    //             "".to_string(),
-    //             "".to_string(),
-    //             "".to_string(),
-    //             "".to_string(),
-    //             "".to_string(),
-    //             // *file_size
-    //         );
-    //         match upload_urls.get_mut(file_size) {
-    //             Some(urls) => (*urls).push(upload_url),
-    //             None => {
-    //                 let _ = upload_urls.insert(*file_size, vec![upload_url]);
-    //             }
-    //         }
-    //     }
-    //     upload_urls_by_file_size = Some(upload_urls);
-    // } else {
-    //     upload_urls_by_file_size = None;
-    // }
-    // let library_item = run_bulk_create_library_items(spec, session, &db_pool)?;
-
-    // TODO: create library_items_by_file_size w/ upload URLs
+    let library_items = Some(run_bulk_create_library_items(spec, session, &db_pool)?);
     Ok(warp::reply::with_status(
         warp::reply::json(&BulkCreateLibraryItemsResponse {
             error: None,
-            library_items_by_file_size: None,
+            library_items,
         }),
         StatusCode::OK,
     ))
@@ -167,8 +139,8 @@ fn run_update_library_item(
     pool: &DbPool,
 ) -> Result<LibraryItem, ApiError> {
     Ok(LibraryItem::update(
-        &get_conn(&pool).unwrap(),
         session,
+        &get_conn(&pool).unwrap(),
         api_id,
         spec.name,
     )?)

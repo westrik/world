@@ -1,1 +1,1 @@
-ALTER TABLE library_items ADD COLUMN upload_url VARCHAR;
+ALTER TABLE library_items ADD COLUMN presigned_upload_url VARCHAR;

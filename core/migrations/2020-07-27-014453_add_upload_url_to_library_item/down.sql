@@ -1,1 +1,1 @@
-ALTER TABLE library_items DROP COLUMN upload_url;
+ALTER TABLE library_items DROP COLUMN presigned_upload_url;

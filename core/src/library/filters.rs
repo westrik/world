@@ -1,7 +1,9 @@
 use crate::db::DbPool;
 use crate::library::handlers;
 use crate::library::handlers::{
-    ApiLibraryItemBulkCreateSpec, ApiLibraryItemUpdateSpec, ApiLibraryItemVersionCreateSpec,
+    ApiLibraryItemBulkCreateSpec,
+    ApiLibraryItemUpdateSpec,
+    // ApiLibraryItemVersionCreateSpec,
 };
 use crate::routes::{json_body, with_db, with_session};
 use crate::utils::list_options::ListOptions;

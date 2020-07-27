@@ -30,7 +30,9 @@ table! {
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
         name -> Varchar,
-        upload_url -> Nullable<Varchar>,
+        presigned_upload_url -> Nullable<Varchar>,
+        uploaded_file_name -> Nullable<Varchar>,
+        uploaded_file_size_bytes -> Nullable<Int8>,
     }
 }
 

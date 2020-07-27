@@ -9,7 +9,7 @@ pub fn generate_presigned_upload_url(
     credential_key: String,
     credential_secret: String,
     credential_token: String,
-    // _file_size_bytes: Option<i32>
+    file_size_bytes: i64,
 ) -> String {
     let aws_credentials = AwsCredentials::new(
         credential_key,
@@ -18,8 +18,9 @@ pub fn generate_presigned_upload_url(
         Default::default(),
     );
     let put_object_request = PutObjectRequest {
-        bucket: bucket,
-        key: key,
+        bucket,
+        key,
+        content_length: Some(file_size_bytes),
         ..Default::default()
     };
     put_object_request.get_presigned_url(
@@ -44,7 +45,8 @@ pub mod put_object_request_test {
                 "test.txt".to_string(),
                 "FAKE-KEY".to_string(),
                 "FAKE-SECRET".to_string(),
-                "FAKE-TOKEN".to_string()
+                "FAKE-TOKEN".to_string(),
+                1234,
             )
         );
     }
