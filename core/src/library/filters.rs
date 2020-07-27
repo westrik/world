@@ -1,7 +1,7 @@
 use crate::db::DbPool;
 use crate::library::handlers;
 use crate::library::handlers::{
-    ApiLibraryItemCreateSpec, ApiLibraryItemUpdateSpec, ApiLibraryItemVersionCreateSpec,
+    ApiLibraryItemBulkCreateSpec, ApiLibraryItemUpdateSpec, ApiLibraryItemVersionCreateSpec,
 };
 use crate::routes::{json_body, with_db, with_session};
 use crate::utils::list_options::ListOptions;
@@ -40,16 +40,16 @@ pub fn library_item_get(
         .and_then(handlers::get_library_item)
 }
 
-/// POST /library-item with JSON body
+/// POST /library-item:bulk-create with JSON body
 pub fn library_item_create(
     db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("library-item")
+    warp::path!("library-item:bulk-create")
         .and(warp::post())
-        .and(json_body::<ApiLibraryItemCreateSpec>())
+        .and(json_body::<ApiLibraryItemBulkCreateSpec>())
         .and(with_session(db_pool.clone()))
         .and(with_db(db_pool))
-        .and_then(handlers::create_library_item)
+        .and_then(handlers::bulk_create_library_items)
 }
 
 /// PATCH /library-item/:id with JSON body

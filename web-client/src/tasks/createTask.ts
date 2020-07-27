@@ -16,6 +16,6 @@ export default async function createTask(
         authContext,
         createSpec,
     );
-    // TODO: handle error
-    return responseJson.task;
+    // TODO: improve error-handling
+    return responseJson?.task ?? null;
 }

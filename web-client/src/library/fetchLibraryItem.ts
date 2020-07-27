@@ -6,7 +6,7 @@ export interface GetNoteResponse extends ApiResponse {
     note: ApiNote;
 }
 
-export default async function fetchNote(
+export default async function fetchLibraryItem(
     authContext: AuthContext,
     noteId: string,
     onReceiveResponse: (note: ApiNote) => void,

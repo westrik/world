@@ -13,8 +13,7 @@ use warp::Rejection;
 // TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
 
 #[derive(Debug, Deserialize)]
-pub struct ApiLibraryItemCreateSpec {
-    pub name: Option<String>,
+pub struct ApiLibraryItemBulkCreateSpec {
     #[serde(rename = "fileSizesInBytes")]
     pub file_sizes_in_bytes: Option<Vec<i32>>,
 }
@@ -38,12 +37,19 @@ pub struct GetLibraryItemResponse {
 }
 
 #[derive(Serialize)]
+pub struct BulkCreateLibraryItemsResponse {
+    error: Option<String>,
+    #[serde(rename = "libraryItemsByFileSize")]
+    library_items_by_file_size: Option<HashMap<i32, Vec<LibraryItem>>>,
+}
+
+#[derive(Serialize)]
 pub struct UpdateLibraryItemResponse {
     error: Option<String>,
     #[serde(rename = "libraryItem")]
     library_item: Option<LibraryItem>,
-    #[serde(rename = "uploadUrlsByFileSize")]
-    upload_urls_by_file_size: Option<HashMap<i32, Vec<String>>>,
+    #[serde(rename = "uploadUrl")]
+    upload_url: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -100,47 +106,55 @@ pub async fn get_library_item(
     ))
 }
 
-fn run_create_library_item(
-    spec: ApiLibraryItemCreateSpec,
+fn run_bulk_create_library_items(
+    spec: ApiLibraryItemBulkCreateSpec,
     session: Session,
     db_pool: &DbPool,
 ) -> Result<LibraryItem, ApiError> {
     Ok(LibraryItem::create(
         &get_conn(&db_pool).unwrap(),
         session,
-        spec.name,
+        None,
     )?)
 }
 
-pub async fn create_library_item(
-    spec: ApiLibraryItemCreateSpec,
+pub async fn bulk_create_library_items(
+    spec: ApiLibraryItemBulkCreateSpec,
     session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
-    debug!("create_library_item: spec={:?}", spec);
-    let upload_urls_by_file_size: Option<HashMap<i32, Vec<String>>>;
+    debug!("bulk_create_library_items: spec={:?}", spec);
+    // let upload_urls_by_file_size: Option<HashMap<i32, Vec<String>>>;
     // TODO: clean this up
-    if let Some(file_sizes_in_bytes) = &spec.file_sizes_in_bytes {
-        let mut upload_urls: HashMap<i32, Vec<String>> = HashMap::new();
-        for file_size in file_sizes_in_bytes {
-            let upload_url = generate_presigned_upload_url(*file_size);
-            match upload_urls.get_mut(file_size) {
-                Some(urls) => (*urls).push(upload_url),
-                None => {
-                    let _ = upload_urls.insert(*file_size, vec![upload_url]);
-                }
-            }
-        }
-        upload_urls_by_file_size = Some(upload_urls);
-    } else {
-        upload_urls_by_file_size = None;
-    }
-    let library_item = run_create_library_item(spec, session, &db_pool)?;
+    // if let Some(file_sizes_in_bytes) = &spec.file_sizes_in_bytes {
+    //     let mut upload_urls: HashMap<i32, Vec<String>> = HashMap::new();
+    //     for file_size in file_sizes_in_bytes {
+    //         let upload_url = generate_presigned_upload_url(
+    //             "".to_string(),
+    //             "".to_string(),
+    //             "".to_string(),
+    //             "".to_string(),
+    //             "".to_string(),
+    //             // *file_size
+    //         );
+    //         match upload_urls.get_mut(file_size) {
+    //             Some(urls) => (*urls).push(upload_url),
+    //             None => {
+    //                 let _ = upload_urls.insert(*file_size, vec![upload_url]);
+    //             }
+    //         }
+    //     }
+    //     upload_urls_by_file_size = Some(upload_urls);
+    // } else {
+    //     upload_urls_by_file_size = None;
+    // }
+    // let library_item = run_bulk_create_library_items(spec, session, &db_pool)?;
+
+    // TODO: create library_items_by_file_size w/ upload URLs
     Ok(warp::reply::with_status(
-        warp::reply::json(&UpdateLibraryItemResponse {
+        warp::reply::json(&BulkCreateLibraryItemsResponse {
             error: None,
-            library_item: Some(library_item),
-            upload_urls_by_file_size,
+            library_items_by_file_size: None,
         }),
         StatusCode::OK,
     ))
@@ -172,7 +186,7 @@ pub async fn update_library_item(
         warp::reply::json(&UpdateLibraryItemResponse {
             error: None,
             library_item: Some(library_item),
-            upload_urls_by_file_size: None,
+            upload_url: None,
         }),
         StatusCode::OK,
     ))

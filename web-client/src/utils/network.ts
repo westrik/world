@@ -27,7 +27,7 @@ export async function request<RequestT = null, ResponseT extends ApiResponse = A
     endpoint: string,
     authContext: AuthContext,
     body?: RequestT,
-): Promise<ResponseT> {
+): Promise<ResponseT | null> {
     const response = await fetch(`${API_HOST}${endpoint}`, {
         body: body ? JSON.stringify(body) : undefined,
         headers: {
@@ -40,9 +40,10 @@ export async function request<RequestT = null, ResponseT extends ApiResponse = A
     const responseJson: ResponseT = await response.json();
     if (responseJson.error) {
         // TODO: redirect to login on auth error
-        console.log(`There was an error: ${responseJson.error}`);
+        console.error('Request error', responseJson.error);
         // TODO: otherwise, display an error to the user
-        // TODO: implement retries
+        // TODO: implement retries for 500+ status codes
+        return null;
     }
     return responseJson;
 }

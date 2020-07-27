@@ -13,7 +13,9 @@ export default async function listTasks(
 ): Promise<void> {
     // TODO: check + save to localStorage
     const response = await request<null, GetTasksResponse>(RequestMethod.GET, '/task', authContext);
-    // TODO: handle errors
-    const taskTree = mapTaskListToTaskTree(response.tasks);
-    onReceiveResponse(taskTree);
+    // TODO: improve error-handling
+    if (response) {
+        const taskTree = mapTaskListToTaskTree(response.tasks);
+        onReceiveResponse(taskTree);
+    }
 }
