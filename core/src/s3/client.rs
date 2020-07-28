@@ -1,7 +1,6 @@
 use rusoto_core::Region;
 use rusoto_credential::{AutoRefreshingProvider, ProvideAwsCredentials};
 // use rusoto_credential::{ChainProvider, ProfileProvider};
-use rusoto_s3::S3Client;
 use rusoto_sts::{StsAssumeRoleSessionCredentialsProvider, StsClient};
 use std::env;
 
@@ -30,7 +29,7 @@ pub fn get_aws_credentials_provider(
     //         region,
     //     ))
     // }
-    let sts_client = StsClient::new(region.clone());
+    let sts_client = StsClient::new(region);
     let assume_role_provider = StsAssumeRoleSessionCredentialsProvider::new(
         sts_client,
         (*IAM_ROLE_ARN).to_owned(),

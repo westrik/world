@@ -5,10 +5,7 @@ use diesel::prelude::*;
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
 use crate::errors::ApiError;
-use crate::resource_identifier::{generate_resource_identifier, ResourceType};
-use crate::s3::put_object_request::generate_presigned_upload_url;
 use crate::schema::{library_items, library_items::dsl::library_items as all_library_items};
-use crate::utils::mnemonic::{generate_mnemonic, DEFAULT_MNEMONIC_LENGTH};
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(User)]
@@ -34,7 +31,7 @@ pub struct LibraryItem {
 
 #[derive(Insertable, Debug)]
 #[table_name = "library_items"]
-struct LibraryItemCreateSpec {
+pub struct LibraryItemCreateSpec {
     pub api_id: String,
     pub user_id: i32,
     pub name: String,
@@ -90,26 +87,10 @@ impl LibraryItem {
 
     pub fn bulk_create(
         conn: &PgConnection,
-        session: Session,
-        file_sizes_in_bytes: Vec<i64>,
+        specs: Vec<LibraryItemCreateSpec>,
     ) -> Result<Vec<LibraryItem>, ApiError> {
-        let create_specs: Vec<LibraryItemCreateSpec> = file_sizes_in_bytes
-            .into_iter()
-            .map(|file_size| LibraryItemCreateSpec {
-                api_id: generate_resource_identifier(ResourceType::LibraryItem),
-                user_id: session.user_id,
-                name: generate_mnemonic(DEFAULT_MNEMONIC_LENGTH),
-                presigned_upload_url: Some(generate_presigned_upload_url(
-                    "".to_string(),
-                    "".to_string(),
-                    file_size,
-                )),
-                uploaded_file_name: None,
-                uploaded_file_size_bytes: Some(file_size),
-            })
-            .collect();
         Ok(insert_into(all_library_items)
-            .values(&create_specs)
+            .values(specs)
             .get_results(conn)
             .map_err(ApiError::DatabaseError)?)
     }
