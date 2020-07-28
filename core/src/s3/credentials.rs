@@ -36,5 +36,5 @@ pub async fn get_aws_credentials(region: Region) -> Result<AwsCredentials, ApiEr
         ChainProvider::new().credentials().await
     };
     Ok(credentials
-        .map_err(|err| ApiError::InternalError(format!("Failed to authenticate with S3: {}", err)))?)
+        .map_err(|_| ApiError::InternalError("Failed to authenticate with S3".to_string()))?)
 }
