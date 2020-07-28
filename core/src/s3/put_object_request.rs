@@ -6,15 +6,17 @@ use rusoto_s3::PutObjectRequest;
 pub fn generate_presigned_upload_url(
     bucket: String,
     key: String,
-    credential_key: String,
-    credential_secret: String,
-    credential_token: String,
     file_size_bytes: i64,
+    // credential_key: String,
+    // credential_secret: String,
+    // credential_token: String,
 ) -> String {
+    // TODO: load AwsCredentials from a ChainProvider
+    // let s3_client =
     let aws_credentials = AwsCredentials::new(
-        credential_key,
-        credential_secret,
-        Some(credential_token),
+        "".to_string(),
+        "".to_string(),
+        Some("".to_string()),
         Default::default(),
     );
     let put_object_request = PutObjectRequest {
@@ -40,14 +42,7 @@ pub mod put_object_request_test {
     fn generate_dummy_upload_url() {
         println!(
             "{}",
-            generate_presigned_upload_url(
-                "test-bucket".to_string(),
-                "test.txt".to_string(),
-                "FAKE-KEY".to_string(),
-                "FAKE-SECRET".to_string(),
-                "FAKE-TOKEN".to_string(),
-                1234,
-            )
+            generate_presigned_upload_url("fake-bucket".to_string(), "fake-name".to_string(), 1234,)
         );
     }
 }

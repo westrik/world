@@ -109,6 +109,8 @@ fn run_bulk_create_library_items(
     session: Session,
     db_pool: &DbPool,
 ) -> Result<Vec<LibraryItem>, ApiError> {
+    // TODO: limit number of files per request
+    // TODO: limit maximum file size?
     Ok(LibraryItem::bulk_create(
         &get_conn(&db_pool).unwrap(),
         session,

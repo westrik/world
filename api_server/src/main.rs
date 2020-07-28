@@ -23,6 +23,7 @@ async fn main() {
 
     let cors_origin_url = env::var("CORS_ORIGIN_URL").expect("CORS_ORIGIN_URL must be set");
 
+    // TODO: load DATABASE_URL with rusoto_sts
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let pool = db::init_pool(&database_url, DB_POOL_SIZE).expect("Failed to create pool");
 

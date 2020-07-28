@@ -6,9 +6,8 @@ interface BulkCreateLibraryItemsRequest {
     fileSizesInBytes: Array<number>;
 }
 
-export type FileSizeToLibraryItemsMap = { [fileSizeBytes: number]: Array<ApiLibraryItem> };
 export interface BulkCreateLibraryItemsResponse extends ApiResponse {
-    fileSizeToLibraryItems: FileSizeToLibraryItemsMap;
+    libraryItems: Array<ApiLibraryItem>;
 }
 
 export default async function bulkCreateLibraryItems(authContext: AuthContext, files: Array<File>): Promise<void> {
@@ -22,7 +21,7 @@ export default async function bulkCreateLibraryItems(authContext: AuthContext, f
     );
     // TODO: improve error-handling
     if (response) {
-        console.log(response.fileSizeToLibraryItems);
+        console.log(response.libraryItems);
 
         // TODO: upload each file to S3 its pre-signed URL
         files.forEach((file) => {

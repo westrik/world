@@ -2549,6 +2549,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "rusoto_sts"
+version = "0.45.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3815b8c0fc1c50caf9e87603f23daadfedb18d854de287b361c69f68dc9d49e0"
+dependencies = [
+ "async-trait",
+ "bytes 0.5.5",
+ "chrono",
+ "futures 0.3.5",
+ "rusoto_core",
+ "serde_urlencoded 0.6.1",
+ "tempfile",
+ "xml-rs",
+]
+
+[[package]]
 name = "rust-argon2"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3799,6 +3815,7 @@ dependencies = [
  "rusoto_core",
  "rusoto_credential",
  "rusoto_s3",
+ "rusoto_sts",
  "serde",
  "serde_derive",
  "serde_json",

@@ -5,8 +5,8 @@ use diesel::prelude::*;
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
 use crate::errors::ApiError;
-use crate::library::content_upload::put_object_request::generate_presigned_upload_url;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
+use crate::s3::put_object_request::generate_presigned_upload_url;
 use crate::schema::{library_items, library_items::dsl::library_items as all_library_items};
 use crate::utils::mnemonic::{generate_mnemonic, DEFAULT_MNEMONIC_LENGTH};
 
@@ -100,9 +100,6 @@ impl LibraryItem {
                 user_id: session.user_id,
                 name: generate_mnemonic(DEFAULT_MNEMONIC_LENGTH),
                 presigned_upload_url: Some(generate_presigned_upload_url(
-                    "".to_string(),
-                    "".to_string(),
-                    "".to_string(),
                     "".to_string(),
                     "".to_string(),
                     file_size,
