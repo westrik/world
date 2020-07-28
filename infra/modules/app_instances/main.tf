@@ -96,19 +96,6 @@ resource "aws_iam_role" "app_host" {
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.ec2_assume_role.json
 }
-// TODO: don't allow RDSFullAccess to non-admin instances
-resource "aws_iam_role_policy_attachment" "app_rds" {
-  role       = aws_iam_role.app_host.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
-}
-resource "aws_iam_role_policy_attachment" "app_code_deploy" {
-  role       = aws_iam_role.app_host.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy"
-}
-resource "aws_iam_role_policy_attachment" "app_secrets" {
-  role       = aws_iam_role.app_host.name
-  policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
-}
 data "aws_iam_policy_document" "ec2_assume_role" {
   statement {
     sid = "1"
@@ -122,6 +109,39 @@ data "aws_iam_policy_document" "ec2_assume_role" {
       type        = "Service"
     }
   }
+}
+
+// TODO: don't allow RDSFullAccess to non-admin instances
+resource "aws_iam_role_policy_attachment" "app_rds" {
+  role       = aws_iam_role.app_host.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
+}
+resource "aws_iam_role_policy_attachment" "app_code_deploy" {
+  role       = aws_iam_role.app_host.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy"
+}
+resource "aws_iam_role_policy_attachment" "app_secrets" {
+  role       = aws_iam_role.app_host.name
+  policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+}
+resource "aws_iam_role_policy" "app_host_assume_role" {
+  name = "app_host_assume_role"
+  role = aws_iam_role.app_host.id
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": [
+        "sts:AssumeRole"
+      ],
+      "Effect": "Allow",
+      "Resource": ["${aws_iam_role.app_host.arn}"]
+    }
+  ]
+}
+EOF
 }
 
 resource "aws_secretsmanager_secret" "app_host_role_arn" {
