@@ -1,12 +1,11 @@
 use chrono::{DateTime, Utc};
+use diesel::insert_into;
 use diesel::prelude::*;
 
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
 use crate::errors::ApiError;
-use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{library_items, library_items::dsl::library_items as all_library_items};
-use crate::utils::mnemonic::{generate_mnemonic, DEFAULT_MNEMONIC_LENGTH};
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(User)]
@@ -22,23 +21,23 @@ pub struct LibraryItem {
     #[serde(rename = "updatedAt")]
     pub updated_at: DateTime<Utc>,
     pub name: String,
+    #[serde(rename = "preSignedUploadUrl")]
+    pub presigned_upload_url: Option<String>,
+    #[serde(rename = "uploadedFileName")]
+    pub uploaded_file_name: Option<String>,
+    #[serde(rename = "uploadedFileSizeBytes")]
+    pub uploaded_file_size_bytes: Option<i64>,
 }
 
 #[derive(Insertable, Debug)]
 #[table_name = "library_items"]
-struct LibraryItemCreateSpec {
+pub struct LibraryItemCreateSpec {
     pub api_id: String,
     pub user_id: i32,
     pub name: String,
-}
-impl LibraryItemCreateSpec {
-    pub fn insert(&self, conn: &PgConnection) -> Result<LibraryItem, ApiError> {
-        info!("creating library_item: {:?}", self);
-        Ok(diesel::insert_into(library_items::table)
-            .values(self)
-            .get_result(conn)
-            .map_err(ApiError::DatabaseError)?)
-    }
+    pub presigned_upload_url: Option<String>,
+    pub uploaded_file_name: Option<String>,
+    pub uploaded_file_size_bytes: Option<i64>,
 }
 
 #[derive(AsChangeset, Debug)]
@@ -86,22 +85,19 @@ impl LibraryItem {
             .map_err(ApiError::DatabaseError)?)
     }
 
-    pub fn create(
+    pub fn bulk_create(
         conn: &PgConnection,
-        session: Session,
-        name: Option<String>,
-    ) -> Result<LibraryItem, ApiError> {
-        LibraryItemCreateSpec {
-            api_id: generate_resource_identifier(ResourceType::LibraryItem),
-            user_id: session.user_id,
-            name: name.unwrap_or_else(|| generate_mnemonic(DEFAULT_MNEMONIC_LENGTH)),
-        }
-        .insert(conn)
+        specs: Vec<LibraryItemCreateSpec>,
+    ) -> Result<Vec<LibraryItem>, ApiError> {
+        Ok(insert_into(all_library_items)
+            .values(specs)
+            .get_results(conn)
+            .map_err(ApiError::DatabaseError)?)
     }
 
     pub fn update(
-        conn: &PgConnection,
         session: Session,
+        conn: &PgConnection,
         api_id: String,
         name: Option<String>,
     ) -> Result<LibraryItem, ApiError> {

@@ -7,7 +7,7 @@ interface UpdateNoteRequest {
 }
 
 export interface UpdateNoteResponse extends ApiResponse {
-    note: ApiNote | null;
+    note: ApiNote;
 }
 
 export default async function updateNote(
@@ -25,10 +25,8 @@ export default async function updateNote(
             contentRaw: content,
         },
     );
-    if (response.note) {
+    // TODO: improve error-handling
+    if (response) {
         onReceiveResponse(response.note);
-    } else {
-        // TODO: improve error-handling
-        console.log(`Failed to update note: ${response.error}`);
     }
 }

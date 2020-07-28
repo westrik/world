@@ -6,7 +6,7 @@ export interface GetNotesResponse extends ApiResponse {
     notes: Array<ApiNoteSummary>;
 }
 
-export default async function listNotes(
+export default async function listLibraryItems(
     authContext: AuthContext,
     onReceiveResponse: (notes: Array<Note>) => void,
 ): Promise<void> {

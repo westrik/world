@@ -18,6 +18,6 @@ export default async function updateTask(
         authContext,
         updateSpec,
     );
-    // TODO: handle error
-    return responseJson.task;
+    // TODO: improve error-handling
+    return responseJson?.task ?? null;
 }

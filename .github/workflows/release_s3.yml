@@ -5,7 +5,7 @@ on:
        - v*
    release:
      types: [created, edited, published]
- 
+
 jobs:
   deploy-aws:
     name: deploy to AWS
@@ -41,8 +41,12 @@ jobs:
         with:
           path: ./target
           key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}-release
-      - name: Build
-        run: cargo build --verbose --release
+      - name: Build api_server
+        working-directory: ./api_server
+        run: cargo build --verbose --release --features "production"
+      - name: Build worker
+        working-directory: ./worker
+        run: cargo build --verbose --release --features "production"
       - name: Set up node.js 13.x
         uses: actions/setup-node@v1
         with:

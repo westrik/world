@@ -34,6 +34,8 @@ rds_host=$(get_secret "westrikworld_database_url")
 rds_user=$(get_secret "westrikworld_database_username")
 rds_password=$(get_secret "westrikworld_database_password")
 rds_db_name=$(get_secret "westrikworld_database_name")
+iam_role_arn=$(get_secret "westrikworld_ec2_app_host_role_arn")
+content_bucket_name=$(get_secret "westrikworld_content_bucket_name")
 password_hash_salt=$(get_secret "westrikworld_password_hash_salt")
 api_cert_data=$(get_secret "westrikworld_api_cert" | jq -r '.certificate')
 
@@ -43,6 +45,8 @@ systemctl stop nginx app
   echo "DATABASE_URL=postgres://$rds_user:$rds_password@$rds_host/$rds_db_name"
   echo "PASSWORD_HASH_SALT=$password_hash_salt"
   echo "CORS_ORIGIN_URL=$CORS_ORIGIN_URL"
+  echo "IAM_ROLE_ARN=$iam_role_arn"
+  echo "CONTENT_BUCKET_NAME=$content_bucket_name"
 } > $RAMFS_MOUNT_DIR/app.env
 chown app:app $RAMFS_MOUNT_DIR/app.env
 chmod 660 $RAMFS_MOUNT_DIR/app.env

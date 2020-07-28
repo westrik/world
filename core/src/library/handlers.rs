@@ -1,17 +1,28 @@
 use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
-use crate::library::models::library_item::LibraryItem;
+use crate::library::models::library_item::{LibraryItem, LibraryItemCreateSpec};
+// use crate::library::models::library_item_version::LibraryItemVersion;
+use crate::resource_identifier::{generate_resource_identifier, ResourceType};
+use crate::s3::put_object_request::generate_presigned_upload_url;
 use crate::utils::list_options::ListOptions;
+use crate::utils::mnemonic::{generate_mnemonic, DEFAULT_MNEMONIC_LENGTH};
 use std::convert::Infallible;
+use std::env;
 use warp::http::StatusCode;
 use warp::Rejection;
 
 // TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
 
+lazy_static! {
+    static ref CONTENT_BUCKET_NAME: String =
+        env::var("CONTENT_BUCKET_NAME").expect("CONTENT_BUCKET_NAME must be set");
+}
+
 #[derive(Debug, Deserialize)]
-pub struct ApiLibraryItemCreateSpec {
-    pub name: Option<String>,
+pub struct ApiLibraryItemBulkCreateSpec {
+    #[serde(rename = "fileSizesInBytes")]
+    pub file_sizes_in_bytes: Vec<i64>,
 }
 #[derive(Debug, Deserialize)]
 pub struct ApiLibraryItemUpdateSpec {
@@ -33,10 +44,25 @@ pub struct GetLibraryItemResponse {
 }
 
 #[derive(Serialize)]
+pub struct BulkCreateLibraryItemsResponse {
+    error: Option<String>,
+    #[serde(rename = "libraryItems")]
+    library_items: Option<Vec<LibraryItem>>,
+}
+
+#[derive(Serialize)]
 pub struct UpdateLibraryItemResponse {
     error: Option<String>,
     #[serde(rename = "libraryItem")]
     library_item: Option<LibraryItem>,
+    #[serde(rename = "uploadUrl")]
+    upload_url: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ApiLibraryItemVersionCreateSpec {
+    #[serde(rename = "fileSizeInBytes")]
+    pub file_size_in_bytes: Option<i32>,
 }
 
 fn run_get_library_items(session: Session, pool: &DbPool) -> Result<Vec<LibraryItem>, ApiError> {
@@ -87,29 +113,53 @@ pub async fn get_library_item(
     ))
 }
 
-fn run_create_library_item(
-    spec: ApiLibraryItemCreateSpec,
+async fn run_bulk_create_library_items(
+    spec: ApiLibraryItemBulkCreateSpec,
     session: Session,
     db_pool: &DbPool,
-) -> Result<LibraryItem, ApiError> {
-    Ok(LibraryItem::create(
+) -> Result<Vec<LibraryItem>, ApiError> {
+    // TODO: limit number of files per request
+    // TODO: limit maximum file size?
+
+    let create_specs = {
+        let mut specs = vec![];
+        for file_size in spec.file_sizes_in_bytes.iter() {
+            let name = generate_mnemonic(DEFAULT_MNEMONIC_LENGTH);
+            let presigned_upload_url = generate_presigned_upload_url(
+                (*CONTENT_BUCKET_NAME).to_string(),
+                name.to_string(),
+                *file_size,
+            )
+            .await?;
+            specs.push(LibraryItemCreateSpec {
+                api_id: generate_resource_identifier(ResourceType::LibraryItem),
+                user_id: session.user_id,
+                name: name.to_string(),
+                presigned_upload_url: Some(presigned_upload_url),
+                uploaded_file_name: None,
+                uploaded_file_size_bytes: Some(*file_size),
+            });
+        }
+        specs
+    };
+
+    Ok(LibraryItem::bulk_create(
         &get_conn(&db_pool).unwrap(),
-        session,
-        spec.name,
+        create_specs,
     )?)
 }
 
-pub async fn create_library_item(
-    spec: ApiLibraryItemCreateSpec,
+pub async fn bulk_create_library_items(
+    spec: ApiLibraryItemBulkCreateSpec,
     session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
-    debug!("create_library_item: spec={:?}", spec);
-    let library_item = run_create_library_item(spec, session, &db_pool)?;
+    debug!("bulk_create_library_items: spec={:?}", spec);
+    let library_items = Some(run_bulk_create_library_items(spec, session, &db_pool).await?);
     Ok(warp::reply::with_status(
-        warp::reply::json(&UpdateLibraryItemResponse {
+        warp::reply::json(&BulkCreateLibraryItemsResponse {
             error: None,
-            library_item: Some(library_item),
+            library_items,
         }),
         StatusCode::OK,
     ))
@@ -122,8 +172,8 @@ fn run_update_library_item(
     pool: &DbPool,
 ) -> Result<LibraryItem, ApiError> {
     Ok(LibraryItem::update(
-        &get_conn(&pool).unwrap(),
         session,
+        &get_conn(&pool).unwrap(),
         api_id,
         spec.name,
     )?)
@@ -141,6 +191,7 @@ pub async fn update_library_item(
         warp::reply::json(&UpdateLibraryItemResponse {
             error: None,
             library_item: Some(library_item),
+            upload_url: None,
         }),
         StatusCode::OK,
     ))
@@ -154,3 +205,31 @@ pub async fn delete_library_item(
     debug!("delete_library_item: api_id={}", api_id);
     Ok(StatusCode::NO_CONTENT)
 }
+
+// fn run_create_library_item_version(
+//     spec: ApiLibraryItemVersionCreateSpec,
+//     session: Session,
+//     db_pool: &DbPool,
+// ) -> Result<LibraryItem, ApiError> {
+//     Ok(LibraryItemVersion::create(
+//         &get_conn(&db_pool).unwrap(),
+//         session,
+//         spec.name,
+//     )?)
+// }
+//
+// pub async fn create_library_item_version(
+//     spec: ApiLibraryItemVersionCreateSpec,
+//     session: Session,
+//     db_pool: DbPool,
+// ) -> Result<impl warp::Reply, Rejection> {
+//     debug!("create_library_item: spec={:?}", spec);
+//     let library_item = run_create_library_item(spec, session, &db_pool)?;
+//     Ok(warp::reply::with_status(
+//         warp::reply::json(&UpdateLibraryItemResponse {
+//             error: None,
+//             library_item: Some(library_item),
+//         }),
+//         StatusCode::OK,
+//     ))
+// }

@@ -69,6 +69,15 @@ resource "aws_iam_role_policy" "app_host_allow_content_upload" {
 EOF
 }
 
+resource "aws_secretsmanager_secret" "user_content_bucket_name" {
+  name                    = "${var.project_slug}_content_bucket_name"
+  recovery_window_in_days = 0
+}
+resource "aws_secretsmanager_secret_version" "db_url" {
+  secret_id     = aws_secretsmanager_secret.user_content_bucket_name.id
+  secret_string = aws_s3_bucket.user_uploads.bucket
+}
+
 // TODO: cloudfront distribution for user content
 
 // TODO: cloudfront + S3 cookie generation policies?
