@@ -25,7 +25,7 @@ fn get_autorefreshing_assume_role_credentials_provider(
         None,
     );
     Ok(AutoRefreshingProvider::new(assume_role_provider)
-        .map_err(|_| ApiError::InternalError("Failed to authenticate with S3".to_string()))?)
+        .map_err(|_| ApiError::InternalError("Failed to assume role".to_string()))?)
 }
 
 pub async fn get_aws_credentials(region: Region) -> Result<AwsCredentials, ApiError> {

@@ -10,7 +10,6 @@ resource "random_string" "content_bucket_hash" {
   upper   = false
 }
 
-
 resource "aws_s3_bucket" "user_uploads" {
   bucket = "${var.project_slug}-${var.deploy_name}-user-uploads-${random_string.content_bucket_hash.result}"
   acl    = "private"
@@ -18,34 +17,6 @@ resource "aws_s3_bucket" "user_uploads" {
   versioning {
     enabled = false
   }
-}
-
-resource "aws_iam_access_key" "user_content_upload" {
-  user = aws_iam_user.user_content_upload.name
-}
-
-resource "aws_iam_user" "user_content_upload" {
-  name = "${var.project_slug}-${var.deploy_name}-user-content-upload"
-}
-
-resource "aws_iam_user_policy" "user_content_upload" {
-  name = "${var.project_slug}-${var.deploy_name}-user-content-upload"
-  user = aws_iam_user.user_content_upload.name
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": [
-        "s3:PutObject*"
-      ],
-      "Effect": "Allow",
-      "Resource": ["${aws_s3_bucket.user_uploads.arn}/*"]
-    }
-  ]
-}
-EOF
 }
 
 resource "aws_iam_role_policy" "app_host_allow_content_upload" {
@@ -81,3 +52,17 @@ resource "aws_secretsmanager_secret_version" "db_url" {
 // TODO: cloudfront distribution for user content
 
 // TODO: cloudfront + S3 cookie generation policies?
+
+
+
+/* CONTENT BUCKET FOR DEV & TESTING ONLY */
+// TODO: move to separate AWS account
+
+resource "aws_s3_bucket" "dev_content_upload" {
+  bucket = "${var.project_slug}-dev-user-uploads-${random_string.content_bucket_hash.result}"
+  acl    = "private"
+
+  versioning {
+    enabled = false
+  }
+}

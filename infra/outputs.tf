@@ -18,3 +18,8 @@ output "app_deploy_bucket" {
 output "lambda_deploy_bucket" {
   value = module.core_infra.lambda_deploy_bucket
 }
+
+output "dev_content_bucket" {
+  value = module.content_buckets.dev_content_bucket
+}
+
