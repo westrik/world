@@ -1,7 +1,6 @@
 use crate::errors::ApiError;
-use crate::s3::client::get_aws_credentials_provider;
+use crate::s3::credentials::get_aws_credentials;
 use rusoto_core::Region;
-use rusoto_credential::ProvideAwsCredentials;
 use rusoto_s3::util::{PreSignedRequest, PreSignedRequestOption};
 use rusoto_s3::PutObjectRequest;
 
@@ -10,11 +9,7 @@ pub async fn generate_presigned_upload_url(
     key: String,
     file_size_bytes: i64,
 ) -> Result<String, ApiError> {
-    let provider = get_aws_credentials_provider(Region::UsEast1)?;
-    let credentials = provider
-        .credentials()
-        .await
-        .map_err(|_| ApiError::InternalError("Failed to authenticate with S3".to_string()))?;
+    let credentials = get_aws_credentials(Region::UsEast1).await?;
     let put_object_request = PutObjectRequest {
         bucket,
         key,

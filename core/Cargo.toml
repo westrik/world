@@ -5,6 +5,10 @@ authors = ["Matt Westrik <m@ttwestrik.com>"]
 edition = "2018"
 publish = false
 
+[features]
+# Enables IAM instance auth and other functionality only needed on EC2 in VPC, etc.
+production = []
+
 [dependencies]
 argon2rs = "^0.2"
 chrono = { version = "0.4", features = ["serde"] }
