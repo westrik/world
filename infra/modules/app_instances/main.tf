@@ -96,6 +96,7 @@ resource "aws_iam_role" "app_host" {
   path               = "/"
   assume_role_policy = data.aws_iam_policy_document.ec2_assume_role.json
 }
+// TODO: don't allow RDSFullAccess to non-admin instances
 resource "aws_iam_role_policy_attachment" "app_rds" {
   role       = aws_iam_role.app_host.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"
@@ -121,4 +122,13 @@ data "aws_iam_policy_document" "ec2_assume_role" {
       type        = "Service"
     }
   }
+}
+
+resource "aws_secretsmanager_secret" "app_host_role_arn" {
+  name                    = "${var.project_name}_ec2_app_host_role_arn"
+  recovery_window_in_days = 0
+}
+resource "aws_secretsmanager_secret_version" "app_host_role_arn" {
+  secret_id     = aws_secretsmanager_secret.app_host_role_arn.id
+  secret_string = aws_iam_role.app_host.arn
 }
