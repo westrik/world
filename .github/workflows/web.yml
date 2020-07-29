@@ -51,3 +51,45 @@ jobs:
       working-directory: ./web-client
       run: |
         yarn lint:style
+
+  snapshot:
+    name: snapshot all stories
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install fonts
+      env:
+        SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+        ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+        ssh-add - <<< "${{ secrets.FONT_DEPLOY_KEY }}"
+        git submodule update --init --recursive
+    - name: Set up node.js 13.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 13.x
+    - name: Get yarn cache
+      id: yarn-cache
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+    - uses: actions/cache@v1
+      with:
+        path: ${{ steps.yarn-cache.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+    - name: Install, build, and test
+      working-directory: ./web-client
+      run: |
+        yarn install
+        yarn build
+        yarn test
+      env:
+        CI: true
+    - name: Create & upload snapshots
+      working-directory: ./web-client
+      env:
+        PERCY_TOKEN: {{ secrets.PERCY_TOKEN }}
+      run: |
+        yarn snapshot

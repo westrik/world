@@ -15,9 +15,11 @@
     "typecheck": "yarn tsc --skipLibCheck",
     "chk": "yarn typecheck && yarn lint",
     "storybook:serve": "yarn parcel src/storybook.html --port 1337",
-    "storybook:ui": "yarn start-storybook --preview-url=http://localhost:1337/iframe.html"
+    "storybook:ui": "yarn start-storybook --preview-url=http://localhost:1337/iframe.html",
+    "snapshot": "build-storybook && percy-storybook --widths=320,1280"
   },
   "devDependencies": {
+    "@percy/storybook": "^3.3.0",
     "@storybook/preact": "^5.3.17",
     "@types/chai": "^4.2.7",
     "@types/codemirror": "^0.0.96",
