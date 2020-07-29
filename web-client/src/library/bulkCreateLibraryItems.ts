@@ -1,6 +1,7 @@
-import { ApiResponse, request, RequestMethod } from '~utils/network';
 import { AuthContext } from '~auth/AuthContext';
 import { ApiLibraryItem } from '~models/LibraryItem';
+import { assertCondition } from '~utils/asserts';
+import { ApiResponse, request, RequestMethod } from '~utils/network';
 
 interface BulkCreateLibraryItemsRequest {
     fileSizesInBytes: Array<number>;
@@ -21,12 +22,23 @@ export default async function bulkCreateLibraryItems(authContext: AuthContext, f
     );
     // TODO: improve error-handling
     if (response) {
-        console.log(response.libraryItems);
+        const sortedLibraryItems = response.libraryItems.sort(
+            (a, b) => a.uploadedFileSizeBytes - b.uploadedFileSizeBytes,
+        );
+        const sortedFiles = files.sort((a, b) => a.size - b.size);
 
-        // TODO: upload each file to S3 its pre-signed URL
-        files.forEach((file) => {
-            console.log('TODO upload this file:');
-            console.log(file);
+        sortedLibraryItems.map(async (item, idx) => {
+            const fileToUpload = sortedFiles[idx];
+            assertCondition(
+                fileToUpload && fileToUpload.size == item.uploadedFileSizeBytes,
+                'Expected size of created library item to match file size',
+            );
+            const response = await fetch(item.preSignedUploadUrl, {
+                body: fileToUpload,
+                method: RequestMethod.PUT,
+            });
+            console.log(response);
+            // TODO: send API request to create LibraryItemVersion
         });
     }
 }

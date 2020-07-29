@@ -17,6 +17,14 @@ resource "aws_s3_bucket" "user_uploads" {
   versioning {
     enabled = false
   }
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["PUT"]
+    allowed_origins = ["https://westrik.world"]
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3000
+  }
 }
 
 resource "aws_iam_role_policy" "app_host_allow_content_upload" {
@@ -64,5 +72,13 @@ resource "aws_s3_bucket" "dev_content_upload" {
 
   versioning {
     enabled = false
+  }
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["PUT"]
+    allowed_origins = ["https://local.westrik.world"]
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3000
   }
 }

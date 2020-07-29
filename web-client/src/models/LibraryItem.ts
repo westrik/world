@@ -16,6 +16,7 @@ export interface ApiLibraryItemSummary {
 export interface ApiLibraryItem extends ApiLibraryItemSummary {
     versionId: string;
     preSignedUploadUrl: string;
+    uploadedFileSizeBytes: number;
 }
 
 export interface LibraryItem extends ApiLibraryItemSummary {
