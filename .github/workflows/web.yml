@@ -79,17 +79,16 @@ jobs:
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-yarn-
-    - name: Install, build, and test
+    - name: Install & build
       working-directory: ./web-client
       run: |
         yarn install
         yarn build
-        yarn test
       env:
         CI: true
     - name: Create & upload snapshots
       working-directory: ./web-client
       env:
-        PERCY_TOKEN: {{ secrets.PERCY_TOKEN }}
+        PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
       run: |
         yarn snapshot
