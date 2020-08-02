@@ -4,6 +4,7 @@ use diesel::prelude::*;
 use crate::auth::models::user::User;
 use crate::errors::ApiError;
 use crate::library::models::library_item::LibraryItem;
+use crate::library::models::library_item_version_type::LibraryItemVersionType;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::library_item_versions;
 
@@ -21,16 +22,25 @@ pub struct LibraryItemVersion {
     pub library_item_id: i32,
     #[serde(rename = "createdAt")]
     pub created_at: DateTime<Utc>,
+    #[serde(rename = "version_type")]
+    pub version_type: String,
     #[serde(rename = "assetUrl")]
-    pub asset_url: String,
+    pub asset_url: Option<String>,
+    #[serde(rename = "assetFileSizeBytes")]
+    pub asset_file_size_bytes: Option<i64>,
+    #[serde(skip)] // TODO: don't skip
+    pub asset_data: Option<serde_json::Value>,
 }
 
 #[derive(Insertable, Debug)]
 #[table_name = "library_item_versions"]
 struct LibraryItemVersionCreateSpec {
     pub api_id: String,
+    pub user_id: i32,
     pub library_item_id: i32,
-    pub asset_url: String,
+    pub version_type: String,
+    pub asset_url: Option<String>,
+    pub asset_file_size_bytes: Option<i64>,
 }
 impl LibraryItemVersionCreateSpec {
     pub fn insert(&self, conn: &PgConnection) -> Result<LibraryItemVersion, ApiError> {
@@ -45,13 +55,18 @@ impl LibraryItemVersionCreateSpec {
 impl LibraryItemVersion {
     pub fn create(
         conn: &PgConnection,
-        library_item_id: i32,
-        asset_url: String,
+        user_id: i32,
+        library_item: LibraryItem,
+        asset_url: Option<String>,
     ) -> Result<LibraryItemVersion, ApiError> {
+        // TODO: verify that asset_url matches library_item.presigned_upload_url
         LibraryItemVersionCreateSpec {
-            library_item_id,
             api_id: generate_resource_identifier(ResourceType::LibraryItemVersion),
+            library_item_id: library_item.id,
+            user_id,
             asset_url,
+            version_type: format!("{}", LibraryItemVersionType::Original),
+            asset_file_size_bytes: library_item.uploaded_file_size_bytes,
         }
         .insert(conn)
     }

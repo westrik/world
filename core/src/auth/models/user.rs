@@ -42,7 +42,7 @@ impl UserCreateSpec {
             .map_err(ApiError::DatabaseError)?)
     }
 }
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 pub struct ApiUserCreateSpec {
     #[serde(rename = "emailAddress")]
     pub email_address: String,

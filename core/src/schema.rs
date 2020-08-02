@@ -18,7 +18,10 @@ table! {
         user_id -> Int4,
         library_item_id -> Int4,
         created_at -> Timestamptz,
-        asset_url -> Varchar,
+        version_type -> Varchar,
+        asset_url -> Nullable<Varchar>,
+        asset_file_size_bytes -> Nullable<Int8>,
+        asset_data -> Nullable<Jsonb>,
     }
 }
 

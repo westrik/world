@@ -4,14 +4,12 @@ use diesel::sql_types::Text;
 use diesel::Expression;
 
 #[derive(Debug, Serialize, Deserialize)]
-pub enum JobStatus {
-    Pending,
-    Active,
-    Error,
-    Done,
+pub enum LibraryItemVersionType {
+    Original,
+    PreviewImage,
 }
 
-impl fmt::Display for JobStatus {
+impl fmt::Display for LibraryItemVersionType {
     // TODO: write macro to add Debug and this impl? or improve in some other way
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let type_str = format!("{:?}", self);
@@ -19,6 +17,6 @@ impl fmt::Display for JobStatus {
     }
 }
 
-impl Expression for JobStatus {
+impl Expression for LibraryItemVersionType {
     type SqlType = Text;
 }
