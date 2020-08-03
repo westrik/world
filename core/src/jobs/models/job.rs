@@ -39,7 +39,7 @@ pub struct JobCreateSpec {
 
 impl JobCreateSpec {
     pub fn insert(&self, conn: &PgConnection) -> Result<Job, ApiError> {
-        info!("creating job: {:?}", self);
+        info!("creating job: {:#?}", self);
         Ok(diesel::insert_into(jobs::table)
             .values(self)
             .get_result(conn)

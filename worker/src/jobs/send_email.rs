@@ -1,12 +1,25 @@
-use std::env;
-use world_core::jobs::errors::JobError;
+use std::{env, fmt};
+use world_core::{jobs::errors::JobError, utils::string_transforms::ToIdentifier};
 
 use crate::jobs::Runnable;
 
+#[derive(Debug, Deserialize)]
+pub enum EmailTemplate {
+    LoginNotification,
+}
+
+impl fmt::Display for EmailTemplate {
+    // TODO: write macro to add Debug and this impl? or improve in some other way
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let type_str = format!("{:?}", self);
+        write!(f, "{}", type_str.to_ident())
+    }
+}
+
 #[derive(Deserialize)]
 pub struct SendEmailJob {
-    template_name: String,
-    recipients: Vec<String>,
+    pub template: EmailTemplate,
+    pub recipients: Vec<String>,
 }
 
 lazy_static! {
@@ -21,7 +34,7 @@ impl Runnable for SendEmailJob {
         // TODO: send request to SendGrid (via external-service-proxy Lambda)
         info!(
             "sending email to {:#?} (template: {})",
-            self.recipients, self.template_name
+            self.recipients, self.template
         );
         Ok("DONE".to_string())
     }

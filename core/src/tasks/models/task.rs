@@ -37,7 +37,7 @@ pub struct TaskCreateSpec {
 }
 impl TaskCreateSpec {
     pub fn insert(&self, conn: &PgConnection) -> Result<Task, ApiError> {
-        info!("creating task: {:?}", self);
+        info!("creating task: {:#?}", self);
         Ok(diesel::insert_into(tasks::table)
             .values(self)
             .get_result(conn)

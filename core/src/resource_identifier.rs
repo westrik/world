@@ -28,7 +28,7 @@ lazy_static! {
 
 impl fmt::Display for ResourceType {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let type_str = format!("{:?}", self);
+        let type_str = self.to_string();
         if let Some(prefix) = (*RESOURCE_TYPE_TO_PREFIX).get(self) {
             write!(f, "{}", prefix)
         } else {

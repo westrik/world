@@ -7,7 +7,7 @@ fn test_enqueued_job_is_completed(pool: &DbPool) {
     let conn = get_conn(pool).unwrap();
     let _tasks = Job::create(
         &conn,
-        JobType::System,
+        JobType::DummyJob,
         Some(serde_json::from_str("{}").unwrap()),
         None,
     );

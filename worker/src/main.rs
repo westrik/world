@@ -19,6 +19,7 @@ use world_core::db;
 
 mod jobs;
 mod routes;
+mod run;
 mod subscribe;
 
 embed_migrations!("../core/migrations");
