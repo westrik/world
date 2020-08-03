@@ -39,7 +39,7 @@ pub struct JobCreateSpec {
 
 impl JobCreateSpec {
     pub fn insert(&self, conn: &PgConnection) -> Result<Job, ApiError> {
-        info!("creating note: {:?}", self);
+        info!("creating job: {:?}", self);
         Ok(diesel::insert_into(jobs::table)
             .values(self)
             .get_result(conn)
@@ -50,14 +50,14 @@ impl JobCreateSpec {
 impl Job {
     pub fn find(conn: &PgConnection, api_id: String) -> Result<Job, ApiError> {
         // TODO: filter by user id
-        let note = all_jobs
+        let job = all_jobs
             .filter(jobs::api_id.eq(&api_id))
             .first(conn)
             .map_err(|e| match e {
                 diesel::result::Error::NotFound => ApiError::NotFound(api_id),
                 _ => ApiError::DatabaseError(e),
             })?;
-        Ok(note)
+        Ok(job)
     }
 
     pub fn create(
@@ -69,7 +69,7 @@ impl Job {
         JobCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Job),
             user_id,
-            job_type: format!("{}", job_type),
+            job_type: job_type.to_string(),
             payload,
         }
         .insert(conn)
