@@ -38,15 +38,20 @@ lazy_static! {
 
 // TODO: gracefully handle unwrap failures
 
-pub fn subscribe_to_jobs(database_url: String) {
+pub fn subscribe_to_jobs(database_url: String) -> Result<(), JobError> {
+    debug!("connecting to database...");
     let conn = Connection::connect(database_url, TlsMode::None).expect("failed to connect");
-    conn.execute("LISTEN job_updates", &[]).unwrap();
+    debug!("database connection established");
+    conn.execute("LISTEN job_updates", &[])
+        .map_err(|err| JobError::DatabaseError(err.to_string()))?;
     let notifs = conn.notifications();
     loop {
         let _ = notifs.blocking_iter().next();
         conn.execute("BEGIN", &[]).unwrap();
+        debug!("started txn for job processing");
         for row in &conn.query(&*CLAIM_PENDING_JOB_QUERY, &[]).unwrap() {
             let id: i32 = row.get(0);
+            debug!("received job [id={}]", id);
             let job_type: String = row.get(5);
             let payload: Option<Vec<u8>> = row.get(6);
 

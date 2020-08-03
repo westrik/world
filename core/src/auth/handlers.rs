@@ -1,9 +1,13 @@
+use serde_json::json;
+use warp::http::StatusCode;
+use warp::Rejection;
+
 use crate::auth::models::session::Session;
 use crate::auth::models::user::{ApiUserCreateSpec, User};
 use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
-use warp::http::StatusCode;
-use warp::Rejection;
+use crate::jobs::enqueue_job::enqueue_job;
+use crate::jobs::job_type::JobType;
 
 #[derive(Debug, Deserialize)]
 pub struct SignInRequest {
@@ -23,6 +27,26 @@ fn run_sign_in(creds: SignInRequest, pool: &DbPool) -> Result<AuthenticationResp
     let conn = get_conn(pool).unwrap();
     let user: User = User::find(creds.email_address.as_str(), creds.password.as_str(), &conn)?;
     let session: Session = Session::create(&conn, &user)?;
+
+    if let Ok(job) = enqueue_job(
+        &conn,
+        Some(user.id),
+        JobType::SendEmail,
+        Some(json!({
+            "recipients": vec!["test@example.com"],
+            "template": "login_notification"
+        })),
+    ) {
+        info!(
+            "enqueued email notification job [user_id={}][job_id={}]",
+            user.id, job.id
+        );
+    } else {
+        error!(
+            "failed to enqueue email notification job [user_id={}]",
+            user.id
+        );
+    }
     Ok(AuthenticationResponse {
         session: Some(session),
         user: Some(user),

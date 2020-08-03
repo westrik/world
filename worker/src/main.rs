@@ -30,7 +30,7 @@ const DB_POOL_SIZE: u32 = 15;
 async fn main() {
     dotenv().ok();
     if env::var("RUST_LOG").is_err() {
-        env::set_var("RUST_LOG", "world_core=debug,worker=debug");
+        env::set_var("RUST_LOG", "world_core=debug,world_worker=debug");
     }
     pretty_env_logger::init();
 
@@ -41,7 +41,9 @@ async fn main() {
     embedded_migrations::run_with_output(&conn, &mut std::io::stdout()).unwrap();
 
     thread::spawn(move || {
-        subscribe::subscribe_to_jobs(database_url);
+        if let Err(err) = subscribe::subscribe_to_jobs(database_url) {
+            error!("failed to subscribe to jobs: {:?}", err);
+        }
     });
 
     let api = routes::worker_api(pool.clone());

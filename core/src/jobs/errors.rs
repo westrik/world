@@ -7,5 +7,5 @@ pub enum JobError {
     Forbidden(Identifier),
     NotFound(Identifier),
     InternalError(String),
-    DatabaseError(diesel::result::Error),
+    DatabaseError(String),
 }
