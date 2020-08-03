@@ -2,7 +2,6 @@ use chrono::{DateTime, Utc};
 use diesel::insert_into;
 use diesel::prelude::*;
 
-use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
 use crate::errors::ApiError;
 use crate::schema::{library_items, library_items::dsl::library_items as all_library_items};
@@ -66,20 +65,20 @@ impl LibraryItemUpdateSpec {
 }
 
 impl LibraryItem {
-    pub fn find_all(conn: &PgConnection, session: Session) -> Result<Vec<LibraryItem>, ApiError> {
+    pub fn find_all(conn: &PgConnection, user_id: i32) -> Result<Vec<LibraryItem>, ApiError> {
         Ok(all_library_items
-            .filter(library_items::user_id.eq(session.user_id))
+            .filter(library_items::user_id.eq(user_id))
             .load(conn)
             .map_err(ApiError::DatabaseError)?)
     }
 
     pub fn find(
         conn: &PgConnection,
-        session: Session,
+        user_id: i32,
         api_id: String,
     ) -> Result<LibraryItem, ApiError> {
         Ok(all_library_items
-            .filter(library_items::user_id.eq(session.user_id))
+            .filter(library_items::user_id.eq(user_id))
             .filter(library_items::api_id.eq(api_id))
             .first::<LibraryItem>(conn)
             .map_err(ApiError::DatabaseError)?)
@@ -96,15 +95,16 @@ impl LibraryItem {
     }
 
     pub fn update(
-        session: Session,
         conn: &PgConnection,
+        user_id: i32,
         api_id: String,
         name: Option<String>,
     ) -> Result<LibraryItem, ApiError> {
+        // TODO: handle generating new upload URL (if needed)
         LibraryItemUpdateSpec {
             updated_at: Utc::now(),
             name,
         }
-        .update(conn, api_id, session.user_id)
+        .update(conn, api_id, user_id)
     }
 }

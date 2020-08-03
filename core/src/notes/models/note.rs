@@ -103,6 +103,7 @@ fn create_version_for_note_and_commit(
             let note_version = NoteVersion::create(conn, note_.id, content_data);
             if let Ok(created_note_version) = note_version {
                 // TODO: log note version creation
+                // TODO: move transaction handling out of this fn
                 commit_txn(conn).unwrap();
                 Ok(Note {
                     api_id: note_.api_id,
@@ -114,6 +115,7 @@ fn create_version_for_note_and_commit(
                 })
             } else {
                 // TODO: handle failure
+                // TODO: move transaction handling out of this fn
                 rollback_txn(conn).unwrap();
                 Err(ApiError::InternalError(
                     "Failed to create note version".to_string(),
@@ -130,6 +132,7 @@ fn create_version_for_note_and_commit(
             })
         }
     } else {
+        // TODO: move transaction handling out of this fn
         rollback_txn(conn).unwrap();
         Err(ApiError::InternalError("Failed to create note".to_string()))
     }
@@ -179,6 +182,7 @@ impl Note {
         session: Session,
         content: Option<serde_json::Value>,
     ) -> Result<Note, ApiError> {
+        // TODO: move transaction handling out of this fn
         begin_txn(conn).unwrap();
         let note_result = NoteCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Note),
@@ -196,6 +200,7 @@ impl Note {
         name: Option<String>,
         updated_content: Option<serde_json::Value>,
     ) -> Result<Note, ApiError> {
+        // TODO: move transaction handling out of this fn
         begin_txn(conn).unwrap();
         let note_result = NoteUpdateSpec {
             updated_at: Utc::now(),

@@ -3,6 +3,7 @@ use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
 use crate::library::models::library_item::{LibraryItem, LibraryItemCreateSpec};
 // use crate::library::models::library_item_version::LibraryItemVersion;
+use crate::library::models::library_item_version::LibraryItemVersion;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::s3::put_object_request::generate_presigned_upload_url;
 use crate::utils::list_options::ListOptions;
@@ -59,14 +60,24 @@ pub struct UpdateLibraryItemResponse {
     upload_url: Option<String>,
 }
 
+#[derive(Serialize)]
+pub struct CreateLibraryItemVersionResponse {
+    error: Option<String>,
+    #[serde(rename = "libraryItemVersion")]
+    library_item_version: Option<LibraryItemVersion>,
+}
+
 #[derive(Debug, Deserialize)]
 pub struct ApiLibraryItemVersionCreateSpec {
-    #[serde(rename = "fileSizeInBytes")]
-    pub file_size_in_bytes: Option<i32>,
+    #[serde(rename = "libraryItemId")]
+    library_item_api_id: String,
 }
 
 fn run_get_library_items(session: Session, pool: &DbPool) -> Result<Vec<LibraryItem>, ApiError> {
-    Ok(LibraryItem::find_all(&get_conn(&pool).unwrap(), session)?)
+    Ok(LibraryItem::find_all(
+        &get_conn(&pool).unwrap(),
+        session.user_id,
+    )?)
 }
 
 pub async fn list_library_items(
@@ -92,7 +103,7 @@ fn run_get_library_item(
 ) -> Result<LibraryItem, ApiError> {
     Ok(LibraryItem::find(
         &get_conn(&pool).unwrap(),
-        session,
+        session.user_id,
         api_id,
     )?)
 }
@@ -172,8 +183,8 @@ fn run_update_library_item(
     pool: &DbPool,
 ) -> Result<LibraryItem, ApiError> {
     Ok(LibraryItem::update(
-        session,
         &get_conn(&pool).unwrap(),
+        session.user_id,
         api_id,
         spec.name,
     )?)
@@ -206,30 +217,39 @@ pub async fn delete_library_item(
     Ok(StatusCode::NO_CONTENT)
 }
 
-// fn run_create_library_item_version(
-//     spec: ApiLibraryItemVersionCreateSpec,
-//     session: Session,
-//     db_pool: &DbPool,
-// ) -> Result<LibraryItem, ApiError> {
-//     Ok(LibraryItemVersion::create(
-//         &get_conn(&db_pool).unwrap(),
-//         session,
-//         spec.name,
-//     )?)
-// }
-//
-// pub async fn create_library_item_version(
-//     spec: ApiLibraryItemVersionCreateSpec,
-//     session: Session,
-//     db_pool: DbPool,
-// ) -> Result<impl warp::Reply, Rejection> {
-//     debug!("create_library_item: spec={:?}", spec);
-//     let library_item = run_create_library_item(spec, session, &db_pool)?;
-//     Ok(warp::reply::with_status(
-//         warp::reply::json(&UpdateLibraryItemResponse {
-//             error: None,
-//             library_item: Some(library_item),
-//         }),
-//         StatusCode::OK,
-//     ))
-// }
+fn run_create_library_item_version(
+    spec: ApiLibraryItemVersionCreateSpec,
+    session: Session,
+    db_pool: &DbPool,
+) -> Result<LibraryItemVersion, ApiError> {
+    let conn = &get_conn(&db_pool).unwrap();
+    let library_item = LibraryItem::find(conn, session.user_id, spec.library_item_api_id)?;
+    // TODO: generate CloudFront URL for LibraryItemVersion (using library_item.{name,api_id})
+    // let library_item_version_url = format!("https://assets.westrik.world/{}-{}", library_item.name, library_item.api_id);
+    let library_item_version = LibraryItemVersion::create(
+        conn,
+        session.user_id,
+        library_item,
+        None, // Some(library_item_version_url),
+    )?;
+    // TODO: enqueue library item processing job for library_item_version.id
+    //  - should load library_item and library_item_version, then get file metadata from S3
+    //  - call Lambda API endpoints to run relevant processing jobs
+    Ok(library_item_version)
+}
+
+pub async fn create_library_item_version(
+    spec: ApiLibraryItemVersionCreateSpec,
+    session: Session,
+    db_pool: DbPool,
+) -> Result<impl warp::Reply, Rejection> {
+    debug!("create_library_item_version: spec={:?}", spec);
+    let library_item_version = run_create_library_item_version(spec, session, &db_pool)?;
+    Ok(warp::reply::with_status(
+        warp::reply::json(&CreateLibraryItemVersionResponse {
+            error: None,
+            library_item_version: Some(library_item_version),
+        }),
+        StatusCode::OK,
+    ))
+}

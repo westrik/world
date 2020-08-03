@@ -1,9 +1,7 @@
 use crate::db::DbPool;
 use crate::library::handlers;
 use crate::library::handlers::{
-    ApiLibraryItemBulkCreateSpec,
-    ApiLibraryItemUpdateSpec,
-    // ApiLibraryItemVersionCreateSpec,
+    ApiLibraryItemBulkCreateSpec, ApiLibraryItemUpdateSpec, ApiLibraryItemVersionCreateSpec,
 };
 use crate::routes::{json_body, with_db, with_session};
 use crate::utils::list_options::ListOptions;
@@ -16,7 +14,8 @@ pub fn routes(
         .or(library_item_get(db_pool.clone()))
         .or(library_item_create(db_pool.clone()))
         .or(library_item_update(db_pool.clone()))
-        .or(library_item_delete(db_pool))
+        .or(library_item_delete(db_pool.clone()))
+        .or(library_item_version_create(db_pool))
 }
 
 /// GET /library-item?offset=3&limit=5
@@ -77,14 +76,14 @@ pub fn library_item_delete(
         .and_then(handlers::delete_library_item)
 }
 
-// /// POST /library-item-version with JSON body
-// pub fn library_item_version_create(
-//     db_pool: DbPool,
-// ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-//     warp::path!("library-item-version")
-//         .and(warp::post())
-//         .and(json_body::<ApiLibraryItemVersionCreateSpec>())
-//         .and(with_session(db_pool.clone()))
-//         .and(with_db(db_pool))
-//         .and_then(handlers::create_library_item_version)
-// }
+/// POST /library-item-version with JSON body
+pub fn library_item_version_create(
+    db_pool: DbPool,
+) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("library-item-version")
+        .and(warp::post())
+        .and(json_body::<ApiLibraryItemVersionCreateSpec>())
+        .and(with_session(db_pool.clone()))
+        .and(with_db(db_pool))
+        .and_then(handlers::create_library_item_version)
+}
