@@ -239,7 +239,7 @@ pub async fn create_library_item_version(
     session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
-    debug!("create_library_item: spec={:?}", spec);
+    debug!("create_library_item_version: spec={:?}", spec);
     let library_item_version = run_create_library_item_version(spec, session, &db_pool)?;
     Ok(warp::reply::with_status(
         warp::reply::json(&CreateLibraryItemVersionResponse {
