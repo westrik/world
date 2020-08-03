@@ -46,6 +46,7 @@ pub fn subscribe_to_jobs(database_url: String) -> Result<(), JobError> {
         .map_err(|err| JobError::DatabaseError(err.to_string()))?;
     let notifs = conn.notifications();
     loop {
+        // TODO: don't wait for first notification before claiming pending jobs
         let _ = notifs.blocking_iter().next();
         conn.execute("BEGIN", &[]).unwrap();
         debug!("started txn for job processing");
