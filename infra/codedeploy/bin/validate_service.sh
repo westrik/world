@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -uo pipefail
 
 TEST_URL="http://localhost:8080/"
 TEST_ITERATIONS=5
@@ -16,11 +16,11 @@ sleep $INITIAL_SLEEP_TIME
 echo "done pausing"
 
 echo "secrets logs:"
-journalctl --no-pager -u secrets -b
+journalctl -xn all --no-pager -u secrets -b
 echo "app logs:"
-journalctl --no-pager -u app -b
+journalctl -xn all --no-pager -u app -b
 echo "nginx logs:"
-journalctl --no-pager -u nginx -b
+journalctl -xn all --no-pager -u nginx -b
 
 for i in $(seq 1 $TEST_ITERATIONS)
 do
