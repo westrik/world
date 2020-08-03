@@ -14,7 +14,8 @@ pub fn routes(
         .or(library_item_get(db_pool.clone()))
         .or(library_item_create(db_pool.clone()))
         .or(library_item_update(db_pool.clone()))
-        .or(library_item_delete(db_pool))
+        .or(library_item_delete(db_pool.clone()))
+        .or(library_item_version_create(db_pool))
 }
 
 /// GET /library-item?offset=3&limit=5

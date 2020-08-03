@@ -22,7 +22,7 @@ pub struct LibraryItemVersion {
     pub library_item_id: i32,
     #[serde(rename = "createdAt")]
     pub created_at: DateTime<Utc>,
-    #[serde(rename = "version_type")]
+    #[serde(rename = "versionType")]
     pub version_type: String,
     #[serde(rename = "assetUrl")]
     pub asset_url: Option<String>,

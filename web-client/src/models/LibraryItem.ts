@@ -24,3 +24,11 @@ export interface LibraryItem extends ApiLibraryItemSummary {
     tags?: Array<Tag>;
     resources?: Array<Resource>;
 }
+
+export interface ApiLibraryItemVersion {
+    id: string;
+    createdAt: Date;
+    versionType: string;
+    assetUrl: string;
+    assetFileSizeBytes: number;
+}

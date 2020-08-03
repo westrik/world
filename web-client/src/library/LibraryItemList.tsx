@@ -19,8 +19,7 @@ function LibraryItemList(): h.JSX.Element {
                 allowMultiple={true}
                 onChange={(ev: Event): void => {
                     const files = Array.from((ev.target as HTMLInputElement).files ?? []);
-                    const response = bulkCreateLibraryItems(authContext, files);
-                    console.log(response);
+                    bulkCreateLibraryItems(authContext, files);
                 }}
             />
         </AppContainer>

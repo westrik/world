@@ -71,8 +71,6 @@ pub struct CreateLibraryItemVersionResponse {
 pub struct ApiLibraryItemVersionCreateSpec {
     #[serde(rename = "libraryItemId")]
     library_item_api_id: String,
-    #[serde(rename = "assetUrl")]
-    asset_url: String,
 }
 
 fn run_get_library_items(session: Session, pool: &DbPool) -> Result<Vec<LibraryItem>, ApiError> {
@@ -226,11 +224,13 @@ fn run_create_library_item_version(
 ) -> Result<LibraryItemVersion, ApiError> {
     let conn = &get_conn(&db_pool).unwrap();
     let library_item = LibraryItem::find(conn, session.user_id, spec.library_item_api_id)?;
+    // TODO: generate CloudFront URL for LibraryItemVersion (using library_item.{name,api_id})
+    // let library_item_version_url = format!("https://assets.westrik.world/{}-{}", library_item.name, library_item.api_id);
     Ok(LibraryItemVersion::create(
         conn,
         session.user_id,
         library_item,
-        Some(spec.asset_url),
+        None // Some(library_item_version_url),
     )?)
 }
 
