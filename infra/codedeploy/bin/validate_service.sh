@@ -8,7 +8,7 @@ INITIAL_SLEEP_TIME=10
 REQUEST_SLEEP_TIME=2
 
 function test_service() {
-  curl --silent --output /dev/null --write-out "%{http_code}" "$1"
+  curl --verbose --output /dev/stderr --write-out "%{http_code}" "$1"
 }
 
 echo "pausing $INITIAL_SLEEP_TIME sec to wait for services to start"
@@ -22,7 +22,7 @@ journalctl --no-pager -u nginx -b
 for i in $(seq 1 $TEST_ITERATIONS)
 do
   printf "making a request to %s... " "$TEST_URL"
-  status_code=$(test_service $TEST_URL)
+  status_code=$(test_service "$TEST_URL")
   if [[ status_code -eq 200 ]] ; then
     echo "succeeded"
     exit 0
