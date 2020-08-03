@@ -226,12 +226,16 @@ fn run_create_library_item_version(
     let library_item = LibraryItem::find(conn, session.user_id, spec.library_item_api_id)?;
     // TODO: generate CloudFront URL for LibraryItemVersion (using library_item.{name,api_id})
     // let library_item_version_url = format!("https://assets.westrik.world/{}-{}", library_item.name, library_item.api_id);
-    Ok(LibraryItemVersion::create(
+    let library_item_version = LibraryItemVersion::create(
         conn,
         session.user_id,
         library_item,
-        None // Some(library_item_version_url),
-    )?)
+        None, // Some(library_item_version_url),
+    )?;
+    // TODO: enqueue library item processing job for library_item_version.id
+    //  - should load library_item and library_item_version, then get file metadata from S3
+    //  - call Lambda API endpoints to run relevant processing jobs
+    Ok(library_item_version)
 }
 
 pub async fn create_library_item_version(
