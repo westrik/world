@@ -8,7 +8,7 @@ INITIAL_SLEEP_TIME=10
 REQUEST_SLEEP_TIME=2
 
 function test_service() {
-  curl --verbose --output /dev/stderr --write-out "%{http_code}" "$1"
+  curl --output /dev/null --write-out "%{http_code}" "$1"
 }
 
 echo "pausing $INITIAL_SLEEP_TIME sec to wait for services to start"
@@ -17,8 +17,10 @@ echo "done pausing"
 
 echo "secrets logs:"
 journalctl -xn all --no-pager -u secrets -b
+
 echo "app logs:"
 journalctl -xn all --no-pager -u app -b
+
 echo "nginx logs:"
 journalctl -xn all --no-pager -u nginx -b
 

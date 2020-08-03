@@ -45,7 +45,7 @@ variable "outbound_email_sender" {
 
 variable "num_app_instances" {
   type    = number
-  default = 3
+  default = 2
 }
 
 // SECRETS

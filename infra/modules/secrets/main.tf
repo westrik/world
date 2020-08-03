@@ -4,7 +4,7 @@ resource "aws_secretsmanager_secret" "cors_origin_url" {
 }
 resource "aws_secretsmanager_secret_version" "cors_origin_url" {
   secret_id     = aws_secretsmanager_secret.cors_origin_url.id
-  secret_string = var.root_domain_name
+  secret_string = "https://${var.root_domain_name}"
 }
 
 resource "aws_secretsmanager_secret" "outbound_email_sender" {
