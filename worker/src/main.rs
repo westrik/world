@@ -2,7 +2,14 @@ extern crate diesel;
 #[macro_use]
 extern crate diesel_migrations;
 extern crate fallible_iterator;
+#[macro_use]
+extern crate lazy_static;
+#[macro_use]
+extern crate log;
 extern crate postgres;
+extern crate pretty_env_logger;
+#[macro_use]
+extern crate serde_derive;
 
 use dotenv::dotenv;
 use std::{env, thread};
@@ -10,7 +17,9 @@ use warp::Filter;
 
 use world_core::db;
 
+mod jobs;
 mod routes;
+mod run;
 mod subscribe;
 
 embed_migrations!("../core/migrations");
@@ -21,7 +30,7 @@ const DB_POOL_SIZE: u32 = 15;
 async fn main() {
     dotenv().ok();
     if env::var("RUST_LOG").is_err() {
-        env::set_var("RUST_LOG", "world_core=debug,worker=debug");
+        env::set_var("RUST_LOG", "world_core=debug,world_worker=debug");
     }
     pretty_env_logger::init();
 
@@ -32,10 +41,12 @@ async fn main() {
     embedded_migrations::run_with_output(&conn, &mut std::io::stdout()).unwrap();
 
     thread::spawn(move || {
-        subscribe::subscribe_to_jobs(database_url);
+        if let Err(err) = subscribe::subscribe_to_jobs(database_url) {
+            error!("failed to subscribe to jobs: {:?}", err);
+        }
     });
 
     let api = routes::worker_api(pool.clone());
     let routes = api.with(warp::log("worker::routing"));
-    warp::serve(routes).run(([127, 0, 0, 1], 8081)).await;
+    warp::serve(routes).run(([127, 0, 0, 1], 8090)).await;
 }

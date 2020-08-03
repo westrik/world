@@ -57,15 +57,15 @@ impl LibraryItemVersion {
         conn: &PgConnection,
         user_id: i32,
         library_item: LibraryItem,
+        version_type: LibraryItemVersionType,
         asset_url: Option<String>,
     ) -> Result<LibraryItemVersion, ApiError> {
-        // TODO: verify that asset_url matches library_item.presigned_upload_url
         LibraryItemVersionCreateSpec {
             api_id: generate_resource_identifier(ResourceType::LibraryItemVersion),
             library_item_id: library_item.id,
             user_id,
             asset_url,
-            version_type: format!("{}", LibraryItemVersionType::Original),
+            version_type: version_type.to_string(),
             asset_file_size_bytes: library_item.uploaded_file_size_bytes,
         }
         .insert(conn)

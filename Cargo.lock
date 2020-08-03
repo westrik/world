@@ -2035,6 +2035,7 @@ dependencies = [
  "hex 0.2.0",
  "phf",
  "postgres-protocol",
+ "serde_json",
 ]
 
 [[package]]
@@ -3806,6 +3807,7 @@ dependencies = [
  "dotenv 0.15.0",
  "flame",
  "flamescope",
+ "heck",
  "lazy_static 1.4.0",
  "log 0.4.8",
  "pretty_env_logger 0.4.0",
@@ -3849,9 +3851,13 @@ dependencies = [
  "diesel_migrations",
  "dotenv 0.14.1",
  "fallible-iterator",
+ "lazy_static 1.4.0",
  "log 0.4.8",
  "postgres",
  "pretty_env_logger 0.3.1",
+ "serde",
+ "serde_derive",
+ "serde_json",
  "tokio 0.2.21",
  "warp",
  "world_core",

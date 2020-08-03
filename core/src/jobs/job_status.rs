@@ -1,9 +1,9 @@
+use diesel::{sql_types::Text, Expression};
 use std::fmt;
 
-use diesel::sql_types::Text;
-use diesel::Expression;
+use crate::utils::string_transforms::ToIdentifier;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, FromSqlRow, Serialize, Deserialize)]
 pub enum JobStatus {
     Pending,
     Active,
@@ -15,7 +15,7 @@ impl fmt::Display for JobStatus {
     // TODO: write macro to add Debug and this impl? or improve in some other way
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let type_str = format!("{:?}", self);
-        write!(f, "{}", type_str.to_ascii_lowercase())
+        write!(f, "{}", type_str.to_ident())
     }
 }
 

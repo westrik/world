@@ -100,7 +100,7 @@ pub async fn handle_rejection(err: Rejection) -> Result<impl Reply, Infallible> 
         code = StatusCode::BAD_REQUEST;
         message = "Request content-type is not supported".to_string();
     } else {
-        error!("unhandled rejection: {:?}", err);
+        error!("unhandled rejection: {:#?}", err);
         code = StatusCode::INTERNAL_SERVER_ERROR;
         message = "Internal server error".to_string();
     }

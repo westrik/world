@@ -4,6 +4,7 @@ use crate::errors::ApiError;
 use crate::library::models::library_item::{LibraryItem, LibraryItemCreateSpec};
 // use crate::library::models::library_item_version::LibraryItemVersion;
 use crate::library::models::library_item_version::LibraryItemVersion;
+use crate::library::models::library_item_version_type::LibraryItemVersionType;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::s3::put_object_request::generate_presigned_upload_url;
 use crate::utils::list_options::ListOptions;
@@ -14,11 +15,6 @@ use warp::http::StatusCode;
 use warp::Rejection;
 
 // TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
-
-lazy_static! {
-    static ref CONTENT_BUCKET_NAME: String =
-        env::var("CONTENT_BUCKET_NAME").expect("CONTENT_BUCKET_NAME must be set");
-}
 
 #[derive(Debug, Deserialize)]
 pub struct ApiLibraryItemBulkCreateSpec {
@@ -131,7 +127,10 @@ async fn run_bulk_create_library_items(
 ) -> Result<Vec<LibraryItem>, ApiError> {
     // TODO: limit number of files per request
     // TODO: limit maximum file size?
-
+    lazy_static! {
+        static ref CONTENT_BUCKET_NAME: String =
+            env::var("CONTENT_BUCKET_NAME").expect("CONTENT_BUCKET_NAME must be set");
+    }
     let create_specs = {
         let mut specs = vec![];
         for file_size in spec.file_sizes_in_bytes.iter() {
@@ -230,6 +229,7 @@ fn run_create_library_item_version(
         conn,
         session.user_id,
         library_item,
+        LibraryItemVersionType::Original,
         None, // Some(library_item_version_url),
     )?;
     // TODO: enqueue library item processing job for library_item_version.id
