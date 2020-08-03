@@ -15,8 +15,11 @@ echo "pausing $INITIAL_SLEEP_TIME sec to wait for services to start"
 sleep $INITIAL_SLEEP_TIME
 echo "done pausing"
 
-echo "service logs:"
+echo "secrets logs:"
+journalctl --no-pager -u secrets -b
+echo "app logs:"
 journalctl --no-pager -u app -b
+echo "nginx logs:"
 journalctl --no-pager -u nginx -b
 
 for i in $(seq 1 $TEST_ITERATIONS)
