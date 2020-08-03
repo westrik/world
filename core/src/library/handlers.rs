@@ -15,11 +15,6 @@ use warp::Rejection;
 
 // TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
 
-lazy_static! {
-    static ref CONTENT_BUCKET_NAME: String =
-        env::var("CONTENT_BUCKET_NAME").expect("CONTENT_BUCKET_NAME must be set");
-}
-
 #[derive(Debug, Deserialize)]
 pub struct ApiLibraryItemBulkCreateSpec {
     #[serde(rename = "fileSizesInBytes")]
@@ -131,7 +126,10 @@ async fn run_bulk_create_library_items(
 ) -> Result<Vec<LibraryItem>, ApiError> {
     // TODO: limit number of files per request
     // TODO: limit maximum file size?
-
+    lazy_static! {
+        static ref CONTENT_BUCKET_NAME: String =
+            env::var("CONTENT_BUCKET_NAME").expect("CONTENT_BUCKET_NAME must be set");
+    }
     let create_specs = {
         let mut specs = vec![];
         for file_size in spec.file_sizes_in_bytes.iter() {
