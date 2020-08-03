@@ -62,9 +62,9 @@ impl Job {
 
     pub fn create(
         conn: &PgConnection,
+        user_id: Option<i32>,
         job_type: JobType,
         payload: Option<serde_json::Value>,
-        user_id: Option<i32>,
     ) -> Result<Job, ApiError> {
         JobCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Job),
