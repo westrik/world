@@ -1,14 +1,14 @@
 init_state:
-	cd modules/state; terraform init; terraform apply -auto-approve
+	cd modules/state; terraform init; terraform apply -var-file="secrets.tfvars" -auto-approve
 
-ami:
+build_ami:
 	packer build amis/westrikworld_production.json
 
 apply_core_infra:
 	terraform apply -target=module.core_infra
 
 apply:
-	terraform apply
+	terraform apply -var-file="secrets.tfvars"
 
 check:
 	packer validate amis/westrikworld_production.json
@@ -19,6 +19,7 @@ fmt:
 	terraform fmt modules/app_cloudfront
 	terraform fmt modules/app_instances
 	terraform fmt modules/app_load_balancer
+	terraform fmt modules/content_buckets
 	terraform fmt modules/core_infra
 	terraform fmt modules/core_infra/ami_sandbox
 	terraform fmt modules/core_infra/lambda_iam_roles
@@ -27,6 +28,7 @@ fmt:
 	terraform fmt modules/core_infra/s3_buckets
 	terraform fmt modules/database
 	terraform fmt modules/deploy_pipeline
+	terraform fmt modules/secrets
 	terraform fmt modules/state
 
 package_lambdas:

@@ -36,11 +36,19 @@ variable "root_domain_name" {
 }
 
 variable "admin_email" {
-  type    = string
   default = "m+wwadmin@ttwestrik.com"
+}
+
+variable "outbound_email_sender" {
+  default = "admin@westrik.world"
 }
 
 variable "num_app_instances" {
   type    = number
   default = 2
+}
+
+// SECRETS
+variable "sendgrid_api_key" {
+  type = string
 }

@@ -26,6 +26,7 @@ else
   journalctl --no-pager -u app -b
 fi
 
+nginx -t
 if systemctl restart nginx; then
   echo "nginx restarted OK"
 else

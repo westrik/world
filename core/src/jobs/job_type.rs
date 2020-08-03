@@ -9,6 +9,7 @@ use crate::utils::string_transforms::ToIdentifier;
 pub enum JobType {
     DummyJob,
     SendEmail,
+    // NOTE: don't forget to add new types to the FromStr impl
 }
 
 impl fmt::Display for JobType {

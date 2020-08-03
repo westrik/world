@@ -17,6 +17,8 @@ pub struct SendEmailJob {
 lazy_static! {
     static ref OUTBOUND_EMAIL_SENDER: String =
         env::var("OUTBOUND_EMAIL_SENDER").expect("OUTBOUND_EMAIL_SENDER must be set");
+    static ref SENDGRID_API_KEY: String =
+        env::var("SENDGRID_API_KEY").expect("SENDGRID_API_KEY must be set");
 }
 
 impl Runnable for SendEmailJob {
