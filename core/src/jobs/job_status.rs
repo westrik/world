@@ -1,9 +1,7 @@
+use diesel::{sql_types::Text, Expression};
 use std::fmt;
 
-use diesel::sql_types::Text;
-use diesel::Expression;
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, FromSqlRow, Serialize, Deserialize)]
 pub enum JobStatus {
     Pending,
     Active,

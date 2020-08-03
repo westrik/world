@@ -2,7 +2,14 @@ extern crate diesel;
 #[macro_use]
 extern crate diesel_migrations;
 extern crate fallible_iterator;
+#[macro_use]
+extern crate lazy_static;
+#[macro_use]
+extern crate log;
 extern crate postgres;
+extern crate pretty_env_logger;
+#[macro_use]
+extern crate serde_derive;
 
 use dotenv::dotenv;
 use std::{env, thread};
@@ -10,6 +17,7 @@ use warp::Filter;
 
 use world_core::db;
 
+mod jobs;
 mod routes;
 mod subscribe;
 
@@ -37,5 +45,5 @@ async fn main() {
 
     let api = routes::worker_api(pool.clone());
     let routes = api.with(warp::log("worker::routing"));
-    warp::serve(routes).run(([127, 0, 0, 1], 8081)).await;
+    warp::serve(routes).run(([127, 0, 0, 1], 8090)).await;
 }
