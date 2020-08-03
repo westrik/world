@@ -40,24 +40,20 @@ pub fn subscribe_to_jobs(database_url: String) {
         for row in &conn.query(&*CLAIM_PENDING_JOB_QUERY, &[]).unwrap() {
             let id: i32 = row.get(0);
             let api_id: String = row.get(1);
-            // let created_at: DateTime<Utc> = row.get(2);
-            // let updated_at: DateTime<Utc> = row.get(3);
-            let status: String = row.get(4);
             let job_type: String = row.get(5);
             let payload: Option<Vec<u8>> = row.get(6);
 
             info!(
-                "processing job [api_id={:?}][type={:?}][status={:?}][has_payload={:?}]",
+                "processing job [api_id={:?}][type={:?}][has_payload={:?}]",
                 api_id,
                 job_type,
-                status,
                 payload.is_some()
             );
 
             // TODO: add task to tokio queue
             match JobType::from_str(&job_type) {
-                Ok(JobType::System) => debug!("Running 'System' job"),
-                Ok(JobType::SendEmail) => debug!("Running 'SendEmail' job"),
+                Ok(JobType::System) => debug!("running 'System' job"),
+                Ok(JobType::SendEmail) => debug!("running 'SendEmail' job"),
                 _ => error!("Invalid job type: {}", job_type),
             }
 
