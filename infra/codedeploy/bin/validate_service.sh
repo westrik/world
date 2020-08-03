@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -uo pipefail
 
 TEST_URL="http://localhost:8080/"
 TEST_ITERATIONS=5
@@ -8,21 +8,26 @@ INITIAL_SLEEP_TIME=10
 REQUEST_SLEEP_TIME=2
 
 function test_service() {
-  curl --silent --output /dev/null --write-out "%{http_code}" "$1"
+  curl --output /dev/null --write-out "%{http_code}" "$1"
 }
 
 echo "pausing $INITIAL_SLEEP_TIME sec to wait for services to start"
 sleep $INITIAL_SLEEP_TIME
 echo "done pausing"
 
-echo "service logs:"
-journalctl --no-pager -u app -b
-journalctl --no-pager -u nginx -b
+echo "secrets logs:"
+journalctl -xn all --no-pager -u secrets -b
+
+echo "app logs:"
+journalctl -xn all --no-pager -u app -b
+
+echo "nginx logs:"
+journalctl -xn all --no-pager -u nginx -b
 
 for i in $(seq 1 $TEST_ITERATIONS)
 do
   printf "making a request to %s... " "$TEST_URL"
-  status_code=$(test_service $TEST_URL)
+  status_code=$(test_service "$TEST_URL")
   if [[ status_code -eq 200 ]] ; then
     echo "succeeded"
     exit 0

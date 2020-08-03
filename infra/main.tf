@@ -120,3 +120,13 @@ module "app_instances" {
   num_app_instances         = var.num_app_instances
   app_blue_target_group_arn = module.app_load_balancer.app_blue_target_group_arn
 }
+
+
+module "secrets" {
+  source = "./modules/secrets"
+
+  project_name          = var.project_name
+  sendgrid_api_key      = var.sendgrid_api_key
+  outbound_email_sender = var.outbound_email_sender
+  root_domain_name      = var.root_domain_name
+}

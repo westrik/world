@@ -2,9 +2,7 @@
 
 set -euo pipefail
 
-# TODO: store this in secretsmanager? seems weird but it's the only non-secret env var rn
-CORS_ORIGIN_URL="https://westrik.world"
-
+APPLICATION_NAME="westrikworld"
 RAMFS_MOUNT_DIR=/secrets
 RAMFS_SIZE=64M
 
@@ -24,29 +22,34 @@ aws configure set region us-east-1
 
 function get_secret() {
   secret_id=$1
-  secret_value=$(aws secretsmanager get-secret-value --secret-id "$secret_id" | jq -r '.SecretString')
+  secret_value=$(aws secretsmanager get-secret-value --secret-id "$APPLICATION_NAME""_""$secret_id" | jq -r '.SecretString')
   # TODO: escape all potential problematic values
   # secret_value="${secret_value//\%/%%}"
   echo "$secret_value"
 }
 
-rds_host=$(get_secret "westrikworld_database_url")
-rds_user=$(get_secret "westrikworld_database_username")
-rds_password=$(get_secret "westrikworld_database_password")
-rds_db_name=$(get_secret "westrikworld_database_name")
-iam_role_arn=$(get_secret "westrikworld_ec2_app_host_role_arn")
-content_bucket_name=$(get_secret "westrikworld_content_bucket_name")
-password_hash_salt=$(get_secret "westrikworld_password_hash_salt")
-api_cert_data=$(get_secret "westrikworld_api_cert" | jq -r '.certificate')
+api_cert_data=$(get_secret "api_cert" | jq -r '.certificate')
+content_bucket_name=$(get_secret "content_bucket_name")
+cors_origin_url=$(get_secret "cors_origin_url")
+iam_role_arn=$(get_secret "ec2_app_host_role_arn")
+outbound_email_sender=$(get_secret "outbound_email_sender")
+password_hash_salt=$(get_secret "password_hash_salt")
+rds_db_name=$(get_secret "database_name")
+rds_host=$(get_secret "database_url")
+rds_password=$(get_secret "database_password")
+rds_user=$(get_secret "database_username")
+sendgrid_api_key=$(get_secret "sendgrid_api_key")
 
 systemctl stop nginx app
 
 {
-  echo "DATABASE_URL=postgres://$rds_user:$rds_password@$rds_host/$rds_db_name"
-  echo "PASSWORD_HASH_SALT=$password_hash_salt"
-  echo "CORS_ORIGIN_URL=$CORS_ORIGIN_URL"
-  echo "IAM_ROLE_ARN=$iam_role_arn"
   echo "CONTENT_BUCKET_NAME=$content_bucket_name"
+  echo "CORS_ORIGIN_URL=$cors_origin_url"
+  echo "DATABASE_URL=postgres://$rds_user:$rds_password@$rds_host/$rds_db_name"
+  echo "IAM_ROLE_ARN=$iam_role_arn"
+  echo "OUTBOUND_EMAIL_SENDER=$outbound_email_sender"
+  echo "PASSWORD_HASH_SALT=$password_hash_salt"
+  echo "SENDGRID_API_KEY=$sendgrid_api_key"
 } > $RAMFS_MOUNT_DIR/app.env
 chown app:app $RAMFS_MOUNT_DIR/app.env
 chmod 660 $RAMFS_MOUNT_DIR/app.env
