@@ -53,7 +53,7 @@ pub fn subscribe_to_jobs(database_url: String) -> Result<(), JobError> {
             let id: i32 = row.get(0);
             debug!("received job [id={}]", id);
             let job_type: String = row.get(5);
-            let payload: Option<Vec<u8>> = row.get(6);
+            let payload: Option<serde_json::Value> = row.get(6);
 
             let job_result = match JobType::from_str(&job_type) {
                 Ok(job_type) => {

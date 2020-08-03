@@ -2035,6 +2035,7 @@ dependencies = [
  "hex 0.2.0",
  "phf",
  "postgres-protocol",
+ "serde_json",
 ]
 
 [[package]]

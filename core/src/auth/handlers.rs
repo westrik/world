@@ -34,7 +34,7 @@ fn run_sign_in(creds: SignInRequest, pool: &DbPool) -> Result<AuthenticationResp
         JobType::SendEmail,
         Some(json!({
             "recipients": vec!["test@example.com"],
-            "template": "login_notification"
+            "template": "LoginNotification"
         })),
     ) {
         info!(

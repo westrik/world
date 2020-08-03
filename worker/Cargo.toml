@@ -23,4 +23,4 @@ tokio = { version = "^0.2", features = ["macros", "rt-threaded"] }
 warp = "^0.2"
 world_core = { path = "../core" }
 fallible-iterator="0.1.6" # higher versions don't work with postgres
-postgres="0.15.2" # higher versions don't work with notifications
+postgres = { version = "0.15.2", features = ["with-serde_json"] } # higher versions don't work with notifications
