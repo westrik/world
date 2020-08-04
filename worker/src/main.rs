@@ -17,10 +17,12 @@ use warp::Filter;
 
 use world_core::db;
 
-mod jobs;
-mod routes;
-mod run;
-mod subscribe;
+pub mod jobs;
+pub mod routes;
+pub mod run;
+pub mod subscribe;
+
+mod emails;
 
 embed_migrations!("../core/migrations");
 
