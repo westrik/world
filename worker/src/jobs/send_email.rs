@@ -30,7 +30,7 @@ impl Runnable for SendEmailJob {
     async fn run(&self) -> Result<String, JobError> {
         // TODO: validate input
         // TODO: populate templates
-        // TODO: send request to SendGrid (via external-service-proxy Lambda)
+        // TODO: send request to SendGrid (via service-proxy Lambda)
         info!(
             "sending email to {:#?} (template: {:#?})",
             self.recipients, self.template

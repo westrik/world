@@ -125,8 +125,10 @@ module "app_instances" {
 module "secrets" {
   source = "./modules/secrets"
 
+  outbound_email_sender = var.outbound_email_sender
   project_name          = var.project_name
   sendgrid_api_key      = var.sendgrid_api_key
-  outbound_email_sender = var.outbound_email_sender
   root_domain_name      = var.root_domain_name
+  // TODO: use lambda ARN
+  service_proxy_lambda_arn = ""
 }

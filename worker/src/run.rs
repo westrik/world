@@ -20,7 +20,7 @@ pub async fn run_job(
     match job_type {
         JobType::DummyJob => DummyJob {}.run().await,
         JobType::SendEmail => {
-            let payload = payload.unwrap().clone();
+            let payload = payload.unwrap();
             let email_job: SendEmailJob = serde_json::from_value(payload).unwrap();
             email_job.run().await
         }
