@@ -1,3 +1,8 @@
+use std::convert::Infallible;
+use std::env;
+use warp::http::StatusCode;
+use warp::Rejection;
+
 use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
@@ -7,14 +12,9 @@ use crate::library::models::library_item_version::LibraryItemVersion;
 use crate::library::models::library_item_version_type::LibraryItemVersionType;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::s3::put_object_request::generate_presigned_upload_url;
+use crate::utils::api_task::run_api_task;
 use crate::utils::list_options::ListOptions;
 use crate::utils::mnemonic::{generate_mnemonic, DEFAULT_MNEMONIC_LENGTH};
-use std::convert::Infallible;
-use std::env;
-use warp::http::StatusCode;
-use warp::Rejection;
-
-// TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
 
 #[derive(Debug, Deserialize)]
 pub struct ApiLibraryItemBulkCreateSpec {
@@ -82,7 +82,7 @@ pub async fn list_library_items(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!("list_library_items: opts={:?}", opts);
-    let library_items = run_get_library_items(session, &db_pool)?;
+    let library_items = run_api_task(move || run_get_library_items(session, &db_pool)).await?;
     Ok(warp::reply::with_status(
         warp::reply::json(&GetLibraryItemsResponse {
             error: None,
@@ -110,7 +110,8 @@ pub async fn get_library_item(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!("get_library_item: api_id={:?}", api_id);
-    let library_item = run_get_library_item(session, &db_pool, api_id)?;
+    let library_item =
+        run_api_task(move || run_get_library_item(session, &db_pool, api_id)).await?;
     Ok(warp::reply::with_status(
         warp::reply::json(&GetLibraryItemResponse {
             error: None,
@@ -153,10 +154,11 @@ async fn run_bulk_create_library_items(
         specs
     };
 
-    Ok(LibraryItem::bulk_create(
-        &get_conn(&db_pool).unwrap(),
-        create_specs,
-    )?)
+    let pool = db_pool.clone();
+    Ok(
+        run_api_task(move || LibraryItem::bulk_create(&get_conn(&pool).unwrap(), create_specs))
+            .await?,
+    )
 }
 
 pub async fn bulk_create_library_items(
@@ -196,7 +198,8 @@ pub async fn update_library_item(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!("update_library_item: api_id={}, spec={:?}", api_id, spec);
-    let library_item = run_update_library_item(session, api_id, spec, &db_pool)?;
+    let library_item =
+        run_api_task(move || run_update_library_item(session, api_id, spec, &db_pool)).await?;
     Ok(warp::reply::with_status(
         warp::reply::json(&UpdateLibraryItemResponse {
             error: None,
@@ -244,7 +247,8 @@ pub async fn create_library_item_version(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!("create_library_item_version: spec={:?}", spec);
-    let library_item_version = run_create_library_item_version(spec, session, &db_pool)?;
+    let library_item_version =
+        run_api_task(move || run_create_library_item_version(spec, session, &db_pool)).await?;
     Ok(warp::reply::with_status(
         warp::reply::json(&CreateLibraryItemVersionResponse {
             error: None,

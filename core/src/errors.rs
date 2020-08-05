@@ -21,8 +21,8 @@ pub enum ApiError {
     InternalError(String),
     // HTTP 500 or 404
     DatabaseError(diesel::result::Error),
-    // TODO: 503 Service Unavailable (RetryableError(String))
-    //   - with Retry-After header field
+    InternalRuntimeError(tokio::task::JoinError), // TODO: 503 Service Unavailable (RetryableError(String))
+                                                  //   - with Retry-After header field
 }
 
 impl warp::reject::Reject for ApiError {}
@@ -58,6 +58,10 @@ pub async fn handle_rejection(err: Rejection) -> Result<impl Reply, Infallible> 
     } else if let Some(ApiError::Forbidden) = err.find() {
         code = StatusCode::FORBIDDEN;
         message = "Invalid credentials".to_string();
+    } else if let Some(ApiError::InternalRuntimeError(join_err)) = err.find() {
+        code = StatusCode::INTERNAL_SERVER_ERROR;
+        // TODO: don't print error & make this retryable
+        message = format!("Internal server error: {}", join_err);
     } else if let Some(ApiError::DatabaseError(db_err)) = err.find() {
         match db_err {
             diesel::result::Error::NotFound => {
