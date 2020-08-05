@@ -3,7 +3,8 @@ use dotenv::dotenv;
 use std::{env, io};
 
 pub use world_core::db::{
-    begin_txn, get_conn, init_pool, rollback_txn, DbPool, DbPooledConnection as DbConnection,
+    begin_txn, commit_txn, get_conn, init_pool, rollback_txn, DbPool,
+    DbPooledConnection as DbConnection,
 };
 
 use crate::fixtures::*;
@@ -45,5 +46,5 @@ pub fn destroy_test_db(pool: &DbPool) {
     conn.execute("DROP TABLE IF EXISTS users").unwrap();
     conn.execute("DROP TABLE IF EXISTS __diesel_schema_migrations")
         .unwrap();
-    conn.execute("COMMIT").unwrap();
+    commit_txn(&conn).unwrap();
 }

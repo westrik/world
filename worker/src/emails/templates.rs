@@ -9,7 +9,7 @@ pub fn populate_email_template() -> Result<String, JobError> {
         .parse(tpl)
         .unwrap();
 
-    let mut globals = liquid::object!({
+    let globals = liquid::object!({
         "site_name": "westrikworld",
         "action_url": "https://westrik.world/sign-in",
         "login_url": "https://westrik.world/sign-in",
@@ -17,13 +17,9 @@ pub fn populate_email_template() -> Result<String, JobError> {
         "trial_extension_url": "https://westrik.world/sign-in",
         "expiration_date": "TODAY",
         "username": "matt",
-        "something": "SOMETHING"
     });
 
-    let output = template.render(&globals).unwrap();
-    // assert_eq!(output, "Liquid! 2".to_string());
-
-    Ok(output)
+    Ok(template.render(&globals).unwrap())
 }
 
 #[cfg(test)]
@@ -32,7 +28,8 @@ pub mod email_template_population {
 
     #[test]
     fn basic() {
-        let populated_template = populate_email_template();
-        assert_eq!(populated_template.unwrap(), "TEMPLATE".to_string());
+        let expected = include_str!("./templates/login_notification/test_output/content.html");
+        let actual = populate_email_template();
+        assert_eq!(actual.unwrap(), expected.to_string());
     }
 }

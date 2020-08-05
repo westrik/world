@@ -1,6 +1,7 @@
 use std::env;
 use world_core::jobs::errors::JobError;
 
+use crate::emails::templates::populate_email_template;
 use crate::jobs::Runnable;
 
 #[derive(Debug, Deserialize)]
@@ -30,6 +31,7 @@ impl Runnable for SendEmailJob {
             "sending email to {:#?} (template: {:#?})",
             self.recipients, self.template
         );
+        populate_email_template()?;
         Ok("DONE".to_string())
     }
 }
