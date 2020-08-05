@@ -30,4 +30,32 @@ jobs:
         path: ./target
         key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}-debug
     - name: Run tests
-      run: cargo test --verbose
+      run: |
+        cargo build --verbose
+        cargo test --verbose
+
+    rust_coverage_report:
+      name: generate code coverage report
+      runs-on: ubuntu-latest
+      needs:
+      steps:
+        - uses: actions/checkout@v1
+        - name: install dependencies
+          run: sudo apt-get install libcurl4-openssl-dev libelf-dev libdw-dev cmake gcc binutils-dev libiberty-dev
+        - name: generate & upload coverage report
+          run: |
+            wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz &&
+            tar xzf master.tar.gz &&
+            cd kcov-master &&
+            mkdir build &&
+            cd build &&
+            cmake .. &&
+            make &&
+            make install DESTDIR=../../kcov-build &&
+            cd ../.. &&
+            rm -rf kcov-master &&
+            for file in target/debug/world_*; do [ -x "${file}" ] || continue; mkdir -p "target/cov/$(basename $file)"; ./kcov-build/usr/local/bin/kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"; done &&
+            bash <(curl -s https://codecov.io/bash) &&
+            echo "Uploaded code coverage"
+          env:
+            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
