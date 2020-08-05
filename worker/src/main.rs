@@ -1,3 +1,4 @@
+#![feature(async_closure)]
 extern crate diesel;
 #[macro_use]
 extern crate diesel_migrations;
@@ -42,13 +43,13 @@ async fn main() {
     let conn = db::get_conn(&pool).unwrap();
     embedded_migrations::run_with_output(&conn, &mut std::io::stdout()).unwrap();
 
-    thread::spawn(move || {
-        if let Err(err) = subscribe::subscribe_to_jobs(database_url) {
-            error!("failed to subscribe to jobs: {:?}", err);
-        }
+    thread::spawn(async move || {
+        let api = routes::worker_api(pool.clone());
+        let routes = api.with(warp::log("worker::routing"));
+        warp::serve(routes).run(([127, 0, 0, 1], 8090)).await;
     });
 
-    let api = routes::worker_api(pool.clone());
-    let routes = api.with(warp::log("worker::routing"));
-    warp::serve(routes).run(([127, 0, 0, 1], 8090)).await;
+    if let Err(err) = subscribe::subscribe_to_jobs(database_url).await {
+        error!("failed to subscribe to jobs: {:?}", err);
+    }
 }

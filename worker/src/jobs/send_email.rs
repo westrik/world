@@ -1,3 +1,6 @@
+use async_trait::async_trait;
+use rusoto_core::Region;
+use rusoto_lambda::{InvocationRequest, Lambda, LambdaClient};
 use std::env;
 use world_core::jobs::errors::JobError;
 
@@ -22,8 +25,9 @@ lazy_static! {
         env::var("SENDGRID_API_KEY").expect("SENDGRID_API_KEY must be set");
 }
 
+#[async_trait]
 impl Runnable for SendEmailJob {
-    fn run(&self) -> Result<String, JobError> {
+    async fn run(&self) -> Result<String, JobError> {
         // TODO: validate input
         // TODO: populate templates
         // TODO: send request to SendGrid (via external-service-proxy Lambda)
@@ -32,6 +36,17 @@ impl Runnable for SendEmailJob {
             self.recipients, self.template
         );
         populate_email_template()?;
+        let lambda_client = LambdaClient::new(Region::UsEast1);
+        let _response = lambda_client
+            .invoke(InvocationRequest {
+                client_context: None,
+                function_name: "my_function_name".to_string(),
+                invocation_type: None,
+                log_type: None,
+                payload: None,
+                qualifier: None,
+            })
+            .await;
         Ok("DONE".to_string())
     }
 }
