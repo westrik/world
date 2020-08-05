@@ -1,36 +1,29 @@
-use tera::{Context, Tera};
 use world_core::jobs::errors::JobError;
 
-// lazy_static! {
-//     pub static ref TEMPLATES: Tera = {
-//         tera
-//     };
-// }
-//
-// // "login_notification"
-//
-
 pub fn populate_email_template() -> Result<String, JobError> {
-    // TODO: render HTML and text
+    let tpl = include_str!("./templates/login_notification/content.html");
 
-    let mut tera = match Tera::new("./templateasdioafdsikljadfskljs/**/*") {
-        Ok(t) => t,
-        Err(e) => panic!("Template parsing error(s): {}", e),
-    };
-    // if let Err(err) = tera.add_template_files(vec![
-    //     ("login_notification.html", Some("login_notification")),
-    //     ("login_notification.txt", Some("login_notification_txt")),
-    // ]) {
-    //     panic!("Failed to load template(s): {} [dir={:#?}]", err, std::env::current_dir().unwrap());
-    //
-    // }
-    let mut context = Context::new();
-    context.insert("site_name", "westrikworld");
-    let rendered = tera
-        .render("login_notification.html", &context)
-        .map_err(|e| JobError::InternalError(format!("Failed to render template: {}", e)))?;
+    let template = liquid::ParserBuilder::with_stdlib()
+        .build()
+        .unwrap()
+        .parse(tpl)
+        .unwrap();
 
-    Ok(rendered.to_string())
+    let mut globals = liquid::object!({
+        "site_name": "westrikworld",
+        "action_url": "https://westrik.world/sign-in",
+        "login_url": "https://westrik.world/sign-in",
+        "feedback_url": "https://westrik.world/sign-in",
+        "trial_extension_url": "https://westrik.world/sign-in",
+        "expiration_date": "TODAY",
+        "username": "matt",
+        "something": "SOMETHING"
+    });
+
+    let output = template.render(&globals).unwrap();
+    // assert_eq!(output, "Liquid! 2".to_string());
+
+    Ok(output)
 }
 
 #[cfg(test)]
