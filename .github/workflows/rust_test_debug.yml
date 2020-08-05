@@ -37,7 +37,7 @@ jobs:
   rust_coverage_report:
     name: generate code coverage report
     runs-on: ubuntu-latest
-    needs:
+    needs: rust_test_debug
     steps:
       - uses: actions/checkout@v1
       - name: install dependencies
