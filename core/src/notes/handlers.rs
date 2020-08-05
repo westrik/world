@@ -1,14 +1,14 @@
+use std::convert::Infallible;
+use tokio::task::block_in_place;
+use warp::http::StatusCode;
+use warp::Rejection;
+
 use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
 use crate::notes::models::note::{Note, NoteSummary};
 use crate::notes::parsing::parse_markdown_content;
 use crate::utils::list_options::ListOptions;
-use std::convert::Infallible;
-use warp::http::StatusCode;
-use warp::Rejection;
-
-// TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
 
 #[derive(Debug, Deserialize)]
 pub struct ApiNoteCreateSpec {
@@ -52,7 +52,7 @@ pub async fn list_notes(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!("list_notes: opts={:?}", opts);
-    let notes = run_get_notes(session, &db_pool)?;
+    let notes = block_in_place(move || run_get_notes(session, &db_pool))?;
     Ok(warp::reply::with_status(
         warp::reply::json(&GetNotesResponse {
             error: None,
@@ -72,7 +72,7 @@ pub async fn get_note(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!("get_note: api_id={:?}", api_id);
-    let note = run_get_note(session, &db_pool, api_id)?;
+    let note = block_in_place(move || run_get_note(session, &db_pool, api_id))?;
     Ok(warp::reply::with_status(
         warp::reply::json(&GetNoteResponse {
             error: None,
@@ -112,7 +112,7 @@ pub async fn create_note(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!("create_note: spec={:?}", spec);
-    let note = run_create_note(spec, session, &db_pool)?;
+    let note = block_in_place(move || run_create_note(spec, session, &db_pool))?;
     Ok(warp::reply::with_status(
         warp::reply::json(&UpdateNoteResponse {
             error: None,
@@ -154,7 +154,7 @@ pub async fn update_note(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!("update_note: api_id={}, spec={:?}", api_id, spec);
-    let note = run_update_note(session, api_id, spec, &db_pool)?;
+    let note = block_in_place(move || run_update_note(session, api_id, spec, &db_pool))?;
     Ok(warp::reply::with_status(
         warp::reply::json(&UpdateNoteResponse {
             error: None,

@@ -1,11 +1,13 @@
+use std::convert::Infallible;
+use tokio::task::block_in_place;
+use warp::http::StatusCode;
+use warp::Rejection;
+
 use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
 use crate::tasks::models::task::{ApiTask, ApiTaskCreateSpec, ApiTaskUpdateSpec, Task};
 use crate::utils::list_options::ListOptions;
-use std::convert::Infallible;
-use warp::http::StatusCode;
-use warp::Rejection;
 
 #[derive(Serialize)]
 pub struct GetTaskResponse {
@@ -19,8 +21,6 @@ pub struct UpdateTaskResponse {
     task: Option<ApiTask>,
 }
 
-// TODO: wrap DB queries in blocking task (https://tokio.rs/docs/going-deeper/tasks/)
-
 fn run_get_tasks(session: Session, pool: &DbPool) -> Result<Vec<Task>, ApiError> {
     Ok(Task::find_all_for_user(&get_conn(&pool).unwrap(), session)?)
 }
@@ -31,7 +31,7 @@ pub async fn list_tasks(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!("list_tasks: opts={:?}", opts);
-    let tasks = run_get_tasks(session, &db_pool)?;
+    let tasks = block_in_place(move || run_get_tasks(session, &db_pool))?;
     Ok(warp::reply::with_status(
         warp::reply::json(&GetTaskResponse {
             error: None,
@@ -55,7 +55,7 @@ pub async fn create_task(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!("create_task: new_task={:?}", new_task);
-    let task = run_create_task(session, new_task.description, &db_pool)?;
+    let task = block_in_place(move || run_create_task(session, new_task.description, &db_pool))?;
     Ok(warp::reply::with_status(
         warp::reply::json(&UpdateTaskResponse {
             error: None,
@@ -86,7 +86,7 @@ pub async fn update_task(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!("update_task: api_id={}, spec={:?}", api_id, spec);
-    let task = run_update_task(session, api_id, spec, &db_pool)?;
+    let task = block_in_place(move || run_update_task(session, api_id, spec, &db_pool))?;
     Ok(warp::reply::with_status(
         warp::reply::json(&UpdateTaskResponse {
             error: None,
