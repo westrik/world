@@ -19,7 +19,6 @@ pub mod s3;
 pub mod schema;
 pub mod utils;
 
-// TODO: move DB operations to an async thread pool (tokio?)
 pub mod auth;
 pub mod library;
 pub mod notes;

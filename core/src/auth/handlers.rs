@@ -8,6 +8,7 @@ use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
 use crate::jobs::enqueue_job::enqueue_job;
 use crate::jobs::job_type::JobType;
+use crate::utils::api_task::run_api_task;
 
 #[derive(Debug, Deserialize)]
 pub struct SignInRequest {
@@ -59,28 +60,36 @@ pub async fn sign_in(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!("sign_in: email_address={}", sign_in_request.email_address);
-    let response = run_sign_in(sign_in_request, &db_pool)?;
+    let response = run_api_task(move || run_sign_in(sign_in_request, &db_pool)).await?;
     Ok(warp::reply::with_status(
         warp::reply::json(&response),
         StatusCode::OK,
     ))
 }
 
+fn run_sign_up(
+    create_spec: ApiUserCreateSpec,
+    pool: &DbPool,
+) -> Result<AuthenticationResponse, ApiError> {
+    let user = User::create(create_spec, &get_conn(&pool).unwrap())?;
+    Ok(AuthenticationResponse {
+        user: Some(user),
+        session: None, // TODO: create session upon sign-up
+        error: None,
+    })
+}
+
 pub async fn sign_up(
-    new_user: ApiUserCreateSpec,
-    db_pool: DbPool,
+    create_spec: ApiUserCreateSpec,
+    pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!(
         "sign_up: email_address={}, full_name={:?}",
-        new_user.email_address, new_user.full_name
+        create_spec.email_address, create_spec.full_name
     );
-    let user = User::create(new_user, &get_conn(&db_pool).unwrap())?;
+    let response = run_api_task(move || run_sign_up(create_spec, &pool)).await?;
     Ok(warp::reply::with_status(
-        warp::reply::json(&AuthenticationResponse {
-            user: Some(user),
-            session: None, // TODO: create session upon sign-up
-            error: None,
-        }),
+        warp::reply::json(&response),
         StatusCode::OK,
     ))
 }

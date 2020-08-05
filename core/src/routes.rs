@@ -1,3 +1,10 @@
+use diesel::dsl::now;
+use diesel::prelude::*;
+use serde_json::json;
+use std::convert::Infallible;
+use warp::cors::Cors;
+use warp::Filter;
+
 use crate::auth::filters::routes as auth_routes;
 use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
@@ -6,14 +13,8 @@ use crate::library::filters::routes as library_routes;
 use crate::notes::filters::routes as note_routes;
 use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
 use crate::tasks::filters::routes as task_routes;
+use crate::utils::api_task::run_api_task;
 use crate::{API_VERSION, MAX_CONTENT_LENGTH_BYTES};
-use diesel::dsl::now;
-use diesel::prelude::*;
-use diesel::result::Error;
-use serde_json::json;
-use std::convert::Infallible;
-use warp::cors::Cors;
-use warp::Filter;
 
 pub fn api(db_pool: DbPool) -> impl Filter<Extract = impl warp::Reply, Error = Infallible> + Clone {
     preflight_cors()
@@ -46,16 +47,15 @@ pub fn with_db(
     warp::any().map(move || db_pool.clone())
 }
 
-fn load_session_for_token(
-    token: String,
-    db_pool: DbPool,
-) -> Result<Session, diesel::result::Error> {
-    // TODO: move to query thread pool
-    // TODO: get rid of .unwrap()'s somehow
-    all_sessions
-        .filter(sessions::token.eq(token))
-        .filter(sessions::expires_at.gt(now))
-        .first(&get_conn(&db_pool).unwrap())
+async fn load_session_for_token(token: String, db_pool: DbPool) -> Result<Session, ApiError> {
+    Ok(run_api_task(move || {
+        all_sessions
+            .filter(sessions::token.eq(token))
+            .filter(sessions::expires_at.gt(now))
+            .first(&get_conn(&db_pool).unwrap())
+            .map_err(ApiError::DatabaseError)
+    })
+    .await?)
 }
 
 pub fn with_session(
@@ -65,12 +65,9 @@ pub fn with_session(
         .and(warp::header("Authorization"))
         .and(with_db(db_pool))
         .and_then(|token: String, db_pool: DbPool| async move {
-            load_session_for_token(token, db_pool).map_err(|e| {
-                warp::reject::custom(match e {
-                    Error::NotFound => ApiError::Forbidden,
-                    e => ApiError::DatabaseError(e),
-                })
-            })
+            load_session_for_token(token, db_pool)
+                .await
+                .map_err(warp::reject::custom)
         })
 }
 
