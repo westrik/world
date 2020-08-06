@@ -104,7 +104,7 @@ export const NOTE_FIXTURE: Note = {
             createHeader(HeaderType.H4, 'Headline level four'),
             createParagraph([
                 createImage({
-                    destinationUrl: 'https://placedog.net/1000',
+                    destinationUrl: 'https://via.placeholder.com/1200x800',
                     title: 'placedog',
                     type: LinkType.Inline,
                 }),

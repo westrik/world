@@ -14,10 +14,12 @@
     "test:watch": "yarn mocha --watch --watch-files src,tests -r ts-node/register -r tsconfig-paths/register -r tests/setup.js tests/{**/,}*-test.ts{,x}",
     "typecheck": "yarn tsc --skipLibCheck",
     "chk": "yarn typecheck && yarn lint",
-    "storybook:serve": "yarn parcel src/storybook.html --port 1337",
-    "storybook:ui": "yarn start-storybook --preview-url=http://localhost:1337/iframe.html"
+    "snapshot": "build-storybook && percy-storybook --widths=320,1280",
+    "storybook": "start-storybook"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@percy/storybook": "^3.3.0",
     "@storybook/preact": "^5.3.17",
     "@types/chai": "^4.2.7",
     "@types/codemirror": "^0.0.96",
@@ -28,6 +30,7 @@
     "@types/react-dom": "^16.9.4",
     "@typescript-eslint/eslint-plugin": "^2.12.0",
     "@typescript-eslint/parser": "^2.12.0",
+    "babel-loader": "^8.1.0",
     "chai": "^4.2.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-preact-pure": "^2.2.0",
@@ -42,11 +45,14 @@
     "parcel-bundler": "^1.12.4",
     "prettier": "^2.0",
     "sass": "^1.24",
+    "sass-loader": "^9.0.3",
     "sinon": "^9.0",
     "stylelint": "^13.0.0",
     "stylelint-config-standard": "^20.0",
+    "ts-loader": "^8.0.2",
     "ts-node": "^8.6",
     "tsconfig-paths": "^3.9.0",
+    "tsconfig-paths-webpack-plugin": "^3.3.0",
     "typescript": "^3.7.3"
   },
   "dependencies": {

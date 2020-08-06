@@ -51,3 +51,9 @@ jobs:
       working-directory: ./web-client
       run: |
         yarn lint:style
+    - name: Create & upload snapshots
+      working-directory: ./web-client
+      env:
+        PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+      run: |
+        yarn snapshot
