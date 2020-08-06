@@ -1,6 +1,5 @@
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-
 const path = require('path');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
     stories: ['../src/**/*.stories.[tj]sx'],
@@ -12,9 +11,11 @@ module.exports = {
             exclude: /node_modules/,
         });
         config.resolve.extensions.push('.ts', '.tsx');
-        config.resolve.alias['~'] = path.resolve(__dirname, '../src/');
-        config.resolve.alias['tests'] = path.resolve(__dirname, '../tests/');
-        config.resolve.plugins = [new TsconfigPathsPlugin({ configFile: path.resolve(__dirname, '../tsconfig.json') })];
+        config.resolve.plugins = [
+            new TsconfigPathsPlugin({
+                configFile: path.resolve(__dirname, '../tsconfig.json')
+            })
+        ];
         return config;
     },
 };
