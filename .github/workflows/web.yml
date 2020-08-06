@@ -51,15 +51,9 @@ jobs:
       working-directory: ./web-client
       run: |
         yarn lint:style
-
-  snapshot:
-    name: snapshot all stories
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create & upload snapshots
-        working-directory: ./web-client
-        env:
-          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
-        run: |
-          yarn snapshot
+    - name: Create & upload snapshots
+      working-directory: ./web-client
+      env:
+        PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+      run: |
+        yarn snapshot
