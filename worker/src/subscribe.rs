@@ -38,7 +38,7 @@ lazy_static! {
 
 // TODO: gracefully handle unwrap failures
 
-pub fn subscribe_to_jobs(database_url: String) -> Result<(), JobError> {
+pub async fn subscribe_to_jobs(database_url: String) -> Result<(), JobError> {
     debug!("connecting to database...");
     let conn = Connection::connect(database_url, TlsMode::None).expect("failed to connect");
     debug!("database connection established");
@@ -59,7 +59,7 @@ pub fn subscribe_to_jobs(database_url: String) -> Result<(), JobError> {
             let job_result = match JobType::from_str(&job_type) {
                 Ok(job_type) => {
                     debug!("running '{}' job", job_type);
-                    run_job(id, job_type, payload)
+                    run_job(id, job_type, payload).await
                 }
                 _ => Err(JobError::InvalidJob(format!(
                     "invalid job type: {}",

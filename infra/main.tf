@@ -125,8 +125,16 @@ module "app_instances" {
 module "secrets" {
   source = "./modules/secrets"
 
+  outbound_email_sender = var.outbound_email_sender
   project_name          = var.project_name
   sendgrid_api_key      = var.sendgrid_api_key
-  outbound_email_sender = var.outbound_email_sender
   root_domain_name      = var.root_domain_name
+}
+
+module "worker_lambdas" {
+  source = "./modules/worker_lambdas"
+
+  project_name         = var.project_name
+  lambda_deploy_bucket = module.core_infra.lambda_deploy_bucket
+  app_host_iam_role_id = module.app_instances.app_host_iam_role_id
 }

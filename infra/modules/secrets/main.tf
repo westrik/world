@@ -24,4 +24,3 @@ resource "aws_secretsmanager_secret_version" "sendgrid_api_key" {
   secret_id     = aws_secretsmanager_secret.sendgrid_api_key.id
   secret_string = var.sendgrid_api_key
 }
-

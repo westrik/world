@@ -4,7 +4,7 @@ use crate::jobs::dummy_job::DummyJob;
 use crate::jobs::send_email::SendEmailJob;
 use crate::jobs::Runnable;
 
-pub fn run_job(
+pub async fn run_job(
     id: i32,
     job_type: JobType,
     payload: Option<serde_json::Value>,
@@ -18,16 +18,11 @@ pub fn run_job(
 
     // TODO: run task on tokio threadpool
     match job_type {
-        JobType::DummyJob => DummyJob {}.run(),
+        JobType::DummyJob => DummyJob {}.run().await,
         JobType::SendEmail => {
-            if let Some(job_data) = payload {
-                let job_data: SendEmailJob = serde_json::from_value(job_data).unwrap();
-                job_data.run()
-            } else {
-                Err(JobError::InvalidJob(
-                    "No payload provided for send-email job".to_string(),
-                ))
-            }
+            let payload = payload.unwrap();
+            let email_job: SendEmailJob = serde_json::from_value(payload).unwrap();
+            email_job.run().await
         }
     }
 }

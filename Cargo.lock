@@ -2664,6 +2664,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "rusoto_lambda"
+version = "0.45.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f24295496612998476a7236576377554dbffbeb03836e083932d89855df1b0ed"
+dependencies = [
+ "async-trait",
+ "bytes 0.5.5",
+ "futures 0.3.5",
+ "rusoto_core",
+ "serde",
+ "serde_derive",
+ "serde_json",
+]
+
+[[package]]
 name = "rusoto_s3"
 version = "0.45.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4005,6 +4020,8 @@ dependencies = [
 name = "world_worker"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
+ "bytes 0.5.5",
  "diesel",
  "diesel_migrations",
  "dotenv 0.14.1",
@@ -4014,6 +4031,10 @@ dependencies = [
  "log 0.4.8",
  "postgres",
  "pretty_env_logger 0.3.1",
+ "rusoto_core",
+ "rusoto_lambda",
+ "rusoto_s3",
+ "rusoto_sts",
  "serde",
  "serde_derive",
  "serde_json",

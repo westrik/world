@@ -10,6 +10,8 @@ publish = false
 production = ["world_core/production"]
 
 [dependencies]
+async-trait = "^0.1"
+bytes = "^0.5"
 diesel = { features = ["postgres", "r2d2", "chrono", "serde_json"], version = "1.3.2" }
 diesel_migrations = "^1.4"
 dotenv = "^0.14"
@@ -17,6 +19,11 @@ lazy_static="^1.4"
 liquid = "^0.21"
 log = "^0.4"
 pretty_env_logger = "^0.3"
+# TODO: move all AWS interaction to single crate
+rusoto_core = "^0.45"
+rusoto_lambda = "^0.45"
+rusoto_s3 = "^0.45"
+rusoto_sts = "^0.45"
 serde = "^1.0"
 serde_derive = "^1.0"
 serde_json = "^1.0"
