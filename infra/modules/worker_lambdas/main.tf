@@ -45,7 +45,7 @@ resource "aws_iam_role_policy_attachment" "lambda_service_proxy_role_attach_exec
 
 
 resource "aws_iam_role_policy" "app_host_allow_invoke_lambda" {
-  name = "app_host_assume_role"
+  name = "app_host_allow_invoke_lambda"
   role = var.app_host_iam_role_id
 
   policy = <<EOF

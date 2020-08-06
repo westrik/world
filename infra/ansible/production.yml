@@ -23,7 +23,7 @@
     - name: Configure secrets service
       import_tasks: config/secrets.yml
 
-    - name: Configure app service
+    - name: Configure app services
       import_tasks: config/app.yml
 
     - name: Configure nginx

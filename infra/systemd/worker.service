@@ -1,0 +1,14 @@
+[Unit]
+Description=westrikworld job worker
+Requires=secrets.target
+After=secrets.target
+
+[Service]
+Type=simple
+User=app
+Group=app
+EnvironmentFile=/secrets/app.env
+ExecStart=/usr/bin/worker
+
+[Install]
+WantedBy=multi-user.target

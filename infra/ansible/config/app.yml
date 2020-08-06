@@ -27,3 +27,20 @@
   service:
     name: app
     enabled: yes
+
+- name: Copy worker service systemd config
+  copy:
+    src: ../../systemd/worker.service
+    dest: /etc/systemd/system/worker.service
+    mode: 0644
+
+- name: Copy worker target systemd config
+  copy:
+    src: ../../systemd/worker.target
+    dest: /etc/systemd/system/worker.target
+    mode: 0644
+
+- name: Enable worker service
+  service:
+    name: worker
+    enabled: yes
