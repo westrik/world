@@ -13,7 +13,3 @@ variable "outbound_email_sender" {
 variable "sendgrid_api_key" {
   type = string
 }
-
-variable "service_proxy_lambda_arn" {
-  type = string
-}

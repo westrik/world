@@ -1,6 +1,8 @@
 use async_trait::async_trait;
+use bytes::Bytes;
 use rusoto_core::Region;
 use rusoto_lambda::{InvocationRequest, Lambda, LambdaClient};
+use serde_json::json;
 use std::env;
 use world_core::jobs::errors::JobError;
 
@@ -29,21 +31,48 @@ lazy_static! {
 impl Runnable for SendEmailJob {
     async fn run(&self) -> Result<String, JobError> {
         // TODO: validate input
-        // TODO: populate templates
-        // TODO: send request to SendGrid (via service-proxy Lambda)
         info!(
             "sending email to {:#?} (template: {:#?})",
             self.recipients, self.template
         );
-        populate_email_template()?;
+        let email_body = populate_email_template()?;
         let lambda_client = LambdaClient::new(Region::UsEast1);
+
+        let payload_str = json!({
+            "service": "SENDGRID",
+            "serviceToken": (*SENDGRID_API_KEY),
+            "requestType": "SEND_EMAIL",
+            "requests": [
+                {
+                    "from": {"email": "no-reply@westrik.world"},
+                    "subject": "Testing 1, 2, 3",
+                    "content": [
+                        // {
+                        //     "type": "text/plain",
+                        //     "value": "This is a test"
+                        // },
+                        {
+                            "type": "text/html",
+                            "value": email_body
+                        }
+                    ],
+                    "personalizations": [
+                        {
+                            "to": [{"email": "matt@westrik.world"}]
+                        }
+                    ]
+                }
+            ]
+        })
+        .to_string();
+        let payload = Some(Bytes::from(payload_str));
         let _response = lambda_client
             .invoke(InvocationRequest {
+                function_name: "service_proxy".to_string(),
+                invocation_type: Some("RequestResponse".to_string()),
+                payload,
                 client_context: None,
-                function_name: "my_function_name".to_string(),
-                invocation_type: None,
                 log_type: None,
-                payload: None,
                 qualifier: None,
             })
             .await;

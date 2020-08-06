@@ -1,0 +1,22 @@
+{
+  "service": "SENDGRID",
+  "serviceToken": "FAKE_SENDGRID_TOKEN",
+  "requestType": "SEND_EMAIL",
+  "requests": [
+    {
+      "from": {"email": "no-reply@westrik.world"},
+      "subject": "Testing 1, 2, 3",
+      "content": [
+        {
+          "type": "text/plain",
+          "value": "This is a test"
+        }
+      ],
+      "personalizations": [
+        {
+          "to": [{"email": "matt@westrik.world"}]
+        }
+      ]
+    }
+  ]
+}

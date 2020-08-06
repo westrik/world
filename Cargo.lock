@@ -4021,6 +4021,7 @@ name = "world_worker"
 version = "0.1.0"
 dependencies = [
  "async-trait",
+ "bytes 0.5.5",
  "diesel",
  "diesel_migrations",
  "dotenv 0.14.1",

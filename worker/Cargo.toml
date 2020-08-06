@@ -11,6 +11,7 @@ production = ["world_core/production"]
 
 [dependencies]
 async-trait = "^0.1"
+bytes = "^0.5"
 diesel = { features = ["postgres", "r2d2", "chrono", "serde_json"], version = "1.3.2" }
 diesel_migrations = "^1.4"
 dotenv = "^0.14"

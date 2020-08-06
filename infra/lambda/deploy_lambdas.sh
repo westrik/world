@@ -42,6 +42,7 @@ function deploy_lambda() {
 LAMBDA_NAMES=(
   create_db_user_with_iam_role
   renew_certificate
+  service_proxy
 )
 for lambda in "${LAMBDA_NAMES[@]}"; do
   deploy_lambda "$lambda"
