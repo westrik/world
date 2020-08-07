@@ -1894,8 +1894,7 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 [[package]]
 name = "openssl"
 version = "0.9.24"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a3605c298474a3aa69de92d21139fb5e2a81688d308262359d85cdd0d12a7985"
+source = "git+https://github.com/ishitatsuyuki/rust-openssl?branch=0.9.x#3b73dda4b31c2b8ea8417fb6d68e451d2e4b3633"
 dependencies = [
  "bitflags 0.9.1",
  "foreign-types",
