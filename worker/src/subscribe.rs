@@ -43,8 +43,11 @@ fn get_connection(database_url: String) -> Result<Connection, JobError> {
     // TODO: enable certificate verification
     let ssl = OpenSsl::new()
         .map_err(|_| JobError::InternalError("Failed to load RDS TLS certificate".to_string()))?;
-    Ok(Connection::connect(database_url, TlsMode::Prefer(&ssl))
-        .map_err(|_| JobError::InternalError("Failed to connect to database".to_string()))?)
+    Ok(
+        Connection::connect(database_url, TlsMode::Prefer(&ssl)).map_err(|err| {
+            JobError::InternalError(format!("Failed to connect to database: {:#?}", err))
+        })?,
+    )
 }
 
 #[cfg(not(feature = "production"))]
