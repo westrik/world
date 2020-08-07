@@ -46,8 +46,6 @@ systemctl stop nginx app
 {
   echo "CONTENT_BUCKET_NAME=$content_bucket_name"
   echo "CORS_ORIGIN_URL=$cors_origin_url"
-  # TODO: use ?sslmode=verify-full - "recommended in most security-sensitive environments"
-  # https://www.postgresql.org/docs/9.4/libpq-ssl.html
   echo "DATABASE_URL=postgres://$rds_user:$rds_password@$rds_host/$rds_db_name"
   echo "IAM_ROLE_ARN=$iam_role_arn"
   echo "OUTBOUND_EMAIL_SENDER=$outbound_email_sender"
