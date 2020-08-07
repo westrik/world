@@ -6,8 +6,11 @@ edition = "2018"
 publish = false
 
 [features]
-# Enables IAM instance auth and other functionality only needed on EC2 in VPC, etc.
-production = ["world_core/production"]
+default = []
+# Enables functionality only needed on EC2 in VPC:
+# - IAM instance auth
+# - verify SSL certificates (e.g. for RDS)
+production = ["world_core/production", "openssl", "postgres/with-openssl"]
 
 [dependencies]
 async-trait = "^0.1"
@@ -31,4 +34,11 @@ tokio = { version = "^0.2", features = ["blocking", "macros", "rt-threaded"] }
 warp = "^0.2"
 world_core = { path = "../core" }
 fallible-iterator="0.1.6" # higher versions don't work with postgres
-postgres = { version = "0.15.2", features = ["with-serde_json"] } # higher versions don't work with notifications
+
+[dependencies.openssl]
+version = "0.9.23"
+optional = true
+
+[dependencies.postgres]
+version = "0.15.2" # higher versions don't work with PG notifications
+features = ["with-serde_json"]

@@ -28,4 +28,4 @@ jobs:
         path: ./target
         key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}-debug
     - name: Build
-      run: cargo build --verbose --release
+      run: cargo build --verbose --release --features "production"

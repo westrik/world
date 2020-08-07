@@ -40,7 +40,17 @@ lazy_static! {
 
 pub async fn subscribe_to_jobs(database_url: String) -> Result<(), JobError> {
     debug!("connecting to database...");
-    let conn = Connection::connect(database_url, TlsMode::None).expect("failed to connect");
+
+    #[allow(clippy::if_same_then_else)]
+    let tls = if cfg!(feature = "production") {
+        // TODO: initialize TLS client
+        // TlsMode::Require()
+        TlsMode::None
+    } else {
+        TlsMode::None
+    };
+
+    let conn = Connection::connect(database_url, tls).expect("failed to connect");
     debug!("database connection established");
     conn.execute("LISTEN job_updates", &[])
         .map_err(|err| JobError::DatabaseError(err.to_string()))?;
