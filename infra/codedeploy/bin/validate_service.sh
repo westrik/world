@@ -47,4 +47,8 @@ echo "checking API service"
 test_service_with_retries $API_TEST_URL || exit 1
 
 echo "checking worker"
-systemctl -q is-active worker || exit 1
+if ( ! systemctl -q is-active worker ); then
+  echo "worker not running! logs:"
+  journalctl -xn all --no-pager -u worker -b
+  exit 1
+fi
