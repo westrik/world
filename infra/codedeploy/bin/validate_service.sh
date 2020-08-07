@@ -6,7 +6,6 @@ TEST_ITERATIONS=5
 INITIAL_SLEEP_TIME=10
 REQUEST_SLEEP_TIME=2
 API_TEST_URL="http://localhost:8080/"
-WORKER_TEST_URL="http://localhost:8090/"
 
 function test_service() {
   curl --silent --output /dev/null --write-out "%{http_code}" "$1"
@@ -49,8 +48,7 @@ if [ $? -ne 0 ]; then
   echo "all requests to API service failed"
   exit 1
 fi
-test_service_with_retries $WORKER_TEST_URL
-if [ $? -ne 0 ]; then
-  echo "all requests to worker failed"
+if (! systemctl -q is-active worker); then
+  echo "worker is not running"
   exit 1
 fi

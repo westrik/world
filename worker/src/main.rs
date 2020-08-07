@@ -13,13 +13,11 @@ extern crate pretty_env_logger;
 extern crate serde_derive;
 
 use dotenv::dotenv;
-use std::{env, thread};
-use warp::Filter;
+use std::env;
 
 use world_core::db;
 
 pub mod jobs;
-pub mod routes;
 pub mod run;
 pub mod subscribe;
 
@@ -51,12 +49,6 @@ async fn main() {
 
     let conn = db::get_conn(&pool).unwrap();
     embedded_migrations::run_with_output(&conn, &mut std::io::stdout()).unwrap();
-
-    thread::spawn(async move || {
-        let api = routes::worker_api(pool.clone());
-        let routes = api.with(warp::log("worker::routing"));
-        warp::serve(routes).run(([127, 0, 0, 1], 8090)).await;
-    });
 
     if let Err(err) = subscribe::subscribe_to_jobs(database_url).await {
         error!("failed to subscribe to jobs: {:?}", err);
