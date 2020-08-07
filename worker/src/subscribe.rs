@@ -1,6 +1,8 @@
 use crate::run::run_job;
 use fallible_iterator::FallibleIterator;
 use postgres::{Connection, TlsMode};
+#[cfg(feature = "production")]
+use postgres::tls::openssl::OpenSsl;
 use std::str::FromStr;
 use world_core::jobs::errors::JobError;
 use world_core::jobs::{job_status::JobStatus, job_type::JobType};
@@ -36,21 +38,26 @@ lazy_static! {
     );
 }
 
+#[cfg(feature = "production")]
+fn tls_mode() -> TlsMode {
+    let ssl = OpenSsl::new()
+        .map_err(|_| JobError::InternalError("Failed to load RDS TLS certificate".to_string()))?;
+    TlsMode::Require(&ssl)
+}
+
+#[cfg(not(feature = "production"))]
+fn tls_mode() -> TlsMode<'static> {
+    TlsMode::None
+}
+
+
 // TODO: gracefully handle unwrap failures
 
 pub async fn subscribe_to_jobs(database_url: String) -> Result<(), JobError> {
     debug!("connecting to database...");
 
     #[allow(clippy::if_same_then_else)]
-    let tls = if cfg!(feature = "production") {
-        // TODO: initialize TLS client
-        // TlsMode::Require()
-        TlsMode::None
-    } else {
-        TlsMode::None
-    };
-
-    let conn = Connection::connect(database_url, tls).expect("failed to connect");
+    let conn = Connection::connect(database_url, tls_mode()).expect("failed to connect");
     debug!("database connection established");
     conn.execute("LISTEN job_updates", &[])
         .map_err(|err| JobError::DatabaseError(err.to_string()))?;
