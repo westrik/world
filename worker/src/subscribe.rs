@@ -1,8 +1,8 @@
 use crate::run::run_job;
 use fallible_iterator::FallibleIterator;
-use postgres::{Connection, TlsMode};
 #[cfg(feature = "production")]
 use postgres::tls::openssl::OpenSsl;
+use postgres::{Connection, TlsMode};
 use std::str::FromStr;
 use world_core::jobs::errors::JobError;
 use world_core::jobs::{job_status::JobStatus, job_type::JobType};
@@ -49,7 +49,6 @@ fn tls_mode() -> TlsMode {
 fn tls_mode() -> TlsMode<'static> {
     TlsMode::None
 }
-
 
 // TODO: gracefully handle unwrap failures
 
