@@ -1,10 +1,10 @@
-name: Rust (build - release)
+name: Rust (build - production)
 
 on: [push]
 
 jobs:
-  rust_build_release:
-    name: build (release)
+  rust_build_production:
+    name: build (production)
     runs-on: ubuntu-latest
     container: mattwestrik/ww:latest
 
@@ -27,5 +27,9 @@ jobs:
       with:
         path: ./target
         key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}-debug
-    - name: Build
+    - name: Build api_server (for production)
+      working-directory: ./api_server
+      run: cargo build --verbose --release --features "production"
+    - name: Build worker (for production)
+      working-directory: ./worker
       run: cargo build --verbose --release --features "production"
