@@ -1,5 +1,7 @@
 use crate::run::run_job;
 use fallible_iterator::FallibleIterator;
+#[cfg(feature = "production")]
+use postgres::tls::openssl::OpenSsl;
 use postgres::{Connection, TlsMode};
 use std::str::FromStr;
 use world_core::jobs::errors::JobError;
@@ -36,11 +38,28 @@ lazy_static! {
     );
 }
 
+#[cfg(feature = "production")]
+fn get_connection(database_url: String) -> Result<Connection, JobError> {
+    // TODO: enable certificate verification
+    let ssl = OpenSsl::new()
+        .map_err(|_| JobError::InternalError("Failed to load RDS TLS certificate".to_string()))?;
+    Ok(Connection::connect(database_url, TlsMode::Require(&ssl))
+        .map_err(|_| JobError::InternalError("Failed to connect to database".to_string()))?)
+}
+
+#[cfg(not(feature = "production"))]
+fn get_connection(database_url: String) -> Result<Connection, JobError> {
+    Ok(Connection::connect(database_url, TlsMode::None)
+        .map_err(|_| JobError::InternalError("Failed to connect to database".to_string()))?)
+}
+
 // TODO: gracefully handle unwrap failures
 
 pub async fn subscribe_to_jobs(database_url: String) -> Result<(), JobError> {
     debug!("connecting to database...");
-    let conn = Connection::connect(database_url, TlsMode::None).expect("failed to connect");
+
+    let conn = get_connection(database_url)?;
+
     debug!("database connection established");
     conn.execute("LISTEN job_updates", &[])
         .map_err(|err| JobError::DatabaseError(err.to_string()))?;

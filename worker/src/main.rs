@@ -37,8 +37,17 @@ async fn main() {
     }
     pretty_env_logger::init();
 
+    // TODO: load DATABASE_URL with rusoto_sts
+    // TODO: refactor db_url generation
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    let pool = db::init_pool(&database_url, DB_POOL_SIZE).expect("Failed to create pool");
+    let database_url_with_config = if cfg!(feature = "production") {
+        // TODO: verify-full
+        format!("{}?sslmode=require", database_url)
+    } else {
+        database_url.to_string()
+    };
+    let pool =
+        db::init_pool(&database_url_with_config, DB_POOL_SIZE).expect("Failed to create pool");
 
     let conn = db::get_conn(&pool).unwrap();
     embedded_migrations::run_with_output(&conn, &mut std::io::stdout()).unwrap();
