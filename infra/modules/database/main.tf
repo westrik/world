@@ -64,46 +64,58 @@ data "aws_iam_policy_document" "rds_access_to_kms" {
   }
 }
 
+locals {
+  db_instance_class       = "db.t3.micro"
+  db_engine               = "postgres"
+  db_engine_version       = "12.3"
+  db_option_group_name    = "default:postgres-11"
+  db_parameter_group_name = "default.postgres11"
+
+
+  db_allocated_storage  = 5
+  db_storage_type       = "gp2"
+  db_ca_cert_identifier = "rds-ca-2019"
+}
+
 
 resource "aws_db_instance" "app" {
-  engine               = "postgres"
-  engine_version       = "11.5"
-  instance_class       = "db.t3.micro"
-  parameter_group_name = "default.postgres11"
+  instance_class = local.db_instance_class
+  engine         = local.db_engine
+  engine_version = local.db_engine_version
+  //  option_group_name    = local.db_option_group_name
+  //  parameter_group_name = local.db_parameter_group_name
+  //  allow_major_version_upgrade = false
+  apply_immediately = false
 
   identifier = "${var.project_slug}-app"
   name       = "${var.project_slug}_app"
 
+  allocated_storage = local.db_allocated_storage
+  kms_key_id        = aws_kms_key.app_db.arn
+  storage_type      = local.db_storage_type
+  storage_encrypted = true
+
   username = var.db_username
   password = random_password.password.result
 
-  allocated_storage  = 5
-  storage_type       = "gp2"
-  storage_encrypted  = true
-  kms_key_id         = aws_kms_key.app_db.arn
-  ca_cert_identifier = "rds-ca-2019"
-
-  skip_final_snapshot = true # TODO: remove and set final_snapshot_identifier
-
-  db_subnet_group_name   = aws_db_subnet_group.app.name
-  vpc_security_group_ids = [aws_security_group.app_db.id]
-
+  ca_cert_identifier                  = local.db_ca_cert_identifier
+  db_subnet_group_name                = aws_db_subnet_group.app.name
   iam_database_authentication_enabled = true
+  vpc_security_group_ids              = [aws_security_group.app_db.id]
 
-  // TODO: use as read replica for DB in us-west-1
-  //  replicate_source_db = ""
+  //  replicate_source_db = aws_db_instance.app.identifier
 
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
   //  monitoring_role_arn = "IAM_ROLE_ARN"
-  //  deletion_protection = true
 
-  maintenance_window = "Mon:00:00-Mon:03:00"
-  backup_window      = "03:00-06:00"
-
+  backup_window           = "03:00-06:00"
   backup_retention_period = 0 # TODO: disable after testing
+  //  deletion_protection = true
+  maintenance_window  = "Mon:00:00-Mon:03:00"
+  skip_final_snapshot = true # TODO: replace w/ final_snapshot_identifier
 
   tags = {
-    Name        = "app_db"
+    Name        = "${var.project_slug}_app_db-primary"
     Environment = var.deploy_name
     Project     = var.project_name
   }
@@ -220,3 +232,5 @@ data "aws_lambda_invocation" "create_db_user_with_iam_role" {
 }
 JSON
 }
+
+# TODO/OQ: will we need a lambda invokation for the replica as well?
