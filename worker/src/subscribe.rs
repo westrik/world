@@ -43,20 +43,28 @@ lazy_static! {
 #[cfg(feature = "production")]
 fn get_connection(database_url: String) -> Result<Connection, JobError> {
     // TODO: enable certificate verification
-    let mut builder = SslConnectorBuilder::new(SslMethod::tls())
-        .map_err(|err| JobError::InternalError(format!("Failed to start OpenSSL: {:#?}", err)))?;
-    // builder.set_certificate_chain_file("/certs/rds-combined-ca-bundle.pem");
-    builder.set_verify(SslVerifyMode::from_bits(1).unwrap()); // 1 = SSL_VERIFY_PEER - not exported?
+    // let mut builder = SslConnectorBuilder::new(SslMethod::tls())
+    //     .map_err(|err| JobError::InternalError(format!("Failed to start OpenSSL: {:#?}", err)))?;
+    // // builder.set_certificate_chain_file("/certs/rds-combined-ca-bundle.pem");
+    // builder.set_verify(SslVerifyMode::from_bits(1).unwrap()); // 1 = SSL_VERIFY_PEER - not exported?
 
     // TODO: load root certificate path from env
-    builder
-        .set_ca_file("/certs/rds-ca-2019-root.pem")
-        .map_err(|err| {
-            JobError::InternalError(format!("Failed to load RDS root certificate: {:#?}", err))
-        })?;
+
+    let database_url_with_config = format!(
+        "{}?sslrootcert=/certs/rds-ca-2019-root.pem&sslmode=verify-full",
+        database_url
+    );
+
+    let ssl = OpenSsl::new()
+        .map_err(|_| JobError::InternalError("Failed to load OpenSSL client".to_string()))?;
+    // builder
+    // .set_ca_file("/certs/rds-ca-2019-root.pem")
+    // .map_err(|err| {
+    //     JobError::InternalError(format!("Failed to load RDS root certificate: {:#?}", err))
+    // })?;
     let ssl = OpenSsl::from(builder.build());
     Ok(
-        Connection::connect(database_url, TlsMode::Require(&ssl)).map_err(|err| {
+        Connection::connect(database_url_with_config, TlsMode::Require(&ssl)).map_err(|err| {
             JobError::InternalError(format!("Failed to connect to database: {:#?}", err))
         })?,
     )
