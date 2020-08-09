@@ -15,17 +15,17 @@ echo "pausing $INITIAL_SLEEP_TIME sec to wait for services to start"
 sleep $INITIAL_SLEEP_TIME
 echo "done pausing"
 
-echo "secrets logs:"
-journalctl -xn all --no-pager -u secrets -b
+#echo "secrets logs:"
+#journalctl -xn all --no-pager -u secrets -b
 
-echo "app logs:"
-journalctl -xn all --no-pager -u app -b
-
-echo "worker logs:"
-journalctl -xn all --no-pager -u worker -b
-
-echo "nginx logs:"
-journalctl -xn all --no-pager -u nginx -b
+#echo "app logs:"
+#journalctl -xn all --no-pager -u app -b
+#
+#echo "worker logs:"
+#journalctl -xn all --no-pager -u worker -b
+#
+#echo "nginx logs:"
+#journalctl -xn all --no-pager -u nginx -b
 
 function test_service_with_retries() {
   test_url=$1
@@ -43,8 +43,8 @@ function test_service_with_retries() {
   return 1
 }
 
-echo "checking API service"
-test_service_with_retries $API_TEST_URL || exit 1
+echo "checking API service:"
+test_service_with_retries $API_TEST_URL || (exit 1 && journalctl -xn all --no-pager -u app -b)
 
 echo "checking worker"
 if ( ! systemctl -q is-active worker ); then
