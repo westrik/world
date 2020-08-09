@@ -21,6 +21,9 @@ def lambda_handler(event, context):
         #  - upgrade pg8000 to >1.14.0
         #  - create ssl.SSLContext, load certificate chain
         #  - replace `ssl=True` with `ssl_context=ssl_context`
+        #  Docs:
+        #   - pg8000 (https://github.com/tlocke/pg8000#version-1140-2020-03-21)
+        #   - ssl.SSLContext (https://docs.python.org/3/library/ssl.html#ssl.SSLContext)
         ssl=True,
         unix_sock=None,
         timeout=1,
