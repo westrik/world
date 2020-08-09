@@ -17,6 +17,10 @@ def lambda_handler(event, context):
         port=int(event['port']),
         database=database,
         password=event['password'],
+        # TODO: verify RDS root certificate
+        #  - upgrade pg8000 to >1.14.0
+        #  - create ssl.SSLContext, load certificate chain
+        #  - replace `ssl=True` with `ssl_context=ssl_context`
         ssl=True,
         unix_sock=None,
         timeout=1,
