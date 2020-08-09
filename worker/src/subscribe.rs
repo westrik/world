@@ -1,6 +1,8 @@
 use crate::run::run_job;
 use fallible_iterator::FallibleIterator;
 #[cfg(feature = "production")]
+use openssl::ssl::{SslConnectorBuilder, SslMethod};
+#[cfg(feature = "production")]
 use postgres::tls::openssl::OpenSsl;
 use postgres::{Connection, TlsMode};
 use std::str::FromStr;
@@ -41,12 +43,17 @@ lazy_static! {
 #[cfg(feature = "production")]
 fn get_connection(database_url: String) -> Result<Connection, JobError> {
     // TODO: enable certificate verification
-    //  - I think the way to do this with rust-openssl is to load the RDS cert in CI
-    //  - `export SSL_CERT_FILE=./infra/certificates/root.pem`, then `cargo build`
-    let ssl = OpenSsl::new()
-        .map_err(|_| JobError::InternalError("Failed to load RDS TLS certificate".to_string()))?;
+    let mut builder = SslConnectorBuilder::new(SslMethod::tls())
+        .map_err(|err| JobError::InternalError(format!("Failed to start OpenSSL: {:#?}", err)))?;
+    // TODO: load root certificate path from env
+    builder
+        .set_ca_file("/home/app/.postgresql/root.pem")
+        .map_err(|err| {
+            JobError::InternalError(format!("Failed to load RDS root certificate: {:#?}", err))
+        })?;
+    let ssl = OpenSsl::from(builder.build());
     Ok(
-        Connection::connect(database_url, TlsMode::Prefer(&ssl)).map_err(|err| {
+        Connection::connect(database_url, TlsMode::Require(&ssl)).map_err(|err| {
             JobError::InternalError(format!("Failed to connect to database: {:#?}", err))
         })?,
     )

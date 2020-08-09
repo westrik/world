@@ -22,8 +22,8 @@
 
 - name: Copy RDS root certificate
   copy:
-    src: ../../certificates/root.crt
-    dest: /home/app/.postgresql/root.crt
+    src: ../../certificates/
+    dest: /home/app/.postgresql/
     mode: 0644
     owner: app
     group: app

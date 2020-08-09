@@ -4048,6 +4048,7 @@ dependencies = [
  "lazy_static 1.4.0",
  "liquid",
  "log 0.4.8",
+ "openssl 0.9.24",
  "postgres",
  "pretty_env_logger 0.3.1",
  "rusoto_core",

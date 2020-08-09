@@ -10,7 +10,7 @@ default = []
 # Enables functionality only needed on EC2 in VPC:
 # - IAM instance auth
 # - verify SSL certificates (e.g. for RDS)
-production = ["world_core/production", "postgres/with-openssl"]
+production = ["world_core/production", "postgres/with-openssl", "openssl"]
 
 [dependencies]
 # TODO: move all AWS interaction to single crate
@@ -39,3 +39,7 @@ world_core = { path = "../core" }
 [dependencies.postgres]
 version = "0.15.2" # higher versions don't work with PG notifications
 features = ["with-serde_json"]
+
+[dependencies.openssl]
+version = "0.9.24" # need the version used by postgres 0.15.2
+optional = true
