@@ -1,4 +1,4 @@
-// Provision an RDS database
+// Provision a multi-AZ Postgres database with RDS
 
 // TODO: replace this with a Lambda to rotate password from Secrets Manager
 resource "random_password" "password" {
@@ -7,6 +7,7 @@ resource "random_password" "password" {
   override_special = "_%"
 }
 
+// TODO: add Lambda to rotate KMS key
 resource "aws_kms_key" "app_db" {
   description             = "app database encryption key"
   deletion_window_in_days = 7
@@ -64,12 +65,61 @@ data "aws_iam_policy_document" "rds_access_to_kms" {
   }
 }
 
+resource "aws_iam_role" "rds_monitoring" {
+  name               = "rds_monitoring"
+  path               = "/"
+  assume_role_policy = data.aws_iam_policy_document.rds_monitoring_assume_role.json
+}
+data "aws_iam_policy_document" "rds_monitoring_assume_role" {
+  statement {
+    sid = "1"
+
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    principals {
+      identifiers = ["monitoring.rds.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+}
+resource "aws_iam_role_policy_attachment" "app_rds_monitoring" {
+  role       = aws_iam_role.rds_monitoring.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+}
+
+resource "aws_db_parameter_group" "app_rds" {
+  name   = "app-rds-parameters"
+  family = "postgres12"
+
+  parameter {
+    name  = "rds.force_ssl"
+    value = 1
+  }
+}
+
+locals {
+  db_instance_class = "db.t3.micro"
+  db_storage_type   = "gp2"
+
+  db_ca_cert_identifier = "rds-ca-2019"
+
+  db_backup_retention_period_in_days = 14
+  # Run backups between 4am PST & 7am PST every day
+  db_backup_window = "12:00-15:00"
+  # Run maintenance between 7am PST & 10am PST every Saturday
+  db_maintenance_window = "Sat:15:00-Sat:18:00"
+}
 
 resource "aws_db_instance" "app" {
+  instance_class       = local.db_instance_class
   engine               = "postgres"
-  engine_version       = "11.5"
-  instance_class       = "db.t3.micro"
-  parameter_group_name = "default.postgres11"
+  engine_version       = "12.3"
+  multi_az             = true
+  parameter_group_name = aws_db_parameter_group.app_rds.name
+  # allow_major_version_upgrade = false
+  # apply_immediately = false
 
   identifier = "${var.project_slug}-app"
   name       = "${var.project_slug}_app"
@@ -77,33 +127,29 @@ resource "aws_db_instance" "app" {
   username = var.db_username
   password = random_password.password.result
 
-  allocated_storage  = 5
-  storage_type       = "gp2"
-  storage_encrypted  = true
-  kms_key_id         = aws_kms_key.app_db.arn
-  ca_cert_identifier = "rds-ca-2019"
+  allocated_storage = 5
+  kms_key_id        = aws_kms_key.app_db.arn
+  storage_type      = local.db_storage_type
+  storage_encrypted = true
 
-  skip_final_snapshot = true # TODO: remove and set final_snapshot_identifier
-
-  db_subnet_group_name   = aws_db_subnet_group.app.name
-  vpc_security_group_ids = [aws_security_group.app_db.id]
-
+  ca_cert_identifier                  = local.db_ca_cert_identifier
+  db_subnet_group_name                = aws_db_subnet_group.app.name
   iam_database_authentication_enabled = true
-
-  // TODO: use as read replica for DB in us-west-1
-  //  replicate_source_db = ""
+  vpc_security_group_ids              = [aws_security_group.app_db.id]
 
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
-  //  monitoring_role_arn = "IAM_ROLE_ARN"
-  //  deletion_protection = true
+  monitoring_interval             = 5
+  monitoring_role_arn             = aws_iam_role.rds_monitoring.arn
 
-  maintenance_window = "Mon:00:00-Mon:03:00"
-  backup_window      = "03:00-06:00"
-
-  backup_retention_period = 0 # TODO: disable after testing
+  backup_window           = local.db_backup_window
+  backup_retention_period = local.db_backup_retention_period_in_days
+  # deletion_protection = true
+  # final_snapshot_identifier = "${var.project_slug}-app-snapshot"
+  maintenance_window  = local.db_maintenance_window
+  skip_final_snapshot = true # TODO: replace w/ final_snapshot_identifier
 
   tags = {
-    Name        = "app_db"
+    Name        = "${var.project_slug}_app_db"
     Environment = var.deploy_name
     Project     = var.project_name
   }
