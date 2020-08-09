@@ -5,7 +5,7 @@ use openssl::ssl::{SslConnectorBuilder, SslMethod, SslVerifyMode};
 #[cfg(feature = "production")]
 use postgres::tls::openssl::OpenSsl;
 use postgres::{Connection, TlsMode};
-use std::str::FromStr;
+use std::{env, str::FromStr};
 use world_core::jobs::errors::JobError;
 use world_core::jobs::{job_status::JobStatus, job_type::JobType};
 
@@ -38,23 +38,17 @@ lazy_static! {
         "#,
         JobStatus::Error
     );
+    static ref ROOT_CERT_PATH: String =
+        env::var("PGSSLROOTCERT").expect("PGSSLROOTCERT must be set");
 }
 
 #[cfg(feature = "production")]
 fn get_connection(database_url: String) -> Result<Connection, JobError> {
-    // TODO: enable certificate verification
     let mut builder = SslConnectorBuilder::new(SslMethod::tls())
         .map_err(|err| JobError::InternalError(format!("Failed to start OpenSSL: {}", err)))?;
-    // // builder.set_certificate_chain_file("/certs/rds-combined-ca-bundle.pem");
-    builder.set_verify(SslVerifyMode::from_bits(1).unwrap()); // 1 = SSL_VERIFY_PEER - not exported?
-
-    // TODO: load root certificate path from env
-
-    // let database_url_with_config = format!("{}?sslmode=verify-full", database_url);
-    // let ssl = OpenSsl::new()
-    //     .map_err(|_| JobError::InternalError("Failed to load OpenSSL client".to_string()))?;
+    builder.set_verify(SslVerifyMode::from_bits(1).unwrap()); // 1 = SSL_VERIFY_PEER
     builder
-        .set_ca_file("/etc/ssl/certs/rds-ca-2019-root.crt")
+        .set_ca_file(ROOT_CERT_PATH.to_string())
         .map_err(|err| {
             JobError::InternalError(format!("Failed to load RDS root certificate: {}", err))
         })?;
