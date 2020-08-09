@@ -13,7 +13,7 @@
 
 - name: Copy RDS root certificate
   copy:
-    src: ../../certificates/rds-ca-2019-root.pem
+    src: ../../certificates/rds-ca-2019-root.crt
     dest: /etc/ssl/certs/
     mode: 0644
     owner: app
