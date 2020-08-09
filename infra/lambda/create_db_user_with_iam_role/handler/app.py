@@ -17,7 +17,7 @@ def lambda_handler(event, context):
         port=int(event['port']),
         database=database,
         password=event['password'],
-        ssl=False,
+        ssl=True,
         unix_sock=None,
         timeout=1,
         max_prepared_statements=100,
@@ -29,7 +29,8 @@ def lambda_handler(event, context):
         if len(list(cursor)):
             return {"status":"exists"}
         else:
-            cursor.execute("CREATE USER westrikworld_app with login createdb")
+            # TODO: lock down privileges for this user
+            cursor.execute("CREATE USER westrikworld_app WITH login createdb")
             conn.commit()
             cursor.execute("GRANT rds_iam TO westrikworld_app")
             conn.commit()

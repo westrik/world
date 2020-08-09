@@ -1,4 +1,4 @@
-// Provision an RDS database
+// Provision a multi-AZ Postgres database with RDS
 
 // TODO: replace this with a Lambda to rotate password from Secrets Manager
 resource "random_password" "password" {
@@ -7,6 +7,7 @@ resource "random_password" "password" {
   override_special = "_%"
 }
 
+// TODO: add Lambda to rotate KMS key
 resource "aws_kms_key" "app_db" {
   description             = "app database encryption key"
   deletion_window_in_days = 7
@@ -64,33 +65,65 @@ data "aws_iam_policy_document" "rds_access_to_kms" {
   }
 }
 
-locals {
-  db_instance_class       = "db.t3.micro"
-  db_engine               = "postgres"
-  db_engine_version       = "12.3"
-  db_option_group_name    = "default:postgres-11"
-  db_parameter_group_name = "default.postgres11"
+resource "aws_iam_role" "rds_monitoring" {
+  name               = "rds_monitoring"
+  path               = "/"
+  assume_role_policy = data.aws_iam_policy_document.rds_assume_role.json
+}
+data "aws_iam_policy_document" "rds_assume_role" {
+  statement {
+    sid = "1"
 
+    actions = [
+      "sts:AssumeRole",
+    ]
 
-  db_allocated_storage  = 5
-  db_storage_type       = "gp2"
-  db_ca_cert_identifier = "rds-ca-2019"
+    principals {
+      identifiers = ["rds.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+}
+resource "aws_iam_role_policy_attachment" "app_rds" {
+  role       = aws_iam_role.rds_monitoring.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }
 
+resource "aws_db_parameter_group" "app_rds" {
+  name   = "app-rds-parameters"
+  family = "postgres12"
+
+  parameter {
+    name  = "rds.force_ssl"
+    value = 1
+  }
+}
+
+locals {
+  db_instance_class = "db.t3.micro"
+  db_storage_type   = "gp2"
+
+  db_ca_cert_identifier = "rds-ca-2019"
+
+  db_backup_retention_period_in_days = 14
+  db_backup_window                   = "03:00-06:00"
+  db_maintenance_window              = "Mon:00:00-Mon:03:00"
+}
 
 resource "aws_db_instance" "app" {
   instance_class = local.db_instance_class
-  engine         = local.db_engine
-  engine_version = local.db_engine_version
+  engine         = "postgres"
+  engine_version = "12.3"
   //  option_group_name    = local.db_option_group_name
-  //  parameter_group_name = local.db_parameter_group_name
+  parameter_group_name = aws_db_parameter_group.app_rds.name
   //  allow_major_version_upgrade = false
-  apply_immediately = false
+  // TODO: enable:
+  //  apply_immediately = false
 
   identifier = "${var.project_slug}-app"
   name       = "${var.project_slug}_app"
 
-  allocated_storage = local.db_allocated_storage
+  allocated_storage = 5
   kms_key_id        = aws_kms_key.app_db.arn
   storage_type      = local.db_storage_type
   storage_encrypted = true
@@ -103,19 +136,56 @@ resource "aws_db_instance" "app" {
   iam_database_authentication_enabled = true
   vpc_security_group_ids              = [aws_security_group.app_db.id]
 
-  //  replicate_source_db = aws_db_instance.app.identifier
-
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
-  //  monitoring_role_arn = "IAM_ROLE_ARN"
+  //  monitoring_interval = 5
+  //  monitoring_role_arn = aws_iam_role.rds_monitoring.arn
 
-  backup_window           = "03:00-06:00"
-  backup_retention_period = 0 # TODO: disable after testing
+  backup_window           = local.db_backup_window
+  backup_retention_period = local.db_backup_retention_period_in_days
   //  deletion_protection = true
-  maintenance_window  = "Mon:00:00-Mon:03:00"
+  //  final_snapshot_identifier = "${var.project_slug}-app-snapshot"
+  maintenance_window  = local.db_maintenance_window
   skip_final_snapshot = true # TODO: replace w/ final_snapshot_identifier
 
   tags = {
     Name        = "${var.project_slug}_app_db-primary"
+    Environment = var.deploy_name
+    Project     = var.project_name
+  }
+}
+
+resource "aws_db_instance" "app_replica" {
+  count = 1
+
+  identifier = "${var.project_slug}-app-replica-${count.index}"
+  name       = "${var.project_slug}_app-replica-${count.index}"
+
+  instance_class       = local.db_instance_class
+  parameter_group_name = aws_db_parameter_group.app_rds.name
+
+  replicate_source_db = aws_db_instance.app.identifier
+
+  kms_key_id        = aws_kms_key.app_db.arn
+  storage_type      = local.db_storage_type
+  storage_encrypted = true
+
+  ca_cert_identifier                  = local.db_ca_cert_identifier
+  iam_database_authentication_enabled = true
+  vpc_security_group_ids              = [aws_security_group.app_db.id]
+
+  enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
+  //  monitoring_interval = 5
+  //  monitoring_role_arn = aws_iam_role.rds_monitoring.arn
+
+  //  backup_window       = local.db_backup_window
+  //  backup_retention_period = local.db_backup_retention_period_in_days
+  //  deletion_protection = true
+  //  final_snapshot_identifier = "${var.project_slug}-app-replica-snapshot"
+  maintenance_window  = local.db_maintenance_window
+  skip_final_snapshot = true # TODO: replace w/ final_snapshot_identifier
+
+  tags = {
+    Name        = "${var.project_slug}_app_db-replica-${count.index}"
     Environment = var.deploy_name
     Project     = var.project_name
   }
@@ -232,5 +302,3 @@ data "aws_lambda_invocation" "create_db_user_with_iam_role" {
 }
 JSON
 }
-
-# TODO/OQ: will we need a lambda invokation for the replica as well?
