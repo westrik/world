@@ -50,7 +50,10 @@ fn get_connection(database_url: String) -> Result<Connection, JobError> {
 
     // TODO: load root certificate path from env
 
-    let database_url_with_config = format!("{}?sslmode=verify-full", database_url);
+    let database_url_with_config = format!(
+        "{}?sslmode=verify-full&sslrootcert=/etc/ssl/certs/rds-ca-2019-root.crt",
+        database_url
+    );
 
     let ssl = OpenSsl::new()
         .map_err(|_| JobError::InternalError("Failed to load OpenSSL client".to_string()))?;
