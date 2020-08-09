@@ -44,7 +44,11 @@ function test_service_with_retries() {
 }
 
 echo "checking API service:"
-test_service_with_retries $API_TEST_URL || (exit 1 && journalctl -xn all --no-pager -u app -b)
+if ( ! test_service_with_retries $API_TEST_URL ); then
+  echo "API service not running! logs:"
+  journalctl -xn all --no-pager -u app -b
+  exit 1
+fi
 
 echo "checking worker"
 if ( ! systemctl -q is-active worker ); then

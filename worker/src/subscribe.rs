@@ -51,7 +51,7 @@ fn get_connection(database_url: String) -> Result<Connection, JobError> {
     // TODO: load root certificate path from env
 
     let database_url_with_config = format!(
-        "{}?sslrootcert=/certs/rds-ca-2019-root.pem&sslmode=verify-full",
+        "{}?sslmode=verify-full&sslrootcert=rds-ca-2019-root.pem",
         database_url
     );
 

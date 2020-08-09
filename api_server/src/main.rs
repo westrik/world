@@ -28,7 +28,7 @@ async fn main() {
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let database_url_with_config = if cfg!(feature = "production") {
         format!(
-            "{}?sslrootcert=/certs/rds-ca-2019-root.pem&sslmode=verify-full",
+            "{}?sslmode=verify-full&sslrootcert=rds-ca-2019-root.pem",
             database_url
         )
     } else {

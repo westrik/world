@@ -11,19 +11,10 @@
     state: present
     system: yes
 
-
-- name: Create /certs
-  file:
-    path: /certs/
-    state: directory
-    mode: '0655'
-    owner: app
-    group: app
-
 - name: Copy RDS root certificate
   copy:
-    src: ../../certificates/
-    dest: /certs/
+    src: ../../certificates/rds-ca-2019-root.pem
+    dest: /etc/ssl/certs/
     mode: 0644
     owner: app
     group: app
