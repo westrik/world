@@ -1,7 +1,7 @@
 use crate::run::run_job;
 use fallible_iterator::FallibleIterator;
-#[cfg(feature = "production")]
-use openssl::ssl::{SslConnectorBuilder, SslMethod, SslVerifyMode};
+// #[cfg(feature = "production")]
+// use openssl::ssl::{SslConnectorBuilder, SslMethod, SslVerifyMode};
 #[cfg(feature = "production")]
 use postgres::tls::openssl::OpenSsl;
 use postgres::{Connection, TlsMode};
@@ -62,7 +62,7 @@ fn get_connection(database_url: String) -> Result<Connection, JobError> {
     // .map_err(|err| {
     //     JobError::InternalError(format!("Failed to load RDS root certificate: {:#?}", err))
     // })?;
-    let ssl = OpenSsl::from(builder.build());
+    // let ssl = OpenSsl::from(builder.build());
     Ok(
         Connection::connect(database_url_with_config, TlsMode::Require(&ssl)).map_err(|err| {
             JobError::InternalError(format!("Failed to connect to database: {:#?}", err))
