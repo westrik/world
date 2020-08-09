@@ -11,6 +11,23 @@
     state: present
     system: yes
 
+
+- name: Create /home/app/.postgresql
+  file:
+    path: /home/app/.postgresql
+    state: directory
+    mode: '0644'
+    owner: app
+    group: app
+
+- name: Copy RDS root certificate
+  copy:
+    src: ../../certificates/root.crt
+    dest: /home/app/.postgresql/root.crt
+    mode: 0644
+    owner: app
+    group: app
+
 - name: Copy app service systemd config
   copy:
     src: ../../systemd/app.service

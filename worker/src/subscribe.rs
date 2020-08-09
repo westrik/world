@@ -41,6 +41,8 @@ lazy_static! {
 #[cfg(feature = "production")]
 fn get_connection(database_url: String) -> Result<Connection, JobError> {
     // TODO: enable certificate verification
+    //  - I think the way to do this with rust-openssl is to load the RDS cert in CI
+    //  - `export SSL_CERT_FILE=./infra/certificates/root.pem`, then `cargo build`
     let ssl = OpenSsl::new()
         .map_err(|_| JobError::InternalError("Failed to load RDS TLS certificate".to_string()))?;
     Ok(

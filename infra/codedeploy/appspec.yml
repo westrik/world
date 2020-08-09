@@ -1,8 +1,10 @@
 version: 0.0
 os: linux
 files:
-  - source: bin/
-    destination: /usr/bin/
+  - source: bin/api_server
+    destination: /usr/bin/api_server
+  - source: bin/worker
+    destination: /usr/bin/worker
 hooks:
   ApplicationStop:
     - location: bin/deploy_stop.sh
