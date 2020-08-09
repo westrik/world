@@ -11,6 +11,14 @@
     state: present
     system: yes
 
+- name: Copy RDS root certificate
+  copy:
+    src: ../../certificates/rds-ca-2019-root.crt
+    dest: /etc/ssl/certs/
+    mode: 0644
+    owner: app
+    group: app
+
 - name: Copy app service systemd config
   copy:
     src: ../../systemd/app.service

@@ -1,7 +1,9 @@
 version: 0.0
 os: linux
 files:
-  - source: bin/
+  - source: bin/api_server
+    destination: /usr/bin/
+  - source: bin/worker
     destination: /usr/bin/
 hooks:
   ApplicationStop:
@@ -12,4 +14,4 @@ hooks:
       timeout: 30
   ValidateService:
     - location: bin/validate_service.sh
-      timeout: 30
+      timeout: 45

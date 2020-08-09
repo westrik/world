@@ -1,8 +1,12 @@
 use crate::run::run_job;
 use fallible_iterator::FallibleIterator;
 #[cfg(feature = "production")]
+use openssl::ssl::{SslConnectorBuilder, SslMethod, SslVerifyMode};
+#[cfg(feature = "production")]
 use postgres::tls::openssl::OpenSsl;
 use postgres::{Connection, TlsMode};
+#[cfg(feature = "production")]
+use std::env;
 use std::str::FromStr;
 use world_core::jobs::errors::JobError;
 use world_core::jobs::{job_status::JobStatus, job_type::JobType};
@@ -40,11 +44,24 @@ lazy_static! {
 
 #[cfg(feature = "production")]
 fn get_connection(database_url: String) -> Result<Connection, JobError> {
-    // TODO: enable certificate verification
-    let ssl = OpenSsl::new()
-        .map_err(|_| JobError::InternalError("Failed to load RDS TLS certificate".to_string()))?;
-    Ok(Connection::connect(database_url, TlsMode::Require(&ssl))
-        .map_err(|_| JobError::InternalError("Failed to connect to database".to_string()))?)
+    lazy_static! {
+        static ref ROOT_CERT_PATH: String =
+            env::var("PGSSLROOTCERT").expect("PGSSLROOTCERT must be set");
+    }
+    let mut builder = SslConnectorBuilder::new(SslMethod::tls())
+        .map_err(|err| JobError::InternalError(format!("Failed to start OpenSSL: {}", err)))?;
+    builder.set_verify(SslVerifyMode::from_bits(1).unwrap()); // 1 = SSL_VERIFY_PEER
+    builder
+        .set_ca_file(ROOT_CERT_PATH.to_string())
+        .map_err(|err| {
+            JobError::InternalError(format!("Failed to load RDS root certificate: {}", err))
+        })?;
+    let ssl = OpenSsl::from(builder.build());
+    Ok(
+        Connection::connect(database_url, TlsMode::Require(&ssl)).map_err(|err| {
+            JobError::InternalError(format!("Failed to connect to database: {}", err))
+        })?,
+    )
 }
 
 #[cfg(not(feature = "production"))]

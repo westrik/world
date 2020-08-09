@@ -41,7 +41,7 @@ rds_user=$(get_secret "database_username")
 sendgrid_api_key=$(get_secret "sendgrid_api_key")
 service_proxy_lambda_arn=$(get_secret "service_proxy_lambda_arn")
 
-systemctl stop nginx app
+systemctl stop nginx app worker
 
 {
   echo "CONTENT_BUCKET_NAME=$content_bucket_name"
@@ -50,6 +50,7 @@ systemctl stop nginx app
   echo "IAM_ROLE_ARN=$iam_role_arn"
   echo "OUTBOUND_EMAIL_SENDER=$outbound_email_sender"
   echo "PASSWORD_HASH_SALT=$password_hash_salt"
+  echo "PGSSLROOTCERT=/etc/ssl/certs/rds-ca-2019-root.crt"
   echo "SENDGRID_API_KEY=$sendgrid_api_key"
   echo "SERVICE_PROXY_LAMBDA_ARN=$service_proxy_lambda_arn"
 } > $RAMFS_MOUNT_DIR/app.env
@@ -61,4 +62,4 @@ echo "$api_cert_data" | jq -r '.certificate_chain' >> $RAMFS_MOUNT_DIR/cert.pem
 echo "$api_cert_data" | jq -r '.private_key' > $RAMFS_MOUNT_DIR/privkey.pem
 chmod 600 $RAMFS_MOUNT_DIR/*.pem
 
-systemctl start nginx app
+systemctl start nginx app worker
