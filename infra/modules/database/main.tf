@@ -68,9 +68,9 @@ data "aws_iam_policy_document" "rds_access_to_kms" {
 resource "aws_iam_role" "rds_monitoring" {
   name               = "rds_monitoring"
   path               = "/"
-  assume_role_policy = data.aws_iam_policy_document.rds_assume_role.json
+  assume_role_policy = data.aws_iam_policy_document.rds_monitoring_assume_role.json
 }
-data "aws_iam_policy_document" "rds_assume_role" {
+data "aws_iam_policy_document" "rds_monitoring_assume_role" {
   statement {
     sid = "1"
 
@@ -79,12 +79,12 @@ data "aws_iam_policy_document" "rds_assume_role" {
     ]
 
     principals {
-      identifiers = ["rds.amazonaws.com"]
+      identifiers = ["monitoring.rds.amazonaws.com"]
       type        = "Service"
     }
   }
 }
-resource "aws_iam_role_policy_attachment" "app_rds" {
+resource "aws_iam_role_policy_attachment" "app_rds_monitoring" {
   role       = aws_iam_role.rds_monitoring.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }
@@ -106,30 +106,31 @@ locals {
   db_ca_cert_identifier = "rds-ca-2019"
 
   db_backup_retention_period_in_days = 14
-  db_backup_window                   = "03:00-06:00"
-  db_maintenance_window              = "Mon:00:00-Mon:03:00"
+  # Run backups between 4am PST & 7am PST every day
+  db_backup_window = "12:00-15:00"
+  # Run maintenance between 7am PST & 10am PST every Saturday
+  db_maintenance_window = "Sat:15:00-Sat:18:00"
 }
 
 resource "aws_db_instance" "app" {
-  instance_class = local.db_instance_class
-  engine         = "postgres"
-  engine_version = "12.3"
-  //  option_group_name    = local.db_option_group_name
+  instance_class       = local.db_instance_class
+  engine               = "postgres"
+  engine_version       = "12.3"
+  multi_az             = true
   parameter_group_name = aws_db_parameter_group.app_rds.name
-  //  allow_major_version_upgrade = false
-  // TODO: enable:
-  //  apply_immediately = false
+  # allow_major_version_upgrade = false
+  # apply_immediately = false
 
   identifier = "${var.project_slug}-app"
   name       = "${var.project_slug}_app"
+
+  username = var.db_username
+  password = random_password.password.result
 
   allocated_storage = 5
   kms_key_id        = aws_kms_key.app_db.arn
   storage_type      = local.db_storage_type
   storage_encrypted = true
-
-  username = var.db_username
-  password = random_password.password.result
 
   ca_cert_identifier                  = local.db_ca_cert_identifier
   db_subnet_group_name                = aws_db_subnet_group.app.name
@@ -137,55 +138,18 @@ resource "aws_db_instance" "app" {
   vpc_security_group_ids              = [aws_security_group.app_db.id]
 
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
-  //  monitoring_interval = 5
-  //  monitoring_role_arn = aws_iam_role.rds_monitoring.arn
+  monitoring_interval             = 5
+  monitoring_role_arn             = aws_iam_role.rds_monitoring.arn
 
   backup_window           = local.db_backup_window
   backup_retention_period = local.db_backup_retention_period_in_days
-  //  deletion_protection = true
-  //  final_snapshot_identifier = "${var.project_slug}-app-snapshot"
+  # deletion_protection = true
+  # final_snapshot_identifier = "${var.project_slug}-app-snapshot"
   maintenance_window  = local.db_maintenance_window
   skip_final_snapshot = true # TODO: replace w/ final_snapshot_identifier
 
   tags = {
-    Name        = "${var.project_slug}_app_db-primary"
-    Environment = var.deploy_name
-    Project     = var.project_name
-  }
-}
-
-resource "aws_db_instance" "app_replica" {
-  count = 1
-
-  identifier = "${var.project_slug}-app-replica-${count.index}"
-  name       = "${var.project_slug}_app-replica-${count.index}"
-
-  instance_class       = local.db_instance_class
-  parameter_group_name = aws_db_parameter_group.app_rds.name
-
-  replicate_source_db = aws_db_instance.app.identifier
-
-  kms_key_id        = aws_kms_key.app_db.arn
-  storage_type      = local.db_storage_type
-  storage_encrypted = true
-
-  ca_cert_identifier                  = local.db_ca_cert_identifier
-  iam_database_authentication_enabled = true
-  vpc_security_group_ids              = [aws_security_group.app_db.id]
-
-  enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
-  //  monitoring_interval = 5
-  //  monitoring_role_arn = aws_iam_role.rds_monitoring.arn
-
-  //  backup_window       = local.db_backup_window
-  //  backup_retention_period = local.db_backup_retention_period_in_days
-  //  deletion_protection = true
-  //  final_snapshot_identifier = "${var.project_slug}-app-replica-snapshot"
-  maintenance_window  = local.db_maintenance_window
-  skip_final_snapshot = true # TODO: replace w/ final_snapshot_identifier
-
-  tags = {
-    Name        = "${var.project_slug}_app_db-replica-${count.index}"
+    Name        = "${var.project_slug}_app_db"
     Environment = var.deploy_name
     Project     = var.project_name
   }
