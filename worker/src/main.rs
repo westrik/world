@@ -39,8 +39,10 @@ async fn main() {
     // TODO: refactor db_url generation
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let database_url_with_config = if cfg!(feature = "production") {
-        format!("{}?sslrootcert=/certs/rds-ca-2019-root.pem&sslmode=verify-full", database_url)
-
+        format!(
+            "{}?sslrootcert=/certs/rds-ca-2019-root.pem&sslmode=verify-full",
+            database_url
+        )
     } else {
         database_url.to_string()
     };

@@ -1,7 +1,7 @@
 use crate::run::run_job;
 use fallible_iterator::FallibleIterator;
 #[cfg(feature = "production")]
-use openssl::ssl::{SslConnectorBuilder, SslMethod};
+use openssl::ssl::{SslConnectorBuilder, SslMethod, SslVerifyMode};
 #[cfg(feature = "production")]
 use postgres::tls::openssl::OpenSsl;
 use postgres::{Connection, TlsMode};
@@ -45,6 +45,8 @@ fn get_connection(database_url: String) -> Result<Connection, JobError> {
     // TODO: enable certificate verification
     let mut builder = SslConnectorBuilder::new(SslMethod::tls())
         .map_err(|err| JobError::InternalError(format!("Failed to start OpenSSL: {:#?}", err)))?;
+    // builder.set_certificate_chain_file("/certs/rds-combined-ca-bundle.pem");
+    builder.set_verify(SslVerifyMode::SSL_VERIFY_PEER);
     // TODO: load root certificate path from env
     builder
         .set_ca_file("/certs/rds-ca-2019-root.pem")
