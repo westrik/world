@@ -47,7 +47,7 @@ fn get_connection(database_url: String) -> Result<Connection, JobError> {
         .map_err(|err| JobError::InternalError(format!("Failed to start OpenSSL: {:#?}", err)))?;
     // TODO: load root certificate path from env
     builder
-        .set_ca_file("/home/app/.postgresql/root.pem")
+        .set_ca_file("/certs/rds-ca-2019-root.pem")
         .map_err(|err| {
             JobError::InternalError(format!("Failed to load RDS root certificate: {:#?}", err))
         })?;

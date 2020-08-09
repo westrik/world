@@ -12,18 +12,18 @@
     system: yes
 
 
-- name: Create /home/app/.postgresql
+- name: Create /certs
   file:
-    path: /home/app/.postgresql
+    path: /certs/
     state: directory
-    mode: '0644'
+    mode: '0655'
     owner: app
     group: app
 
 - name: Copy RDS root certificate
   copy:
     src: ../../certificates/
-    dest: /home/app/.postgresql/
+    dest: /certs/
     mode: 0644
     owner: app
     group: app
