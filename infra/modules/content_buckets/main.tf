@@ -27,6 +27,7 @@ resource "aws_s3_bucket" "user_uploads" {
   }
 }
 
+// TODO: split IAM role for worker and app hosts (worker needs Get+Put, app only needs Put)
 resource "aws_iam_role_policy" "app_host_allow_content_upload" {
   name = "${var.project_slug}_app_host-user-content-upload"
   role = var.app_host_iam_role_id
@@ -64,7 +65,9 @@ resource "aws_cloudfront_origin_access_identity" "user_uploads" {
 
 data "aws_iam_policy_document" "access_user_uploads_via_cloudfront_oai" {
   statement {
-    actions   = ["s3:GetObject"]
+    actions = ["s3:GetObject"]
+    // TODO: restrict access via signed cookie policy...
+    // see https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-setting-signed-cookie-custom-policy.html
     resources = ["${aws_s3_bucket.user_uploads.arn}/*"]
 
     principals {
@@ -85,6 +88,14 @@ locals {
 }
 
 resource "aws_cloudfront_distribution" "user_uploads" {
+  comment = "Grant access to user-uploaded content"
+
+  aliases = [local.user_uploads_domain_name]
+
+  enabled         = true
+  is_ipv6_enabled = true
+  price_class     = "PriceClass_100"
+
   origin {
     domain_name = aws_s3_bucket.user_uploads.bucket_regional_domain_name
     origin_id   = local.user_uploads_origin_id
@@ -94,9 +105,11 @@ resource "aws_cloudfront_distribution" "user_uploads" {
     }
   }
 
-  enabled         = true
-  is_ipv6_enabled = true
-  //  comment             = ""
+  viewer_certificate {
+    acm_certificate_arn      = aws_acm_certificate.user_uploads_cloudfront.arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2019"
+  }
 
   // TODO: set up loggging to S3
   //  logging_config {
@@ -104,8 +117,6 @@ resource "aws_cloudfront_distribution" "user_uploads" {
   //    bucket          = "mylogs.s3.amazonaws.com"
   //    prefix          = "myprefix"
   //  }
-
-  aliases = [local.user_uploads_domain_name]
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
@@ -127,14 +138,6 @@ resource "aws_cloudfront_distribution" "user_uploads" {
     max_ttl                = 86400
   }
 
-  //  custom_error_response {
-  //    error_code         = 404
-  //    response_page_path = "/index.html"
-  //    response_code      = 200
-  //  }
-
-  price_class = "PriceClass_100"
-
   restrictions {
     geo_restriction {
       restriction_type = "whitelist"
@@ -146,25 +149,19 @@ resource "aws_cloudfront_distribution" "user_uploads" {
     Environment = var.deploy_name
     Project     = var.project_name
   }
-
-  viewer_certificate {
-    acm_certificate_arn      = aws_acm_certificate.user_uploads_cloudfront.arn
-    ssl_support_method       = "sni-only"
-    minimum_protocol_version = "TLSv1.2_2019"
-  }
 }
 
 resource "aws_acm_certificate" "user_uploads_cloudfront" {
   domain_name       = local.user_uploads_domain_name
   validation_method = "DNS"
 
+  lifecycle {
+    create_before_destroy = true
+  }
+
   tags = {
     Environment = var.deploy_name
     Project     = var.project_name
-  }
-
-  lifecycle {
-    create_before_destroy = true
   }
 }
 
@@ -200,7 +197,7 @@ resource "aws_route53_record" "user_uploads_cloudfront" {
 
 
 /* CONTENT BUCKET FOR DEV & TESTING ONLY */
-// TODO: move to separate AWS account
+// TODO: refactor to re-use the `content_buckets` module for prod + test
 
 resource "aws_s3_bucket" "dev_content_upload" {
   bucket = "${var.project_slug}-dev-user-uploads-${random_string.content_bucket_hash.result}"
