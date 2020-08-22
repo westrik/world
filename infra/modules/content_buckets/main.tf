@@ -21,7 +21,7 @@ resource "aws_s3_bucket" "user_uploads" {
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["PUT"]
-    allowed_origins = ["https://westrik.world"]
+    allowed_origins = ["https://${var.root_domain_name}"]
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }
@@ -58,40 +58,8 @@ resource "aws_secretsmanager_secret_version" "db_url" {
 }
 
 
-
-
 resource "aws_cloudfront_origin_access_identity" "user_uploads" {
   comment = "Access user-uploaded content via CloudFront"
-}
-
-resource "aws_cloudfront_distribution" "user_uploads" {
-  enabled = false
-  default_cache_behavior {
-    allowed_methods        = []
-    cached_methods         = []
-    target_origin_id       = ""
-    viewer_protocol_policy = ""
-    forwarded_values {
-      query_string = false
-      cookies {
-        forward = ""
-      }
-    }
-  }
-  restrictions {
-    geo_restriction {
-      restriction_type = ""
-    }
-  }
-  viewer_certificate {}
-
-  origin {
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.user_uploads.cloudfront_access_identity_path
-    }
-    domain_name = ""
-    origin_id   = ""
-  }
 }
 
 data "aws_iam_policy_document" "access_user_uploads_via_cloudfront_oai" {
@@ -111,121 +79,124 @@ resource "aws_s3_bucket_policy" "access_user_uploads_via_cloudfront_oai" {
   policy = data.aws_iam_policy_document.access_user_uploads_via_cloudfront_oai.json
 }
 
+locals {
+  user_uploads_origin_id   = "user_uploads"
+  user_uploads_domain_name = "uploads.${var.root_domain_name}"
+}
 
-//resource "aws_cloudfront_distribution" "app" {
-//  origin {
-//    domain_name = var.deploy_cloudfront_bucket_domain_name
-//    origin_id   = "public"
-//    origin_path = "/public"
-//
-//    //    s3_origin_config {
-//    //      origin_access_identity = "origin-access-identity/cloudfront/ABCDEFG1234567" // TODO: replace
-//    //    }
-//  }
-//
-//  enabled         = true
-//  is_ipv6_enabled = true
-//  //  comment             = ""
-//  default_root_object = "index.html"
-//
-//  //  logging_config {
-//  //    include_cookies = false
-//  //    bucket          = "mylogs.s3.amazonaws.com"
-//  //    prefix          = "myprefix"
-//  //  }
-//
-//  aliases = [var.root_domain_name]
-//
-//  default_cache_behavior {
-//    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-//    cached_methods   = ["GET", "HEAD"]
-//    target_origin_id = "public"
-//
-//    forwarded_values {
-//      query_string = false
-//
-//      cookies {
-//        forward = "none"
-//      }
-//    }
-//
-//    compress               = true
-//    viewer_protocol_policy = "redirect-to-https"
-//    min_ttl                = 0
-//    default_ttl            = 3600
-//    max_ttl                = 86400
-//  }
-//
-//  custom_error_response {
-//    error_code         = 404
-//    response_page_path = "/index.html"
-//    response_code      = 200
-//  }
-//
-//  price_class = "PriceClass_100"
-//
-//  restrictions {
-//    geo_restriction {
-//      restriction_type = "whitelist"
-//      locations        = ["US", "CA"]
-//    }
-//  }
-//
-//  tags = {
-//    Environment = var.deploy_name
-//    Project     = var.project_name
-//  }
-//
-//  viewer_certificate {
-//    acm_certificate_arn      = aws_acm_certificate.cloudfront.arn
-//    ssl_support_method       = "sni-only"
-//    minimum_protocol_version = "TLSv1.2_2019"
-//  }
-//}
-//
-//resource "aws_acm_certificate" "cloudfront" {
-//  domain_name       = var.root_domain_name
-//  validation_method = "DNS"
-//
-//  tags = {
-//    Environment = var.deploy_name
-//    Project     = var.project_name
-//  }
-//
-//  lifecycle {
-//    create_before_destroy = true
-//  }
-//}
-//
-//resource "aws_route53_record" "cloudfront_acm" {
-//  zone_id = data.aws_route53_zone.app.id
-//  name    = aws_acm_certificate.cloudfront.domain_validation_options[0].resource_record_name
-//  type    = aws_acm_certificate.cloudfront.domain_validation_options[0].resource_record_type
-//  records = [
-//    aws_acm_certificate.cloudfront.domain_validation_options[0].resource_record_value]
-//  ttl = 60
-//}
-//
-//resource "aws_acm_certificate_validation" "cloudfront" {
-//  certificate_arn         = aws_acm_certificate.cloudfront.arn
-//  validation_record_fqdns = [aws_route53_record.cloudfront_acm.fqdn]
-//}
-//
-//data "aws_route53_zone" "app" {
-//  name = "${var.root_domain_name}."
-//}
-//
-//resource "aws_route53_record" "app" {
-//  zone_id = data.aws_route53_zone.app.id
-//  name    = var.root_domain_name
-//  type    = "A"
-//
-//  alias {
-//    name                   = aws_cloudfront_distribution.app.domain_name
-//    zone_id                = aws_cloudfront_distribution.app.hosted_zone_id
-//    evaluate_target_health = false
-//  }
-//}
+resource "aws_cloudfront_distribution" "user_uploads" {
+  origin {
+    domain_name = aws_s3_bucket.user_uploads.bucket_regional_domain_name
+    origin_id   = local.user_uploads_origin_id
+
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.user_uploads.cloudfront_access_identity_path
+    }
+  }
+
+  enabled         = true
+  is_ipv6_enabled = true
+  //  comment             = ""
+
+  // TODO: set up loggging to S3
+  //  logging_config {
+  //    include_cookies = false
+  //    bucket          = "mylogs.s3.amazonaws.com"
+  //    prefix          = "myprefix"
+  //  }
+
+  aliases = [local.user_uploads_domain_name]
+
+  default_cache_behavior {
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = local.user_uploads_origin_id
+
+    forwarded_values {
+      query_string = false
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    compress               = true
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
+  }
+
+  //  custom_error_response {
+  //    error_code         = 404
+  //    response_page_path = "/index.html"
+  //    response_code      = 200
+  //  }
+
+  price_class = "PriceClass_100"
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "whitelist"
+      locations        = ["US", "CA"]
+    }
+  }
+
+  tags = {
+    Environment = var.deploy_name
+    Project     = var.project_name
+  }
+
+  viewer_certificate {
+    acm_certificate_arn      = aws_acm_certificate.user_uploads_cloudfront.arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2019"
+  }
+}
+
+resource "aws_acm_certificate" "user_uploads_cloudfront" {
+  domain_name       = local.user_uploads_domain_name
+  validation_method = "DNS"
+
+  tags = {
+    Environment = var.deploy_name
+    Project     = var.project_name
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_route53_record" "user_uploads_cloudfront_acm" {
+  zone_id = data.aws_route53_zone.app.id
+  name    = aws_acm_certificate.user_uploads_cloudfront.domain_validation_options[0].resource_record_name
+  type    = aws_acm_certificate.user_uploads_cloudfront.domain_validation_options[0].resource_record_type
+  records = [
+  aws_acm_certificate.user_uploads_cloudfront.domain_validation_options[0].resource_record_value]
+  ttl = 60
+}
+
+resource "aws_acm_certificate_validation" "user_uploads_cloudfront" {
+  certificate_arn         = aws_acm_certificate.user_uploads_cloudfront.arn
+  validation_record_fqdns = [aws_route53_record.user_uploads_cloudfront_acm.fqdn]
+}
+
+data "aws_route53_zone" "app" {
+  name = "${var.root_domain_name}."
+}
+
+resource "aws_route53_record" "user_uploads_cloudfront" {
+  zone_id = data.aws_route53_zone.app.id
+  name    = local.user_uploads_domain_name
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.user_uploads.domain_name
+    zone_id                = aws_cloudfront_distribution.user_uploads.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
 
 
 /* CONTENT BUCKET FOR DEV & TESTING ONLY */
@@ -242,7 +213,7 @@ resource "aws_s3_bucket" "dev_content_upload" {
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["PUT"]
-    allowed_origins = ["https://local.westrik.world"]
+    allowed_origins = ["https://local.${var.root_domain_name}"]
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }

@@ -50,8 +50,10 @@ module "content_buckets" {
 
   aws_region = var.aws_region
 
+  project_name         = var.project_name
   project_slug         = var.project_slug
   deploy_name          = var.deploy_name
+  root_domain_name     = var.root_domain_name
   app_host_iam_role_id = module.app_instances.app_host_iam_role_id
 }
 
