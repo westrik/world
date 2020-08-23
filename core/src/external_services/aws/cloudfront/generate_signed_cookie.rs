@@ -19,16 +19,16 @@ fn cookie_expires_at_epoch_time() -> u64 {
     current_epoch_time + 3600
 }
 
-pub fn create_policy(path: &str, expires_at_epoch_time: u64) -> String {
+fn create_policy(path: &str, expires_at_epoch_time: u64) -> String {
     json!({
         "Statement": [
             {
+                "Resource": path,
                 "Condition": {
                     "DateLessThan": {
                         "AWS:EpochTime": expires_at_epoch_time,
                     },
                 },
-                "Resource": path,
             },
         ],
     })
@@ -39,11 +39,11 @@ fn swap_unsupported_characters(input: String) -> String {
     input.replace("+", "-").replace("=", "_").replace("/", "~")
 }
 
-pub fn encode_policy(policy: &str) -> String {
-    base64::encode(policy)
+fn encode_policy(policy: &str) -> String {
+    swap_unsupported_characters(base64::encode(policy))
 }
 
-pub fn sign_policy(policy: &str, private_key: &str) -> String {
+fn sign_policy(policy: &str, private_key: &str) -> String {
     let encoded_policy = encode_policy(policy);
     let der_encoded_private_key = private_key
         .lines()
@@ -60,13 +60,13 @@ pub fn sign_policy(policy: &str, private_key: &str) -> String {
     let signature = private_key
         .sign(PaddingScheme::new_pkcs1v15_sign(Some(Hash::SHA1)), &digest)
         .unwrap();
-    base64::encode(signature)
+    swap_unsupported_characters(base64::encode(signature))
 }
 
 pub fn generate_cloudfront_access_cookies(path: &str) -> serde_json::Value {
     let policy = create_policy(path, cookie_expires_at_epoch_time());
-    let encoded_policy = swap_unsupported_characters(encode_policy(&policy));
-    let signature = swap_unsupported_characters(sign_policy(&policy, &*CLOUDFRONT_PRIVATE_KEY));
+    let encoded_policy = encode_policy(&policy);
+    let signature = sign_policy(&policy, &*CLOUDFRONT_PRIVATE_KEY);
     json!({
         "CloudFront-Policy": encoded_policy,
         "CloudFront-Signature": signature,
@@ -90,7 +90,7 @@ pub mod cloudfront_signed_cookie_generation {
     #[test]
     fn test_encode_policy() {
         let policy = create_policy("https://example.com/hello-world", 123456);
-        let expected_encoded_policy = r#"eyJTdGF0ZW1lbnQiOlt7IkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTIzNDU2fX0sIlJlc291cmNlIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9oZWxsby13b3JsZCJ9XX0="#;
+        let expected_encoded_policy = r#"eyJTdGF0ZW1lbnQiOlt7IkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTIzNDU2fX0sIlJlc291cmNlIjoiaHR0cHM6Ly9leGFtcGxlLmNvbS9oZWxsby13b3JsZCJ9XX0_"#;
         assert_eq!(expected_encoded_policy, encode_policy(&policy));
     }
 
@@ -149,7 +149,7 @@ AqsotI34m4/U3PnonFtyjQy7b9+naWUdal9TdpooWi/gi0OJmy3R0sikibo+tl80
 UUqe4ujHCf1mJzDUv89to/wkOmSgonY3mjRingMnUJVWbJZf9XyGv165Rz4=
 -----END RSA PRIVATE KEY-----
 "#;
-        let expected_signature = "h4DirR4cuuCCvlg5jzfzYXspap0iPmDsqbgdIGhtf1BrZSTO7j0qdmDY5I1fTITg+ixIIne+7AjsLTYpTNZE3wOgzK/ys42RkndbTPzkopSateqEMpMN2RmaCTQpYBBZvnkC9AYrUMivSBoE8OMBdqIwMbi7HjRzOLHEF9kJYD+hko0yMjtw5goJv/o4EmEj1NhRXqaAGxVX+nVumQfrUhJq1XnyYKViZk75+gfmWaFxAC/pNRptDz1tdEs58NkKFBysBLZ35J9u+CexKC6hgQMeUOJKQWHxAdV9qmHEgtuECAXXIPYhqCOxIBI7kPY/Om7YkKob6Rj3PZguOnpojobrmdeAbOuP+B1lsRu1znafVB4zUgZcPZtfTSlTUJcZV0rKA1CNIjO1EJCWtQhKt2kQ0oz8dtfi7llZeF97+nU08lN/8XcYXVqyEKz5WmQK/ZPlznTAEV9pBl3qhtDtVrrvfM5oeuLoTe2q4pmNCHQxSPMVTPl7QhA/c1TjMHZHMc8G16GGp/I7NpI2fG7Xn80XxzzcBD+RdiQ/v9vP8cbZRB/aCCQzzEqbT7wgnLBjklVdgDaP0Ry7gVtdi9WIG8b5x7ktLZ6NbwwwUTZBGjkzKTmI78UXbK0cyU5SAUBVPKIHwKJuPSYF8uSgI7jiwOVf510h6Fv5hlOvXeicQbE=";
+        let expected_signature = "s67K0uVSwf4d~zlFo33PAE3aPpZ5XfYXMqFUDQlJHoe3RfKvQRNU71XBuZ9Zk4DySPJKjB5DP9-mA-3N4hSniu08xv23Iq94P0CJPugHr4r9OcLuJvT4mdXSugwm30iKh55B7yNpOONNFz2gfrzaUAP83rrsno4Q5AAwc3d5uSovL94AvtRcwSbzLkuJDra4GditIHNohqahOrhvpD-JhdE3MRQxfISArMgYh1fTNhcBdiwAMrKw1DxyqqRAeh9aur8rtFn~IIJ6W546Mcoq0MVFCx7qXYb0idOTk-Sh0CxpK76fQzXrxeiHw8b1l7JC-8sVwRDfsCxG85BjpCnYybjw1bOW8ua2lXfTl~AvWWHFOdfKr4PpMGF3EwwKCC6pGEfdipAQMWEaTwvPn4O97ydY1w5Xdr7TCWp~LdiJLSf-MYwCTBQUFGVIdyycegnNr-A~S1tQiiUQKswBM0Hl-crcurFDoMOclyqH6MdR8uJT5Z4wcEnHmAv~R1bPdl5jORbRRQGFm9ZzZPwYJfkD7j0XT6Mqf65gY0wDaLycmm1MDEvtCltfkgeJYnMLB9MmlZvBvVDrXi6PoK3yeKnUqhrGM6tHGfB7ea6ED-6WmE8lEJLgoTNHpO4HALAaXTXjyMKx6FvxMAnRmtiqCWYSRmtN-evuwDpz3KCTH2q3zdM_";
         assert_eq!(expected_signature, sign_policy(&policy, private_key));
     }
 }
