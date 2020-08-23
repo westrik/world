@@ -1,3 +1,7 @@
+variable "project_name" {
+  type = string
+}
+
 variable "project_slug" {
   type = string
 }
@@ -7,6 +11,10 @@ variable "deploy_name" {
 }
 
 variable "aws_region" {
+  type = string
+}
+
+variable "root_domain_name" {
   type = string
 }
 
