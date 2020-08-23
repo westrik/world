@@ -38,7 +38,7 @@ postgres=# \q
 ### Local setup
 
 ```sh
-~/world » echo "CORS_ORIGIN_URL=\"https://local.westrik.world\"" >> .env
+~/world » echo "ROOT_DOMAIN_NAME=\"local.westrik.world\"" >> .env
 ~/world » echo "PASSWORD_HASH_SALT=\"$(gpg --gen-random --armor 0 32)\"" >> .env
 ~/world »
 ~/world » # Generate self-signed certs

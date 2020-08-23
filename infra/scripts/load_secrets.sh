@@ -30,7 +30,6 @@ function get_secret() {
 
 api_cert_data=$(get_secret "api_cert" | jq -r '.certificate')
 content_bucket_name=$(get_secret "content_bucket_name")
-cors_origin_url=$(get_secret "cors_origin_url")
 iam_role_arn=$(get_secret "ec2_app_host_role_arn")
 outbound_email_sender=$(get_secret "outbound_email_sender")
 password_hash_salt=$(get_secret "password_hash_salt")
@@ -38,6 +37,7 @@ rds_db_name=$(get_secret "database_name")
 rds_host=$(get_secret "database_url")
 rds_password=$(get_secret "database_password")
 rds_user=$(get_secret "database_username")
+root_domain_name=$(get_secret "root_domain_name")
 sendgrid_api_key=$(get_secret "sendgrid_api_key")
 service_proxy_lambda_arn=$(get_secret "service_proxy_lambda_arn")
 
@@ -45,12 +45,12 @@ systemctl stop nginx app worker
 
 {
   echo "CONTENT_BUCKET_NAME=$content_bucket_name"
-  echo "CORS_ORIGIN_URL=$cors_origin_url"
   echo "DATABASE_URL=postgres://$rds_user:$rds_password@$rds_host/$rds_db_name"
   echo "IAM_ROLE_ARN=$iam_role_arn"
   echo "OUTBOUND_EMAIL_SENDER=$outbound_email_sender"
   echo "PASSWORD_HASH_SALT=$password_hash_salt"
   echo "PGSSLROOTCERT=/etc/ssl/certs/rds-ca-2019-root.crt"
+  echo "ROOT_DOMAIN_NAME=$root_domain_name"
   echo "SENDGRID_API_KEY=$sendgrid_api_key"
   echo "SERVICE_PROXY_LAMBDA_ARN=$service_proxy_lambda_arn"
 } > $RAMFS_MOUNT_DIR/app.env

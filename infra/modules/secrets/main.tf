@@ -1,10 +1,10 @@
-resource "aws_secretsmanager_secret" "cors_origin_url" {
-  name                    = "${var.project_name}_cors_origin_url"
+resource "aws_secretsmanager_secret" "root_domain_name" {
+  name                    = "${var.project_name}_root_domain_name"
   recovery_window_in_days = 0
 }
-resource "aws_secretsmanager_secret_version" "cors_origin_url" {
-  secret_id     = aws_secretsmanager_secret.cors_origin_url.id
-  secret_string = "https://${var.root_domain_name}"
+resource "aws_secretsmanager_secret_version" "root_domain_name" {
+  secret_id     = aws_secretsmanager_secret.root_domain_name.id
+  secret_string = var.root_domain_name
 }
 
 resource "aws_secretsmanager_secret" "outbound_email_sender" {
