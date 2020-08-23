@@ -122,6 +122,7 @@ resource "aws_cloudfront_distribution" "user_uploads" {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = local.user_uploads_origin_id
+    trusted_signers  = ["self"]
 
     forwarded_values {
       query_string = false

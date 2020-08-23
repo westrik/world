@@ -12,10 +12,10 @@ extern crate serde_derive;
 
 pub mod db;
 pub mod errors;
+pub mod external_services;
 pub mod jobs;
 pub mod resource_identifier;
 pub mod routes;
-pub mod s3;
 pub mod schema;
 pub mod utils;
 

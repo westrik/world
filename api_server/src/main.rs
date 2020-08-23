@@ -21,7 +21,8 @@ async fn main() {
     }
     pretty_env_logger::init();
 
-    let cors_origin_url = env::var("CORS_ORIGIN_URL").expect("CORS_ORIGIN_URL must be set");
+    let root_domain_name = env::var("ROOT_DOMAIN_NAME").expect("ROOT_DOMAIN_NAME must be set");
+    let cors_origin_url = format!("https://{}", root_domain_name);
 
     // TODO: load DATABASE_URL with rusoto_sts
     // TODO: refactor db_url generation

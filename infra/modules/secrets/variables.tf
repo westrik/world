@@ -13,3 +13,11 @@ variable "outbound_email_sender" {
 variable "sendgrid_api_key" {
   type = string
 }
+
+variable "cloudfront_keypair_id" {
+  type = string
+}
+
+variable "cloudfront_private_key" {
+  type = string
+}
