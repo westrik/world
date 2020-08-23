@@ -3992,6 +3992,7 @@ name = "world_core"
 version = "0.1.0"
 dependencies = [
  "argon2rs",
+ "base64 0.12.3",
  "chrono",
  "criterion",
  "diesel",

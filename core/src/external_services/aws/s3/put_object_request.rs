@@ -1,9 +1,10 @@
-use crate::errors::ApiError;
-use crate::s3::credentials::get_aws_credentials;
 use chrono::Duration;
 use rusoto_core::Region;
 use rusoto_s3::util::{PreSignedRequest, PreSignedRequestOption};
 use rusoto_s3::PutObjectRequest;
+
+use crate::errors::ApiError;
+use crate::external_services::aws::credentials::get_aws_credentials;
 
 pub async fn generate_presigned_upload_url(
     bucket: String,
