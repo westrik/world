@@ -43,8 +43,7 @@ fn encode_policy(policy: &str) -> String {
     swap_unsupported_characters(base64::encode(policy))
 }
 
-fn sign_policy(policy: &str, private_key: &str) -> String {
-    let encoded_policy = encode_policy(policy);
+fn load_private_key(private_key: &str) -> RSAPrivateKey {
     let der_encoded_private_key = private_key
         .lines()
         .filter(|line| !line.starts_with('-'))
@@ -54,24 +53,38 @@ fn sign_policy(policy: &str, private_key: &str) -> String {
         });
     let der_bytes = base64::decode(&der_encoded_private_key)
         .expect("Failed to base64-decode CloudFront private key");
-    let private_key = RSAPrivateKey::from_pkcs1(&der_bytes)
-        .expect("Failed to parse PKCS1 private key for CloudFront");
+    RSAPrivateKey::from_pkcs1(&der_bytes).expect("Failed to parse PKCS1 private key for CloudFront")
+}
+
+fn sign_policy(policy: &str, private_key: &str) -> String {
+    let encoded_policy = encode_policy(policy);
     let digest = Sha1::digest(encoded_policy.as_bytes()).to_vec();
-    let signature = private_key
+    let signature = load_private_key(private_key)
         .sign(PaddingScheme::new_pkcs1v15_sign(Some(Hash::SHA1)), &digest)
         .unwrap();
     swap_unsupported_characters(base64::encode(signature))
 }
 
-pub fn generate_cloudfront_access_cookies(path: &str) -> serde_json::Value {
+pub struct CloudFrontAccessCookies {
+    pub encoded_policy: String,
+    pub signature: String,
+    pub key_pair_id: String,
+}
+
+pub fn generate_cloudfront_access_cookies(path: &str) -> CloudFrontAccessCookies {
     let policy = create_policy(path, cookie_expires_at_epoch_time());
     let encoded_policy = encode_policy(&policy);
     let signature = sign_policy(&policy, &*CLOUDFRONT_PRIVATE_KEY);
-    json!({
-        "CloudFront-Policy": encoded_policy,
-        "CloudFront-Signature": signature,
-        "CloudFront-Key-Pair-Id": *CLOUDFRONT_KEYPAIR_ID
-    })
+    // json!({
+    //     "CloudFront-Policy": encoded_policy,
+    //     "CloudFront-Signature": signature,
+    //     "CloudFront-Key-Pair-Id": *CLOUDFRONT_KEYPAIR_ID
+    // })
+    CloudFrontAccessCookies {
+        encoded_policy,
+        signature,
+        key_pair_id: (*CLOUDFRONT_KEYPAIR_ID).to_string(),
+    }
 }
 
 #[cfg(test)]
