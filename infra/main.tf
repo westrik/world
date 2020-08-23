@@ -127,10 +127,12 @@ module "app_instances" {
 module "secrets" {
   source = "./modules/secrets"
 
-  outbound_email_sender = var.outbound_email_sender
-  project_name          = var.project_name
-  sendgrid_api_key      = var.sendgrid_api_key
-  root_domain_name      = var.root_domain_name
+  outbound_email_sender  = var.outbound_email_sender
+  project_name           = var.project_name
+  sendgrid_api_key       = var.sendgrid_api_key
+  root_domain_name       = var.root_domain_name
+  cloudfront_keypair_id  = var.cloudfront_keypair_id
+  cloudfront_private_key = var.cloudfront_private_key
 }
 
 module "worker_lambdas" {

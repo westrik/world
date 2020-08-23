@@ -29,6 +29,8 @@ function get_secret() {
 }
 
 api_cert_data=$(get_secret "api_cert" | jq -r '.certificate')
+cloudfront_keypair_id=$(get_secret "cloudfront_keypair_id")
+cloudfront_private_key=$(get_secret "cloudfront_private_key")
 content_bucket_name=$(get_secret "content_bucket_name")
 iam_role_arn=$(get_secret "ec2_app_host_role_arn")
 outbound_email_sender=$(get_secret "outbound_email_sender")
@@ -45,6 +47,8 @@ systemctl stop nginx app worker
 
 {
   echo "CONTENT_BUCKET_NAME=$content_bucket_name"
+  echo "CLOUDFRONT_KEYPAIR_ID=$cloudfront_keypair_id"
+  echo "CLOUDFRONT_PRIVATE_KEY=\"$cloudfront_private_key\""
   echo "DATABASE_URL=postgres://$rds_user:$rds_password@$rds_host/$rds_db_name"
   echo "IAM_ROLE_ARN=$iam_role_arn"
   echo "OUTBOUND_EMAIL_SENDER=$outbound_email_sender"

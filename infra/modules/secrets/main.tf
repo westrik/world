@@ -24,3 +24,21 @@ resource "aws_secretsmanager_secret_version" "sendgrid_api_key" {
   secret_id     = aws_secretsmanager_secret.sendgrid_api_key.id
   secret_string = var.sendgrid_api_key
 }
+
+resource "aws_secretsmanager_secret" "cloudfront_keypair_id" {
+  name                    = "${var.project_name}_cloudfront_keypair_id"
+  recovery_window_in_days = 0
+}
+resource "aws_secretsmanager_secret_version" "cloudfront_keypair_id" {
+  secret_id     = aws_secretsmanager_secret.cloudfront_keypair_id.id
+  secret_string = var.cloudfront_keypair_id
+}
+
+resource "aws_secretsmanager_secret" "cloudfront_private_key" {
+  name                    = "${var.project_name}_cloudfront_private_key"
+  recovery_window_in_days = 0
+}
+resource "aws_secretsmanager_secret_version" "cloudfront_private_key" {
+  secret_id     = aws_secretsmanager_secret.cloudfront_private_key.id
+  secret_string = var.cloudfront_private_key
+}

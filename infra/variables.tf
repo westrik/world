@@ -52,3 +52,11 @@ variable "num_app_instances" {
 variable "sendgrid_api_key" {
   type = string
 }
+
+variable "cloudfront_keypair_id" {
+  type = string
+}
+
+variable "cloudfront_private_key" {
+  type = string
+}
