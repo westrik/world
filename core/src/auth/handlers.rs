@@ -102,25 +102,24 @@ pub async fn cloudfront_authenticate(
         "cloudfront_authenticate: user_api_id={}",
         auth_request.user_api_id
     );
-    let cookies = run_api_task(move || run_cloudfront_authenticate(auth_request, &db_pool)).await?;
-
     let domain = format!("uploads.{}", *ROOT_DOMAIN_NAME);
     let path = "/"; // TODO: set this to user's cloudfront path
-    let header_value = |key, value| -> Result<HeaderValue, ApiError> {
-        Ok(HeaderValue::from_str(&format!(
-            "{}={}; Domain={}; Path={}; Secure; HttpOnly",
-            key, value, domain, path
-        ))
-        .map_err(|_| ApiError::InternalError("Could not create CloudFront cookie".to_string()))?)
-    };
-    let mut response_builder = Response::builder();
+
+    let cookies = run_api_task(move || run_cloudfront_authenticate(auth_request, &db_pool)).await?;
     let cookie_headers = vec![
         ("CloudFront-Policy", cookies.encoded_policy),
         ("CloudFront-Signature", cookies.signature),
         ("CloudFront-Key-Pair-Id", cookies.key_pair_id),
     ];
+
+    let mut response_builder = Response::builder();
     for header in cookie_headers {
-        response_builder = response_builder.header(header.0, header_value(header.0, header.1)?);
+        let value = HeaderValue::from_str(&format!(
+            "{}={}; Domain={}; Path={}; Secure; HttpOnly",
+            header.0, header.1, domain, path
+        ))
+        .map_err(|_| ApiError::InternalError("Could not create CloudFront cookie".to_string()))?;
+        response_builder = response_builder.header(header.0, value);
     }
     Ok(response_builder
         .body(
