@@ -5,7 +5,7 @@ use std::convert::Infallible;
 use warp::cors::Cors;
 use warp::Filter;
 
-use crate::auth::filters::routes as auth_routes;
+use crate::auth::filters::{authenticate_cloudfront, routes as auth_routes};
 use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
 use crate::errors::{handle_rejection, ApiError};
@@ -34,7 +34,8 @@ fn authentication(
 fn authenticated(
     db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    task_routes(db_pool.clone())
+    authenticate_cloudfront(db_pool.clone())
+        .or(task_routes(db_pool.clone()))
         .or(note_routes(db_pool.clone()))
         .or(library_routes(db_pool))
 }
