@@ -1,6 +1,8 @@
+use chrono::{DateTime, Duration, Utc};
 use rsa::{Hash, PaddingScheme, RSAPrivateKey};
 use serde_json::json;
 use sha1::{Digest, Sha1};
+use std::ops::Add;
 use std::{env, time::SystemTime};
 
 lazy_static! {
@@ -66,6 +68,7 @@ fn sign_policy(policy: &str, private_key: &str) -> String {
 }
 
 pub struct CloudFrontAccessCookies {
+    pub session_expires_at: DateTime<Utc>,
     pub encoded_policy: String,
     pub signature: String,
     pub key_pair_id: String,
@@ -75,12 +78,8 @@ pub fn generate_cloudfront_access_cookies(path: &str) -> CloudFrontAccessCookies
     let policy = create_policy(path, cookie_expires_at_epoch_time());
     let encoded_policy = encode_policy(&policy);
     let signature = sign_policy(&policy, &*CLOUDFRONT_PRIVATE_KEY);
-    // json!({
-    //     "CloudFront-Policy": encoded_policy,
-    //     "CloudFront-Signature": signature,
-    //     "CloudFront-Key-Pair-Id": *CLOUDFRONT_KEYPAIR_ID
-    // })
     CloudFrontAccessCookies {
+        session_expires_at: Utc::now().add(Duration::hours(1)),
         encoded_policy,
         signature,
         key_pair_id: (*CLOUDFRONT_KEYPAIR_ID).to_string(),

@@ -1,9 +1,10 @@
+use warp::Filter;
+
 use crate::auth::handlers;
-use crate::auth::handlers::SignInRequest;
+use crate::auth::handlers::{CloudfrontAuthenticationRequest, SignInRequest};
 use crate::auth::models::user::ApiUserCreateSpec;
 use crate::db::DbPool;
-use crate::routes::{json_body, with_db};
-use warp::Filter;
+use crate::routes::{json_body, with_db, with_session};
 
 pub fn routes(
     db_pool: DbPool,
@@ -31,4 +32,16 @@ pub fn sign_in(
         .and(json_body::<SignInRequest>())
         .and(with_db(db_pool))
         .and_then(handlers::sign_in)
+}
+
+/// POST /authenticate:cloudfront with JSON body
+pub fn authenticate_cloudfront(
+    db_pool: DbPool,
+) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("authenticate:cloudfront")
+        .and(warp::post())
+        .and(json_body::<CloudfrontAuthenticationRequest>())
+        .and(with_session(db_pool.clone()))
+        .and(with_db(db_pool))
+        .and_then(handlers::cloudfront_authenticate)
 }
