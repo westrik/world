@@ -1,5 +1,4 @@
 use std::convert::Infallible;
-use std::env;
 use warp::http::StatusCode;
 use warp::Rejection;
 
@@ -12,6 +11,7 @@ use crate::library::models::library_item_version::LibraryItemVersion;
 use crate::library::models::library_item_version_type::LibraryItemVersionType;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::utils::api_task::run_api_task;
+use crate::utils::config::CONTENT_BUCKET_NAME;
 use crate::utils::list_options::ListOptions;
 use crate::utils::mnemonic::{generate_mnemonic, DEFAULT_MNEMONIC_LENGTH};
 
@@ -127,10 +127,6 @@ async fn run_bulk_create_library_items(
 ) -> Result<Vec<LibraryItem>, ApiError> {
     // TODO: limit number of files per request
     // TODO: limit maximum file size?
-    lazy_static! {
-        static ref CONTENT_BUCKET_NAME: String =
-            env::var("CONTENT_BUCKET_NAME").expect("CONTENT_BUCKET_NAME must be set");
-    }
     let create_specs = {
         let mut specs = vec![];
         for file_size in spec.file_sizes_in_bytes.iter() {

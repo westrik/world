@@ -2,14 +2,10 @@ use rusoto_core::Region;
 use rusoto_credential::ChainProvider;
 use rusoto_credential::{AutoRefreshingProvider, AwsCredentials, ProvideAwsCredentials};
 use rusoto_sts::{StsAssumeRoleSessionCredentialsProvider, StsClient};
-use std::env;
 
 use crate::errors::ApiError;
+use crate::utils::config::IAM_ROLE_ARN;
 use crate::APPLICATION_NAME;
-
-lazy_static! {
-    static ref IAM_ROLE_ARN: String = env::var("IAM_ROLE_ARN").expect("IAM_ROLE_ARN must be set");
-}
 
 fn get_autorefreshing_assume_role_credentials_provider(
     region: Region,

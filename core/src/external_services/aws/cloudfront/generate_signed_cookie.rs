@@ -3,14 +3,9 @@ use rsa::{Hash, PaddingScheme, RSAPrivateKey};
 use serde_json::json;
 use sha1::{Digest, Sha1};
 use std::ops::Add;
-use std::{env, time::SystemTime};
+use std::time::SystemTime;
 
-lazy_static! {
-    static ref CLOUDFRONT_KEYPAIR_ID: String =
-        env::var("CLOUDFRONT_KEYPAIR_ID").expect("CLOUDFRONT_KEYPAIR_ID must be set");
-    static ref CLOUDFRONT_PRIVATE_KEY: String =
-        env::var("CLOUDFRONT_PRIVATE_KEY").expect("CLOUDFRONT_PRIVATE_KEY must be set");
-}
+use crate::utils::config::{CLOUDFRONT_KEYPAIR_ID, CLOUDFRONT_PRIVATE_KEY};
 
 fn cookie_expires_at_epoch_time() -> u64 {
     let current_epoch_time = match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {

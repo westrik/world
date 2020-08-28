@@ -1,6 +1,5 @@
 use chrono::{DateTime, Utc};
 use serde_json::json;
-use std::env;
 use warp::http::{HeaderValue, Response, StatusCode};
 use warp::Rejection;
 
@@ -14,6 +13,7 @@ use crate::external_services::aws::cloudfront::generate_signed_cookie::{
 use crate::jobs::enqueue_job::enqueue_job;
 use crate::jobs::job_type::JobType;
 use crate::utils::api_task::run_api_task;
+use crate::utils::config::ROOT_DOMAIN_NAME;
 
 #[derive(Debug, Deserialize)]
 pub struct SignInRequest {
@@ -91,11 +91,6 @@ fn run_cloudfront_authenticate(
     // TODO: generate path to user's cloudfront directory & verify session
     let path = "/";
     Ok(generate_cloudfront_access_cookies(path))
-}
-
-lazy_static! {
-    pub static ref ROOT_DOMAIN_NAME: String =
-        env::var("ROOT_DOMAIN_NAME").expect("ROOT_DOMAIN_NAME must be set");
 }
 
 pub async fn cloudfront_authenticate(
