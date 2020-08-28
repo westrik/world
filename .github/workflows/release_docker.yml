@@ -1,8 +1,8 @@
 name: Release (Docker)
-on: push
-#   push:
-#     branches:
-#       - dev
+on:
+   push:
+     branches:
+       - dev
 
 jobs:
   build-docker-image:
