@@ -30,10 +30,7 @@ pub struct AuthenticationResponse {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct CloudfrontAuthenticationRequest {
-    #[serde(rename = "userId")]
-    user_api_id: String,
-}
+pub struct CloudfrontAuthenticationRequest {}
 
 #[derive(Serialize)]
 pub struct CloudfrontAuthenticationResponse {
@@ -95,13 +92,10 @@ fn run_cloudfront_authenticate(
 
 pub async fn cloudfront_authenticate(
     auth_request: CloudfrontAuthenticationRequest,
-    _session: Session,
+    session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
-    debug!(
-        "cloudfront_authenticate: user_api_id={}",
-        auth_request.user_api_id
-    );
+    debug!("cloudfront_authenticate: user_id={}", session.user_id);
     let domain = format!("uploads.{}", *ROOT_DOMAIN_NAME);
     let path = "/"; // TODO: set this to user's cloudfront path
 
@@ -119,7 +113,7 @@ pub async fn cloudfront_authenticate(
             header.0, header.1, domain, path
         ))
         .map_err(|_| ApiError::InternalError("Could not create CloudFront cookie".to_string()))?;
-        response_builder = response_builder.header(header.0, value);
+        response_builder = response_builder.header("Set-Cookie", value);
     }
     Ok(response_builder
         .body(
