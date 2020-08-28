@@ -1,14 +1,11 @@
+use chrono::{DateTime, Duration, Utc};
 use rsa::{Hash, PaddingScheme, RSAPrivateKey};
 use serde_json::json;
 use sha1::{Digest, Sha1};
-use std::{env, time::SystemTime};
+use std::ops::Add;
+use std::time::SystemTime;
 
-lazy_static! {
-    static ref CLOUDFRONT_KEYPAIR_ID: String =
-        env::var("CLOUDFRONT_KEYPAIR_ID").expect("CLOUDFRONT_KEYPAIR_ID must be set");
-    static ref CLOUDFRONT_PRIVATE_KEY: String =
-        env::var("CLOUDFRONT_PRIVATE_KEY").expect("CLOUDFRONT_PRIVATE_KEY must be set");
-}
+use crate::utils::config::{CLOUDFRONT_KEYPAIR_ID, CLOUDFRONT_PRIVATE_KEY};
 
 fn cookie_expires_at_epoch_time() -> u64 {
     let current_epoch_time = match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
@@ -66,6 +63,7 @@ fn sign_policy(policy: &str, private_key: &str) -> String {
 }
 
 pub struct CloudFrontAccessCookies {
+    pub session_expires_at: DateTime<Utc>,
     pub encoded_policy: String,
     pub signature: String,
     pub key_pair_id: String,
@@ -75,12 +73,8 @@ pub fn generate_cloudfront_access_cookies(path: &str) -> CloudFrontAccessCookies
     let policy = create_policy(path, cookie_expires_at_epoch_time());
     let encoded_policy = encode_policy(&policy);
     let signature = sign_policy(&policy, &*CLOUDFRONT_PRIVATE_KEY);
-    // json!({
-    //     "CloudFront-Policy": encoded_policy,
-    //     "CloudFront-Signature": signature,
-    //     "CloudFront-Key-Pair-Id": *CLOUDFRONT_KEYPAIR_ID
-    // })
     CloudFrontAccessCookies {
+        session_expires_at: Utc::now().add(Duration::hours(1)),
         encoded_policy,
         signature,
         key_pair_id: (*CLOUDFRONT_KEYPAIR_ID).to_string(),

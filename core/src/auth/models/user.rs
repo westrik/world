@@ -2,10 +2,11 @@ use argon2rs::verifier::Encoded;
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use diesel::{PgConnection, QueryResult};
-use std::{env, str};
+use std::str;
 
 use crate::errors::ApiError;
 use crate::schema::{users, users::dsl::users as all_users};
+use crate::utils::config::PASSWORD_HASH_SALT;
 
 /* ----- Model definitions -----  */
 
@@ -51,11 +52,6 @@ pub struct ApiUserCreateSpec {
     pub password: String,
 }
 
-lazy_static! {
-    static ref HASH_SALT: String =
-        env::var("PASSWORD_HASH_SALT").expect("PASSWORD_HASH_SALT must be set");
-}
-
 impl User {
     pub fn create(new_user: ApiUserCreateSpec, conn: &PgConnection) -> Result<User, ApiError> {
         let new_user = UserCreateSpec {
@@ -88,7 +84,8 @@ impl User {
 
     pub fn hash_password(password: String) -> String {
         str::from_utf8(
-            &Encoded::default2i(password.as_ref(), HASH_SALT.as_ref(), b"key", b"").to_u8(),
+            &Encoded::default2i(password.as_ref(), PASSWORD_HASH_SALT.as_ref(), b"key", b"")
+                .to_u8(),
         )
         .unwrap()
         .to_string()

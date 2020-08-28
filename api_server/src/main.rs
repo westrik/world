@@ -7,6 +7,7 @@ use std::env;
 use warp::Filter;
 
 use world_core::routes::cors_wrapper;
+use world_core::utils::config::ROOT_DOMAIN_NAME;
 use world_core::{db, routes};
 
 embed_migrations!("../core/migrations");
@@ -21,8 +22,7 @@ async fn main() {
     }
     pretty_env_logger::init();
 
-    let root_domain_name = env::var("ROOT_DOMAIN_NAME").expect("ROOT_DOMAIN_NAME must be set");
-    let cors_origin_url = format!("https://{}", root_domain_name);
+    let cors_origin_url = format!("https://{}", *ROOT_DOMAIN_NAME);
 
     // TODO: load DATABASE_URL with rusoto_sts
     // TODO: refactor db_url generation

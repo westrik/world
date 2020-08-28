@@ -3,8 +3,9 @@ use bytes::Bytes;
 use rusoto_core::Region;
 use rusoto_lambda::{InvocationRequest, Lambda, LambdaClient};
 use serde_json::json;
-use std::env;
 use world_core::jobs::errors::JobError;
+// use world_core::utils::config::OUTBOUND_EMAIL_SENDER;
+use world_core::utils::config::SENDGRID_API_KEY;
 
 use crate::emails::templates::populate_email_template;
 use crate::jobs::Runnable;
@@ -18,13 +19,6 @@ pub enum EmailTemplate {
 pub struct SendEmailJob {
     pub template: EmailTemplate,
     pub recipients: Vec<String>,
-}
-
-lazy_static! {
-    static ref OUTBOUND_EMAIL_SENDER: String =
-        env::var("OUTBOUND_EMAIL_SENDER").expect("OUTBOUND_EMAIL_SENDER must be set");
-    static ref SENDGRID_API_KEY: String =
-        env::var("SENDGRID_API_KEY").expect("SENDGRID_API_KEY must be set");
 }
 
 #[async_trait]
