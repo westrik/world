@@ -167,17 +167,28 @@ resource "aws_acm_certificate" "user_uploads_cloudfront" {
 }
 
 resource "aws_route53_record" "user_uploads_cloudfront_acm" {
-  zone_id = data.aws_route53_zone.app.id
-  name    = aws_acm_certificate.user_uploads_cloudfront.domain_validation_options[0].resource_record_name
-  type    = aws_acm_certificate.user_uploads_cloudfront.domain_validation_options[0].resource_record_type
-  records = [
-  aws_acm_certificate.user_uploads_cloudfront.domain_validation_options[0].resource_record_value]
-  ttl = 60
+  for_each = {
+    for dvo in aws_acm_certificate.user_uploads_cloudfront.domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      record = dvo.resource_record_value
+      type   = dvo.resource_record_type
+    }
+  }
+
+  allow_overwrite = true
+  name            = each.value.name
+  records         = [each.value.record]
+  ttl             = 60
+  type            = each.value.type
+  zone_id         = data.aws_route53_zone.app.id
 }
 
 resource "aws_acm_certificate_validation" "user_uploads_cloudfront" {
+  for_each = {
+    for dvo in aws_acm_certificate.user_uploads_cloudfront.domain_validation_options : dvo.domain_name => {}
+  }
   certificate_arn         = aws_acm_certificate.user_uploads_cloudfront.arn
-  validation_record_fqdns = [aws_route53_record.user_uploads_cloudfront_acm.fqdn]
+  validation_record_fqdns = [aws_route53_record.user_uploads_cloudfront_acm[each.key].fqdn]
 }
 
 data "aws_route53_zone" "app" {

@@ -53,7 +53,6 @@ resource "aws_autoscaling_group" "app_blue" {
   desired_capacity    = var.num_app_instances
   max_size            = var.num_app_instances + 1
   min_size            = var.num_app_instances
-  availability_zones  = [var.aws_az1, var.aws_az2]
   vpc_zone_identifier = var.app_subnet_ids
   target_group_arns   = [var.app_blue_target_group_arn]
 

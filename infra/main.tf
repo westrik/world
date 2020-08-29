@@ -1,4 +1,4 @@
-// Tested with Terraform v0.12.20 (as of 2020-04-07)
+// Tested with Terraform v0.13.1 (as of 2020-08-28)
 
 terraform {
   backend "s3" {
