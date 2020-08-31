@@ -10,23 +10,36 @@
 
 ## Development
 
+
+#### Set up local dev-env
+
+Run the dev-env setup script to install dependencies, set up the test databases in Postgres, and configure nginx:
+
+```
+cd world
+./scripts/setup_dev_env.sh
+```
+
+This script will also generate a `.env` file in the root of the project directory.
+
+Run `make run_server` and `make run_client` in two separate windows, then open [local.westrik.world](https://local.westrik.world) in your browser.
+
+
+
+
 #### Dependencies
 
-**App**
+The following packages will be installed automatically by `setup_dev_env.sh`.
 
-- [Rust](https://www.rust-lang.org/tools/install) - nightly
+_Development:_
+
+- [Rust](https://www.rust-lang.org/tools/install) (nightly)
 - Yarn
 - Postgres 12
 - Nginx
 - OpenSSL 1.1
 
-```
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-rustup default nightly
-brew install yarn postgres nginx openssl@1.1
-```
-
-**Infrastructure**
+_Infrastructure:_
 
 - Terraform 0.13+
 - Ansible
@@ -34,80 +47,11 @@ brew install yarn postgres nginx openssl@1.1
 - AWS CLI
 - AWS [SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html) (needs Docker)
 
-```
-brew install terraform ansible packer awscli
-brew tap aws/tap && brew install aws-sam-cli
-```
-
-#### Set up local dev-env
-
-To set up test databases and configure nginx on your local computer, run the dev env set-up script:
-
-```
-./scripts/setup_dev_env.sh
-```
 
 
 
-<!--
 
--------------
-
-## API server
-
-
-### DB setup
-
-```
-~/world » createdb world_app
-~/world » createdb world_test
-~/world » createuser world_user
-~/world » psql postgres
-psql (11.5)
-Type "help" for help.
-
-postgres=# alter user world_user with encrypted password 'PASSWORD';
-ALTER ROLE
-postgres=# grant all privileges on database world_app to world_user;
-GRANT
-postgres=# grant all privileges on database world_test to world_user;
-GRANT
-postgres=# alter database world_app set timezone to 'UTC';
-ALTER DATABASE
-postgres=# alter database world_test set timezone to 'UTC';
-ALTER DATABASE
-postgres=# \q
-~/world » echo "DATABASE_URL='postgres://world_user:PASSWORD@localhost/world_app'" > .env
-~/world » echo "TEST_DATABASE_URL='postgres://world_user:PASSWORD@localhost/world_test'" >> .env
-```
-
-
-### Local setup
-
-```sh
-~/world » echo "ROOT_DOMAIN_NAME=\"local.westrik.world\"" >> .env
-~/world » echo "PASSWORD_HASH_SALT=\"$(gpg --gen-random --armor 0 32)\"" >> .env
-~/world »
-~/world » # Generate self-signed certs
-~/world » sudo mkdir -p /etc/ssl/{certs,private}
-~/world » sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
-~/world » sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned-api.key -out /etc/ssl/certs/nginx-selfsigned-api.crt
-~/world » sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
-~/world »
-~/world » # Install and configure nginx
-~/world » brew install nginx
-~/world » sudo ln -s "$(pwd)/infra/nginx/local.conf" /usr/local/etc/nginx/world.conf
-~/world » sudo ln -s "$(pwd)/infra/nginx/selfsigned.conf" /usr/local/etc/nginx/selfsigned.conf
-~/world » # add 'include world.conf;':
-~/world » sudo vi /usr/local/etc/nginx/nginx.conf
-~/world » sudo nginx -t
-~/world » sudo brew services restart nginx
-```
-
-Then open [local.westrik.world](https://local.westrik.world) in your browser.
-
-
-### Adding migrations
+#### Adding migrations
 
 (First, install `diesel_cli` if it is not already installed):
 ```sh
@@ -135,5 +79,3 @@ diesel migration redo
 
 - `integration_tests::db::destroy_test_db()` - drop the new table
 - `core::resource_identifier::ResourceType` (iff an API ID is needed)
-
--->

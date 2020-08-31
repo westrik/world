@@ -5,9 +5,6 @@ set -euo pipefail
 apt-get update
 # general system dependencies
 apt-get install -y sudo curl
-# rust toolchain
-rustup default nightly
-rustup component add clippy
 # other toolchain dependencies
 apt-get install -y build-essential
 # OpenSSL (needed for postgres and tectonic)
