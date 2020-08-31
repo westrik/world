@@ -22,7 +22,7 @@ cd world
 
 This script will also generate a `.env` file in the root of the project directory.
 
-Run `make run_server` and `make run_client` in two separate windows, then open [local.westrik.world](https://local.westrik.world) in your browser.
+After the setup script completes, run `make run_server` and `make run_client` in two separate windows, then open [local.westrik.world](https://local.westrik.world) in your browser.
 
 
 
