@@ -7,7 +7,54 @@
 
 -------------
 
+
+## Development
+
+#### Dependencies
+
+**App**
+
+- [Rust](https://www.rust-lang.org/tools/install) - nightly
+- Yarn
+- Postgres 12
+- Nginx
+- OpenSSL 1.1
+
+```
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+rustup default nightly
+brew install yarn postgres nginx openssl@1.1
+```
+
+**Infrastructure**
+
+- Terraform 0.13+
+- Ansible
+- Packer
+- AWS CLI
+- AWS [SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html) (needs Docker)
+
+```
+brew install terraform ansible packer awscli
+brew tap aws/tap && brew install aws-sam-cli
+```
+
+#### Set up local dev-env
+
+To set up test databases and configure nginx on your local computer, run the dev env set-up script:
+
+```
+./scripts/setup_dev_env.sh
+```
+
+
+
+<!--
+
+-------------
+
 ## API server
+
 
 ### DB setup
 
@@ -88,3 +135,5 @@ diesel migration redo
 
 - `integration_tests::db::destroy_test_db()` - drop the new table
 - `core::resource_identifier::ResourceType` (iff an API ID is needed)
+
+-->
