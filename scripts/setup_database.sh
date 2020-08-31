@@ -70,5 +70,6 @@ echo "DATABASE_URL='postgres://$user:$urlencoded_password@localhost/$db_name'" >
 db_name="world_test"
 user="world_test"
 password="$(gpg --gen-random --armor 0 32)"
+urlencoded_password=$(urlencode "$password")
 create_database $db_name $user "$password"
-echo "TEST_DATABASE_URL='postgres://$user:$password@localhost/$db_name'" >> .env
+echo "TEST_DATABASE_URL='postgres://$user:$urlencoded_password@localhost/$db_name'" >> .env
