@@ -29,16 +29,6 @@ else
   fi
 fi
 
-<<<<<<< HEAD
-=======
-if ! command -v rustup >/dev/null 2>&1; then
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-fi
-# this seems unhygienic (TODO: configure toolchain for project instead?)
-rustup default nightly
-cargo install cargo-watch
-
->>>>>>> b4422df... [tools] add script to set up local dev environment (#180)
 # -----------------------------------------------------------------------------
 # [STAGE 2] database & environment setup
 # -----------------------------------------------------------------------------
