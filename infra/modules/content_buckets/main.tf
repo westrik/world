@@ -20,12 +20,23 @@ resource "aws_s3_bucket" "user_uploads" {
 
   cors_rule {
     allowed_headers = ["*"]
-    allowed_methods = ["PUT"]
+    allowed_methods = ["PUT", "GET", "HEAD"]
     allowed_origins = ["https://${var.root_domain_name}"]
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }
+
+  logging {
+    target_bucket = aws_s3_bucket.user_uploads_access_logs.id
+    target_prefix = "user-uploads-bucket/"
+  }
 }
+
+resource "aws_s3_bucket" "user_uploads_access_logs" {
+  bucket = "${var.project_slug}-${var.deploy_name}-user-uploads-access-logs-${random_string.content_bucket_hash.result}"
+  acl    = "log-delivery-write"
+}
+
 
 // TODO: split IAM role for worker and app hosts (worker needs Get+Put, app only needs Put)
 resource "aws_iam_role_policy" "app_host_allow_content_upload" {
@@ -111,18 +122,23 @@ resource "aws_cloudfront_distribution" "user_uploads" {
     minimum_protocol_version = "TLSv1.2_2019"
   }
 
-  // TODO: set up loggging to S3
-  //  logging_config {
-  //    include_cookies = false
-  //    bucket          = "mylogs.s3.amazonaws.com"
-  //    prefix          = "myprefix"
-  //  }
+  logging_config {
+    include_cookies = true
+    bucket          = aws_s3_bucket.user_uploads_access_logs.bucket_domain_name
+    prefix          = "user-uploads-cloudfront/"
+  }
 
   default_cache_behavior {
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-    cached_methods   = ["GET", "HEAD"]
-    target_origin_id = local.user_uploads_origin_id
-    trusted_signers  = ["self"]
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id       = local.user_uploads_origin_id
+    trusted_signers        = ["self"]
+    viewer_protocol_policy = "redirect-to-https"
+
+    compress    = true
+    default_ttl = 3600
+    max_ttl     = 86400
+    min_ttl     = 0
 
     forwarded_values {
       query_string = false
@@ -130,13 +146,12 @@ resource "aws_cloudfront_distribution" "user_uploads" {
       cookies {
         forward = "none"
       }
+      headers = [
+        "Access-Control-Request-Headers",
+        "Access-Control-Request-Method",
+        "Origin"
+      ]
     }
-
-    compress               = true
-    viewer_protocol_policy = "redirect-to-https"
-    min_ttl                = 0
-    default_ttl            = 3600
-    max_ttl                = 86400
   }
 
   restrictions {

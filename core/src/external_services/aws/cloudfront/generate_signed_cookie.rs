@@ -16,11 +16,11 @@ fn cookie_expires_at_epoch_time() -> u64 {
     current_epoch_time + 3600
 }
 
-fn create_policy(path: &str, expires_at_epoch_time: u64) -> String {
+fn create_policy(resource: &str, expires_at_epoch_time: u64) -> String {
     json!({
         "Statement": [
             {
-                "Resource": path,
+                "Resource": resource,
                 "Condition": {
                     "DateLessThan": {
                         "AWS:EpochTime": expires_at_epoch_time,
@@ -54,30 +54,31 @@ fn load_private_key(private_key: &str) -> RSAPrivateKey {
 }
 
 fn sign_policy(policy: &str, private_key: &str) -> String {
-    let encoded_policy = encode_policy(policy);
-    let digest = Sha1::digest(encoded_policy.as_bytes()).to_vec();
+    let digest = Sha1::digest(policy.as_bytes()).to_vec();
     let signature = load_private_key(private_key)
         .sign(PaddingScheme::new_pkcs1v15_sign(Some(Hash::SHA1)), &digest)
         .unwrap();
     swap_unsupported_characters(base64::encode(signature))
 }
 
-pub struct CloudFrontAccessCookies {
+pub struct CloudFrontAccessData {
     pub session_expires_at: DateTime<Utc>,
     pub encoded_policy: String,
     pub signature: String,
     pub key_pair_id: String,
+    pub path: String,
 }
 
-pub fn generate_cloudfront_access_cookies(path: &str) -> CloudFrontAccessCookies {
-    let policy = create_policy(path, cookie_expires_at_epoch_time());
+pub fn generate_cloudfront_access_data(path: &str, resource: &str) -> CloudFrontAccessData {
+    let policy = create_policy(resource, cookie_expires_at_epoch_time());
     let encoded_policy = encode_policy(&policy);
     let signature = sign_policy(&policy, &*CLOUDFRONT_PRIVATE_KEY);
-    CloudFrontAccessCookies {
-        session_expires_at: Utc::now().add(Duration::hours(1)),
+    CloudFrontAccessData {
         encoded_policy,
-        signature,
         key_pair_id: (*CLOUDFRONT_KEYPAIR_ID).to_string(),
+        path: path.to_string(),
+        session_expires_at: Utc::now().add(Duration::hours(1)),
+        signature,
     }
 }
 
@@ -156,7 +157,7 @@ AqsotI34m4/U3PnonFtyjQy7b9+naWUdal9TdpooWi/gi0OJmy3R0sikibo+tl80
 UUqe4ujHCf1mJzDUv89to/wkOmSgonY3mjRingMnUJVWbJZf9XyGv165Rz4=
 -----END RSA PRIVATE KEY-----
 "#;
-        let expected_signature = "s67K0uVSwf4d~zlFo33PAE3aPpZ5XfYXMqFUDQlJHoe3RfKvQRNU71XBuZ9Zk4DySPJKjB5DP9-mA-3N4hSniu08xv23Iq94P0CJPugHr4r9OcLuJvT4mdXSugwm30iKh55B7yNpOONNFz2gfrzaUAP83rrsno4Q5AAwc3d5uSovL94AvtRcwSbzLkuJDra4GditIHNohqahOrhvpD-JhdE3MRQxfISArMgYh1fTNhcBdiwAMrKw1DxyqqRAeh9aur8rtFn~IIJ6W546Mcoq0MVFCx7qXYb0idOTk-Sh0CxpK76fQzXrxeiHw8b1l7JC-8sVwRDfsCxG85BjpCnYybjw1bOW8ua2lXfTl~AvWWHFOdfKr4PpMGF3EwwKCC6pGEfdipAQMWEaTwvPn4O97ydY1w5Xdr7TCWp~LdiJLSf-MYwCTBQUFGVIdyycegnNr-A~S1tQiiUQKswBM0Hl-crcurFDoMOclyqH6MdR8uJT5Z4wcEnHmAv~R1bPdl5jORbRRQGFm9ZzZPwYJfkD7j0XT6Mqf65gY0wDaLycmm1MDEvtCltfkgeJYnMLB9MmlZvBvVDrXi6PoK3yeKnUqhrGM6tHGfB7ea6ED-6WmE8lEJLgoTNHpO4HALAaXTXjyMKx6FvxMAnRmtiqCWYSRmtN-evuwDpz3KCTH2q3zdM_";
+        let expected_signature = "U3CAeQjhdpF3nyvbnpSTyHluPy-vvQTJn4t0PspoDY~eLuNe3QxtfgfrSKTEByifPgecNqVhY6WJlpebdJZtyGavZFTAh0F8NqL6l0OsGAxN8fnM6NMu8IST8tVTjVTv2Dt452WQ7rZit-~TAImaBKqK5ZxZ4yA8efjQbz3GoO~-YDW5AHhu50~X07bhvS0FGOQdHC6WSvwK9ZwSs3hpHtWsQPevO8KzW5BpzhJ~JY6Y9CG2FB34JqfaWx0loWN81bcmoGRr~DZWqd2055DRIA1obO8witjuPQjkSqtBu-0QdbF4O~x20qnRLuAgUyGFjkmaChECa1evbk69-2SMCMwbBn3dht-LkqLQaUDKyxC34LxEOoZbn4SzUD8g2Z6v9GUOHn9za-p16bqFCPlcMhWPx68eWuZ5AwL-0ddcOdzjEnTSSv3NQIvfCOXa5OC2psdh~QTO56EtydeQIDCdwABv1cLKOWYkHNeiij6p48lCTH6Bm02kuFfL8tKsjRoSmColT~RIAL~GH7C~jy2O0dVCPifJfza8zZSdew6aTvvPXyRAdsjfOACSfvB8oOjhVhKfK-afIwSgz6GG6nJD-wxDXjHu1KuHYgJ7y54YmrI-fqTO-IxuusgaU2gyxK1ZwCmarttS557278U-lgPyp32wY3mogV2PCFLFTo5kGSw_";
         assert_eq!(expected_signature, sign_policy(&policy, private_key));
     }
 }
