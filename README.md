@@ -7,60 +7,51 @@
 
 -------------
 
-## API server
 
-### DB setup
+## Development
+
+
+#### Set up local dev-env
+
+Run the dev-env setup script to install dependencies, set up the test databases in Postgres, and configure nginx:
 
 ```
-~/world » createdb world_app
-~/world » createdb world_test
-~/world » createuser world_user
-~/world » psql postgres
-psql (11.5)
-Type "help" for help.
-
-postgres=# alter user world_user with encrypted password 'PASSWORD';
-ALTER ROLE
-postgres=# grant all privileges on database world_app to world_user;
-GRANT
-postgres=# grant all privileges on database world_test to world_user;
-GRANT
-postgres=# alter database world_app set timezone to 'UTC';
-ALTER DATABASE
-postgres=# alter database world_test set timezone to 'UTC';
-ALTER DATABASE
-postgres=# \q
-~/world » echo "DATABASE_URL='postgres://world_user:PASSWORD@localhost/world_app'" > .env
-~/world » echo "TEST_DATABASE_URL='postgres://world_user:PASSWORD@localhost/world_test'" >> .env
+cd world
+./scripts/setup_dev_env.sh
 ```
 
+This script will also generate a `.env` file in the root of the project directory.
 
-### Local setup
-
-```sh
-~/world » echo "ROOT_DOMAIN_NAME=\"local.westrik.world\"" >> .env
-~/world » echo "PASSWORD_HASH_SALT=\"$(gpg --gen-random --armor 0 32)\"" >> .env
-~/world »
-~/world » # Generate self-signed certs
-~/world » sudo mkdir -p /etc/ssl/{certs,private}
-~/world » sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
-~/world » sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned-api.key -out /etc/ssl/certs/nginx-selfsigned-api.crt
-~/world » sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
-~/world »
-~/world » # Install and configure nginx
-~/world » brew install nginx
-~/world » sudo ln -s "$(pwd)/infra/nginx/local.conf" /usr/local/etc/nginx/world.conf
-~/world » sudo ln -s "$(pwd)/infra/nginx/selfsigned.conf" /usr/local/etc/nginx/selfsigned.conf
-~/world » # add 'include world.conf;':
-~/world » sudo vi /usr/local/etc/nginx/nginx.conf
-~/world » sudo nginx -t
-~/world » sudo brew services restart nginx
-```
-
-Then open [local.westrik.world](https://local.westrik.world) in your browser.
+After the setup script completes, run `make run_server` and `make run_client` in two separate windows, then open [local.westrik.world](https://local.westrik.world) in your browser.
 
 
-### Adding migrations
+
+
+#### Dependencies
+
+The following packages will be installed automatically by `setup_dev_env.sh`.
+
+_Development:_
+
+- [Rust](https://www.rust-lang.org/tools/install) (nightly)
+- Yarn
+- Postgres 12
+- Nginx
+- OpenSSL 1.1
+
+_Infrastructure:_
+
+- Terraform 0.13+
+- Ansible
+- Packer
+- AWS CLI
+- AWS [SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html) (needs Docker)
+
+
+
+
+
+#### Adding migrations
 
 (First, install `diesel_cli` if it is not already installed):
 ```sh
