@@ -10,6 +10,9 @@ set -euo pipefail
 
 scripts_dir="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
+<<<<<<< HEAD
 bash "$scripts_dir/apt_install_dependencies.sh"
+=======
+>>>>>>> b4422df... [tools] add script to set up local dev environment (#180)
 bash "$scripts_dir/setup_database.sh"
 echo "PASSWORD_HASH_SALT='lBi5Pi6yBdtRmIXMZvs6IlmAOy3ogEivqG056hGJ6t'" >> .env

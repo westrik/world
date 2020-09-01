@@ -23,6 +23,7 @@ brew tap aws/tap  # for aws-sam-cli
 for dep in "${dev_deps[@]}" "${infra_deps[@]}"; do
   brew install "$dep" || brew upgrade "$dep"
 done
+<<<<<<< HEAD
 
 
 ## install rust toolchain
@@ -33,3 +34,5 @@ fi
 rustup default nightly
 rustup component add clippy
 cargo install cargo-watch
+=======
+>>>>>>> b4422df... [tools] add script to set up local dev environment (#180)
