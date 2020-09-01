@@ -98,6 +98,7 @@ pub fn cors_wrapper(cors_origin_url: &str) -> Cors {
         .allow_origin(cors_origin_url)
         .allow_methods(vec!["GET", "POST", "PATCH", "PUT", "DELETE"])
         .allow_headers(vec!["Content-Type", "Authorization"])
-        .expose_headers(vec!["Set-Cookie"])
+        .allow_credentials(true)
+        // .expose_headers(vec!["Set-Cookie"])
         .build()
 }
