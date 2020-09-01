@@ -64,6 +64,7 @@ fn sign_policy(policy: &str, private_key: &str) -> String {
 
 pub struct CloudFrontAccessCookies {
     pub session_expires_at: DateTime<Utc>,
+    pub authenticated_path: String,
     pub encoded_policy: String,
     pub signature: String,
     pub key_pair_id: String,
@@ -75,6 +76,7 @@ pub fn generate_cloudfront_access_cookies(path: &str) -> CloudFrontAccessCookies
     let signature = sign_policy(&policy, &*CLOUDFRONT_PRIVATE_KEY);
     CloudFrontAccessCookies {
         session_expires_at: Utc::now().add(Duration::hours(1)),
+        authenticated_path: path.to_string(),
         encoded_policy,
         signature,
         key_pair_id: (*CLOUDFRONT_KEYPAIR_ID).to_string(),

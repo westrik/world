@@ -81,25 +81,27 @@ pub async fn sign_in(
     ))
 }
 
+lazy_static! {
+    static ref UPLOADS_DOMAIN_NAME: String = format!("uploads.{}", *ROOT_DOMAIN_NAME);
+}
+
 fn run_cloudfront_authenticate(
-    _creds: CloudfrontAuthenticationRequest,
+    _session: &Session,
     _pool: &DbPool,
 ) -> Result<CloudFrontAccessCookies, ApiError> {
     // TODO: generate path to user's cloudfront directory & verify session
-    let path = "/";
-    Ok(generate_cloudfront_access_cookies(path))
+    // session.user_id
+    let path = format!("https://{}/*", *UPLOADS_DOMAIN_NAME);
+    Ok(generate_cloudfront_access_cookies(&path))
 }
 
 pub async fn cloudfront_authenticate(
-    auth_request: CloudfrontAuthenticationRequest,
+    _auth_request: CloudfrontAuthenticationRequest,
     session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!("cloudfront_authenticate: user_id={}", session.user_id);
-    let domain = format!("uploads.{}", *ROOT_DOMAIN_NAME);
-    let path = "/"; // TODO: set this to user's cloudfront path
-
-    let cookies = run_api_task(move || run_cloudfront_authenticate(auth_request, &db_pool)).await?;
+    let cookies = run_api_task(move || run_cloudfront_authenticate(&session, &db_pool)).await?;
     let cookie_headers = vec![
         ("CloudFront-Policy", cookies.encoded_policy),
         ("CloudFront-Signature", cookies.signature),
@@ -110,7 +112,7 @@ pub async fn cloudfront_authenticate(
     for header in cookie_headers {
         let value = HeaderValue::from_str(&format!(
             "{}={}; Domain={}; Path={}; Secure; HttpOnly",
-            header.0, header.1, domain, path
+            header.0, header.1, *UPLOADS_DOMAIN_NAME, cookies.authenticated_path
         ))
         .map_err(|_| ApiError::InternalError("Could not create CloudFront cookie".to_string()))?;
         response_builder = response_builder.header("Set-Cookie", value);
