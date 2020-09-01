@@ -7,6 +7,7 @@ use rand::{thread_rng, Rng};
 use crate::auth::models::user::User;
 use crate::errors::ApiError;
 use crate::schema::sessions;
+use crate::schema::{users, users::dsl::users as all_users};
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[primary_key(token)]
@@ -29,5 +30,17 @@ impl Session {
             .values((sessions::token.eq(token), sessions::user_id.eq(user.id)))
             .get_result(conn)
             .map_err(ApiError::DatabaseError)?)
+    }
+
+    pub fn get_user(&self, conn: &PgConnection) -> Result<User, ApiError> {
+        Ok(all_users
+            .filter(users::id.eq(self.user_id))
+            .first(conn)
+            .map_err(|e| match e {
+                diesel::result::Error::NotFound => {
+                    ApiError::InternalError("Session is invalid".to_string())
+                }
+                _ => ApiError::DatabaseError(e),
+            })?)
     }
 }

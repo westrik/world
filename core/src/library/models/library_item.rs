@@ -20,7 +20,7 @@ pub struct LibraryItem {
     #[serde(rename = "updatedAt")]
     pub updated_at: DateTime<Utc>,
     pub name: String,
-    // TODO: (maybe) add item_type column
+    // TODO: add item_type column
     // TODO: split next three columns out of this model
     #[serde(rename = "preSignedUploadUrl")]
     pub presigned_upload_url: Option<String>,

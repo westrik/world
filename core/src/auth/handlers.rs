@@ -86,14 +86,13 @@ lazy_static! {
 }
 
 fn run_cloudfront_authenticate(
-    _session: &Session,
-    _pool: &DbPool,
+    session: &Session,
+    pool: &DbPool,
 ) -> Result<CloudFrontAccessData, ApiError> {
-    // TODO: generate path to user's cloudfront directory & verify session
-    // session.user_id
-    let path = "/";
-    let resource = format!("https://{}/*", *UPLOADS_DOMAIN_NAME);
-    Ok(generate_cloudfront_access_data(path, &resource))
+    let user = session.get_user(&get_conn(pool).unwrap())?;
+    let path = format!("/{}/", &user.api_id);
+    let resource = format!("https://{}/{}/*", *UPLOADS_DOMAIN_NAME, &user.api_id);
+    Ok(generate_cloudfront_access_data(&path, &resource))
 }
 
 pub async fn cloudfront_authenticate(

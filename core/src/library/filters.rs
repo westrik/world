@@ -10,12 +10,12 @@ use warp::Filter;
 pub fn routes(
     db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    library_items_list(db_pool.clone())
-        .or(library_item_get(db_pool.clone()))
-        .or(library_item_create(db_pool.clone()))
-        .or(library_item_update(db_pool.clone()))
+    library_item_bulk_create(db_pool.clone())
         .or(library_item_delete(db_pool.clone()))
-        .or(library_item_version_create(db_pool))
+        .or(library_item_get(db_pool.clone()))
+        .or(library_item_update(db_pool.clone()))
+        .or(library_item_version_create(db_pool.clone()))
+        .or(library_items_list(db_pool))
 }
 
 /// GET /library-item?offset=3&limit=5
@@ -42,7 +42,7 @@ pub fn library_item_get(
 }
 
 /// POST /library-item:bulk-create with JSON body
-pub fn library_item_create(
+pub fn library_item_bulk_create(
     db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("library-item:bulk-create")

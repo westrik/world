@@ -55,7 +55,7 @@ _Infrastructure:_
 
 (First, install `diesel_cli` if it is not already installed):
 ```sh
-cargo install diesel_cli --no-default-features --feature postgres
+cargo install diesel_cli --no-default-features --features postgres
 ```
 
 Generate `up.sql` and `down.sql` in a new sub-folder of `core/migrations`.

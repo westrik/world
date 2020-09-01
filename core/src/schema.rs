@@ -92,6 +92,7 @@ table! {
         password_hash -> Text,
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
+        api_id -> Varchar,
     }
 }
 
