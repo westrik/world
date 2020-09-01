@@ -1,4 +1,4 @@
-use std::convert::Infallible;
+use std::{convert::Infallible, fmt};
 use warp::http::StatusCode;
 use warp::Rejection;
 
@@ -15,10 +15,61 @@ use crate::utils::config::CONTENT_BUCKET_NAME;
 use crate::utils::list_options::ListOptions;
 use crate::utils::mnemonic::{generate_mnemonic, DEFAULT_MNEMONIC_LENGTH};
 
+#[derive(Copy, Clone, Debug, Serialize, Deserialize)]
+pub enum FileType {
+    #[serde(rename = "application/epub+zip")]
+    EPUB,
+    #[serde(rename = "image/gif")]
+    GIF,
+    #[serde(rename = "image/jpeg")]
+    JPEG,
+    #[serde(rename = "audio/mpeg")]
+    MP3,
+    #[serde(rename = "video/mpeg")]
+    MPEG,
+    #[serde(rename = "application/pdf")]
+    PDF,
+    #[serde(rename = "image/png")]
+    PNG,
+    #[serde(rename = "image/svg+xml")]
+    SVG,
+    #[serde(rename = "image/tiff")]
+    TIFF,
+    #[serde(rename = "text/plain")]
+    TXT,
+    #[serde(rename = "audio/wav")]
+    WAV,
+    #[serde(rename = "image/webm")]
+    WEBM,
+    #[serde(rename = "image/webp")]
+    WEBP,
+}
+
+impl fmt::Display for FileType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let type_str = match self {
+            FileType::EPUB => "epub",
+            FileType::GIF => "gif",
+            FileType::JPEG => "jpg",
+            FileType::MP3 => "mp3",
+            FileType::MPEG => "mp4",
+            FileType::PDF => "pdf",
+            FileType::PNG => "png",
+            FileType::SVG => "svg",
+            FileType::TIFF => "tiff",
+            FileType::TXT => "txt",
+            FileType::WAV => "wav",
+            FileType::WEBM => "webm",
+            FileType::WEBP => "webp",
+        };
+        write!(f, "{}", type_str)
+    }
+}
+
 #[derive(Debug, Deserialize)]
 pub struct ApiLibraryItemBulkCreateSpec {
-    #[serde(rename = "fileSizesInBytes")]
-    pub file_sizes_in_bytes: Vec<i64>,
+    #[serde(rename = "fileSpecs")]
+    pub file_specs: Vec<(i64, FileType)>,
 }
 #[derive(Debug, Deserialize)]
 pub struct ApiLibraryItemUpdateSpec {
@@ -125,21 +176,25 @@ async fn run_bulk_create_library_items(
     session: Session,
     db_pool: &DbPool,
 ) -> Result<Vec<LibraryItem>, ApiError> {
+    let conn = get_conn(db_pool).unwrap();
+    let user = run_api_task(move || session.get_user(&conn)).await?;
     // TODO: limit number of files per request
     // TODO: limit maximum file size?
     let create_specs = {
         let mut specs = vec![];
-        for file_size in spec.file_sizes_in_bytes.iter() {
+        for (file_size, file_type) in spec.file_specs.iter() {
             let name = generate_mnemonic(DEFAULT_MNEMONIC_LENGTH);
+            let api_id = generate_resource_identifier(ResourceType::LibraryItem);
+            let file_name = format!("{}/{}-{}.{}", user.api_id, api_id, name, file_type);
             let presigned_upload_url = generate_presigned_upload_url(
                 (*CONTENT_BUCKET_NAME).to_string(),
-                name.to_string(),
+                file_name,
                 *file_size,
             )
             .await?;
             specs.push(LibraryItemCreateSpec {
-                api_id: generate_resource_identifier(ResourceType::LibraryItem),
-                user_id: session.user_id,
+                api_id,
+                user_id: user.id,
                 name: name.to_string(),
                 presigned_upload_url: Some(presigned_upload_url),
                 uploaded_file_name: None,
@@ -149,11 +204,8 @@ async fn run_bulk_create_library_items(
         specs
     };
 
-    let pool = db_pool.clone();
-    Ok(
-        run_api_task(move || LibraryItem::bulk_create(&get_conn(&pool).unwrap(), create_specs))
-            .await?,
-    )
+    let conn = get_conn(db_pool).unwrap();
+    Ok(run_api_task(move || LibraryItem::bulk_create(&conn, create_specs)).await?)
 }
 
 pub async fn bulk_create_library_items(

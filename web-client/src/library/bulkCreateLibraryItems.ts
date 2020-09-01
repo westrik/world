@@ -1,10 +1,11 @@
 import { AuthContext } from '~auth/AuthContext';
+import { FileType } from '~components/FileUploadField';
 import { ApiLibraryItem, ApiLibraryItemVersion } from '~models/LibraryItem';
 import { assertCondition } from '~utils/asserts';
 import { ApiResponse, request, RequestMethod } from '~utils/network';
 
 interface BulkCreateLibraryItemsRequest {
-    fileSizesInBytes: Array<number>;
+    fileSpecs: Array<[number, FileType]>;
 }
 
 export interface BulkCreateLibraryItemsResponse extends ApiResponse {
@@ -50,7 +51,7 @@ export default async function bulkCreateLibraryItems(authContext: AuthContext, f
         `/library-item:bulk-create`,
         authContext,
         {
-            fileSizesInBytes: files.map((file) => file.size),
+            fileSpecs: files.map((file) => [file.size, file.type as FileType]),
         },
     );
     // TODO: improve error-handling
@@ -58,9 +59,7 @@ export default async function bulkCreateLibraryItems(authContext: AuthContext, f
         const sortedLibraryItems = response.libraryItems.sort(
             (a, b) => a.uploadedFileSizeBytes - b.uploadedFileSizeBytes,
         );
-        const sortedFiles = files.sort((a, b) => a.size - b.size);
-        // TODO: rate-limit & batch item creation
-        // TODO: track progress
+        const sortedFiles = files.sort((a, b) => a.size - b.size); // TODO: rate-limit & batch item creation // TODO: track progress
         sortedLibraryItems.map((item, idx) => createLibraryItem(authContext, item, sortedFiles[idx]));
     }
 }

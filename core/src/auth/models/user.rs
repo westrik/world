@@ -5,6 +5,7 @@ use diesel::{PgConnection, QueryResult};
 use std::str;
 
 use crate::errors::ApiError;
+use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{users, users::dsl::users as all_users};
 use crate::utils::config::PASSWORD_HASH_SALT;
 
@@ -24,6 +25,8 @@ pub struct User {
     pub created_at: DateTime<Utc>,
     #[serde(rename = "updatedAt")]
     pub updated_at: DateTime<Utc>,
+    #[serde(rename = "id")]
+    pub api_id: String,
 }
 
 /* ----- Create and update specs  -----  */
@@ -31,6 +34,7 @@ pub struct User {
 #[derive(Insertable)]
 #[table_name = "users"]
 pub struct UserCreateSpec {
+    pub api_id: String,
     pub email_address: String,
     pub full_name: Option<String>,
     pub password_hash: String,
@@ -55,6 +59,7 @@ pub struct ApiUserCreateSpec {
 impl User {
     pub fn create(new_user: ApiUserCreateSpec, conn: &PgConnection) -> Result<User, ApiError> {
         let new_user = UserCreateSpec {
+            api_id: generate_resource_identifier(ResourceType::User),
             email_address: new_user.email_address.to_lowercase(),
             full_name: new_user.full_name,
             password_hash: Self::hash_password(new_user.password),
