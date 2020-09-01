@@ -20,7 +20,7 @@ resource "aws_s3_bucket" "user_uploads" {
 
   cors_rule {
     allowed_headers = ["*"]
-    allowed_methods = ["PUT", "GET"]
+    allowed_methods = ["PUT", "GET", "HEAD"]
     allowed_origins = ["https://${var.root_domain_name}"]
     expose_headers  = ["ETag"]
     max_age_seconds = 3000

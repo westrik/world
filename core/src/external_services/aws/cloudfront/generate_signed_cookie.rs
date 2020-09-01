@@ -16,11 +16,11 @@ fn cookie_expires_at_epoch_time() -> u64 {
     current_epoch_time + 3600
 }
 
-fn create_policy(path: &str, expires_at_epoch_time: u64) -> String {
+fn create_policy(resource: &str, expires_at_epoch_time: u64) -> String {
     json!({
         "Statement": [
             {
-                "Resource": path,
+                "Resource": resource,
                 "Condition": {
                     "DateLessThan": {
                         "AWS:EpochTime": expires_at_epoch_time,
@@ -64,22 +64,22 @@ fn sign_policy(policy: &str, private_key: &str) -> String {
 
 pub struct CloudFrontAccessCookies {
     pub session_expires_at: DateTime<Utc>,
-    pub authenticated_path: String,
     pub encoded_policy: String,
     pub signature: String,
     pub key_pair_id: String,
+    pub path: String,
 }
 
-pub fn generate_cloudfront_access_cookies(path: &str) -> CloudFrontAccessCookies {
-    let policy = create_policy(path, cookie_expires_at_epoch_time());
+pub fn generate_cloudfront_access_cookies(path: &str, resource: &str) -> CloudFrontAccessCookies {
+    let policy = create_policy(resource, cookie_expires_at_epoch_time());
     let encoded_policy = encode_policy(&policy);
     let signature = sign_policy(&policy, &*CLOUDFRONT_PRIVATE_KEY);
     CloudFrontAccessCookies {
-        session_expires_at: Utc::now().add(Duration::hours(1)),
-        authenticated_path: path.to_string(),
         encoded_policy,
-        signature,
         key_pair_id: (*CLOUDFRONT_KEYPAIR_ID).to_string(),
+        path: path.to_string(),
+        session_expires_at: Utc::now().add(Duration::hours(1)),
+        signature,
     }
 }
 

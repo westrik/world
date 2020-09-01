@@ -92,7 +92,8 @@ fn run_cloudfront_authenticate(
     // TODO: generate path to user's cloudfront directory & verify session
     // session.user_id
     let path = "/";
-    Ok(generate_cloudfront_access_cookies(path))
+    let resource = format!("https://{}/*", *UPLOADS_DOMAIN_NAME);
+    Ok(generate_cloudfront_access_cookies(path, &resource))
 }
 
 pub async fn cloudfront_authenticate(
@@ -112,6 +113,7 @@ pub async fn cloudfront_authenticate(
     for header in cookie_headers {
         let value = HeaderValue::from_str(&format!(
             // "{}={}; Domain={}; Path={}; Secure; HttpOnly",
+            // header.0, header.1, *UPLOADS_DOMAIN_NAME, cookies.path
             "{}={}; Domain={}; SameSite=None",
             header.0, header.1, *UPLOADS_DOMAIN_NAME
         ))
