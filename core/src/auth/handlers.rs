@@ -91,8 +91,8 @@ fn run_cloudfront_authenticate(
 ) -> Result<CloudFrontAccessCookies, ApiError> {
     // TODO: generate path to user's cloudfront directory & verify session
     // session.user_id
-    let path = format!("https://{}/*", *UPLOADS_DOMAIN_NAME);
-    Ok(generate_cloudfront_access_cookies(&path))
+    let path = "/";
+    Ok(generate_cloudfront_access_cookies(path))
 }
 
 pub async fn cloudfront_authenticate(
