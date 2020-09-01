@@ -114,7 +114,7 @@ pub async fn cloudfront_authenticate(
     for header in cookie_headers {
         let value = HeaderValue::from_str(&format!(
             "{}={}; Domain={}; Path={}; Secure; SameSite=None; HttpOnly",
-            header.0, header.1, *UPLOADS_DOMAIN_NAME, cloudfront_access.path
+            header.0, header.1, *ROOT_DOMAIN_NAME, cloudfront_access.path
         ))
         .map_err(|_| ApiError::InternalError("Could not create CloudFront cookie".to_string()))?;
         response_builder = response_builder.header("Set-Cookie", value);
