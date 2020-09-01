@@ -8,7 +8,7 @@ use crate::auth::models::user::{ApiUserCreateSpec, User};
 use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
 use crate::external_services::aws::cloudfront::generate_signed_cookie::{
-    generate_cloudfront_access_cookies, CloudFrontAccessCookies,
+    generate_cloudfront_access_data, CloudFrontAccessData,
 };
 use crate::jobs::enqueue_job::enqueue_job;
 use crate::jobs::job_type::JobType;
@@ -88,12 +88,12 @@ lazy_static! {
 fn run_cloudfront_authenticate(
     _session: &Session,
     _pool: &DbPool,
-) -> Result<CloudFrontAccessCookies, ApiError> {
+) -> Result<CloudFrontAccessData, ApiError> {
     // TODO: generate path to user's cloudfront directory & verify session
     // session.user_id
     let path = "/";
     let resource = format!("https://{}/*", *UPLOADS_DOMAIN_NAME);
-    Ok(generate_cloudfront_access_cookies(path, &resource))
+    Ok(generate_cloudfront_access_data(path, &resource))
 }
 
 pub async fn cloudfront_authenticate(
@@ -102,20 +102,19 @@ pub async fn cloudfront_authenticate(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!("cloudfront_authenticate: user_id={}", session.user_id);
-    let cookies = run_api_task(move || run_cloudfront_authenticate(&session, &db_pool)).await?;
+    let cloudfront_access =
+        run_api_task(move || run_cloudfront_authenticate(&session, &db_pool)).await?;
     let cookie_headers = vec![
-        ("CloudFront-Policy", cookies.encoded_policy),
-        ("CloudFront-Signature", cookies.signature),
-        ("CloudFront-Key-Pair-Id", cookies.key_pair_id),
+        ("CloudFront-Policy", cloudfront_access.encoded_policy),
+        ("CloudFront-Signature", cloudfront_access.signature),
+        ("CloudFront-Key-Pair-Id", cloudfront_access.key_pair_id),
     ];
 
     let mut response_builder = Response::builder();
     for header in cookie_headers {
         let value = HeaderValue::from_str(&format!(
-            // "{}={}; Domain={}; Path={}; Secure; HttpOnly",
-            // header.0, header.1, *UPLOADS_DOMAIN_NAME, cookies.path
-            "{}={}; Domain={}; SameSite=None",
-            header.0, header.1, *UPLOADS_DOMAIN_NAME
+            "{}={}; Domain={}; Path={}; Secure; HttpOnly",
+            header.0, header.1, *UPLOADS_DOMAIN_NAME, cloudfront_access.path
         ))
         .map_err(|_| ApiError::InternalError("Could not create CloudFront cookie".to_string()))?;
         response_builder = response_builder.header("Set-Cookie", value);
@@ -123,7 +122,7 @@ pub async fn cloudfront_authenticate(
     Ok(response_builder
         .body(
             serde_json::to_string(&CloudfrontAuthenticationResponse {
-                expires_at: cookies.session_expires_at,
+                expires_at: cloudfront_access.session_expires_at,
             })
             .map_err(|_| {
                 ApiError::InternalError(

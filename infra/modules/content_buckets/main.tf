@@ -25,7 +25,18 @@ resource "aws_s3_bucket" "user_uploads" {
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }
+
+  logging {
+    target_bucket = aws_s3_bucket.user_uploads_access_logs.id
+    target_prefix = "user-uploads-bucket/"
+  }
 }
+
+resource "aws_s3_bucket" "user_uploads_access_logs" {
+  bucket = "${var.project_slug}-${var.deploy_name}-user-uploads-access-logs-${random_string.content_bucket_hash.result}"
+  acl    = "log-delivery-write"
+}
+
 
 // TODO: split IAM role for worker and app hosts (worker needs Get+Put, app only needs Put)
 resource "aws_iam_role_policy" "app_host_allow_content_upload" {
@@ -111,12 +122,11 @@ resource "aws_cloudfront_distribution" "user_uploads" {
     minimum_protocol_version = "TLSv1.2_2019"
   }
 
-  // TODO: set up loggging to S3
-  //  logging_config {
-  //    include_cookies = false
-  //    bucket          = "mylogs.s3.amazonaws.com"
-  //    prefix          = "myprefix"
-  //  }
+  logging_config {
+    include_cookies = true
+    bucket          = aws_s3_bucket.user_uploads_access_logs.bucket_domain_name
+    prefix          = "user-uploads-cloudfront/"
+  }
 
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]

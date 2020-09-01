@@ -54,15 +54,14 @@ fn load_private_key(private_key: &str) -> RSAPrivateKey {
 }
 
 fn sign_policy(policy: &str, private_key: &str) -> String {
-    let encoded_policy = encode_policy(policy);
-    let digest = Sha1::digest(encoded_policy.as_bytes()).to_vec();
+    let digest = Sha1::digest(policy.as_bytes()).to_vec();
     let signature = load_private_key(private_key)
         .sign(PaddingScheme::new_pkcs1v15_sign(Some(Hash::SHA1)), &digest)
         .unwrap();
     swap_unsupported_characters(base64::encode(signature))
 }
 
-pub struct CloudFrontAccessCookies {
+pub struct CloudFrontAccessData {
     pub session_expires_at: DateTime<Utc>,
     pub encoded_policy: String,
     pub signature: String,
@@ -70,11 +69,11 @@ pub struct CloudFrontAccessCookies {
     pub path: String,
 }
 
-pub fn generate_cloudfront_access_cookies(path: &str, resource: &str) -> CloudFrontAccessCookies {
+pub fn generate_cloudfront_access_data(path: &str, resource: &str) -> CloudFrontAccessData {
     let policy = create_policy(resource, cookie_expires_at_epoch_time());
     let encoded_policy = encode_policy(&policy);
     let signature = sign_policy(&policy, &*CLOUDFRONT_PRIVATE_KEY);
-    CloudFrontAccessCookies {
+    CloudFrontAccessData {
         encoded_policy,
         key_pair_id: (*CLOUDFRONT_KEYPAIR_ID).to_string(),
         path: path.to_string(),
