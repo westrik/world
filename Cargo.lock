@@ -409,7 +409,7 @@ dependencies = [
  "cookie",
  "failure",
  "idna 0.1.5",
- "log 0.4.8",
+ "log 0.4.11",
  "publicsuffix",
  "serde",
  "serde_json",
@@ -717,7 +717,7 @@ checksum = "aafcde04e90a5226a6443b7aabdb016ba2f8307c847d524724bd9b346dd1a2d3"
 dependencies = [
  "atty",
  "humantime",
- "log 0.4.8",
+ "log 0.4.11",
  "regex",
  "termcolor",
 ]
@@ -730,7 +730,7 @@ checksum = "44533bbbb3bb3c1fa17d9f2e4e38bbbaf8396ba82193c4cb1b6445d711445d36"
 dependencies = [
  "atty",
  "humantime",
- "log 0.4.8",
+ "log 0.4.11",
  "regex",
  "termcolor",
 ]
@@ -989,7 +989,7 @@ checksum = "add72f17bb81521258fcc8a7a3245b1e184e916bfbe34f0ea89558f440df5c68"
 dependencies = [
  "cc",
  "libc",
- "log 0.4.8",
+ "log 0.4.11",
  "rustc_version",
  "winapi 0.3.9",
 ]
@@ -1060,7 +1060,7 @@ dependencies = [
  "futures 0.1.29",
  "http 0.1.21",
  "indexmap",
- "log 0.4.8",
+ "log 0.4.11",
  "slab",
  "string",
  "tokio-io",
@@ -1079,7 +1079,7 @@ dependencies = [
  "futures-util",
  "http 0.2.1",
  "indexmap",
- "log 0.4.8",
+ "log 0.4.11",
  "slab",
  "tokio 0.2.21",
  "tokio-util",
@@ -1266,7 +1266,7 @@ dependencies = [
  "httparse",
  "iovec",
  "itoa",
- "log 0.4.8",
+ "log 0.4.11",
  "net2",
  "rustc_version",
  "time 0.1.43",
@@ -1296,7 +1296,7 @@ dependencies = [
  "http-body 0.3.1",
  "httparse",
  "itoa",
- "log 0.4.8",
+ "log 0.4.11",
  "pin-project",
  "socket2",
  "time 0.1.43",
@@ -1550,14 +1550,14 @@ version = "0.3.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e19e8d5c34a3e0e2223db8e060f9e8264aeeb5c5fc64a4ee9965c062211c024b"
 dependencies = [
- "log 0.4.8",
+ "log 0.4.11",
 ]
 
 [[package]]
 name = "log"
-version = "0.4.8"
+version = "0.4.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "14b6052be84e6b71ab17edffc2eeabf5c2c3ae1fdb464aae35ac50c67a44e1f7"
+checksum = "4fabed175da42fed1fa0746b0ea71f412aa9d35e76e95e59b192c64b9dc2bf8b"
 dependencies = [
  "cfg-if",
 ]
@@ -1726,7 +1726,7 @@ dependencies = [
  "iovec",
  "kernel32-sys",
  "libc",
- "log 0.4.8",
+ "log 0.4.11",
  "miow 0.2.1",
  "net2",
  "slab",
@@ -1739,7 +1739,7 @@ version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0840c1c50fd55e521b247f949c241c9997709f23bd7f023b9762cd561e935656"
 dependencies = [
- "log 0.4.8",
+ "log 0.4.11",
  "mio",
  "miow 0.3.5",
  "winapi 0.3.9",
@@ -1786,7 +1786,7 @@ checksum = "136eed74cadb9edd2651ffba732b19a450316b680e4f48d6c79e905799e19d01"
 dependencies = [
  "buf_redux",
  "httparse",
- "log 0.4.8",
+ "log 0.4.11",
  "mime 0.2.6",
  "mime_guess 1.8.8",
  "quick-error",
@@ -1804,7 +1804,7 @@ checksum = "2b0d88c06fe90d5ee94048ba40409ef1d9315d86f6f38c2efdaad4fb50c58b2d"
 dependencies = [
  "lazy_static 1.4.0",
  "libc",
- "log 0.4.8",
+ "log 0.4.11",
  "openssl 0.10.30",
  "openssl-probe",
  "openssl-sys",
@@ -2207,7 +2207,7 @@ checksum = "115dde90ef51af573580c035857badbece2aa5cde3de1dfb3c932969ca92a6c5"
 dependencies = [
  "bytes 0.4.12",
  "fallible-iterator",
- "log 0.4.8",
+ "log 0.4.11",
  "openssl 0.9.24",
  "postgres-protocol",
  "postgres-shared",
@@ -2269,7 +2269,7 @@ checksum = "717ee476b1690853d222af4634056d830b5197ffd747726a9a1eee6da9f49074"
 dependencies = [
  "chrono",
  "env_logger 0.6.2",
- "log 0.4.8",
+ "log 0.4.11",
 ]
 
 [[package]]
@@ -2279,7 +2279,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "926d36b9553851b8b0005f1275891b392ee4d2d833852c417ed025477350fb9d"
 dependencies = [
  "env_logger 0.7.1",
- "log 0.4.8",
+ "log 0.4.11",
 ]
 
 [[package]]
@@ -2399,7 +2399,7 @@ version = "0.8.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "545c5bc2b880973c9c10e4067418407a0ccaa3091781d1671d46eb35107cb26f"
 dependencies = [
- "log 0.4.8",
+ "log 0.4.11",
  "parking_lot 0.11.0",
  "scheduled-thread-pool",
 ]
@@ -2677,7 +2677,7 @@ dependencies = [
  "http 0.1.21",
  "hyper 0.12.35",
  "hyper-tls 0.3.2",
- "log 0.4.8",
+ "log 0.4.11",
  "mime 0.3.16",
  "mime_guess 2.0.3",
  "native-tls",
@@ -2732,7 +2732,7 @@ dependencies = [
  "hyper 0.13.6",
  "hyper-tls 0.4.3",
  "lazy_static 1.4.0",
- "log 0.4.8",
+ "log 0.4.11",
  "md5 0.7.0",
  "percent-encoding 2.1.0",
  "pin-project",
@@ -2806,7 +2806,7 @@ dependencies = [
  "hmac 0.8.1",
  "http 0.2.1",
  "hyper 0.13.6",
- "log 0.4.8",
+ "log 0.4.11",
  "md5 0.7.0",
  "percent-encoding 2.1.0",
  "pin-project",
@@ -3598,7 +3598,7 @@ checksum = "57fc868aae093479e3131e3d165c93b1c7474109d13c90ec0dda2a1bbfff0674"
 dependencies = [
  "bytes 0.4.12",
  "futures 0.1.29",
- "log 0.4.8",
+ "log 0.4.11",
 ]
 
 [[package]]
@@ -3621,7 +3621,7 @@ dependencies = [
  "crossbeam-utils",
  "futures 0.1.29",
  "lazy_static 1.4.0",
- "log 0.4.8",
+ "log 0.4.11",
  "mio",
  "num_cpus",
  "parking_lot 0.9.0",
@@ -3666,7 +3666,7 @@ dependencies = [
  "crossbeam-utils",
  "futures 0.1.29",
  "lazy_static 1.4.0",
- "log 0.4.8",
+ "log 0.4.11",
  "num_cpus",
  "slab",
  "tokio-executor",
@@ -3701,7 +3701,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b8b8fe88007ebc363512449868d7da4389c9400072a3f666f212c7280082882a"
 dependencies = [
  "futures 0.3.5",
- "log 0.4.8",
+ "log 0.4.11",
  "pin-project",
  "tokio 0.2.21",
  "tungstenite",
@@ -3716,7 +3716,7 @@ dependencies = [
  "bytes 0.5.5",
  "futures-core",
  "futures-sink",
- "log 0.4.8",
+ "log 0.4.11",
  "pin-project-lite",
  "tokio 0.2.21",
 ]
@@ -3763,7 +3763,7 @@ dependencies = [
  "http 0.2.1",
  "httparse",
  "input_buffer",
- "log 0.4.8",
+ "log 0.4.11",
  "rand 0.7.3",
  "sha-1 0.8.2",
  "url 2.1.1",
@@ -3930,7 +3930,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b6395efa4784b027708f7451087e647ec73cc74f5d9bc2e418404248d679a230"
 dependencies = [
  "futures 0.1.29",
- "log 0.4.8",
+ "log 0.4.11",
  "try-lock",
 ]
 
@@ -3940,7 +3940,7 @@ version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1ce8a968cb1cd110d136ff8b819a556d6fb6d919363c61534f6860c7eb172ba0"
 dependencies = [
- "log 0.4.8",
+ "log 0.4.11",
  "try-lock",
 ]
 
@@ -3955,7 +3955,7 @@ dependencies = [
  "headers 0.3.2",
  "http 0.2.1",
  "hyper 0.13.6",
- "log 0.4.8",
+ "log 0.4.11",
  "mime 0.3.16",
  "mime_guess 2.0.3",
  "multipart",
@@ -3994,7 +3994,7 @@ checksum = "3e53963b583d18a5aa3aaae4b4c1cb535218246131ba22a71f05b518098571df"
 dependencies = [
  "bumpalo",
  "lazy_static 1.4.0",
- "log 0.4.8",
+ "log 0.4.11",
  "proc-macro2",
  "quote",
  "syn",
@@ -4099,7 +4099,7 @@ dependencies = [
  "diesel",
  "diesel_migrations",
  "dotenv 0.14.1",
- "log 0.4.8",
+ "log 0.4.11",
  "pretty_env_logger 0.3.1",
  "tokio 0.2.21",
  "warp",
@@ -4113,7 +4113,7 @@ dependencies = [
  "dotenv 0.14.1",
  "flame",
  "flamescope",
- "log 0.4.8",
+ "log 0.4.11",
  "pretty_env_logger 0.3.1",
  "tectonic",
  "tokio 0.2.21",
@@ -4135,7 +4135,7 @@ dependencies = [
  "flamescope",
  "heck",
  "lazy_static 1.4.0",
- "log 0.4.8",
+ "log 0.4.11",
  "pretty_env_logger 0.4.0",
  "pulldown-cmark",
  "rand 0.7.3",
@@ -4183,7 +4183,7 @@ dependencies = [
  "fallible-iterator",
  "lazy_static 1.4.0",
  "liquid",
- "log 0.4.8",
+ "log 0.4.11",
  "openssl 0.9.24",
  "postgres",
  "pretty_env_logger 0.3.1",
