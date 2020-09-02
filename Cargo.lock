@@ -1081,7 +1081,7 @@ dependencies = [
  "indexmap",
  "log 0.4.8",
  "slab",
- "tokio 0.2.21",
+ "tokio 0.2.22",
  "tokio-util",
 ]
 
@@ -1300,7 +1300,7 @@ dependencies = [
  "pin-project",
  "socket2",
  "time 0.1.43",
- "tokio 0.2.21",
+ "tokio 0.2.22",
  "tower-service",
  "want 0.3.0",
 ]
@@ -1327,7 +1327,7 @@ dependencies = [
  "bytes 0.5.5",
  "hyper 0.13.6",
  "native-tls",
- "tokio 0.2.21",
+ "tokio 0.2.22",
  "tokio-tls",
 ]
 
@@ -2741,7 +2741,7 @@ dependencies = [
  "rustc_version",
  "serde",
  "serde_json",
- "tokio 0.2.21",
+ "tokio 0.2.22",
  "xml-rs",
 ]
 
@@ -2761,7 +2761,7 @@ dependencies = [
  "serde",
  "serde_json",
  "shlex",
- "tokio 0.2.21",
+ "tokio 0.2.22",
  "zeroize",
 ]
 
@@ -2815,7 +2815,7 @@ dependencies = [
  "serde",
  "sha2 0.9.1",
  "time 0.2.16",
- "tokio 0.2.21",
+ "tokio 0.2.22",
 ]
 
 [[package]]
@@ -3537,9 +3537,9 @@ dependencies = [
 
 [[package]]
 name = "tokio"
-version = "0.2.21"
+version = "0.2.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d099fa27b9702bed751524694adbe393e18b36b204da91eb1cbbbbb4a5ee2d58"
+checksum = "5d34ca54d84bf2b5b4d7d31e901a8464f7b60ac145a284fba25ceb801f2ddccd"
 dependencies = [
  "bytes 0.5.5",
  "fnv",
@@ -3691,7 +3691,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9a70f4fcd7b3b24fb194f837560168208f669ca8cb70d0c4b862944452396343"
 dependencies = [
  "native-tls",
- "tokio 0.2.21",
+ "tokio 0.2.22",
 ]
 
 [[package]]
@@ -3703,7 +3703,7 @@ dependencies = [
  "futures 0.3.5",
  "log 0.4.8",
  "pin-project",
- "tokio 0.2.21",
+ "tokio 0.2.22",
  "tungstenite",
 ]
 
@@ -3718,7 +3718,7 @@ dependencies = [
  "futures-sink",
  "log 0.4.8",
  "pin-project-lite",
- "tokio 0.2.21",
+ "tokio 0.2.22",
 ]
 
 [[package]]
@@ -3964,7 +3964,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_urlencoded 0.6.1",
- "tokio 0.2.21",
+ "tokio 0.2.22",
  "tokio-tungstenite",
  "tower-service",
  "urlencoding",
@@ -4101,7 +4101,7 @@ dependencies = [
  "dotenv 0.14.1",
  "log 0.4.8",
  "pretty_env_logger 0.3.1",
- "tokio 0.2.21",
+ "tokio 0.2.22",
  "warp",
  "world_core",
 ]
@@ -4116,7 +4116,7 @@ dependencies = [
  "log 0.4.8",
  "pretty_env_logger 0.3.1",
  "tectonic",
- "tokio 0.2.21",
+ "tokio 0.2.22",
  "world_core",
 ]
 
@@ -4149,7 +4149,7 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "sha-1 0.9.1",
- "tokio 0.2.21",
+ "tokio 0.2.22",
  "warp",
 ]
 
@@ -4194,7 +4194,7 @@ dependencies = [
  "serde",
  "serde_derive",
  "serde_json",
- "tokio 0.2.21",
+ "tokio 0.2.22",
  "warp",
  "world_core",
 ]
