@@ -47,7 +47,7 @@
     "sass": "^1.24",
     "sass-loader": "^9.0.3",
     "sinon": "^9.0",
-    "stylelint": "^13.0.0",
+    "stylelint": "^13.7.0",
     "stylelint-config-standard": "^20.0",
     "ts-loader": "^8.0.2",
     "ts-node": "^8.6",
