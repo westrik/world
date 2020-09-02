@@ -42,6 +42,15 @@ pub fn generate_resource_identifier(resource_type: ResourceType) -> String {
     format!("{}_{}", resource_type.to_string(), token)
 }
 
+pub fn split_resource_identifier(ident: &str) -> String {
+    ident
+        .split('_')
+        .collect::<Vec<&str>>()
+        .get(1)
+        .unwrap()
+        .to_string()
+}
+
 #[cfg(test)]
 pub mod resource_identifiers {
     use super::*;
@@ -49,7 +58,7 @@ pub mod resource_identifiers {
     use regex::Regex;
 
     #[test]
-    fn id_generation() {
+    fn test_id_generation() {
         let user_id = generate_resource_identifier(User);
         assert!(Regex::new(r"^user_[A-Za-z0-9]{8}$")
             .unwrap()
@@ -92,5 +101,11 @@ pub mod resource_identifiers {
         assert!(Regex::new(r"^job_[A-Za-z0-9]{8}$")
             .unwrap()
             .is_match(&job_id));
+    }
+
+    #[test]
+    fn test_split_resource_identifier() {
+        let random_chunk = split_resource_identifier("test_abcd1234");
+        assert_eq!(random_chunk, "abcd1234");
     }
 }

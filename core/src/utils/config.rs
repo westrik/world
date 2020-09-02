@@ -20,3 +20,7 @@ config_flag!(PASSWORD_HASH_SALT);
 config_flag!(ROOT_DOMAIN_NAME);
 config_flag!(SENDGRID_API_KEY);
 config_flag!(SERVICE_PROXY_LAMBDA_ARN);
+
+lazy_static! {
+    pub static ref MEDIA_DOMAIN_NAME: String = format!("media.{}", *ROOT_DOMAIN_NAME);
+}

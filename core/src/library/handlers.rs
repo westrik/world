@@ -12,9 +12,11 @@ use crate::library::models::library_item::{
 };
 use crate::library::models::library_item_version::LibraryItemVersion;
 use crate::library::models::library_item_version_type::LibraryItemVersionType;
-use crate::resource_identifier::{generate_resource_identifier, ResourceType};
+use crate::resource_identifier::{
+    generate_resource_identifier, split_resource_identifier, ResourceType,
+};
 use crate::utils::api_task::run_api_task;
-use crate::utils::config::{CONTENT_BUCKET_NAME, ROOT_DOMAIN_NAME};
+use crate::utils::config::{CONTENT_BUCKET_NAME, MEDIA_DOMAIN_NAME};
 use crate::utils::list_options::ListOptions;
 use crate::utils::mnemonic::{generate_mnemonic, DEFAULT_MNEMONIC_LENGTH};
 
@@ -118,7 +120,13 @@ async fn run_bulk_create_library_items(
         for (file_size, file_type) in spec.file_specs.iter() {
             let name = generate_mnemonic(DEFAULT_MNEMONIC_LENGTH);
             let api_id = generate_resource_identifier(ResourceType::LibraryItem);
-            let file_name = format!("{}/{}-{}.{}", user.api_id, api_id, name, file_type);
+            let file_name = format!(
+                "{}/{}-{}.{}",
+                split_resource_identifier(&user.api_id),
+                split_resource_identifier(&api_id),
+                name,
+                file_type
+            );
             let presigned_upload_url = generate_presigned_upload_url(
                 (*CONTENT_BUCKET_NAME).to_string(),
                 file_name.to_string(),
@@ -229,7 +237,7 @@ fn run_create_library_item_version(
                 .to_string(),
         )),
     }?;
-    let library_item_version_url = format!("https://uploads.{}/{}", *ROOT_DOMAIN_NAME, &file_name);
+    let library_item_version_url = format!("https://{}/{}", *MEDIA_DOMAIN_NAME, &file_name);
     let library_item_version = LibraryItemVersion::create(
         conn,
         session.user_id,
