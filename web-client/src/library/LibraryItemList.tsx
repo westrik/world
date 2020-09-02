@@ -8,18 +8,41 @@ import bulkCreateLibraryItems from '~library/bulkCreateLibraryItems';
 import { LibraryItem } from '~models/LibraryItem';
 import listLibraryItems from '~library/listLibraryItems';
 import LoadingSpinner from '~components/LoadingSpinner';
+import { ApiResponse, request, RequestMethod } from '~utils/network';
 
 const ALLOWED_FILE_TYPES = [FileType.GIF, FileType.JPEG, FileType.PDF, FileType.PNG];
 
 // TODO: POST /authenticate:cloudfront to get auth cookies
 // TODO: query for library items
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface CfAuthRequest {}
+interface CfAuthResponse extends ApiResponse {
+    expiresAt: string;
+}
+
 function LibraryItemList(): h.JSX.Element {
     const [items, setItems] = useState<Array<LibraryItem> | null>(null);
+    const [authed, setAuthed] = useState(false);
     const authContext = useContext(Auth);
+
+    async function cloudfrontAuthenticate(): Promise<void> {
+        const response = await request<CfAuthRequest, CfAuthResponse>(
+            RequestMethod.POST,
+            '/authenticate:cloudfront',
+            authContext,
+        );
+        if (response?.expiresAt) {
+            console.log(`cloudfront cookies expire at: ${response.expiresAt}`);
+            setAuthed(true);
+        }
+    }
 
     // TODO: refactor into custom hook
     useEffect(() => {
+        if (!authed) {
+            cloudfrontAuthenticate();
+        }
         if (!items) {
             listLibraryItems(authContext, (libraryItems) => {
                 if (libraryItems) {
