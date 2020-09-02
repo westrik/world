@@ -22,7 +22,7 @@
     "@percy/storybook": "^3.3.0",
     "@storybook/preact": "^5.3.17",
     "@types/chai": "^4.2.7",
-    "@types/codemirror": "^0.0.96",
+    "@types/codemirror": "^0.0.97",
     "@types/enzyme": "^3.10.5",
     "@types/mocha": "^5.2.7",
     "@types/node": "^13.1.2",
