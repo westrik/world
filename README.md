@@ -79,3 +79,9 @@ diesel migration redo
 
 - `integration_tests::db::destroy_test_db()` - drop the new table
 - `core::resource_identifier::ResourceType` (iff an API ID is needed)
+
+
+## Deployment
+
+- New releases are built by a GitHub Actions worker and deployed to S3 (see `.github/workflows/release_s3.yml`).
+- In AWS: CodePipeline picks up the S3 event, deploys to EC2 using CodeDeploy, then updates the S3 bucket backing CloudFront.
