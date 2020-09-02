@@ -49,7 +49,7 @@
     "sinon": "^9.0",
     "stylelint": "^13.0.0",
     "stylelint-config-standard": "^20.0",
-    "ts-loader": "^8.0.2",
+    "ts-loader": "^8.0.3",
     "ts-node": "^8.6",
     "tsconfig-paths": "^3.9.0",
     "tsconfig-paths-webpack-plugin": "^3.3.0",
