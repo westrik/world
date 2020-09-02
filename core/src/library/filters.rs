@@ -24,9 +24,9 @@ pub fn library_items_list(
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("library-item")
         .and(warp::get())
-        .and(warp::query::<ListOptions>())
         .and(with_session(db_pool.clone()))
         .and(with_db(db_pool))
+        .and(warp::query::<ListOptions>())
         .and_then(handlers::list_library_items)
 }
 

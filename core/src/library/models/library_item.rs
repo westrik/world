@@ -4,11 +4,15 @@ use diesel::prelude::*;
 
 use crate::auth::models::user::User;
 use crate::errors::ApiError;
-use crate::schema::{library_items, library_items::dsl::library_items as all_library_items};
+use crate::schema::{
+    library_item_versions, library_items, library_items::dsl::library_items as all_library_items,
+};
+use crate::utils::list_options::ListOptions;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(User)]
-pub struct LibraryItem {
+#[table_name = "library_items"]
+pub struct LibraryItemSummary {
     #[serde(skip)]
     pub id: i32,
     #[serde(rename = "id")]
@@ -28,6 +32,23 @@ pub struct LibraryItem {
     pub uploaded_file_name: Option<String>,
     #[serde(rename = "uploadedFileSizeBytes")]
     pub uploaded_file_size_bytes: Option<i64>,
+}
+
+#[derive(Queryable, Serialize, Debug)]
+pub struct LibraryItem {
+    #[serde(skip)]
+    pub id: i32,
+    #[serde(rename = "id")]
+    pub api_id: String,
+    #[serde(rename = "versionId")]
+    pub version_api_id: Option<String>,
+    #[serde(rename = "createdAt")]
+    pub created_at: DateTime<Utc>,
+    #[serde(rename = "updatedAt")]
+    pub updated_at: DateTime<Utc>,
+    pub name: String,
+    #[serde(rename = "assetUrl")]
+    pub asset_url: Option<String>,
 }
 
 #[derive(Insertable, Debug)]
@@ -54,7 +75,7 @@ impl LibraryItemUpdateSpec {
         conn: &PgConnection,
         api_id: String,
         user_id: i32,
-    ) -> Result<LibraryItem, ApiError> {
+    ) -> Result<LibraryItemSummary, ApiError> {
         info!("updating library_item {} with {:?}", api_id, self);
         Ok(diesel::update(
             all_library_items
@@ -62,17 +83,73 @@ impl LibraryItemUpdateSpec {
                 .filter(library_items::user_id.eq(user_id)),
         )
         .set(self)
-        .get_result::<LibraryItem>(conn)
+        .get_result::<LibraryItemSummary>(conn)
         .map_err(ApiError::DatabaseError)?)
     }
 }
 
-impl LibraryItem {
-    pub fn find_all(conn: &PgConnection, user_id: i32) -> Result<Vec<LibraryItem>, ApiError> {
+impl LibraryItemSummary {
+    pub fn find(
+        conn: &PgConnection,
+        user_id: i32,
+        api_id: String,
+    ) -> Result<LibraryItemSummary, ApiError> {
         Ok(all_library_items
+            .filter(library_items::api_id.eq(&api_id))
             .filter(library_items::user_id.eq(user_id))
-            .load(conn)
+            .first::<LibraryItemSummary>(conn)
             .map_err(ApiError::DatabaseError)?)
+    }
+}
+
+type DbLibraryItem = (
+    i32,
+    String,
+    String,
+    DateTime<Utc>,
+    DateTime<Utc>,
+    String,
+    Option<String>,
+);
+
+impl LibraryItem {
+    pub fn list(
+        conn: &PgConnection,
+        user_id: i32,
+        _options: ListOptions,
+    ) -> Result<Vec<LibraryItem>, ApiError> {
+        // TODO: refactor this
+        let library_items: Vec<DbLibraryItem> = library_item_versions::table
+            .inner_join(library_items::table)
+            .distinct_on(library_items::id)
+            .select((
+                library_items::id,
+                library_items::api_id,
+                library_item_versions::api_id,
+                library_items::created_at,
+                library_items::updated_at,
+                library_items::name,
+                library_item_versions::asset_url,
+            ))
+            .filter(library_items::user_id.eq(user_id))
+            .order((library_items::id.desc(), library_item_versions::id.desc()))
+            .load::<DbLibraryItem>(conn)
+            .map_err(|e| {
+                println!("{:#?}", e);
+                ApiError::DatabaseError(e)
+            })?;
+        Ok(library_items
+            .into_iter()
+            .map(|item| LibraryItem {
+                id: item.0,
+                api_id: item.1,
+                version_api_id: Some(item.2),
+                created_at: item.3,
+                updated_at: item.4,
+                name: item.5,
+                asset_url: item.6,
+            })
+            .collect())
     }
 
     pub fn find(
@@ -80,17 +157,39 @@ impl LibraryItem {
         user_id: i32,
         api_id: String,
     ) -> Result<LibraryItem, ApiError> {
-        Ok(all_library_items
+        // TODO: refactor this
+        let item: DbLibraryItem = library_item_versions::table
+            .inner_join(library_items::table)
+            .select((
+                library_items::id,
+                library_items::api_id,
+                library_item_versions::api_id,
+                library_items::created_at,
+                library_items::updated_at,
+                library_items::name,
+                library_item_versions::asset_url,
+            ))
             .filter(library_items::user_id.eq(user_id))
             .filter(library_items::api_id.eq(api_id))
-            .first::<LibraryItem>(conn)
-            .map_err(ApiError::DatabaseError)?)
+            .order(library_item_versions::id.desc())
+            .limit(1)
+            .first::<DbLibraryItem>(conn)
+            .map_err(ApiError::DatabaseError)?;
+        Ok(LibraryItem {
+            id: item.0,
+            api_id: item.1,
+            version_api_id: Some(item.2),
+            created_at: item.3,
+            updated_at: item.4,
+            name: item.5,
+            asset_url: item.6,
+        })
     }
 
     pub fn bulk_create(
         conn: &PgConnection,
         specs: Vec<LibraryItemCreateSpec>,
-    ) -> Result<Vec<LibraryItem>, ApiError> {
+    ) -> Result<Vec<LibraryItemSummary>, ApiError> {
         Ok(insert_into(all_library_items)
             .values(specs)
             .get_results(conn)
@@ -102,7 +201,7 @@ impl LibraryItem {
         user_id: i32,
         api_id: String,
         name: Option<String>,
-    ) -> Result<LibraryItem, ApiError> {
+    ) -> Result<LibraryItemSummary, ApiError> {
         // TODO: handle generating new upload URL (if needed)
         LibraryItemUpdateSpec {
             updated_at: Utc::now(),

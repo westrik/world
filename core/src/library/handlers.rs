@@ -7,12 +7,14 @@ use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
 use crate::external_services::aws::s3::put_object_request::generate_presigned_upload_url;
 use crate::library::models::file::FileType;
-use crate::library::models::library_item::{LibraryItem, LibraryItemCreateSpec};
+use crate::library::models::library_item::{
+    LibraryItem, LibraryItemCreateSpec, LibraryItemSummary,
+};
 use crate::library::models::library_item_version::LibraryItemVersion;
 use crate::library::models::library_item_version_type::LibraryItemVersionType;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::utils::api_task::run_api_task;
-use crate::utils::config::CONTENT_BUCKET_NAME;
+use crate::utils::config::{CONTENT_BUCKET_NAME, ROOT_DOMAIN_NAME};
 use crate::utils::list_options::ListOptions;
 use crate::utils::mnemonic::{generate_mnemonic, DEFAULT_MNEMONIC_LENGTH};
 
@@ -23,21 +25,27 @@ pub struct GetLibraryItemsResponse {
     library_items: Option<Vec<LibraryItem>>,
 }
 
-fn run_get_library_items(session: Session, pool: &DbPool) -> Result<Vec<LibraryItem>, ApiError> {
-    Ok(LibraryItem::find_all(
+fn run_list_library_items(
+    session: Session,
+    pool: &DbPool,
+    options: ListOptions,
+) -> Result<Vec<LibraryItem>, ApiError> {
+    Ok(LibraryItem::list(
         &get_conn(&pool).unwrap(),
         session.user_id,
+        options,
     )?)
 }
 
 pub async fn list_library_items(
-    opts: ListOptions,
     session: Session,
     db_pool: DbPool,
+    options: ListOptions,
 ) -> Result<impl warp::Reply, Rejection> {
     // TODO: include links to previews in response
-    debug!("list_library_items: opts={:?}", opts);
-    let library_items = run_api_task(move || run_get_library_items(session, &db_pool)).await?;
+    debug!("list_library_items: opts={:?}", &options);
+    let library_items =
+        run_api_task(move || run_list_library_items(session, &db_pool, options)).await?;
     Ok(warp::reply::with_status(
         warp::reply::json(&GetLibraryItemsResponse {
             error: None,
@@ -93,14 +101,14 @@ pub struct ApiLibraryItemBulkCreateSpec {
 pub struct BulkCreateLibraryItemsResponse {
     error: Option<String>,
     #[serde(rename = "libraryItems")]
-    library_items: Option<Vec<LibraryItem>>,
+    library_items: Option<Vec<LibraryItemSummary>>,
 }
 
 async fn run_bulk_create_library_items(
     spec: ApiLibraryItemBulkCreateSpec,
     session: Session,
     db_pool: &DbPool,
-) -> Result<Vec<LibraryItem>, ApiError> {
+) -> Result<Vec<LibraryItemSummary>, ApiError> {
     let conn = get_conn(db_pool).unwrap();
     let user = run_api_task(move || session.get_user(&conn)).await?;
     // TODO: limit number of files per request
@@ -113,7 +121,7 @@ async fn run_bulk_create_library_items(
             let file_name = format!("{}/{}-{}.{}", user.api_id, api_id, name, file_type);
             let presigned_upload_url = generate_presigned_upload_url(
                 (*CONTENT_BUCKET_NAME).to_string(),
-                file_name,
+                file_name.to_string(),
                 *file_size,
             )
             .await?;
@@ -122,7 +130,7 @@ async fn run_bulk_create_library_items(
                 user_id: user.id,
                 name: name.to_string(),
                 presigned_upload_url: Some(presigned_upload_url),
-                uploaded_file_name: None,
+                uploaded_file_name: Some(file_name.to_string()),
                 uploaded_file_size_bytes: Some(*file_size),
             });
         }
@@ -157,7 +165,7 @@ pub struct ApiLibraryItemUpdateSpec {
 pub struct UpdateLibraryItemResponse {
     error: Option<String>,
     #[serde(rename = "libraryItem")]
-    library_item: Option<LibraryItem>,
+    library_item: Option<LibraryItemSummary>,
     #[serde(rename = "uploadUrl")]
     upload_url: Option<String>,
 }
@@ -167,7 +175,7 @@ fn run_update_library_item(
     api_id: String,
     spec: ApiLibraryItemUpdateSpec,
     pool: &DbPool,
-) -> Result<LibraryItem, ApiError> {
+) -> Result<LibraryItemSummary, ApiError> {
     Ok(LibraryItem::update(
         &get_conn(&pool).unwrap(),
         session.user_id,
@@ -213,15 +221,21 @@ fn run_create_library_item_version(
     db_pool: &DbPool,
 ) -> Result<LibraryItemVersion, ApiError> {
     let conn = &get_conn(&db_pool).unwrap();
-    let library_item = LibraryItem::find(conn, session.user_id, spec.library_item_api_id)?;
-    // TODO: generate CloudFront URL for LibraryItemVersion (using library_item.{name,api_id})
-    // let library_item_version_url = format!("https://assets.westrik.world/{}-{}", library_item.name, library_item.api_id);
+    let library_item = LibraryItemSummary::find(conn, session.user_id, spec.library_item_api_id)?;
+    let file_name = match &library_item.uploaded_file_name {
+        Some(name) => Ok(name),
+        None => Err(ApiError::InvalidRequest(
+            "Can't create library item version for library item with no upload attempts"
+                .to_string(),
+        )),
+    }?;
+    let library_item_version_url = format!("https://uploads.{}/{}", *ROOT_DOMAIN_NAME, &file_name);
     let library_item_version = LibraryItemVersion::create(
         conn,
         session.user_id,
         library_item,
         LibraryItemVersionType::Original,
-        None, // Some(library_item_version_url),
+        Some(library_item_version_url),
     )?;
     // TODO: enqueue library item processing job for library_item_version.id
     //  - should load library_item and library_item_version, then get file metadata from S3
