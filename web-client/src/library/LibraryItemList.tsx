@@ -35,7 +35,6 @@ function LibraryItemList(): h.JSX.Element {
             'include',
         );
         if (response?.expiresAt) {
-            console.log(`cloudfront cookies expire at: ${response.expiresAt}`);
             setAuthed(true);
         }
     }
