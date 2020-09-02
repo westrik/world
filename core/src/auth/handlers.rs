@@ -4,7 +4,7 @@ use warp::http::{HeaderValue, Response, StatusCode};
 use warp::Rejection;
 
 use crate::auth::models::session::Session;
-use crate::auth::models::user::{ApiUserCreateSpec, User};
+use crate::auth::models::user::User;
 use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
 use crate::external_services::aws::cloudfront::generate_signed_cookie::{
@@ -15,13 +15,14 @@ use crate::jobs::job_type::JobType;
 use crate::utils::api_task::run_api_task;
 use crate::utils::config::ROOT_DOMAIN_NAME;
 
-#[derive(Debug, Deserialize)]
-pub struct SignInRequest {
+#[derive(Deserialize)]
+pub struct ApiUserCreateSpec {
     #[serde(rename = "emailAddress")]
-    email_address: String,
-    password: String,
+    pub email_address: String,
+    #[serde(rename = "fullName")]
+    pub full_name: Option<String>,
+    pub password: String,
 }
-
 #[derive(Serialize)]
 pub struct AuthenticationResponse {
     user: Option<User>,
@@ -29,13 +30,38 @@ pub struct AuthenticationResponse {
     error: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
-pub struct CloudfrontAuthenticationRequest {}
+fn run_sign_up(
+    create_spec: ApiUserCreateSpec,
+    pool: &DbPool,
+) -> Result<AuthenticationResponse, ApiError> {
+    let user = User::create(create_spec, &get_conn(&pool).unwrap())?;
+    Ok(AuthenticationResponse {
+        user: Some(user),
+        session: None, // TODO: create session upon sign-up
+        error: None,
+    })
+}
 
-#[derive(Serialize)]
-pub struct CloudfrontAuthenticationResponse {
-    #[serde(rename = "expiresAt")]
-    pub expires_at: DateTime<Utc>,
+pub async fn sign_up(
+    create_spec: ApiUserCreateSpec,
+    pool: DbPool,
+) -> Result<impl warp::Reply, Rejection> {
+    debug!(
+        "sign_up: email_address={}, full_name={:?}",
+        create_spec.email_address, create_spec.full_name
+    );
+    let response = run_api_task(move || run_sign_up(create_spec, &pool)).await?;
+    Ok(warp::reply::with_status(
+        warp::reply::json(&response),
+        StatusCode::OK,
+    ))
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SignInRequest {
+    #[serde(rename = "emailAddress")]
+    email_address: String,
+    password: String,
 }
 
 fn run_sign_in(creds: SignInRequest, pool: &DbPool) -> Result<AuthenticationResponse, ApiError> {
@@ -85,6 +111,15 @@ lazy_static! {
     static ref UPLOADS_DOMAIN_NAME: String = format!("uploads.{}", *ROOT_DOMAIN_NAME);
 }
 
+#[derive(Debug, Deserialize)]
+pub struct CloudfrontAuthenticationRequest {}
+
+#[derive(Serialize)]
+pub struct CloudfrontAuthenticationResponse {
+    #[serde(rename = "expiresAt")]
+    pub expires_at: DateTime<Utc>,
+}
+
 fn run_cloudfront_authenticate(
     session: &Session,
     pool: &DbPool,
@@ -130,31 +165,4 @@ pub async fn cloudfront_authenticate(
             })?,
         )
         .map_err(|_| ApiError::InternalError("Error creating response".to_string()))?)
-}
-
-fn run_sign_up(
-    create_spec: ApiUserCreateSpec,
-    pool: &DbPool,
-) -> Result<AuthenticationResponse, ApiError> {
-    let user = User::create(create_spec, &get_conn(&pool).unwrap())?;
-    Ok(AuthenticationResponse {
-        user: Some(user),
-        session: None, // TODO: create session upon sign-up
-        error: None,
-    })
-}
-
-pub async fn sign_up(
-    create_spec: ApiUserCreateSpec,
-    pool: DbPool,
-) -> Result<impl warp::Reply, Rejection> {
-    debug!(
-        "sign_up: email_address={}, full_name={:?}",
-        create_spec.email_address, create_spec.full_name
-    );
-    let response = run_api_task(move || run_sign_up(create_spec, &pool)).await?;
-    Ok(warp::reply::with_status(
-        warp::reply::json(&response),
-        StatusCode::OK,
-    ))
 }

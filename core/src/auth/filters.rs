@@ -1,8 +1,7 @@
 use warp::Filter;
 
 use crate::auth::handlers;
-use crate::auth::handlers::{CloudfrontAuthenticationRequest, SignInRequest};
-use crate::auth::models::user::ApiUserCreateSpec;
+use crate::auth::handlers::{ApiUserCreateSpec, CloudfrontAuthenticationRequest, SignInRequest};
 use crate::db::DbPool;
 use crate::routes::{json_body, with_db, with_session};
 

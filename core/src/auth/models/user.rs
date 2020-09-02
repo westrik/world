@@ -4,6 +4,7 @@ use diesel::prelude::*;
 use diesel::{PgConnection, QueryResult};
 use std::str;
 
+use crate::auth::handlers::ApiUserCreateSpec;
 use crate::errors::ApiError;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{users, users::dsl::users as all_users};
@@ -46,14 +47,6 @@ impl UserCreateSpec {
             .get_result(conn)
             .map_err(ApiError::DatabaseError)?)
     }
-}
-#[derive(Deserialize)]
-pub struct ApiUserCreateSpec {
-    #[serde(rename = "emailAddress")]
-    pub email_address: String,
-    #[serde(rename = "fullName")]
-    pub full_name: Option<String>,
-    pub password: String,
 }
 
 impl User {
