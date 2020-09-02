@@ -62,7 +62,8 @@ impl NoteCreateSpec {
 #[derive(AsChangeset, Debug)]
 #[table_name = "notes"]
 pub struct NoteUpdateSpec {
-    pub updated_at: DateTime<Utc>, // TODO: use trigger to set updated_at automatically
+    // TODO: use trigger to set updated_at automatically
+    pub updated_at: DateTime<Utc>,
     pub name: Option<String>,
 }
 impl NoteUpdateSpec {

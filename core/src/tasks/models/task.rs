@@ -49,6 +49,7 @@ impl TaskCreateSpec {
 #[derive(AsChangeset, Debug)]
 #[table_name = "tasks"]
 pub struct TaskUpdateSpec {
+    // TODO: use trigger to set updated_at automatically
     pub updated_at: DateTime<Utc>,
     pub completed_at: Option<Option<DateTime<Utc>>>,
     pub description: Option<String>,
