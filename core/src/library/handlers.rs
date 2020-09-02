@@ -1,4 +1,4 @@
-use std::{convert::Infallible, fmt};
+use std::convert::Infallible;
 use warp::http::StatusCode;
 use warp::Rejection;
 
@@ -6,6 +6,7 @@ use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
 use crate::external_services::aws::s3::put_object_request::generate_presigned_upload_url;
+use crate::library::models::file::FileType;
 use crate::library::models::library_item::{LibraryItem, LibraryItemCreateSpec};
 use crate::library::models::library_item_version::LibraryItemVersion;
 use crate::library::models::library_item_version_type::LibraryItemVersionType;
@@ -15,108 +16,11 @@ use crate::utils::config::CONTENT_BUCKET_NAME;
 use crate::utils::list_options::ListOptions;
 use crate::utils::mnemonic::{generate_mnemonic, DEFAULT_MNEMONIC_LENGTH};
 
-#[derive(Copy, Clone, Debug, Serialize, Deserialize)]
-pub enum FileType {
-    #[serde(rename = "application/epub+zip")]
-    EPUB,
-    #[serde(rename = "image/gif")]
-    GIF,
-    #[serde(rename = "image/jpeg")]
-    JPEG,
-    #[serde(rename = "audio/mpeg")]
-    MP3,
-    #[serde(rename = "video/mpeg")]
-    MPEG,
-    #[serde(rename = "application/pdf")]
-    PDF,
-    #[serde(rename = "image/png")]
-    PNG,
-    #[serde(rename = "image/svg+xml")]
-    SVG,
-    #[serde(rename = "image/tiff")]
-    TIFF,
-    #[serde(rename = "text/plain")]
-    TXT,
-    #[serde(rename = "audio/wav")]
-    WAV,
-    #[serde(rename = "image/webm")]
-    WEBM,
-    #[serde(rename = "image/webp")]
-    WEBP,
-}
-
-impl fmt::Display for FileType {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let type_str = match self {
-            FileType::EPUB => "epub",
-            FileType::GIF => "gif",
-            FileType::JPEG => "jpg",
-            FileType::MP3 => "mp3",
-            FileType::MPEG => "mp4",
-            FileType::PDF => "pdf",
-            FileType::PNG => "png",
-            FileType::SVG => "svg",
-            FileType::TIFF => "tiff",
-            FileType::TXT => "txt",
-            FileType::WAV => "wav",
-            FileType::WEBM => "webm",
-            FileType::WEBP => "webp",
-        };
-        write!(f, "{}", type_str)
-    }
-}
-
-#[derive(Debug, Deserialize)]
-pub struct ApiLibraryItemBulkCreateSpec {
-    #[serde(rename = "fileSpecs")]
-    pub file_specs: Vec<(i64, FileType)>,
-}
-#[derive(Debug, Deserialize)]
-pub struct ApiLibraryItemUpdateSpec {
-    pub name: Option<String>,
-}
-
 #[derive(Serialize)]
 pub struct GetLibraryItemsResponse {
     error: Option<String>,
     #[serde(rename = "libraryItems")]
     library_items: Option<Vec<LibraryItem>>,
-}
-
-#[derive(Serialize)]
-pub struct GetLibraryItemResponse {
-    error: Option<String>,
-    #[serde(rename = "libraryItem")]
-    library_item: Option<LibraryItem>,
-}
-
-#[derive(Serialize)]
-pub struct BulkCreateLibraryItemsResponse {
-    error: Option<String>,
-    #[serde(rename = "libraryItems")]
-    library_items: Option<Vec<LibraryItem>>,
-}
-
-#[derive(Serialize)]
-pub struct UpdateLibraryItemResponse {
-    error: Option<String>,
-    #[serde(rename = "libraryItem")]
-    library_item: Option<LibraryItem>,
-    #[serde(rename = "uploadUrl")]
-    upload_url: Option<String>,
-}
-
-#[derive(Serialize)]
-pub struct CreateLibraryItemVersionResponse {
-    error: Option<String>,
-    #[serde(rename = "libraryItemVersion")]
-    library_item_version: Option<LibraryItemVersion>,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct ApiLibraryItemVersionCreateSpec {
-    #[serde(rename = "libraryItemId")]
-    library_item_api_id: String,
 }
 
 fn run_get_library_items(session: Session, pool: &DbPool) -> Result<Vec<LibraryItem>, ApiError> {
@@ -140,6 +44,13 @@ pub async fn list_library_items(
         }),
         StatusCode::OK,
     ))
+}
+
+#[derive(Serialize)]
+pub struct GetLibraryItemResponse {
+    error: Option<String>,
+    #[serde(rename = "libraryItem")]
+    library_item: Option<LibraryItem>,
 }
 
 fn run_get_library_item(
@@ -169,6 +80,18 @@ pub async fn get_library_item(
         }),
         StatusCode::OK,
     ))
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ApiLibraryItemBulkCreateSpec {
+    #[serde(rename = "fileSpecs")]
+    pub file_specs: Vec<(i64, FileType)>,
+}
+#[derive(Serialize)]
+pub struct BulkCreateLibraryItemsResponse {
+    error: Option<String>,
+    #[serde(rename = "libraryItems")]
+    library_items: Option<Vec<LibraryItem>>,
 }
 
 async fn run_bulk_create_library_items(
@@ -224,6 +147,19 @@ pub async fn bulk_create_library_items(
     ))
 }
 
+#[derive(Debug, Deserialize)]
+pub struct ApiLibraryItemUpdateSpec {
+    pub name: Option<String>,
+}
+#[derive(Serialize)]
+pub struct UpdateLibraryItemResponse {
+    error: Option<String>,
+    #[serde(rename = "libraryItem")]
+    library_item: Option<LibraryItem>,
+    #[serde(rename = "uploadUrl")]
+    upload_url: Option<String>,
+}
+
 fn run_update_library_item(
     session: Session,
     api_id: String,
@@ -264,6 +200,18 @@ pub async fn delete_library_item(
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("delete_library_item: api_id={}", api_id);
     Ok(StatusCode::NO_CONTENT)
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ApiLibraryItemVersionCreateSpec {
+    #[serde(rename = "libraryItemId")]
+    library_item_api_id: String,
+}
+#[derive(Serialize)]
+pub struct CreateLibraryItemVersionResponse {
+    error: Option<String>,
+    #[serde(rename = "libraryItemVersion")]
+    library_item_version: Option<LibraryItemVersion>,
 }
 
 fn run_create_library_item_version(
