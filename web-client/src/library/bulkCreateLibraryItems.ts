@@ -45,7 +45,24 @@ async function createLibraryItem(authContext: AuthContext, item: ApiLibraryItem,
     }
 }
 
-export default async function bulkCreateLibraryItems(authContext: AuthContext, files: Array<File>): Promise<void> {
+enum UploadStatus {
+    COMPLETE,
+    UPLOADING,
+}
+
+interface UploadState {
+    status: UploadStatus;
+    completedFiles?: number;
+    totalFiles?: number;
+    completedBytes?: number;
+    totalBytes?: number;
+}
+
+export default async function bulkCreateLibraryItems(
+    authContext: AuthContext,
+    files: Array<File>,
+    onStatusChange: (status: UploadState) => void,
+): Promise<void> {
     const response = await request<BulkCreateLibraryItemsRequest, BulkCreateLibraryItemsResponse>(
         RequestMethod.POST,
         `/library-item:bulk-create`,
@@ -54,6 +71,7 @@ export default async function bulkCreateLibraryItems(authContext: AuthContext, f
             fileSpecs: files.map((file) => [file.size, file.type as FileType]),
         },
     );
+    onStatusChange({ status: UploadStatus.COMPLETE });
     // TODO: improve error-handling
     if (response) {
         const sortedLibraryItems = response.libraryItems.sort(

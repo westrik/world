@@ -35,6 +35,7 @@ pub async fn list_library_items(
     session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
+    // TODO: include links to previews in response
     debug!("list_library_items: opts={:?}", opts);
     let library_items = run_api_task(move || run_get_library_items(session, &db_pool)).await?;
     Ok(warp::reply::with_status(
@@ -70,6 +71,7 @@ pub async fn get_library_item(
     session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
+    // TODO: include link to preview + full asset in response
     debug!("get_library_item: api_id={:?}", api_id);
     let library_item =
         run_api_task(move || run_get_library_item(session, &db_pool, api_id)).await?;
@@ -193,15 +195,6 @@ pub async fn update_library_item(
     ))
 }
 
-pub async fn delete_library_item(
-    api_id: String,
-    _session: Session,
-    _db_pool: DbPool,
-) -> Result<impl warp::Reply, Infallible> {
-    debug!("delete_library_item: api_id={}", api_id);
-    Ok(StatusCode::NO_CONTENT)
-}
-
 #[derive(Debug, Deserialize)]
 pub struct ApiLibraryItemVersionCreateSpec {
     #[serde(rename = "libraryItemId")]
@@ -251,4 +244,13 @@ pub async fn create_library_item_version(
         }),
         StatusCode::OK,
     ))
+}
+
+pub async fn delete_library_item(
+    api_id: String,
+    _session: Session,
+    _db_pool: DbPool,
+) -> Result<impl warp::Reply, Infallible> {
+    debug!("delete_library_item: api_id={}", api_id);
+    Ok(StatusCode::NO_CONTENT)
 }
