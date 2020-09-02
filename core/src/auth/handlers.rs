@@ -122,12 +122,10 @@ fn run_cloudfront_authenticate(
     pool: &DbPool,
 ) -> Result<CloudFrontAccessData, ApiError> {
     let user = session.get_user(&get_conn(pool).unwrap())?;
-    let path = format!("/{}/", &user.api_id);
-    let resource = format!(
-        "https://{}/{}/*",
-        *MEDIA_DOMAIN_NAME,
-        split_resource_identifier(&user.api_id)
-    );
+    let split_user_api_id = split_resource_identifier(&user.api_id);
+
+    let path = format!("/{}/", split_user_api_id);
+    let resource = format!("https://{}/{}/*", *MEDIA_DOMAIN_NAME, split_user_api_id);
     Ok(generate_cloudfront_access_data(&path, &resource))
 }
 

@@ -31,6 +31,8 @@ function LibraryItemList(): h.JSX.Element {
             RequestMethod.POST,
             '/authenticate:cloudfront',
             authContext,
+            {},
+            'include',
         );
         if (response?.expiresAt) {
             console.log(`cloudfront cookies expire at: ${response.expiresAt}`);
