@@ -48,7 +48,17 @@ function LibraryItemList(): h.JSX.Element {
                 <ul>
                     {items.map((item, key) => (
                         <li key={key}>
-                            <strong>{item.name}</strong>
+                            {item.assetUrl ? (
+                                item.assetUrl.endsWith('png') ||
+                                item.assetUrl.endsWith('jpg') ||
+                                item.assetUrl.endsWith('gif') ? (
+                                    <img alt={item.name} src={item.assetUrl} />
+                                ) : (
+                                    <a href={item.assetUrl}>{item.name}</a>
+                                )
+                            ) : (
+                                <strong>{item.name}</strong>
+                            )}
                         </li>
                     ))}
                 </ul>

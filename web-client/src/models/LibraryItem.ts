@@ -19,8 +19,8 @@ export interface ApiLibraryItem extends ApiLibraryItemSummary {
     uploadedFileSizeBytes: number;
 }
 
-export interface LibraryItem extends ApiLibraryItemSummary {
-    // content?: Content;
+export interface LibraryItem extends ApiLibraryItem {
+    assetUrl?: string;
     tags?: Array<Tag>;
     resources?: Array<Resource>;
 }
