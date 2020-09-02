@@ -13,6 +13,7 @@ export default function NoteList(): h.JSX.Element {
     const [noteSummaries, setNotes] = useState<Array<Note> | null>(null);
     const authContext = useContext(Auth);
 
+    // TODO: refactor into custom hook
     useEffect(() => {
         if (!noteSummaries) {
             listNotes(authContext, (notes) => {

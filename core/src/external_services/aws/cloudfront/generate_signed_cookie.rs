@@ -8,12 +8,10 @@ use std::time::SystemTime;
 use crate::utils::config::{CLOUDFRONT_KEYPAIR_ID, CLOUDFRONT_PRIVATE_KEY};
 
 fn cookie_expires_at_epoch_time() -> u64 {
-    let current_epoch_time = match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
-        Ok(n) => n.as_secs(),
-        Err(_) => panic!("SystemTime before UNIX epoch!"),
-    };
-    // The cookie should expire one hour (3600 seconds) from now.
-    current_epoch_time + 3600
+    let since_epoch = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .expect("SystemTime before UNIX epoch!");
+    (since_epoch + Duration::days(14).to_std().unwrap()).as_secs()
 }
 
 fn create_policy(resource: &str, expires_at_epoch_time: u64) -> String {
@@ -159,5 +157,15 @@ UUqe4ujHCf1mJzDUv89to/wkOmSgonY3mjRingMnUJVWbJZf9XyGv165Rz4=
 "#;
         let expected_signature = "U3CAeQjhdpF3nyvbnpSTyHluPy-vvQTJn4t0PspoDY~eLuNe3QxtfgfrSKTEByifPgecNqVhY6WJlpebdJZtyGavZFTAh0F8NqL6l0OsGAxN8fnM6NMu8IST8tVTjVTv2Dt452WQ7rZit-~TAImaBKqK5ZxZ4yA8efjQbz3GoO~-YDW5AHhu50~X07bhvS0FGOQdHC6WSvwK9ZwSs3hpHtWsQPevO8KzW5BpzhJ~JY6Y9CG2FB34JqfaWx0loWN81bcmoGRr~DZWqd2055DRIA1obO8witjuPQjkSqtBu-0QdbF4O~x20qnRLuAgUyGFjkmaChECa1evbk69-2SMCMwbBn3dht-LkqLQaUDKyxC34LxEOoZbn4SzUD8g2Z6v9GUOHn9za-p16bqFCPlcMhWPx68eWuZ5AwL-0ddcOdzjEnTSSv3NQIvfCOXa5OC2psdh~QTO56EtydeQIDCdwABv1cLKOWYkHNeiij6p48lCTH6Bm02kuFfL8tKsjRoSmColT~RIAL~GH7C~jy2O0dVCPifJfza8zZSdew6aTvvPXyRAdsjfOACSfvB8oOjhVhKfK-afIwSgz6GG6nJD-wxDXjHu1KuHYgJ7y54YmrI-fqTO-IxuusgaU2gyxK1ZwCmarttS557278U-lgPyp32wY3mogV2PCFLFTo5kGSw_";
         assert_eq!(expected_signature, sign_policy(&policy, private_key));
+    }
+
+    #[test]
+    fn test_expires_at() {
+        let epoch_time = SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
+        let expires_at = cookie_expires_at_epoch_time();
+        assert_eq!(expires_at, epoch_time + 1_209_600); // seconds in two weeks
     }
 }

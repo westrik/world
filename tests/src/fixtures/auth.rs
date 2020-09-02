@@ -1,7 +1,8 @@
 use diesel::prelude::*;
 use diesel::PgConnection;
+use world_core::auth::handlers::ApiUserCreateSpec;
 use world_core::auth::models::session::Session;
-use world_core::auth::models::user::{ApiUserCreateSpec, User};
+use world_core::auth::models::user::User;
 use world_core::schema::{sessions, sessions::dsl::sessions as all_sessions};
 use world_core::schema::{users, users::dsl::users as all_users};
 

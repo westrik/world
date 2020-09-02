@@ -3,13 +3,13 @@ use diesel::prelude::*;
 
 use crate::auth::models::user::User;
 use crate::errors::ApiError;
-use crate::library::models::library_item::LibraryItem;
+use crate::library::models::library_item::LibraryItemSummary;
 use crate::library::models::library_item_version_type::LibraryItemVersionType;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::library_item_versions;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
-#[belongs_to(LibraryItem)]
+#[belongs_to(LibraryItemSummary, foreign_key = "library_item_id")]
 #[belongs_to(User)]
 pub struct LibraryItemVersion {
     #[serde(skip)]
@@ -56,17 +56,17 @@ impl LibraryItemVersion {
     pub fn create(
         conn: &PgConnection,
         user_id: i32,
-        library_item: LibraryItem,
+        library_item_summary: LibraryItemSummary,
         version_type: LibraryItemVersionType,
         asset_url: Option<String>,
     ) -> Result<LibraryItemVersion, ApiError> {
         LibraryItemVersionCreateSpec {
             api_id: generate_resource_identifier(ResourceType::LibraryItemVersion),
-            library_item_id: library_item.id,
+            library_item_id: library_item_summary.id,
             user_id,
             asset_url,
             version_type: version_type.to_string(),
-            asset_file_size_bytes: library_item.uploaded_file_size_bytes,
+            asset_file_size_bytes: library_item_summary.uploaded_file_size_bytes,
         }
         .insert(conn)
     }

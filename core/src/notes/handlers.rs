@@ -42,17 +42,21 @@ pub struct UpdateNoteResponse {
     note: Option<Note>,
 }
 
-fn run_get_notes(session: Session, pool: &DbPool) -> Result<Vec<NoteSummary>, ApiError> {
-    Ok(Note::find_all(&get_conn(&pool).unwrap(), session)?)
+fn run_get_notes(
+    session: Session,
+    pool: &DbPool,
+    options: ListOptions,
+) -> Result<Vec<NoteSummary>, ApiError> {
+    Ok(Note::list(&get_conn(&pool).unwrap(), session, options)?)
 }
 
 pub async fn list_notes(
-    opts: ListOptions,
+    options: ListOptions,
     session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
-    debug!("list_notes: opts={:?}", opts);
-    let notes = run_api_task(move || run_get_notes(session, &db_pool)).await?;
+    debug!("list_notes: opts={:?}", &options);
+    let notes = run_api_task(move || run_get_notes(session, &db_pool, options)).await?;
     Ok(warp::reply::with_status(
         warp::reply::json(&GetNotesResponse {
             error: None,

@@ -8,6 +8,7 @@ use crate::notes::models::note_version::NoteVersion;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::note_versions;
 use crate::schema::{notes, notes::dsl::notes as all_notes};
+use crate::utils::list_options::ListOptions;
 use crate::utils::mnemonic::{generate_mnemonic, DEFAULT_MNEMONIC_LENGTH};
 use diesel::prelude::*;
 
@@ -62,7 +63,8 @@ impl NoteCreateSpec {
 #[derive(AsChangeset, Debug)]
 #[table_name = "notes"]
 pub struct NoteUpdateSpec {
-    pub updated_at: DateTime<Utc>, // TODO: use trigger to set updated_at automatically
+    // TODO: use trigger to set updated_at automatically
+    pub updated_at: DateTime<Utc>,
     pub name: Option<String>,
 }
 impl NoteUpdateSpec {
@@ -139,7 +141,11 @@ fn create_version_for_note_and_commit(
 }
 
 impl Note {
-    pub fn find_all(conn: &PgConnection, session: Session) -> Result<Vec<NoteSummary>, ApiError> {
+    pub fn list(
+        conn: &PgConnection,
+        session: Session,
+        _options: ListOptions,
+    ) -> Result<Vec<NoteSummary>, ApiError> {
         let notes: Vec<NoteSummary> = all_notes
             .filter(notes::user_id.eq(session.user_id))
             .load(conn)

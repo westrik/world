@@ -60,8 +60,9 @@ pub async fn handle_rejection(err: Rejection) -> Result<impl Reply, Infallible> 
         message = "Invalid credentials".to_string();
     } else if let Some(ApiError::InternalRuntimeError(join_err)) = err.find() {
         code = StatusCode::INTERNAL_SERVER_ERROR;
-        // TODO: don't print error & make this retryable
-        message = format!("Internal server error: {}", join_err);
+        // TODO: make this retryable
+        error!("Internal runtime error: {:?}", join_err);
+        message = "Internal server error".to_string();
     } else if let Some(ApiError::DatabaseError(db_err)) = err.find() {
         match db_err {
             diesel::result::Error::NotFound => {
@@ -70,7 +71,7 @@ pub async fn handle_rejection(err: Rejection) -> Result<impl Reply, Infallible> 
             },
             _ => {
                 code = StatusCode::INTERNAL_SERVER_ERROR;
-                // TODO: LOG ERROR HERE
+                error!("Database error: {:?}", db_err);
                 message = "Internal server error".to_string();
             }
             // Error::InvalidCString(_) => {},
