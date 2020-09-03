@@ -27,9 +27,11 @@ export async function request<RequestT = null, ResponseT extends ApiResponse = A
     endpoint: string,
     authContext: AuthContext,
     body?: RequestT,
+    credentials?: 'include' | 'omit' | 'same-origin',
 ): Promise<ResponseT | null> {
     const response = await fetch(`${API_HOST}${endpoint}`, {
         body: body ? JSON.stringify(body) : undefined,
+        credentials,
         headers: {
             // TODO: redirect to /login if authToken is expired / null
             Authorization: authContext.authToken!,

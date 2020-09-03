@@ -63,8 +63,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
   if ! test -f /usr/local/etc/nginx/world.conf; then
     sudo ln -s "$project_root_dir/infra/nginx/local.conf" /usr/local/etc/nginx/world.conf
   fi
+
   nginx_conf="/usr/local/etc/nginx/nginx.conf"
-  # TODO: fix the way this config is imported
-  grep -qxF 'include world.conf;' $nginx_conf || echo 'include world.conf;' >> $nginx_conf
+  grep -qF 'include world.conf;' $nginx_conf || perl -0777 -i.original -pe 's/http\s*\{(.*)\}/http \{\1\n    include world.conf;\n\}/igs' $nginx_conf
   sudo nginx -t && sudo brew services restart nginx
 fi

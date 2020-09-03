@@ -12,8 +12,9 @@ use crate::external_services::aws::cloudfront::generate_signed_cookie::{
 };
 use crate::jobs::enqueue_job::enqueue_job;
 use crate::jobs::job_type::JobType;
+use crate::resource_identifier::split_resource_identifier;
 use crate::utils::api_task::run_api_task;
-use crate::utils::config::ROOT_DOMAIN_NAME;
+use crate::utils::config::{MEDIA_DOMAIN_NAME, ROOT_DOMAIN_NAME};
 
 #[derive(Deserialize)]
 pub struct ApiUserCreateSpec {
@@ -107,10 +108,6 @@ pub async fn sign_in(
     ))
 }
 
-lazy_static! {
-    static ref UPLOADS_DOMAIN_NAME: String = format!("uploads.{}", *ROOT_DOMAIN_NAME);
-}
-
 #[derive(Debug, Deserialize)]
 pub struct CloudfrontAuthenticationRequest {}
 
@@ -125,8 +122,10 @@ fn run_cloudfront_authenticate(
     pool: &DbPool,
 ) -> Result<CloudFrontAccessData, ApiError> {
     let user = session.get_user(&get_conn(pool).unwrap())?;
-    let path = format!("/{}/", &user.api_id);
-    let resource = format!("https://{}/{}/*", *UPLOADS_DOMAIN_NAME, &user.api_id);
+    let split_user_api_id = split_resource_identifier(&user.api_id);
+
+    let path = format!("/{}/", split_user_api_id);
+    let resource = format!("https://{}/{}/*", *MEDIA_DOMAIN_NAME, split_user_api_id);
     Ok(generate_cloudfront_access_data(&path, &resource))
 }
 
