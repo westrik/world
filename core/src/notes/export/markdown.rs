@@ -1,43 +1,101 @@
+use crate::notes::export::Render;
 use crate::notes::schema::*;
 
-pub trait MarkdownRender {
-    fn to_markdown(&self) -> String;
+pub struct Markdown {
+    output: String,
 }
 
-impl MarkdownRender for Content {
-    fn to_markdown(&self) -> String {
-        let event_strs: Vec<String> = self.elements.iter().map(|el| el.to_markdown()).collect();
-        event_strs.join("")
+impl Render<Markdown> for Content {
+    fn render(&self) -> Markdown {
+        let event_strs: Vec<String> = self
+            .elements
+            .iter()
+            .map(|el| {
+                let md: Markdown = el.render();
+                md.output
+            })
+            .collect();
+        Markdown {
+            output: event_strs.join(""),
+        }
     }
 }
 
-impl MarkdownRender for Element {
-    fn to_markdown(&self) -> String {
+impl Render<Markdown> for Element {
+    fn render(&self) -> Markdown {
         match &self.element {
-            ElementType::Text(str) => str.to_string(),
-            ElementType::Code(str) => format!("`{}`", str),
-            ElementType::Html(_) => "".to_string(),
-            ElementType::Paragraph => "".to_string(),
-            ElementType::Emphasis => "".to_string(),
-            ElementType::Strong => "".to_string(),
-            ElementType::Strikethrough => "".to_string(),
-            ElementType::Heading(heading_type) => "".to_string(),
-            ElementType::Link(link_data) => "".to_string(),
-            ElementType::Image(link_data) => "".to_string(),
-            ElementType::CodeBlock(code_block_data) => "".to_string(),
-            ElementType::List(list_data) => "".to_string(),
-            ElementType::Item => "".to_string(),
-            ElementType::TaskListMarker(marker_data) => "".to_string(),
-            ElementType::BlockQuote => "".to_string(),
-            ElementType::FootnoteDefinition(str) => "".to_string(),
-            ElementType::FootnoteReference(str) => "".to_string(),
-            ElementType::Table(table_data) => "".to_string(),
-            ElementType::TableHead => "".to_string(),
-            ElementType::TableRow => "".to_string(),
-            ElementType::TableCell => "".to_string(),
-            ElementType::SoftBreak => "".to_string(),
-            ElementType::HardBreak => "".to_string(),
-            ElementType::Rule => "".to_string(),
+            ElementType::Text(str) => Markdown {
+                output: str.to_string(),
+            },
+            ElementType::Code(str) => Markdown {
+                output: format!("`{}`", str),
+            },
+            ElementType::Html(_) => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::Paragraph => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::Emphasis => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::Strong => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::Strikethrough => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::Heading(heading_type) => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::Link(link_data) => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::Image(link_data) => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::CodeBlock(code_block_data) => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::List(list_data) => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::Item => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::TaskListMarker(marker_data) => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::BlockQuote => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::FootnoteDefinition(str) => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::FootnoteReference(str) => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::Table(table_data) => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::TableHead => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::TableRow => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::TableCell => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::SoftBreak => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::HardBreak => Markdown {
+                output: "".to_string(),
+            },
+            ElementType::Rule => Markdown {
+                output: "".to_string(),
+            },
         }
     }
 }
@@ -49,16 +107,15 @@ pub mod markdown_output {
     use crate::notes::schema::Content;
 
     #[test]
-    fn content_to_markdown() {
+    fn content_markdown_render() {
         let md = "- [ ] hello\n- [ ] world";
         let elements = markdown_to_elements(md.to_string());
-        assert_eq!(
-            Content {
-                elements,
-                schema_version: "v0.1.23".to_string()
-            }
-            .to_markdown(),
-            md
-        );
+
+        let rendered: Markdown = Content {
+            elements,
+            schema_version: "v0.1.23".to_string(),
+        }
+        .render();
+        assert_eq!(rendered.output, md);
     }
 }
