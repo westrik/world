@@ -84,14 +84,15 @@ impl Render<Html> for Element {
                     HeadingType::H6 => "h6",
                 };
                 Html {
-                    output: format!("<{}>{}<{}>", tag, *self.children.render(), tag),
+                    output: format!("<{}>{}</{}>", tag, *self.children.render(), tag),
                 }
             }
             ElementType::Link(link_data) => Html {
                 // TODO: handle emails, etc?
                 output: format!(
                     "<a href=\"{}\">{}</a>",
-                    link_data.destination_url, link_data.title
+                    link_data.destination_url,
+                    *self.children.render()
                 ),
             },
             ElementType::Image(link_data) => Html {
@@ -165,20 +166,98 @@ pub mod html_output {
     use super::*;
     use crate::notes::parsing::markdown_to_elements;
     use crate::notes::schema::Content;
+    use crate::API_VERSION;
+
+    macro_rules! assert_md_to_html {
+        ($md:expr, $html:expr) => {
+            let elements = markdown_to_elements($md.to_string());
+            let rendered: Html = Content {
+                elements,
+                schema_version: API_VERSION.to_string(),
+            }
+            .render();
+            assert_eq!(*rendered, $html);
+        };
+    }
 
     #[test]
-    fn test_render_content_to_html() {
-        let md = "- [ ] hello\n- [ ] world";
-        let elements = markdown_to_elements(md.to_string());
+    fn test_text() {
+        assert_md_to_html!(
+            "**bold**  _italic_ ~~strikethrough!~~",
+            r#"<p><strong>bold</strong>  <em>italic</em> <strike>strikethrough!</strike></p>"#
+        );
+    }
 
-        let rendered: Html = Content {
-            elements,
-            schema_version: "v0.1.23".to_string(),
-        }
-        .render();
-        assert_eq!(
-            *rendered,
-            r#"<ul><li><input type="checkbox" />hello</li><li><input type="checkbox" />world</li></ul>"#,
+    #[test]
+    fn test_headers() {
+        assert_md_to_html!(r#"
+# H1
+## H2
+### H3
+#### H4
+##### H5
+###### H6
+
+Alt-H1
+======
+
+Alt-H2
+------
+
+"#,
+            "<h1>H1</h1><h2>H2</h2><h3>H3</h3><h4>H4</h4><h5>H5</h5><h6>H6</h6><h1>Alt-H1</h1><h2>Alt-H2</h2>"
+        );
+    }
+
+    #[test]
+    fn test_links() {
+        assert_md_to_html!(
+            r#"
+[example](https://example.com)
+
+[example](https://example.com "example!")
+
+[example](../example)
+
+text and [example]. send an email to <me@example.com>.
+
+http://www.example.com and <http://www.example.com> and example.com.
+        "#,
+            r#"<p><a href="https://example.com">example</a></p><p><a href="https://example.com">example</a></p><p><a href="../example">example</a></p><p>text and [example]. send an email to <a href="mailto:me@example.com">me@example.com</a>.</p><p>http://www.example.com and <a href="http://www.example.com">http://www.example.com</a> and example.com.</p>"#
+        );
+    }
+
+    #[test]
+    fn test_images() {
+        assert_md_to_html!(
+            r#"[![Test image with link](/test-image.png "test image description")](https://example.com/image.png)"#,
+            r#"<p><a href="https://example.com/image.png"><img src="/test-image.png" alt="test image description" /></a></p>"#
+        );
+    }
+
+    #[test]
+    fn test_footnotes() {
+        assert_md_to_html!(
+            r#"
+[ref text]: https://www.example.org
+[1]: http://example.org
+[link text]: http://www.example.com
+"#,
+            r#""#
+        );
+    }
+
+    // TODO: tables
+    // TODO: blockquotes
+    // TODO: inline code
+    // TODO: code blocks
+    // TODO: numbered lists (+ lists that start after 1)
+
+    #[test]
+    fn test_task_list() {
+        assert_md_to_html!(
+            "- [ ] hello\n- [ ] world",
+            r#"<ul><li><input type="checkbox" />hello</li><li><input type="checkbox" />world</li></ul>"#
         );
     }
 }
