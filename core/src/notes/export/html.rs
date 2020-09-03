@@ -102,3 +102,23 @@ impl Render<Html> for Element {
         unimplemented!()
     }
 }
+
+#[cfg(test)]
+pub mod html_output {
+    use super::*;
+    use crate::notes::parsing::markdown_to_elements;
+    use crate::notes::schema::Content;
+
+    #[test]
+    fn test_render_content_to_html() {
+        let md = "- [ ] hello\n- [ ] world";
+        let elements = markdown_to_elements(md.to_string());
+
+        let rendered: Html = Content {
+            elements,
+            schema_version: "v0.1.23".to_string(),
+        }
+        .render();
+        assert_eq!(rendered.output, "<ul><li>hello</li><li>world</li></ul>");
+    }
+}

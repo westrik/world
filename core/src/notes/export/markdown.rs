@@ -101,22 +101,22 @@ impl Render<Markdown> for Element {
     }
 }
 
-#[cfg(test)]
-pub mod markdown_output {
-    use super::*;
-    use crate::notes::parsing::markdown_to_elements;
-    use crate::notes::schema::Content;
-
-    #[test]
-    fn content_markdown_render() {
-        let md = "- [ ] hello\n- [ ] world";
-        let elements = markdown_to_elements(md.to_string());
-
-        let rendered: Markdown = Content {
-            elements,
-            schema_version: "v0.1.23".to_string(),
-        }
-        .render();
-        assert_eq!(rendered.output, md);
-    }
-}
+// #[cfg(test)]
+// pub mod markdown_output {
+//     use super::*;
+//     use crate::notes::parsing::markdown_to_elements;
+//     use crate::notes::schema::Content;
+//
+//     #[test]
+//     fn test_render_content_to_markdown() {
+//         let md = "- [ ] hello\n- [ ] world";
+//         let elements = markdown_to_elements(md.to_string());
+//
+//         let rendered: Markdown = Content {
+//             elements,
+//             schema_version: "v0.1.23".to_string(),
+//         }
+//         .render();
+//         assert_eq!(rendered.output, md);
+//     }
+// }
