@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use crate::notes::schema::{ElementType, HeadingType};
+use crate::notes::schema::{ElementType, HeadingType, LinkType};
 use crate::notes::{
     export::Render,
     schema::{Content, Element},
@@ -87,14 +87,20 @@ impl Render<Html> for Element {
                     output: format!("<{}>{}</{}>", tag, *self.children.render(), tag),
                 }
             }
-            ElementType::Link(link_data) => Html {
-                // TODO: handle emails, etc?
-                output: format!(
-                    "<a href=\"{}\">{}</a>",
-                    link_data.destination_url,
-                    *self.children.render()
-                ),
-            },
+            ElementType::Link(link_data) => {
+                let url_prefix = match link_data.link_type {
+                    LinkType::Email => "mailto:",
+                    _ => "",
+                };
+                Html {
+                    output: format!(
+                        "<a href=\"{}{}\">{}</a>",
+                        url_prefix,
+                        link_data.destination_url,
+                        *self.children.render()
+                    ),
+                }
+            }
             ElementType::Image(link_data) => Html {
                 output: format!(
                     "<img src=\"{}\" alt=\"{}\" />",
@@ -106,10 +112,17 @@ impl Render<Html> for Element {
                 // TODO: render with syntect?
                 output: format!("<pre>{}</pre>", *self.children.render()),
             },
-            ElementType::List(_list_data) => Html {
-                // TODO: use list_data
-                output: format!("<ul>{}</ul>", *self.children.render()),
-            },
+            ElementType::List(list_data) => {
+                let output = match list_data.number_of_first_item {
+                    Some(first_item_idx) => format!(
+                        "<ol start=\"{}\">{}</ol>",
+                        first_item_idx,
+                        *self.children.render()
+                    ),
+                    None => format!("<ul>{}</ul>", *self.children.render()),
+                };
+                Html { output }
+            }
             ElementType::Item => Html {
                 output: format!("<li>{}</li>", *self.children.render()),
             },
@@ -125,9 +138,13 @@ impl Render<Html> for Element {
             ElementType::BlockQuote => Html {
                 output: format!("<blockquote>{}</blockquote>", *self.children.render()),
             },
-            ElementType::FootnoteDefinition(_str) => Html {
-                // TODO: use str
-                output: "".to_string(),
+            ElementType::FootnoteDefinition(str) => Html {
+                output: format!(
+                    r#"<div class="footnote-definition" id="{}"><sup class="footnote-definition-label">{}</sup>{}</div>"#,
+                    str,
+                    str,
+                    *self.children.render()
+                ),
             },
             ElementType::FootnoteReference(footnote_ref) => Html {
                 output: format!(
@@ -137,16 +154,16 @@ impl Render<Html> for Element {
             },
             ElementType::Table(_table_data) => Html {
                 // TODO: use table_data
-                output: "".to_string(),
+                output: format!("<table>{}</table>", *self.children.render()),
             },
             ElementType::TableHead => Html {
-                output: "".to_string(),
+                output: format!("<thead>{}</thead>", *self.children.render()),
             },
             ElementType::TableRow => Html {
-                output: "".to_string(),
+                output: format!("<tr>{}</tr>", *self.children.render()),
             },
             ElementType::TableCell => Html {
-                output: "".to_string(),
+                output: format!("<td>{}</td>", *self.children.render()),
             },
             ElementType::SoftBreak => Html {
                 output: "<wbr />".to_string(),
@@ -239,25 +256,108 @@ http://www.example.com and <http://www.example.com> and example.com.
     fn test_footnotes() {
         assert_md_to_html!(
             r#"
-[ref text]: https://www.example.org
+Hello this is a ref[^ref_text] and another[^1] and another one [^link_text]
+[ref_text]: https://www.example.org
 [1]: http://example.org
-[link text]: http://www.example.com
+[link_text]: http://www.example.com
 "#,
-            r#""#
+            r##"<p>Hello this is a ref<sup class="footnote-reference"><a href="#ref_text">ref_text</a></sup> and another<sup class="footnote-reference"><a href="#1">1</a></sup> and another one <sup class="footnote-reference"><a href="#link_text">link_text</a></sup><wbr />[ref_text]: https://www.example.org<wbr />[1]: http://example.org<wbr />[link_text]: http://www.example.com</p>"##
         );
     }
 
-    // TODO: tables
-    // TODO: blockquotes
-    // TODO: inline code
-    // TODO: code blocks
-    // TODO: numbered lists (+ lists that start after 1)
+    #[test]
+    fn test_table() {
+        assert_md_to_html!(
+            r#"
+Colons can be used to align columns.
+
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+
+There must be at least 3 dashes separating each header cell.
+The outer pipes (|) are optional, and you don't need to make the
+raw Markdown line up prettily. You can also use inline Markdown.
+
+Markdown | Less | Pretty
+--- | --- | ---
+*Still* | `renders` | **nicely**
+1 | 2 | 3
+"#,
+            r#"<p>Colons can be used to align columns.</p><table><thead><td>Tables</td><td>Are</td><td>Cool</td></thead><tr><td>col 3 is</td><td>right-aligned</td><td>$1600</td></tr><tr><td>col 2 is</td><td>centered</td><td>$12</td></tr><tr><td>zebra stripes</td><td>are neat</td><td>$1</td></tr></table><p>There must be at least 3 dashes separating each header cell.<wbr />The outer pipes (|) are optional, and you don't need to make the<wbr />raw Markdown line up prettily. You can also use inline Markdown.</p><table><thead><td>Markdown</td><td>Less</td><td>Pretty</td></thead><tr><td><em>Still</em></td><td><code>renders</code></td><td><strong>nicely</strong></td></tr><tr><td>1</td><td>2</td><td>3</td></tr></table>"#
+        );
+    }
+
+    #[test]
+    fn test_blockquote() {
+        assert_md_to_html!(
+            "> hello world",
+            "<blockquote><p>hello world</p></blockquote>"
+        );
+    }
+
+    #[test]
+    fn test_inline_code() {
+        assert_md_to_html!("`hello {world};`", "<p><code>hello {world};</code></p>");
+    }
+
+    #[test]
+    fn test_code_block() {
+        assert_md_to_html!(
+            r#"```sh
+function hello_world() {
+    echo "hello";
+}
+```"#,
+            r#"<pre>function hello_world() {
+    echo "hello";
+}
+</pre>"#
+        );
+    }
+
+    #[test]
+    fn test_unordered_list() {
+        assert_md_to_html!(
+            r#"
+- hello
+- world
+"#,
+            "<ul><li>hello</li><li>world</li></ul>"
+        );
+    }
+
+    #[test]
+    fn test_offset_ordered_list() {
+        assert_md_to_html!(
+            r#"
+3. hello
+4. world
+5. hello world!
+        "#,
+            r#"<ol start="3"><li>hello</li><li>world</li><li>hello world!</li></ol>"#
+        );
+    }
 
     #[test]
     fn test_task_list() {
         assert_md_to_html!(
             "- [ ] hello\n- [ ] world",
             r#"<ul><li><input type="checkbox" />hello</li><li><input type="checkbox" />world</li></ul>"#
+        );
+    }
+
+    #[test]
+    fn test_rules() {
+        assert_md_to_html!(
+            r#"------------------
+hello\
+world
+in the world!
+"#,
+            "<hr /><p>hello<br />world<wbr />in the world!</p>"
         );
     }
 }

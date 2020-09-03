@@ -101,6 +101,8 @@ impl Render<Markdown> for Element {
     }
 }
 
+// TODO: use quickcheck to test roundtrip markdown conversion
+
 // #[cfg(test)]
 // pub mod markdown_output {
 //     use super::*;
