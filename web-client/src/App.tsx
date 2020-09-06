@@ -37,8 +37,6 @@ export default function App(): h.JSX.Element {
 
 render(<App />, document.getElementById('root')!);
 
-// @ts-ignore
 if (module.hot) {
-    // @ts-ignore
     module.hot.accept();
 }
