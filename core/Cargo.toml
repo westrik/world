@@ -8,7 +8,6 @@ publish = false
 [features]
 # Enables IAM instance auth and other functionality only needed on EC2 in VPC, etc.
 production = []
-aws = []
 
 [dependencies]
 argon2rs = "^0.2"
