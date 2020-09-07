@@ -4,7 +4,7 @@ on: push
 
 jobs:
   cargo-timings:
-    name: Profile cargo build (production, debug)
+    name: Profile cargo build (debug)
     runs-on: ubuntu-latest
 
     steps:
@@ -12,7 +12,7 @@ jobs:
       - name: Setup test environment
         run: sudo bash scripts/setup_test_env.sh
       - name: Build with -Z timings
-        run: cargo build --verbose --features "production" -Z timings
+        run: cargo build --verbose -Z timings
 #      - name: Upload output to S3 bucket
 #        uses: westrik/s3-cp-action@master
 #        with:
