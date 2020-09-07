@@ -10,25 +10,26 @@ set -euo pipefail
 scripts_dir="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 project_root_dir="$scripts_dir/.."
 
+sudo_prefix="sudo -u postgres "
+if [[ "$OSTYPE" != "darwin"* ]]; then
+  sudo_prefix="sudo -u postgres "
+fi
+
+function run_sql() {
+  sql=$1
+  $sudo_prefix psql postgres -U postgres -w -h localhost -c "$sql"
+}
+
 function create_database() {
   database_name="$1"
   database_user="$2"
   database_password="$3"
 
-  sudo_prefix=""
-  if [[ "$OSTYPE" != "darwin"* ]]; then
-    sudo_prefix="sudo -u postgres "
-  fi
-
-  if [ "$( $sudo_prefix psql postgres -w -h localhost -tAc "SELECT 1 FROM pg_database WHERE datname='$database_name'" )" = '1' ]; then
+  if [ "$( $sudo_prefix psql postgres -U postgres -w -h localhost -tAc "SELECT 1 FROM pg_database WHERE datname='$database_name'" )" = '1' ]; then
     echo "Database '$database_name' already exists, skipping"
     return
   fi
 
-  function run_sql() {
-    sql=$1
-    $sudo_prefix psql postgres -w -h localhost -c "$sql"
-  }
   run_sql "create database $database_name;"
   run_sql "create user $database_user with encrypted password '$database_password}';"
   run_sql "grant all privileges on database $database_name to $database_user;"
@@ -59,9 +60,6 @@ if [[ "$OSTYPE" != "darwin"* ]]; then
   cat /etc/postgresql/12/main/pg_hba.conf
   sudo sed -i 's/local   all             postgres                                peer/host    all             all             127.0.0.1\/32            trust/g' /etc/postgresql/12/main/pg_hba.conf
   cat /etc/postgresql/12/main/pg_hba.conf
-  echo "reloading postgres config"
-  pg_ctl reload
-  echo "restarting postgres..."
   service postgresql restart
 fi
 
