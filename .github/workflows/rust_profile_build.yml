@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - name: Install libpq-dev
+      - name: Setup test environment
         run: sudo bash scripts/setup_test_env.sh
       - name: Build with -Z timings
         run: cargo build --verbose --features "production" -Z timings
