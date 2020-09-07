@@ -3,6 +3,10 @@ on:
   push:
     branches:
       - dev
+    paths:
+      - '**/*.rs'
+      - '**/Cargo.toml'
+      - 'Cargo.lock'
 
 jobs:
   cargo-timings:
