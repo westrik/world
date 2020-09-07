@@ -1,0 +1,26 @@
+name: Profile
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - '**/*.rs'
+      - '**/Cargo.toml'
+      - 'Cargo.lock'
+
+jobs:
+  cargo-timings:
+    name: Profile cargo build (debug)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup test environment
+        run: sudo bash scripts/setup_test_env.sh
+      - name: Build with -Z timings
+        run: cargo build --verbose -Z timings
+      - name: Upload timing outputs
+        uses: actions/upload-artifact@v2
+        with:
+          name: timing
+          path: cargo-timing*.html

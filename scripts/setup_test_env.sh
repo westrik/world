@@ -11,5 +11,6 @@ set -euo pipefail
 scripts_dir="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 bash "$scripts_dir/apt_install_dependencies.sh"
+bash "$scripts_dir/install_rustup.sh"
 bash "$scripts_dir/setup_database.sh"
 echo "PASSWORD_HASH_SALT='lBi5Pi6yBdtRmIXMZvs6IlmAOy3ogEivqG056hGJ6t'" >> .env
