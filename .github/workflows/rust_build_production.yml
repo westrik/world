@@ -1,6 +1,11 @@
 name: Rust (build - production)
 
-on: [push]
+on:
+  push:
+    paths:
+      - '*/**/*.rs'
+      - '*/**/Cargo.toml'
+      - 'Cargo.lock'
 
 jobs:
   rust_build_production:
