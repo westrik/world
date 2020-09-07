@@ -1,10 +1,10 @@
-name: Profile Build
+name: Profile
 on: push
 # TODO: on push to main branch
 
 jobs:
-  timings:
-    name: Profile cargo build
+  cargo-timings:
+    name: Profile cargo build (production, debug)
     runs-on: ubuntu-latest
 
     steps:
@@ -13,7 +13,7 @@ jobs:
         run: sudo bash scripts/setup_test_env.sh
       - name: Build with -Z timings
         run: cargo build --verbose --features "production" -Z timings
-#      - name: Upload bundle to S3 bucket
+#      - name: Upload output to S3 bucket
 #        uses: westrik/s3-cp-action@master
 #        with:
 #          args: --acl private
