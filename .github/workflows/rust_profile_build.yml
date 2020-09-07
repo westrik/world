@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Install libpq-dev
-        run: bash scripts/setup_test_env.sh
+        run: sudo bash scripts/setup_test_env.sh
       - name: Build with -Z timings
         run: cargo build --verbose --features "production" -Z timings
 #      - name: Upload bundle to S3 bucket
