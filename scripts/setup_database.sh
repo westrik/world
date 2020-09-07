@@ -56,6 +56,7 @@ touch "$project_root_dir/.env"
 
 if [[ "$OSTYPE" != "darwin"* ]]; then
   # modify postgres config to trust connections from localhost
+  cat /etc/postgresql/12/main/pg_hba.conf
   sudo sed -i 's/local   all             postgres                                peer/host    all             all             127.0.0.1\/32            trust/g' /etc/postgresql/12/main/pg_hba.conf
   service postgresql restart
 fi
