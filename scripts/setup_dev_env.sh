@@ -21,11 +21,13 @@ fi
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
   bash "$scripts_dir/brew_install_dependencies.sh"
+  bash "$scripts_dir/install_rustup.sh"
 else
   if ! command -v apt >/dev/null 2>&1; then
     echo "only apt is supported (for now)"
   else
     bash "$scripts_dir/apt_install_dependencies.sh"
+    bash "$scripts_dir/install_rustup.sh"
   fi
 fi
 
