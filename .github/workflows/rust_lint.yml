@@ -3,8 +3,8 @@ name: Rust (lint)
 on:
   push:
     paths:
-      - '*/**/*.rs'
-      - '*/**/Cargo.toml'
+      - '**/*.rs'
+      - '**/Cargo.toml'
       - 'Cargo.lock'
 
 jobs:

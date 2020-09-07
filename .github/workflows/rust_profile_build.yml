@@ -1,6 +1,8 @@
 name: Profile
-on: push
-# TODO: on push to main branch
+on:
+  push:
+    branches:
+      - dev
 
 jobs:
   cargo-timings:

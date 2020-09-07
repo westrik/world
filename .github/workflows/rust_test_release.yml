@@ -3,8 +3,8 @@ name: Rust (test - release)
 on:
   push:
     paths:
-      - '*/**/*.rs'
-      - '*/**/Cargo.toml'
+      - '**/*.rs'
+      - '**/Cargo.toml'
       - 'Cargo.lock'
 
 jobs:
