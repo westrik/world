@@ -7,15 +7,15 @@ provider "aws" {
 module "autoscaling_group_blue" {
   source = "./autoscaling_group"
 
-  color = "blue"
-  deploy_name = var.deploy_name
+  color        = "blue"
+  deploy_name  = var.deploy_name
   project_name = var.project_name
 
-  app_security_group_ids = var.app_security_group_ids
-  app_subnet_ids = var.app_subnet_ids
+  app_security_group_ids    = var.app_security_group_ids
+  app_subnet_ids            = var.app_subnet_ids
   iam_instance_profile_name = aws_iam_instance_profile.app_host.name
-  num_app_instances = var.num_app_instances
-  target_group_arn = module.app_load_balancer.app_target_group_arn
+  num_app_instances         = var.num_app_instances
+  target_group_arn          = module.app_load_balancer.app_target_group_arn
 }
 
 //module "autoscaling_group_green" {

@@ -50,10 +50,10 @@ module "content_buckets" {
 
   aws_region = var.aws_region
 
-  deploy_name          = var.deploy_name
-  project_name         = var.project_name
-  project_slug         = var.project_slug
-  root_domain_name     = var.root_domain_name
+  deploy_name      = var.deploy_name
+  project_name     = var.project_name
+  project_slug     = var.project_slug
+  root_domain_name = var.root_domain_name
 
   app_host_iam_role_id = module.app_cluster.app_host_iam_role_id
 }
@@ -70,9 +70,9 @@ module "deploy_pipeline" {
   deploy_name                  = var.deploy_name
   project_slug                 = var.project_slug
 
-  app_autoscaling_group_ids  = module.app_cluster.app_autoscaling_group_ids
-  app_lb_listener_arn        = module.app_cluster.app_lb_listener_arn
-  app_target_group_name = module.app_cluster.app_target_group_name
+  app_autoscaling_group_ids = module.app_cluster.app_autoscaling_group_ids
+  app_lb_listener_arn       = module.app_cluster.app_lb_listener_arn
+  app_target_group_name     = module.app_cluster.app_target_group_name
 }
 
 module "app_cloudfront" {
@@ -97,10 +97,10 @@ module "app_cluster" {
   project_name = var.project_name
   project_slug = var.project_slug
 
-  app_security_group_ids    = module.core_infra.app_security_group_ids
-  app_subnet_ids            = module.core_infra.app_subnet_ids
+  app_security_group_ids = module.core_infra.app_security_group_ids
+  app_subnet_ids         = module.core_infra.app_subnet_ids
   app_vpc_id             = module.core_infra.app_vpc_id
-  num_app_instances         = var.num_app_instances
+  num_app_instances      = var.num_app_instances
 
   admin_email      = var.admin_email
   api_domain_name  = var.api_domain_name

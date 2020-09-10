@@ -17,8 +17,9 @@ check:
 fmt:
 	terraform fmt
 	terraform fmt modules/app_cloudfront
-	terraform fmt modules/app_instances
-	terraform fmt modules/app_load_balancer
+	terraform fmt modules/app_cluster
+	terraform fmt modules/app_cluster/autoscaling_group
+	terraform fmt modules/app_cluster/load_balancer
 	terraform fmt modules/content_buckets
 	terraform fmt modules/core_infra
 	terraform fmt modules/core_infra/ami_sandbox
