@@ -4,6 +4,26 @@ provider "aws" {
   region = var.aws_region
 }
 
+data "aws_ami" "app" {
+  most_recent = true
+  owners      = ["self"]
+
+  filter {
+    name   = "name"
+    values = ["${var.project_name} *"]
+  }
+
+  filter {
+    name   = "tag:Environment"
+    values = [var.deploy_name]
+  }
+
+  filter {
+    name   = "tag:OS_Version"
+    values = ["Debian 10"]
+  }
+}
+
 module "autoscaling_group_blue" {
   source = "./autoscaling_group"
 
@@ -11,6 +31,7 @@ module "autoscaling_group_blue" {
   deploy_name  = var.deploy_name
   project_name = var.project_name
 
+  ami_id                    = "ami-06654a2796c88fe40"
   app_security_group_ids    = var.app_security_group_ids
   app_subnet_ids            = var.app_subnet_ids
   iam_instance_profile_name = aws_iam_instance_profile.app_host.name
@@ -18,20 +39,21 @@ module "autoscaling_group_blue" {
   target_group_arn          = module.app_load_balancer.app_target_group_arn
 }
 
-//module "autoscaling_group_green" {
-//  count = 0
-//  source = "./autoscaling_group"
-//
-//  color = "green"
-//  deploy_name = var.deploy_name
-//  project_name = var.project_name
-//
-//  app_security_group_ids = var.app_security_group_ids
-//  app_subnet_ids = var.app_subnet_ids
-//  iam_instance_profile_name = aws_iam_instance_profile.app_host.name
-//  num_app_instances = var.num_app_instances
-//  target_group_arn = module.app_load_balancer.app_target_group_arn
-//}
+module "autoscaling_group_green" {
+  source = "./autoscaling_group"
+
+  color        = "green"
+  deploy_name  = var.deploy_name
+  project_name = var.project_name
+
+  ami_id                    = data.aws_ami.app.id
+  app_security_group_ids    = var.app_security_group_ids
+  app_subnet_ids            = var.app_subnet_ids
+  iam_instance_profile_name = aws_iam_instance_profile.app_host.name
+  //  num_app_instances = var.num_app_instances
+  num_app_instances = 0
+  target_group_arn  = module.app_load_balancer.app_target_group_arn
+}
 
 module "app_load_balancer" {
   source = "./load_balancer"

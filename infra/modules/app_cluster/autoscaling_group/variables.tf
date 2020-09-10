@@ -6,6 +6,10 @@ variable "deploy_name" {
   type = string
 }
 
+variable "ami_id" {
+  type = string
+}
+
 variable "app_security_group_ids" {
   type = list(string)
 }
