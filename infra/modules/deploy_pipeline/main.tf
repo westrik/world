@@ -35,7 +35,7 @@ resource "aws_codedeploy_deployment_group" "app" {
 
   load_balancer_info {
     target_group_info {
-      name = var.app_blue_target_group_name
+      name = var.app_target_group_name
     }
   }
 

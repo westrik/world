@@ -30,7 +30,7 @@ variable "app_lb_listener_arn" {
   type = string
 }
 
-variable "app_blue_target_group_name" {
+variable "app_target_group_name" {
   type = string
 }
 

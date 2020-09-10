@@ -50,11 +50,12 @@ module "content_buckets" {
 
   aws_region = var.aws_region
 
+  deploy_name          = var.deploy_name
   project_name         = var.project_name
   project_slug         = var.project_slug
-  deploy_name          = var.deploy_name
   root_domain_name     = var.root_domain_name
-  app_host_iam_role_id = module.app_instances.app_host_iam_role_id
+
+  app_host_iam_role_id = module.app_cluster.app_host_iam_role_id
 }
 
 module "deploy_pipeline" {
@@ -62,16 +63,16 @@ module "deploy_pipeline" {
 
   aws_region = var.aws_region
 
-  project_slug                 = var.project_slug
-  deploy_name                  = var.deploy_name
   deploy_bucket                = module.core_infra.app_deploy_bucket
   deploy_bucket_arn            = module.core_infra.app_deploy_bucket_arn
   deploy_cloudfront_bucket     = module.core_infra.app_deploy_cloudfront_bucket
   deploy_cloudfront_bucket_arn = module.core_infra.app_deploy_cloudfront_bucket_arn
+  deploy_name                  = var.deploy_name
+  project_slug                 = var.project_slug
 
-  app_lb_listener_arn        = module.app_load_balancer.app_lb_listener_arn
-  app_autoscaling_group_ids  = module.app_instances.app_autoscaling_group_ids
-  app_blue_target_group_name = module.app_load_balancer.app_blue_target_group_name
+  app_autoscaling_group_ids  = module.app_cluster.app_autoscaling_group_ids
+  app_lb_listener_arn        = module.app_cluster.app_lb_listener_arn
+  app_target_group_name = module.app_cluster.app_target_group_name
 }
 
 module "app_cloudfront" {
@@ -85,44 +86,29 @@ module "app_cloudfront" {
   deploy_cloudfront_bucket_domain_name = module.core_infra.app_deploy_cloudfront_bucket_domain_name
 }
 
-module "app_load_balancer" {
-  source = "./modules/app_load_balancer"
+module "app_cluster" {
+  source = "./modules/app_cluster"
 
   aws_region = var.aws_region
   aws_az1    = var.aws_az1
   aws_az2    = var.aws_az2
 
-  project_name     = var.project_name
-  project_slug     = var.project_slug
-  deploy_name      = var.deploy_name
-  root_domain_name = var.root_domain_name
-  api_domain_name  = var.api_domain_name
-  admin_email      = var.admin_email
+  deploy_name  = var.deploy_name
+  project_name = var.project_name
+  project_slug = var.project_slug
 
+  app_security_group_ids    = module.core_infra.app_security_group_ids
+  app_subnet_ids            = module.core_infra.app_subnet_ids
   app_vpc_id             = module.core_infra.app_vpc_id
-  app_security_group_ids = module.core_infra.app_security_group_ids
-  app_subnet_ids         = module.core_infra.app_subnet_ids
+  num_app_instances         = var.num_app_instances
+
+  admin_email      = var.admin_email
+  api_domain_name  = var.api_domain_name
+  root_domain_name = var.root_domain_name
 
   lambda_deploy_bucket                   = module.core_infra.lambda_deploy_bucket
   lambda_iam_role_arn__renew_certificate = module.core_infra.lambda_iam_role_arn__renew_certificate
 }
-
-module "app_instances" {
-  source = "./modules/app_instances"
-
-  aws_region = var.aws_region
-  aws_az1    = var.aws_az1
-  aws_az2    = var.aws_az2
-
-  project_name = var.project_name
-  deploy_name  = var.deploy_name
-
-  app_security_group_ids    = module.core_infra.app_security_group_ids
-  app_subnet_ids            = module.core_infra.app_subnet_ids
-  num_app_instances         = var.num_app_instances
-  app_blue_target_group_arn = module.app_load_balancer.app_blue_target_group_arn
-}
-
 
 module "secrets" {
   source = "./modules/secrets"
@@ -140,5 +126,5 @@ module "worker_lambdas" {
 
   project_name         = var.project_name
   lambda_deploy_bucket = module.core_infra.lambda_deploy_bucket
-  app_host_iam_role_id = module.app_instances.app_host_iam_role_id
+  app_host_iam_role_id = module.app_cluster.app_host_iam_role_id
 }

@@ -1,0 +1,3 @@
+- [ ] get in-place deployments working correctly
+- [ ] add green ASG
+- [ ] set up codedeploy to do blue/green stuff
