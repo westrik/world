@@ -27,8 +27,8 @@ variable "aws_az2" {
  TODO: refactor this to avoid duplication
  */
 
-variable "api_domain_name" {
-  default = "api.westrik.world"
+variable "api_domain_names" {
+  default = ["api.westrik.world", "api2.westrik.world"]
 }
 
 variable "root_domain_name" {

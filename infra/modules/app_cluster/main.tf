@@ -44,7 +44,7 @@ module "app_load_balancer" {
   project_slug     = var.project_slug
   deploy_name      = var.deploy_name
   root_domain_name = var.root_domain_name
-  api_domain_name  = var.api_domain_name
+  api_domain_names = var.api_domain_names
   admin_email      = var.admin_email
 
   app_vpc_id             = var.app_vpc_id

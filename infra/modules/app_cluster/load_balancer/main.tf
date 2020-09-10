@@ -56,8 +56,11 @@ resource "aws_lb_target_group" "app_blue" {
 }
 
 resource "aws_route53_record" "app" {
+  for_each = {
+    for subdomain in var.api_domain_names : subdomain => {}
+  }
   zone_id = data.aws_route53_zone.app.id
-  name    = var.api_domain_name
+  name    = each.key
   type    = "A"
 
   alias {
@@ -68,8 +71,11 @@ resource "aws_route53_record" "app" {
 }
 
 resource "aws_route53_record" "app_caa" {
+  for_each = {
+    for subdomain in var.api_domain_names : subdomain => {}
+  }
   zone_id = data.aws_route53_zone.app.id
-  name    = var.api_domain_name
+  name    = each.key
   type    = "CAA"
   records = ["0 issue \"letsencrypt.org\""]
   ttl     = 60
@@ -99,7 +105,7 @@ data "aws_lambda_invocation" "renew_certificate" {
 
   input = <<JSON
 {
-  "domains": ["${var.api_domain_name}"],
+  "domains": [${join(", ", formatlist("\"%s\"", var.api_domain_names))}],
   "email": "${var.admin_email}",
   "secret_id": "${aws_secretsmanager_secret.api_cert.name}"
 }

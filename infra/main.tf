@@ -103,7 +103,7 @@ module "app_cluster" {
   num_app_instances      = var.num_app_instances
 
   admin_email      = var.admin_email
-  api_domain_name  = var.api_domain_name
+  api_domain_names = var.api_domain_names
   root_domain_name = var.root_domain_name
 
   lambda_deploy_bucket                   = module.core_infra.lambda_deploy_bucket
