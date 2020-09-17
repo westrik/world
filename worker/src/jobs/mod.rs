@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use world_core::jobs::errors::JobError;
 
-pub mod dummy_job;
+pub mod ingest_media_upload;
 pub mod send_email;
 
 #[async_trait]

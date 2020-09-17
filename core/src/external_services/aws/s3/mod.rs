@@ -1,1 +1,2 @@
-pub mod put_object_request;
+pub mod get_object;
+pub mod put_object;

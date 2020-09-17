@@ -1,3 +1,4 @@
+use serde_json::json;
 use std::convert::Infallible;
 use warp::http::StatusCode;
 use warp::Rejection;
@@ -5,7 +6,9 @@ use warp::Rejection;
 use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
-use crate::external_services::aws::s3::put_object_request::generate_presigned_upload_url;
+use crate::external_services::aws::s3::put_object::generate_presigned_upload_url;
+use crate::jobs::enqueue_job::enqueue_job;
+use crate::jobs::job_type::JobType;
 use crate::library::models::file::FileType;
 use crate::library::models::library_item::{
     LibraryItem, LibraryItemCreateSpec, LibraryItemSummary,
@@ -231,7 +234,7 @@ fn run_create_library_item_version(
     let conn = &get_conn(&db_pool).unwrap();
     let library_item = LibraryItemSummary::find(conn, session.user_id, spec.library_item_api_id)?;
     let file_name = match &library_item.uploaded_file_name {
-        Some(name) => Ok(name),
+        Some(name) => Ok(name.to_string()),
         None => Err(ApiError::InvalidRequest(
             "Can't create library item version for library item with no upload attempts"
                 .to_string(),
@@ -245,9 +248,24 @@ fn run_create_library_item_version(
         LibraryItemVersionType::Original,
         Some(library_item_version_url),
     )?;
-    // TODO: enqueue library item processing job for library_item_version.id
-    //  - should load library_item and library_item_version, then get file metadata from S3
-    //  - call Lambda API endpoints to run relevant processing jobs
+    if let Err(e) = enqueue_job(
+        &conn,
+        Some(session.user_id),
+        JobType::IngestMediaUpload,
+        // TODO: payload should be part of enum
+        Some(json!({
+            "file_name": &file_name,
+            "library_version_api_id": &library_item_version.api_id,
+        })),
+    ) {
+        error!(
+            "failed to enqueue {} job [user_id={}][error={:#?}]",
+            JobType::IngestMediaUpload,
+            session.user_id,
+            e
+        );
+    }
+
     Ok(library_item_version)
 }
 

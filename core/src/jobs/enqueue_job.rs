@@ -9,5 +9,15 @@ pub fn enqueue_job(
     job_type: JobType,
     payload: Option<serde_json::Value>,
 ) -> Result<Job, ApiError> {
-    Ok(Job::create(&conn, user_id, job_type, payload)?)
+    let job = Job::create(&conn, user_id, job_type, payload)?;
+    let user_id_tag = if let Some(uid) = user_id {
+        uid.to_string()
+    } else {
+        "none".to_string()
+    };
+    info!(
+        "enqueued {} job [user_id={}][job_id={}]",
+        job_type, user_id_tag, &job.id
+    );
+    Ok(job)
 }
