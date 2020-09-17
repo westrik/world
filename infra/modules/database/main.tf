@@ -179,6 +179,26 @@ resource "aws_security_group" "app_db" {
   }
 }
 
+resource "aws_secretsmanager_secret" "db_credentials" {
+  name                    = "${var.project_slug}_database_credentials"
+  recovery_window_in_days = 0
+}
+# TODO: rotate this with a Lambda
+resource "aws_secretsmanager_secret_version" "db_credentials" {
+  secret_id     = aws_secretsmanager_secret.db_credentials.id
+  secret_string = <<JSON
+{
+  "endpoint": "${aws_db_instance.app.address}",
+  "port": "${aws_db_instance.app.port}",
+  "database_name": "${aws_db_instance.app.name}",
+  "username": "${aws_db_instance.app.username}",
+  "password": "${random_password.password.result}"
+}
+JSON
+}
+
+# TODO: remove all remaining db_* secrets
+
 resource "aws_secretsmanager_secret" "db_url" {
   name                    = "${var.project_slug}_database_url"
   recovery_window_in_days = 0
