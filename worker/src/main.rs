@@ -18,6 +18,7 @@ use std::env;
 use world_core::db;
 
 pub mod jobs;
+pub mod media_transforms;
 pub mod run;
 pub mod subscribe;
 

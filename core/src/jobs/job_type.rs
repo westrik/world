@@ -5,11 +5,11 @@ use std::str::FromStr;
 use crate::jobs::errors::JobError;
 use crate::utils::string_transforms::ToIdentifier;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 pub enum JobType {
-    DummyJob,
-    SendEmail,
     // NOTE: don't forget to add new types to the FromStr impl
+    IngestMediaUpload,
+    SendEmail,
 }
 
 impl fmt::Display for JobType {
@@ -29,7 +29,7 @@ impl FromStr for JobType {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s {
-            "dummy_job" => Ok(JobType::DummyJob),
+            "ingest_media_upload" => Ok(JobType::IngestMediaUpload),
             "send_email" => Ok(JobType::SendEmail),
             _ => Err(JobError::InvalidJob(format!("invalid job type: {}", s))),
         }
