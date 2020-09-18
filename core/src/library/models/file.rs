@@ -50,3 +50,23 @@ impl fmt::Display for FileType {
         write!(f, "{}", type_str)
     }
 }
+
+impl From<String> for FileType {
+    fn from(content_type: String) -> Self {
+        match content_type.as_str() {
+            "application/epub+zip" => FileType::EPUB,
+            "application/pdf" => FileType::PDF,
+            "audio/mpeg" => FileType::MP3,
+            "audio/wav" => FileType::WAV,
+            "image/gif" => FileType::GIF,
+            "image/jpeg" => FileType::JPEG,
+            "image/png" => FileType::PNG,
+            "image/svg+xml" => FileType::SVG,
+            "image/tiff" => FileType::TIFF,
+            "image/webm" => FileType::WEBM,
+            "image/webp" => FileType::WEBP,
+            "video/mpeg" => FileType::MPEG,
+            _ => FileType::TXT,
+        }
+    }
+}

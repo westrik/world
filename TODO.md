@@ -2,7 +2,9 @@
 
 - [x] write script to set up local development environment
 - [x] fix cloudfront cookie authentication
-- [ ] update LI endpoint to include latest LIV (w/ asset URL)
+- [x] update LI endpoint to include latest LIV (w/ asset URL)
+- [ ] write tests for job subscription + retries
+- [ ] dependent jobs (use pg trigger to unblock dependents)
 - [ ] call cloudfront auth endpoint on page mount (make sure to clear existing cookies)
 - [ ] update front-end to display images + links to non-image files
 - [ ] content export to HTML
