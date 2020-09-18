@@ -1,2 +1,2 @@
-// TODO: scale images
-// TODO: convert images to webp/mozjpeg
+pub mod convert;
+pub mod resize;
