@@ -1,38 +1,34 @@
 // use image::imageops::{resize, FilterType};
-use image::DynamicImage;
+use image::imageops::FilterType;
+use image::{DynamicImage, GenericImageView};
+use std::collections::HashMap;
 
-pub fn constrain_image_dimensions(_image: DynamicImage) -> DynamicImage {
-    // FilterType::CatmullRom and FilterType::Lanczos3 seem to give similar results, but
-    // FilterType::CatmullRom is (anecdotally) about 3x faster.
-
-    // TODO: convert to rgba8 first?
-
-    // match image {
-    //     DynamicImage::ImageBgr8(_) => {}
-    //     DynamicImage::ImageBgra8(_) => {}
-    //     DynamicImage::ImageLuma16(_) => {}
-    //     DynamicImage::ImageLuma8(_) => {}
-    //     DynamicImage::ImageLumaA16(_) => {}
-    //     DynamicImage::ImageLumaA8(_) => {}
-    //     DynamicImage::ImageRgb16(_) => {}
-    //     DynamicImage::ImageRgb8(img) => DynamicImage::ImageRgb8(resized_buffer),
-    //     DynamicImage::ImageRgba16(_) => {}
-    //     DynamicImage::ImageRgba8(_) => {}
-    // }
-    //
-    // convert from rgba8 back to actual type
-
-    // let resized_buffer = resize(&image, width, height, FilterType::CatmullRom);
-
-    unimplemented!()
+pub fn constrain_image_dimensions(
+    image: DynamicImage,
+    widths: Vec<u32>,
+) -> HashMap<u32, DynamicImage> {
+    let results: Vec<(u32, DynamicImage)> = widths
+        .into_iter()
+        .filter_map(|new_width| {
+            let dimensions = image.dimensions();
+            if dimensions.0 <= new_width {
+                None
+            } else {
+                let scaling_factor = new_width as f32 / dimensions.0 as f32;
+                let new_height = dimensions.1 as f32 * scaling_factor;
+                let resized =
+                    image.resize(new_width, new_height.ceil() as u32, FilterType::CatmullRom);
+                Some((new_width, resized))
+            }
+        })
+        .collect();
+    results.into_iter().collect()
 }
 
 // TODO: pub fn content_based_crop()
 
 #[cfg(test)]
 pub mod resize_image {
-    // use super::*;
-    // use image::{ImageBuffer, RgbImage};
 
     // TODO: test images w/ various properties
     // - animated gif
@@ -43,12 +39,14 @@ pub mod resize_image {
     // - webp
     // - 10-bit color (where applicable)
 
+    use super::*;
+    use image::DynamicImage;
+
     #[test]
     fn test_constrain_image_dimensions() {
-        // let img: RgbImage = ImageBuffer::new(2000, 1000);
-        // let resized_img = constrain_image_dimensions(img);
-        let (width, height) = (2000, 1000);
-        assert_eq!(width, 2000);
-        assert_eq!(height, 1000);
+        let widths = vec![360, 720, 1200, 2200];
+        let test_image = DynamicImage::new_rgba8(2000, 1000);
+        let constrained = constrain_image_dimensions(test_image, widths);
+        println!("{:#?}", constrained.keys());
     }
 }
