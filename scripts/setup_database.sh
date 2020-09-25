@@ -2,7 +2,6 @@
 
 # -----------------------------------------------------------------------------
 # setup_database.sh
-# - Expects .env to exist
 # -----------------------------------------------------------------------------
 
 set -euo pipefail
@@ -10,14 +9,17 @@ set -euo pipefail
 scripts_dir="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 project_root_dir="$scripts_dir/.."
 
-sudo_prefix="sudo -u postgres "
+sudo_prefix=""
+pg_user=""
 if [[ "$OSTYPE" != "darwin"* ]]; then
   sudo_prefix="sudo -u postgres "
+  pg_user="-U postgres"
 fi
+
 
 function run_sql() {
   sql=$1
-  $sudo_prefix psql postgres -U postgres -w -c "$sql"
+  $sudo_prefix psql postgres $pg_user -w -c "$sql"
 }
 
 function create_database() {
@@ -25,7 +27,7 @@ function create_database() {
   database_user="$2"
   database_password="$3"
 
-  if [ "$( $sudo_prefix psql postgres -U postgres -w -tAc "SELECT 1 FROM pg_database WHERE datname='$database_name'" )" = '1' ]; then
+  if [ "$( $sudo_prefix psql postgres $pg_user -w -tAc "SELECT 1 FROM pg_database WHERE datname='$database_name'" )" = '1' ]; then
     echo "Database '$database_name' already exists, skipping"
     return
   fi
