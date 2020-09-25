@@ -70,10 +70,9 @@ module "deploy_pipeline" {
   deploy_name                  = var.deploy_name
   project_slug                 = var.project_slug
 
-  app_blue_autoscaling_group_id  = module.app_cluster.app_blue_autoscaling_group_id
-  app_green_autoscaling_group_id = module.app_cluster.app_green_autoscaling_group_id
-  app_target_group_name          = module.app_cluster.app_target_group_name
-  app_lb_listener_arn            = module.app_cluster.app_lb_listener_arn
+  app_blue_autoscaling_group_id = module.app_cluster.app_blue_autoscaling_group_id
+  app_target_group_name         = module.app_cluster.app_target_group_name
+  app_lb_listener_arn           = module.app_cluster.app_lb_listener_arn
 }
 
 module "app_cloudfront" {

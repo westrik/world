@@ -37,7 +37,3 @@ variable "app_target_group_name" {
 variable "app_blue_autoscaling_group_id" {
   type = string
 }
-
-variable "app_green_autoscaling_group_id" {
-  type = string
-}

@@ -2,10 +2,6 @@ output "app_blue_autoscaling_group_id" {
   value = module.autoscaling_group_blue.app_autoscaling_group_id
 }
 
-output "app_green_autoscaling_group_id" {
-  value = module.autoscaling_group_green.app_autoscaling_group_id
-}
-
 output "app_host_iam_role_id" {
   value = aws_iam_role.app_host.id
 }

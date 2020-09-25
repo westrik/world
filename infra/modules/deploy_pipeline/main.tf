@@ -19,11 +19,13 @@ resource "aws_codedeploy_deployment_group" "app_blue" {
   deployment_group_name  = "${var.project_slug}_app_${var.deploy_name}-blue"
   service_role_arn       = aws_iam_role.codedeploy.arn
   deployment_config_name = "CodeDeployDefault.AllAtOnce"
-  autoscaling_groups     = [var.app_blue_autoscaling_group_id]
+  autoscaling_groups = [
+    var.app_blue_autoscaling_group_id,
+  ]
 
   deployment_style {
-    deployment_option = "WITHOUT_TRAFFIC_CONTROL" // TODO: use WITH_TRAFFIC_CONTROL
-    deployment_type   = "IN_PLACE"                // TODO: use BLUE_GREEN
+    deployment_option = "WITH_TRAFFIC_CONTROL"
+    deployment_type   = "IN_PLACE"
   }
 
   auto_rollback_configuration {
@@ -37,31 +39,6 @@ resource "aws_codedeploy_deployment_group" "app_blue" {
     target_group_info {
       name = var.app_target_group_name
     }
-  }
-
-  ec2_tag_set {
-    ec2_tag_filter {
-      key   = "Environment"
-      type  = "KEY_AND_VALUE"
-      value = var.deploy_name
-    }
-  }
-}
-
-resource "aws_codedeploy_deployment_group" "app_green" {
-  app_name               = aws_codedeploy_app.app.name
-  deployment_group_name  = "${var.project_slug}_app_${var.deploy_name}-green"
-  service_role_arn       = aws_iam_role.codedeploy.arn
-  deployment_config_name = "CodeDeployDefault.AllAtOnce"
-  autoscaling_groups     = [var.app_green_autoscaling_group_id]
-
-  deployment_style {
-    deployment_option = "WITHOUT_TRAFFIC_CONTROL" // TODO: use WITH_TRAFFIC_CONTROL
-    deployment_type   = "IN_PLACE"                // TODO: use BLUE_GREEN
-  }
-
-  auto_rollback_configuration {
-    enabled = false
   }
 
   ec2_tag_set {
