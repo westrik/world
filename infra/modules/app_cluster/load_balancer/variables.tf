@@ -22,8 +22,8 @@ variable "aws_az2" {
   type = string
 }
 
-variable "api_domain_name" {
-  type = string
+variable "api_domain_names" {
+  type = list(string)
 }
 
 variable "root_domain_name" {

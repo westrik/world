@@ -1,8 +1,8 @@
-output "app_blue_target_group_arn" {
+output "app_target_group_arn" {
   value = aws_lb_target_group.app_blue.arn
 }
 
-output "app_blue_target_group_name" {
+output "app_target_group_name" {
   value = aws_lb_target_group.app_blue.name
 }
 

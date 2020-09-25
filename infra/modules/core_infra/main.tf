@@ -1,4 +1,6 @@
 module "ami_sandbox" {
+  // TODO: build AMIs in app VPC to reduce monthly costs
+  //  count = 0
   source = "./ami_sandbox"
 
   aws_az     = var.aws_az1

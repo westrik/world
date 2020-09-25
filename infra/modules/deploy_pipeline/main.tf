@@ -14,16 +14,18 @@ resource "aws_codedeploy_app" "app" {
   name = "${var.project_slug}_app"
 }
 
-resource "aws_codedeploy_deployment_group" "app" {
+resource "aws_codedeploy_deployment_group" "app_blue" {
   app_name               = aws_codedeploy_app.app.name
-  deployment_group_name  = "${var.project_slug}_app"
+  deployment_group_name  = "${var.project_slug}_app_${var.deploy_name}-blue"
   service_role_arn       = aws_iam_role.codedeploy.arn
   deployment_config_name = "CodeDeployDefault.AllAtOnce"
-  autoscaling_groups     = var.app_autoscaling_group_ids
+  autoscaling_groups = [
+    var.app_blue_autoscaling_group_id,
+  ]
 
   deployment_style {
-    deployment_option = "WITHOUT_TRAFFIC_CONTROL" // TODO: use WITH_TRAFFIC_CONTROL
-    deployment_type   = "IN_PLACE"                // TODO: use BLUE_GREEN
+    deployment_option = "WITH_TRAFFIC_CONTROL"
+    deployment_type   = "IN_PLACE"
   }
 
   auto_rollback_configuration {
@@ -35,7 +37,7 @@ resource "aws_codedeploy_deployment_group" "app" {
 
   load_balancer_info {
     target_group_info {
-      name = var.app_blue_target_group_name
+      name = var.app_target_group_name
     }
   }
 
@@ -43,7 +45,7 @@ resource "aws_codedeploy_deployment_group" "app" {
     ec2_tag_filter {
       key   = "Environment"
       type  = "KEY_AND_VALUE"
-      value = "production"
+      value = var.deploy_name
     }
   }
 }
@@ -215,7 +217,7 @@ resource "aws_codepipeline" "app" {
 
       configuration = {
         ApplicationName     = aws_codedeploy_app.app.name
-        DeploymentGroupName = aws_codedeploy_deployment_group.app.deployment_group_name
+        DeploymentGroupName = aws_codedeploy_deployment_group.app_blue.deployment_group_name
       }
     }
   }

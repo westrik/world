@@ -30,10 +30,10 @@ variable "app_lb_listener_arn" {
   type = string
 }
 
-variable "app_blue_target_group_name" {
+variable "app_target_group_name" {
   type = string
 }
 
-variable "app_autoscaling_group_ids" {
-  type = list(string)
+variable "app_blue_autoscaling_group_id" {
+  type = string
 }

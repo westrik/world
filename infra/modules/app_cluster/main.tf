@@ -1,4 +1,4 @@
-// - Provision an EC2 instance running our custom AMI
+// Provision a cluster of EC2 instances running our custom AMI
 
 provider "aws" {
   region = var.aws_region
@@ -24,65 +24,41 @@ data "aws_ami" "app" {
   }
 }
 
-resource "aws_key_pair" "test_key" {
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC8u441SFCy5higGr/0mWsSfGsiJyzpouDvcVW6WO8tNqC24DCnVF8LOfGZvFH2bWNCrFFeMwj3PCd3B6CeLuGP3iLE5WLZqutb6+ca8/hrYlwSF1hzt451k5/4tXL5O1rRkmVbosmjjuJzm/vib9nDHeF8ebXabSBjvE+V8nhj26UpOoheSYTc3XDzkbDJuOj1wSSrirfMsZVVse9GgSzOMdZVVjrheZAUPxMFKbEZEL0ZIkr4DIDld78UyU7ZPsLJoZjRK+MzEFwjyZ/TNjIsvn6rgaCM+MFFeHXc2z1yG60Tv8trtPLu7KHpTcSrVVo2DUEUlbR32uQ86MvFCS4B4OfWW+cDTbYBw+5wjUkhwg6AvmvcU7Ix4N4vosSq+ny/Sj/LbxmmE4QL1r8ZUUQ+3AqtA2O0MCuzdQtt1pQDCur9v+PD5lF411KT4BsG/me+GW4xiAbJSXpzhfTgu/gsjzbIbet8onzC7+naofgRdbB0kLJEco3/2hIgHLXdVCM="
+module "autoscaling_group_blue" {
+  source = "./autoscaling_group"
+
+  color        = "blue"
+  deploy_name  = var.deploy_name
+  project_name = var.project_name
+
+  ami_id                    = "ami-06654a2796c88fe40"
+  app_security_group_ids    = var.app_security_group_ids
+  app_subnet_ids            = var.app_subnet_ids
+  iam_instance_profile_name = aws_iam_instance_profile.app_host.name
+  num_app_instances         = var.num_app_instances
+  target_group_arn          = module.app_load_balancer.app_target_group_arn
 }
 
-resource "aws_launch_template" "app_blue" {
-  name_prefix            = "${var.project_name}-app-${var.deploy_name}-blue-"
-  image_id               = data.aws_ami.app.id
-  instance_type          = "t3a.micro"
-  vpc_security_group_ids = var.app_security_group_ids
+module "app_load_balancer" {
+  source = "./load_balancer"
 
-  key_name = aws_key_pair.test_key.key_name
+  aws_region = var.aws_region
+  aws_az1    = var.aws_az1
+  aws_az2    = var.aws_az2
 
-  # TODO: make sure EBS volume is encrypted
+  project_name     = var.project_name
+  project_slug     = var.project_slug
+  deploy_name      = var.deploy_name
+  root_domain_name = var.root_domain_name
+  api_domain_names = var.api_domain_names
+  admin_email      = var.admin_email
 
-  iam_instance_profile {
-    name = aws_iam_instance_profile.app_host.name
-  }
+  app_vpc_id             = var.app_vpc_id
+  app_security_group_ids = var.app_security_group_ids
+  app_subnet_ids         = var.app_subnet_ids
 
-  lifecycle {
-    // create_before_destroy = true
-    create_before_destroy = false
-  }
-}
-
-resource "aws_autoscaling_group" "app_blue" {
-  name                = "${aws_launch_template.app_blue.name}-asg"
-  desired_capacity    = var.num_app_instances
-  max_size            = var.num_app_instances + 1
-  min_size            = var.num_app_instances
-  vpc_zone_identifier = var.app_subnet_ids
-  target_group_arns   = [var.app_blue_target_group_arn]
-
-  launch_template {
-    id      = aws_launch_template.app_blue.id
-    version = "$Latest"
-  }
-
-  lifecycle {
-    // create_before_destroy = true
-    create_before_destroy = false
-  }
-
-  tags = [
-    {
-      key                 = "Name"
-      value               = "app"
-      propagate_at_launch = true
-    },
-    {
-      key                 = "Environment"
-      value               = var.deploy_name
-      propagate_at_launch = true
-    },
-    {
-      key                 = "Project"
-      value               = var.project_name
-      propagate_at_launch = true
-    }
-  ]
+  lambda_deploy_bucket                   = var.lambda_deploy_bucket
+  lambda_iam_role_arn__renew_certificate = var.lambda_iam_role_arn__renew_certificate
 }
 
 // Grant EC2 access to RDS
@@ -90,6 +66,7 @@ resource "aws_iam_instance_profile" "app_host" {
   name = "app_host"
   role = aws_iam_role.app_host.name
 }
+
 resource "aws_iam_role" "app_host" {
   name               = "ec2_app_host"
   path               = "/"
