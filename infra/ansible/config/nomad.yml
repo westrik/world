@@ -1,36 +1,40 @@
-# sudo touch /etc/systemd/system/nomad.service
+---
+- name: Copy nomad systemd config file
+  copy:
+    src: ../../systemd/nomad.service
+    dest: /etc/systemd/system/nomad.service
+    mode: 0600
 
-#  [Unit]
-#  Description=Nomad
-#  Documentation=https://nomadproject.io/docs/
-#  Wants=network-online.target
-#  After=network-online.target
-#
-#  [Service]
-#  ExecReload=/bin/kill -HUP $MAINPID
-#  ExecStart=/usr/local/bin/nomad agent -config /etc/nomad.d
-#  KillMode=process
-#  KillSignal=SIGINT
-#  LimitNOFILE=infinity
-#  LimitNPROC=infinity
-#  Restart=on-failure
-#  RestartSec=2
-#  StartLimitBurst=3
-#  StartLimitIntervalSec=10
-#  TasksMax=infinity
-#
-#  [Install]
-#  WantedBy=multi-user.target
+- name: Create nomad config directory
+  file:
+    path: /etc/nomad.d
+    state: directory
 
+- name: Copy nomad config
+  template:
+    src: ../../nomad/nomad.hcl.j2
+    dest: /etc/nomad.d/nomad.hcl
 
+- name: Copy nomad server config
+  copy:
+    src: ../../nomad/server.hcl
+    dest: /etc/nomad.d/server.hcl
 
-#sudo mkdir --parents /etc/nomad.d
-#sudo chmod 700 /etc/nomad.d
-#sudo touch /etc/nomad.d/nomad.hcl
+- name: Copy nomad client config
+  copy:
+    src: ../../nomad/client.hcl
+    dest: /etc/nomad.d/client.hcl
 
-#sudo touch /etc/nomad.d/server.hcl
+- name: Update permissions for nomad config directory
+  file:
+    path: /etc/nomad.d
+    state: directory
+    owner: root
+    group: root
+    mode: 0700
+    recurse: yes
 
-#sudo touch /etc/nomad.d/client.hcl
-
-#systemctl enable nomad
-#systemctl start nomad
+- name: Enable nomad service
+  service:
+    name: nomad
+    enabled: yes

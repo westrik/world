@@ -12,6 +12,14 @@
     state: present
     system: yes
 
+- name: Copy consul systemd config file
+  copy:
+    src: ../../systemd/consul.service
+    dest: /etc/systemd/system/consul.service
+    owner: consul
+    group: consul
+    mode: 0640
+
 - name: Create consul config directory
   file:
     path: /etc/consul.d
@@ -31,14 +39,6 @@
   copy:
     src: ../../consul/server.hcl
     dest: /etc/consul.d/server.hcl
-    owner: consul
-    group: consul
-    mode: 0640
-
-- name: Copy consul systemd config file
-  copy:
-    src: ../../systemd/consul.service
-    dest: /etc/systemd/system/consul.service
     owner: consul
     group: consul
     mode: 0640

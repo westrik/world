@@ -76,6 +76,21 @@
     rule: allow
     port: '8302'
 
+- name: Allow Nomad HTTP
+  ufw:
+    rule: allow
+    port: '4646'
+
+- name: Allow Nomad RPC
+  ufw:
+    rule: allow
+    port: '4647'
+
+- name: Allow Nomad Serf WAN
+  ufw:
+    rule: allow
+    port: '4648'
+
 - name: Start ufw now and at boot
   ufw:
     state: enabled

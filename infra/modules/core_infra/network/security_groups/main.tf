@@ -165,3 +165,86 @@ resource "aws_security_group_rule" "allow_consul_tcp_egress_http" {
   security_group_id = aws_security_group.consul.id
   cidr_blocks       = ["0.0.0.0/0"]
 }
+
+locals {
+  nomad_ports_tcp_only = [
+    //    4646, # HTTP
+    4647, # Server RPC
+  ]
+  nomad_ports_tcp_and_udp = [
+    4648, # Serf WAN
+  ]
+  nomad_cidr_blocks = ["10.0.0.0/16"]
+}
+
+resource "aws_security_group" "nomad" {
+  name        = "app_nomad_sg"
+  description = "[${var.project_slug}-${var.deploy_name}] nomad security group"
+  vpc_id      = var.vpc_id
+}
+
+resource "aws_security_group_rule" "allow_nomad_tcp_ingress" {
+  for_each = {
+    for port in concat(local.nomad_ports_tcp_only, local.nomad_ports_tcp_and_udp) : port => {}
+  }
+  from_port         = each.key
+  to_port           = each.key
+  protocol          = "tcp"
+  type              = "ingress"
+  security_group_id = aws_security_group.nomad.id
+  cidr_blocks       = local.nomad_cidr_blocks
+}
+
+resource "aws_security_group_rule" "allow_nomad_tcp_egress" {
+  for_each = {
+    for port in concat(local.nomad_ports_tcp_only, local.nomad_ports_tcp_and_udp) : port => {}
+  }
+  from_port         = each.key
+  to_port           = each.key
+  protocol          = "tcp"
+  type              = "egress"
+  security_group_id = aws_security_group.nomad.id
+  cidr_blocks       = local.nomad_cidr_blocks
+}
+
+resource "aws_security_group_rule" "allow_nomad_udp_ingress" {
+  for_each = {
+    for port in local.nomad_ports_tcp_and_udp : port => {}
+  }
+  from_port         = each.key
+  to_port           = each.key
+  protocol          = "udp"
+  type              = "ingress"
+  security_group_id = aws_security_group.nomad.id
+  cidr_blocks       = local.nomad_cidr_blocks
+}
+
+resource "aws_security_group_rule" "allow_nomad_udp_egress" {
+  for_each = {
+    for port in local.nomad_ports_tcp_and_udp : port => {}
+  }
+  from_port         = each.key
+  to_port           = each.key
+  protocol          = "udp"
+  type              = "egress"
+  security_group_id = aws_security_group.nomad.id
+  cidr_blocks       = local.nomad_cidr_blocks
+}
+
+resource "aws_security_group_rule" "allow_nomad_tcp_ingress_http" {
+  from_port         = 4646
+  to_port           = 4646
+  protocol          = "tcp"
+  type              = "ingress"
+  security_group_id = aws_security_group.nomad.id
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "allow_nomad_tcp_egress_http" {
+  from_port         = 4646
+  to_port           = 4646
+  protocol          = "tcp"
+  type              = "egress"
+  security_group_id = aws_security_group.nomad.id
+  cidr_blocks       = ["0.0.0.0/0"]
+}

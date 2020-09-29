@@ -6,7 +6,7 @@ resource "aws_launch_template" "app_bluegreen" {
   name_prefix            = "${var.project_name}-app-${var.deploy_name}-${var.color}-"
   image_id               = var.ami_id
   instance_type          = "t3a.micro"
-  vpc_security_group_ids = concat(var.app_security_group_ids, var.consul_security_group_ids)
+  vpc_security_group_ids = concat(var.app_security_group_ids, var.consul_security_group_ids, var.nomad_security_group_ids)
 
   key_name = aws_key_pair.test_key.key_name
 

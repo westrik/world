@@ -113,6 +113,7 @@ module "app_cluster" {
   num_app_instances      = var.num_app_instances
 
   consul_security_group_ids = module.core_infra.consul_security_group_ids
+  nomad_security_group_ids  = module.core_infra.nomad_security_group_ids
 
   admin_email      = var.admin_email
   api_domain_names = var.api_domain_names

@@ -11,3 +11,9 @@ output "consul_security_group_ids" {
     aws_security_group.consul.id,
   ]
 }
+
+output "nomad_security_group_ids" {
+  value = [
+    aws_security_group.nomad.id,
+  ]
+}

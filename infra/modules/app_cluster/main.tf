@@ -37,7 +37,9 @@ module "autoscaling_group_blue" {
   iam_instance_profile_name = aws_iam_instance_profile.app_host.name
   num_app_instances         = var.num_app_instances
   target_group_arn          = module.app_load_balancer.app_target_group_arn
+
   consul_security_group_ids = var.consul_security_group_ids
+  nomad_security_group_ids  = var.nomad_security_group_ids
 }
 
 module "app_load_balancer" {

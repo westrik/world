@@ -13,3 +13,7 @@ output "app_security_group_ids" {
 output "consul_security_group_ids" {
   value = module.security_groups.consul_security_group_ids
 }
+
+output "nomad_security_group_ids" {
+  value = module.security_groups.nomad_security_group_ids
+}

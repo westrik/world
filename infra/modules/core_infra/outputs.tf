@@ -22,6 +22,10 @@ output "consul_security_group_ids" {
   value = module.network.consul_security_group_ids
 }
 
+output "nomad_security_group_ids" {
+  value = module.network.nomad_security_group_ids
+}
+
 output "lambda_deploy_bucket" {
   value = module.s3_buckets.lambda_deploy_bucket
 }

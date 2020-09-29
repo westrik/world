@@ -38,6 +38,10 @@ variable "consul_security_group_ids" {
   type = list(string)
 }
 
+variable "nomad_security_group_ids" {
+  type = list(string)
+}
+
 variable "api_domain_names" {
   type = list(string)
 }
