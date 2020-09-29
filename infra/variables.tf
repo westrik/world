@@ -31,6 +31,10 @@ variable "api_domain_names" {
   default = ["api.westrik.world", "api-secondary.westrik.world"]
 }
 
+variable "consul_domain_names" {
+  default = ["consul.internal.westrik.world"]
+}
+
 variable "root_domain_name" {
   default = "westrik.world"
 }

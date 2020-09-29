@@ -141,3 +141,11 @@ module "worker_lambdas" {
   lambda_deploy_bucket = module.core_infra.lambda_deploy_bucket
   app_host_iam_role_id = module.app_cluster.app_host_iam_role_id
 }
+
+module "consul" {
+  source = "./modules/consul"
+
+  admin_email         = var.admin_email
+  consul_domain_names = var.consul_domain_names
+  project_slug        = var.project_slug
+}

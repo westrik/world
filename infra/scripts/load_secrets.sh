@@ -28,7 +28,6 @@ function get_secret() {
   echo "$secret_value"
 }
 
-api_cert_data=$(get_secret "api_cert" | jq -r '.certificate')
 cloudfront_keypair_id=$(get_secret "cloudfront_keypair_id")
 cloudfront_private_key=$(get_secret "cloudfront_private_key")
 content_bucket_name=$(get_secret "content_bucket_name")
@@ -61,9 +60,18 @@ systemctl stop nginx app worker
 chown app:app $RAMFS_MOUNT_DIR/app.env
 chmod 660 $RAMFS_MOUNT_DIR/app.env
 
+api_cert_data=$(get_secret "api_cert" | jq -r '.certificate')
 echo "$api_cert_data" | jq -r '.certificate' > $RAMFS_MOUNT_DIR/cert.pem
 echo "$api_cert_data" | jq -r '.certificate_chain' >> $RAMFS_MOUNT_DIR/cert.pem
 echo "$api_cert_data" | jq -r '.private_key' > $RAMFS_MOUNT_DIR/privkey.pem
 chmod 600 $RAMFS_MOUNT_DIR/*.pem
 
-systemctl start nginx app worker
+consul_cert_data=$(get_secret "consul_cert" | jq -r '.certificate')
+consul_cert_dir="$RAMFS_MOUNT_DIR/consul"
+mkdir -p $consul_cert_dir
+echo "$consul_cert_data" | jq -r '.certificate' > $consul_cert_dir/cert.pem
+echo "$consul_cert_data" | jq -r '.certificate_chain' >> $consul_cert_dir/cert.pem
+echo "$consul_cert_data" | jq -r '.private_key' > $consul_cert_dir/privkey.pem
+chmod 600 $consul_cert_dir/*.pem
+
+systemctl start nginx # app worker
