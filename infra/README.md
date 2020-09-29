@@ -20,3 +20,19 @@ terraform apply        # apply all remaining changes
 ```
 
 (TODO: deploys in different regions)
+
+
+
+----------
+
+### replacing CodeDeploy + CodePipeline setup with Consul + Nomad
+
+- [Consul reference architecture](https://learn.hashicorp.com/tutorials/consul/reference-architecture?in=consul/datacenter-deploy)
+- [Nomad reference architecture](https://learn.hashicorp.com/tutorials/nomad/production-reference-architecture-vm-with-consul?in=nomad/production)
+
+- [Consul deployment guide](https://learn.hashicorp.com/tutorials/consul/deployment-guide)
+- [Nomad deployment guide](https://learn.hashicorp.com/tutorials/nomad/production-deployment-guide-vm-with-consul)
+- [Consul cloud auto-join](https://www.consul.io/docs/install/cloud-auto-join)
+- [enable TLS encryption for Consul](https://learn.hashicorp.com/tutorials/consul/tls-encryption-secure)
+- [enable TLS encryption for Nomad](https://learn.hashicorp.com/tutorials/nomad/security-enable-tls)
+- [Nomad blue/green deployments](https://learn.hashicorp.com/tutorials/nomad/job-blue-green-and-canary-deployments)

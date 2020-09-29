@@ -1,8 +1,23 @@
 ---
+- name: Create 'consul' group
+  group:
+    name: consul
+    state: present
+    system: yes
+
+- name: Create 'consul' user
+  user:
+    name: consul
+    group: consul
+    state: present
+    system: yes
+
 - name: Create consul config directory
   file:
     path: /etc/consul.d
     state: directory
+    owner: consul
+    group: consul
 
 - name: Copy consul config
   template:
@@ -11,3 +26,55 @@
     owner: consul
     group: consul
     mode: 0640
+
+- name: Copy consul server config
+  copy:
+    src: ../../consul/server.hcl
+    dest: /etc/consul.d/server.hcl
+    owner: consul
+    group: consul
+    mode: 0640
+
+- name: Copy consul systemd config file
+  copy:
+    src: ../../systemd/consul.service
+    dest: /etc/systemd/system/consul.service
+    owner: consul
+    group: consul
+    mode: 0640
+
+- name: Copy consul RPC server certificate
+  copy:
+    src: ../../certificates/aws-{{ aws_region }}-server-consul-0.pem
+    dest: /etc/consul.d/
+    owner: consul
+    group: consul
+    mode: 0640
+
+- name: Copy consul RPC server key
+  copy:
+    src: ../../certificates/aws-{{ aws_region }}-server-consul-0-key.pem
+    dest: /etc/consul.d/
+    owner: consul
+    group: consul
+    mode: 0640
+
+- name: Copy consul agent CA certificate
+  copy:
+    src: ../../certificates/consul-agent-ca.pem
+    dest: /etc/consul.d/
+    owner: consul
+    group: consul
+    mode: 0640
+
+# TODO: separate this
+#- name: Copy consul RPC client certificates
+#  copy:
+#    src: ../../certificates/aws-{{ aws_region }}-client-consul-0{,-key}.pem
+#    dest: /etc/consul.d/
+#    mode: 0640
+
+- name: Enable consul service
+  service:
+    name: consul
+    enabled: yes

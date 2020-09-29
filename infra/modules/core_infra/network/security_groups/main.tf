@@ -81,7 +81,7 @@ resource "aws_security_group" "app_outbound" {
 
 locals {
   consul_ports_tcp_only = [
-    8500, # HTTP
+    //    8500, # HTTP
     8501, # HTTPS
     8300, # Server RPC
     8502, # gRPC
@@ -146,4 +146,22 @@ resource "aws_security_group_rule" "allow_consul_udp_egress" {
   type              = "egress"
   security_group_id = aws_security_group.consul.id
   cidr_blocks       = local.consul_cidr_blocks
+}
+
+resource "aws_security_group_rule" "allow_consul_tcp_ingress_http" {
+  from_port         = 8500
+  to_port           = 8500
+  protocol          = "tcp"
+  type              = "ingress"
+  security_group_id = aws_security_group.consul.id
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "allow_consul_tcp_egress_http" {
+  from_port         = 8500
+  to_port           = 8500
+  protocol          = "tcp"
+  type              = "egress"
+  security_group_id = aws_security_group.consul.id
+  cidr_blocks       = ["0.0.0.0/0"]
 }

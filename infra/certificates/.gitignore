@@ -1,0 +1,6 @@
+consul-agent-ca.pem
+consul-agent-ca-key.pem
+aws-us-east-1-server-consul-0.pem
+aws-us-east-1-server-consul-0-key.pem
+aws-us-east-1-client-consul-0.pem
+aws-us-east-1-client-consul-0-key.pem

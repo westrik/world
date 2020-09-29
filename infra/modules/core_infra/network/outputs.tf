@@ -9,3 +9,7 @@ output "app_subnet_ids" {
 output "app_security_group_ids" {
   value = module.security_groups.app_security_group_ids
 }
+
+output "consul_security_group_ids" {
+  value = module.security_groups.consul_security_group_ids
+}

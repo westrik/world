@@ -6,7 +6,7 @@ resource "aws_launch_template" "app_bluegreen" {
   name_prefix            = "${var.project_name}-app-${var.deploy_name}-${var.color}-"
   image_id               = var.ami_id
   instance_type          = "t3a.micro"
-  vpc_security_group_ids = var.app_security_group_ids
+  vpc_security_group_ids = concat(var.app_security_group_ids, var.consul_security_group_ids)
 
   key_name = aws_key_pair.test_key.key_name
 
@@ -24,7 +24,7 @@ resource "aws_launch_template" "app_bluegreen" {
 resource "aws_autoscaling_group" "app_bluegreen" {
   name                = "${aws_launch_template.app_bluegreen.name}-asg"
   desired_capacity    = var.num_app_instances
-  max_size            = var.num_app_instances
+  max_size            = var.num_app_instances * 2
   min_size            = var.num_app_instances
   vpc_zone_identifier = var.app_subnet_ids
   target_group_arns   = [var.target_group_arn]

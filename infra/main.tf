@@ -112,6 +112,8 @@ module "app_cluster" {
   app_vpc_id             = module.core_infra.app_vpc_id
   num_app_instances      = var.num_app_instances
 
+  consul_security_group_ids = module.core_infra.consul_security_group_ids
+
   admin_email      = var.admin_email
   api_domain_names = var.api_domain_names
   root_domain_name = var.root_domain_name

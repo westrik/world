@@ -34,6 +34,10 @@ variable "num_app_instances" {
   type = number
 }
 
+variable "consul_security_group_ids" {
+  type = list(string)
+}
+
 variable "api_domain_names" {
   type = list(string)
 }

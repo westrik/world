@@ -1,9 +1,10 @@
-datacenter = "{{ aws_region }}"
+datacenter = "aws-{{ aws_region }}"
 data_dir = "/opt/consul"
-encrypt = "qDOPBEr+/oUVeOFQOnVypxwDaHzLrD+lvjo5vCEBbZ0="
+encrypt = "rEp7zWjnPm7LrfRdauYoTXePd89KGLCo4KpecYiSB5w="
 ca_file = "/etc/consul.d/consul-agent-ca.pem"
-cert_file = "/etc/consul.d/{{ aws_region }}-server-consul-0.pem"
-key_file = "/etc/consul.d/{{ aws_region }}-server-consul-0-key.pem"
+cert_file = "/etc/consul.d/aws-{{ aws_region }}-server-consul-0.pem"
+key_file = "/etc/consul.d/aws-{{ aws_region }}-server-consul-0-key.pem"
 verify_incoming = true
 verify_outgoing = true
 verify_server_hostname = true
+retry_join = ["provider=aws tag_key=Project tag_value=westrikworld"]
