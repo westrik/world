@@ -14,12 +14,16 @@
       apt:
         update_cache: yes
 
-    - name: Install service apt dependencies
+    - name: Install Consul & Nomad
+      import_tasks: dependencies/hashicorp.yml
+
+    - name: Install service dependencies
       import_tasks: dependencies/service.yml
 
     - name: Set up firewall
       import_tasks: config/ufw.yml
 
+    # TODO: replace this functionality with Nomad/Vault
     - name: Configure secrets service
       import_tasks: config/secrets.yml
 
@@ -29,5 +33,8 @@
     - name: Configure nginx
       import_tasks: config/nginx.yml
 
-    - name: Install CodeDeploy
-      import_tasks: dependencies/codedeploy.yml
+    - name: Configure Consul
+      import_tasks: config/consul.yml
+
+    - name: Configure Nomad
+      import_tasks: config/nomad.yml

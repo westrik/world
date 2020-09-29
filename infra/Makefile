@@ -5,7 +5,7 @@ build_ami:
 	packer build amis/westrikworld_production.json
 
 apply_core_infra:
-	terraform apply -target=module.core_infra
+	terraform apply -target=module.core_infra -var-file="secrets.tfvars"
 
 apply:
 	terraform apply -var-file="secrets.tfvars"

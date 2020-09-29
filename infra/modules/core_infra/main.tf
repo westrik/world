@@ -23,8 +23,8 @@ module "network" {
   aws_az1      = var.aws_az1
   aws_az2      = var.aws_az2
   project_name = var.project_name
-  deploy_name  = ""
-  project_slug = ""
+  deploy_name  = var.deploy_name
+  project_slug = var.project_slug
 }
 
 module "lambda_iam_roles" {

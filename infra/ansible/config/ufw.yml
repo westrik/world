@@ -41,6 +41,41 @@
     port: '5543'
     direction: out
 
+- name: Allow Consul DNS
+  ufw:
+    rule: allow
+    port: '8600'
+
+- name: Allow Consul HTTP
+  ufw:
+    rule: allow
+    port: '8500'
+
+- name: Allow Consul HTTPS
+  ufw:
+    rule: allow
+    port: '8501'
+
+- name: Allow Consul gRPC
+  ufw:
+    rule: allow
+    port: '8502'
+
+- name: Allow Consul Server RPC
+  ufw:
+    rule: allow
+    port: '8300'
+
+- name: Allow Consul Serf LAN
+  ufw:
+    rule: allow
+    port: '8301'
+
+- name: Allow Consul Serf WAN
+  ufw:
+    rule: allow
+    port: '8302'
+
 - name: Start ufw now and at boot
   ufw:
     state: enabled
