@@ -11,7 +11,8 @@ CodeDeploy
 */
 
 resource "aws_codedeploy_app" "app" {
-  name = "${var.project_slug}_app"
+  name             = "${var.project_slug}_app"
+  compute_platform = "Server"
 }
 
 resource "aws_codedeploy_deployment_group" "app_blue" {
@@ -39,6 +40,12 @@ resource "aws_codedeploy_deployment_group" "app_blue" {
     target_group_info {
       name = var.app_target_group_name
     }
+  }
+
+  trigger_configuration {
+    trigger_name       = "${var.project_slug}_app_${var.deploy_name}-trigger"
+    trigger_events     = ["DeploymentFailure", "InstanceStart"]
+    trigger_target_arn = var.codedeploy_app_scaling_sns_arn
   }
 
   ec2_tag_set {

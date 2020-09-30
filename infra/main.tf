@@ -73,6 +73,8 @@ module "deploy_pipeline" {
   app_blue_autoscaling_group_id = module.app_cluster.app_blue_autoscaling_group_id
   app_target_group_name         = module.app_cluster.app_target_group_name
   app_lb_listener_arn           = module.app_cluster.app_lb_listener_arn
+
+  codedeploy_app_scaling_sns_arn = module.app_cluster.app_scaling_sns_arn
 }
 
 module "app_cloudfront" {

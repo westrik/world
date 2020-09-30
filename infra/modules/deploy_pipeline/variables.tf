@@ -37,3 +37,7 @@ variable "app_target_group_name" {
 variable "app_blue_autoscaling_group_id" {
   type = string
 }
+
+variable "codedeploy_app_scaling_sns_arn" {
+  type = string
+}

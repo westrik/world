@@ -28,7 +28,7 @@ variable "aws_az2" {
  */
 
 variable "api_domain_names" {
-  default = ["api.westrik.world", "api2.westrik.world"]
+  default = ["api.westrik.world", "api-001.westrik.world"]
 }
 
 variable "root_domain_name" {
@@ -58,5 +58,13 @@ variable "cloudfront_keypair_id" {
 }
 
 variable "cloudfront_private_key" {
+  type = string
+}
+
+variable "google_oidc_client_id" {
+  type = string
+}
+
+variable "google_oidc_client_secret" {
   type = string
 }

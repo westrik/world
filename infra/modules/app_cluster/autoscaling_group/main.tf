@@ -22,12 +22,22 @@ resource "aws_launch_template" "app_bluegreen" {
 }
 
 resource "aws_autoscaling_group" "app_bluegreen" {
-  name                = "${aws_launch_template.app_bluegreen.name}-asg"
-  desired_capacity    = var.num_app_instances
-  max_size            = var.num_app_instances
-  min_size            = var.num_app_instances
+  name             = "${aws_launch_template.app_bluegreen.name}-asg"
+  desired_capacity = var.num_app_instances
+  max_size         = var.num_app_instances * 2
+  min_size         = var.num_app_instances
+
   vpc_zone_identifier = var.app_subnet_ids
   target_group_arns   = [var.target_group_arn]
+
+  // health_check_grace_period = 300
+  // health_check_type = "EC2" || "ELB"
+  // default_cooldown = 10
+  termination_policies = ["OldestLaunchTemplate", "OldestInstance"]
+  // max_instance_lifetime = 604800 # [604800, 31536000] => [week, year]
+
+  // metrics_granularity = "1Minute"
+  // enabled_metrics = []
 
   launch_template {
     id      = aws_launch_template.app_bluegreen.id
@@ -36,6 +46,22 @@ resource "aws_autoscaling_group" "app_bluegreen" {
 
   lifecycle {
     create_before_destroy = false
+  }
+
+  initial_lifecycle_hook {
+    name                 = "${var.project_name}-app-${var.deploy_name}-starting"
+    default_result       = "CONTINUE"
+    heartbeat_timeout    = 2000
+    lifecycle_transition = "autoscaling:EC2_INSTANCE_LAUNCHING"
+
+    //    notification_metadata = <<EOF
+    //{
+    //  "foo": "bar"
+    //}
+    //EOF
+
+    notification_target_arn = aws_sns_topic.app_scaling.arn
+    // role_arn                = "arn:aws:iam::123456789012:role/S3Access"
   }
 
   tags = [
@@ -55,4 +81,57 @@ resource "aws_autoscaling_group" "app_bluegreen" {
       propagate_at_launch = true
     }
   ]
+}
+
+resource "aws_autoscaling_notification" "app_scaling" {
+  group_names = [
+    aws_autoscaling_group.app_bluegreen.name,
+  ]
+
+  notifications = [
+    "autoscaling:EC2_INSTANCE_LAUNCH",
+    "autoscaling:EC2_INSTANCE_TERMINATE",
+    "autoscaling:EC2_INSTANCE_LAUNCH_ERROR",
+    "autoscaling:EC2_INSTANCE_TERMINATE_ERROR",
+  ]
+
+  topic_arn = aws_sns_topic.app_scaling.arn
+}
+
+//resource "aws_autoscaling_lifecycle_hook" "app_scale_up" {
+//  name                   = "${var.project_name}-app-${var.deploy_name}-scale_up"
+//  autoscaling_group_name = aws_autoscaling_group.app_bluegreen.name
+//  default_result         = "CONTINUE"
+//  heartbeat_timeout      = 2000
+//  lifecycle_transition   = "autoscaling:EC2_INSTANCE_LAUNCHING"
+//
+////  notification_metadata = <<EOF
+////{
+////  "foo": "bar"
+////}
+////EOF
+//
+//  notification_target_arn = aws_sns_topic.app_scaling.arn
+//  role_arn                = "arn:aws:iam::123456789012:role/S3Access"
+//}
+
+resource "aws_sns_topic" "app_scaling" {
+  name = "${var.project_name}-app-${var.deploy_name}-scaling"
+  //  kms_master_key_id = "alias/aws/sns"
+  delivery_policy = <<EOF
+{
+  "http": {
+    "defaultHealthyRetryPolicy": {
+      "minDelayTarget": 20,
+      "maxDelayTarget": 20,
+      "numRetries": 3,
+      "numMaxDelayRetries": 0,
+      "numNoDelayRetries": 0,
+      "numMinDelayRetries": 0,
+      "backoffFunction": "linear"
+    },
+    "disableSubscriptionOverrides": false
+  }
+}
+EOF
 }
