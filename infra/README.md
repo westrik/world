@@ -16,7 +16,7 @@ terraform init
 make apply_core_infra  # set up security groups, networking, S3 buckets, and IAM roles
 make ami               # build app instance AMI (with Packer)
 make package_lambdas   # build Lambdas and upload to S3 (with SAM CLI + Docker)
-terraform apply        # apply all remaining changes
+make apply             # apply all remaining changes
 ```
 
 (TODO: deploys in different regions)

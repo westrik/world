@@ -24,22 +24,22 @@ data "aws_ami" "app" {
   }
 }
 
-module "autoscaling_group_blue" {
+module "api_autoscaling_group" {
   source = "./autoscaling_group"
 
-  color        = "blue"
+  cluster_name = "api"
   deploy_name  = var.deploy_name
   project_name = var.project_name
 
-  ami_id                    = "ami-06654a2796c88fe40"
+  ami_id                    = data.aws_ami.app.id
   app_security_group_ids    = var.app_security_group_ids
   app_subnet_ids            = var.app_subnet_ids
   iam_instance_profile_name = aws_iam_instance_profile.app_host.name
   num_app_instances         = var.num_app_instances
-  target_group_arn          = module.app_load_balancer.app_target_group_arn
+  target_group_arn          = module.api_load_balancer.app_target_group_arn
 }
 
-module "app_load_balancer" {
+module "api_load_balancer" {
   source = "./load_balancer"
 
   aws_region = var.aws_region

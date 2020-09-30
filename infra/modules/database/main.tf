@@ -89,15 +89,6 @@ resource "aws_iam_role_policy_attachment" "app_rds_monitoring" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }
 
-resource "aws_db_parameter_group" "app_rds" {
-  name   = "app-rds-parameters"
-  family = "postgres12"
-
-  parameter {
-    name  = "rds.force_ssl"
-    value = 1
-  }
-}
 
 locals {
   db_instance_class = "db.t3.micro"
@@ -110,6 +101,24 @@ locals {
   db_backup_window = "12:00-15:00"
   # Run maintenance between 7am PST & 10am PST every Saturday
   db_maintenance_window = "Sat:15:00-Sat:18:00"
+
+  db_max_connections = 500
+}
+
+resource "aws_db_parameter_group" "app_rds" {
+  name   = "app-rds-parameters"
+  family = "postgres12"
+
+  parameter {
+    name  = "rds.force_ssl"
+    value = 1
+  }
+
+  parameter {
+    name         = "max_connections"
+    value        = local.db_max_connections
+    apply_method = "pending-reboot"
+  }
 }
 
 resource "aws_db_instance" "app" {

@@ -30,6 +30,6 @@ variable "iam_instance_profile_name" {
   type = string
 }
 
-variable "color" {
+variable "cluster_name" {
   type = string
 }
