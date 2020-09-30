@@ -49,6 +49,16 @@ resource "aws_lb_target_group" "app_blue" {
   protocol = "TCP"
   vpc_id   = var.app_vpc_id
 
+  // CodeDeploy traffic control runs the 'BlockTraffic' and 'AllowTraffic' steps
+  // lowering the health-check interval and thresholds drastically speeds up these steps
+  health_check {
+    enabled             = true
+    protocol            = "TCP"
+    interval            = 10
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
+
   stickiness {
     enabled = false
     type    = "lb_cookie"

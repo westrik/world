@@ -21,20 +21,25 @@ resource "aws_launch_template" "app_bluegreen" {
   }
 }
 
+locals {
+  app_instance_lifetime_seconds = 60 * 60 * 24 * 7 # one week in seconds
+}
+
 resource "aws_autoscaling_group" "app_bluegreen" {
   name             = "${aws_launch_template.app_bluegreen.name}-asg"
-  desired_capacity = var.num_app_instances
+  desired_capacity = var.num_app_instances + 2
   max_size         = var.num_app_instances * 2
   min_size         = var.num_app_instances
 
   vpc_zone_identifier = var.app_subnet_ids
   target_group_arns   = [var.target_group_arn]
 
-  // health_check_grace_period = 300
-  // health_check_type = "EC2" || "ELB"
+  termination_policies  = ["OldestLaunchTemplate", "OldestInstance"]
+  max_instance_lifetime = local.app_instance_lifetime_seconds
+
+  health_check_grace_period = 120
+  // health_check_type = "ELB"
   // default_cooldown = 10
-  termination_policies = ["OldestLaunchTemplate", "OldestInstance"]
-  // max_instance_lifetime = 604800 # [604800, 31536000] => [week, year]
 
   // metrics_granularity = "1Minute"
   // enabled_metrics = []
