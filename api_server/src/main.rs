@@ -12,7 +12,7 @@ use world_core::{db, routes};
 
 embed_migrations!("../core/migrations");
 
-const DB_POOL_SIZE: u32 = 15;
+const DB_POOL_SIZE: u32 = 10;
 
 #[tokio::main]
 async fn main() {

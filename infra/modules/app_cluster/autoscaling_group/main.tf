@@ -2,8 +2,8 @@ resource "aws_key_pair" "test_key" {
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC8u441SFCy5higGr/0mWsSfGsiJyzpouDvcVW6WO8tNqC24DCnVF8LOfGZvFH2bWNCrFFeMwj3PCd3B6CeLuGP3iLE5WLZqutb6+ca8/hrYlwSF1hzt451k5/4tXL5O1rRkmVbosmjjuJzm/vib9nDHeF8ebXabSBjvE+V8nhj26UpOoheSYTc3XDzkbDJuOj1wSSrirfMsZVVse9GgSzOMdZVVjrheZAUPxMFKbEZEL0ZIkr4DIDld78UyU7ZPsLJoZjRK+MzEFwjyZ/TNjIsvn6rgaCM+MFFeHXc2z1yG60Tv8trtPLu7KHpTcSrVVo2DUEUlbR32uQ86MvFCS4B4OfWW+cDTbYBw+5wjUkhwg6AvmvcU7Ix4N4vosSq+ny/Sj/LbxmmE4QL1r8ZUUQ+3AqtA2O0MCuzdQtt1pQDCur9v+PD5lF411KT4BsG/me+GW4xiAbJSXpzhfTgu/gsjzbIbet8onzC7+naofgRdbB0kLJEco3/2hIgHLXdVCM="
 }
 
-resource "aws_launch_template" "app_bluegreen" {
-  name_prefix            = "${var.project_name}-app-${var.deploy_name}-${var.color}-"
+resource "aws_launch_template" "app_cluster_instance" {
+  name_prefix            = "${var.project_name}-app-${var.deploy_name}-${var.cluster_name}-"
   image_id               = var.ami_id
   instance_type          = "t3a.micro"
   vpc_security_group_ids = var.app_security_group_ids
@@ -25,9 +25,9 @@ locals {
   app_instance_lifetime_seconds = 60 * 60 * 24 * 7 # one week in seconds
 }
 
-resource "aws_autoscaling_group" "app_bluegreen" {
-  name             = "${aws_launch_template.app_bluegreen.name}-asg"
-  desired_capacity = var.num_app_instances + 2
+resource "aws_autoscaling_group" "app_cluster" {
+  name             = "${aws_launch_template.app_cluster_instance.name}-asg"
+  desired_capacity = var.num_app_instances
   max_size         = var.num_app_instances * 2
   min_size         = var.num_app_instances
 
@@ -45,7 +45,7 @@ resource "aws_autoscaling_group" "app_bluegreen" {
   // enabled_metrics = []
 
   launch_template {
-    id      = aws_launch_template.app_bluegreen.id
+    id      = aws_launch_template.app_cluster_instance.id
     version = "$Latest"
   }
 
@@ -53,26 +53,26 @@ resource "aws_autoscaling_group" "app_bluegreen" {
     create_before_destroy = false
   }
 
-  initial_lifecycle_hook {
-    name                 = "${var.project_name}-app-${var.deploy_name}-starting"
-    default_result       = "CONTINUE"
-    heartbeat_timeout    = 2000
-    lifecycle_transition = "autoscaling:EC2_INSTANCE_LAUNCHING"
-
-    //    notification_metadata = <<EOF
-    //{
-    //  "foo": "bar"
-    //}
-    //EOF
-
-    notification_target_arn = aws_sns_topic.app_scaling.arn
-    // role_arn                = "arn:aws:iam::123456789012:role/S3Access"
-  }
+  //  initial_lifecycle_hook {
+  //    name                 = "${var.project_name}-app-${var.deploy_name}-starting"
+  //    default_result       = "CONTINUE"
+  //    heartbeat_timeout    = 2000
+  //    lifecycle_transition = "autoscaling:EC2_INSTANCE_LAUNCHING"
+  //
+  //    //    notification_metadata = <<EOF
+  //    //{
+  //    //  "foo": "bar"
+  //    //}
+  //    //EOF
+  //
+  //    notification_target_arn = aws_sns_topic.app_scaling.arn
+  //    // role_arn                = "arn:aws:iam::123456789012:role/S3Access"
+  //  }
 
   tags = [
     {
       key                 = "Name"
-      value               = "app-${var.color}"
+      value               = "app-${var.cluster_name}"
       propagate_at_launch = true
     },
     {
@@ -90,7 +90,7 @@ resource "aws_autoscaling_group" "app_bluegreen" {
 
 resource "aws_autoscaling_notification" "app_scaling" {
   group_names = [
-    aws_autoscaling_group.app_bluegreen.name,
+    aws_autoscaling_group.app_cluster.name,
   ]
 
   notifications = [

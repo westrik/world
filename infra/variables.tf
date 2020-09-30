@@ -28,7 +28,7 @@ variable "aws_az2" {
  */
 
 variable "api_domain_names" {
-  default = ["api.westrik.world", "api-001.westrik.world"]
+  default = ["api.westrik.world", "api-alternate.westrik.world"]
 }
 
 variable "root_domain_name" {
@@ -36,7 +36,7 @@ variable "root_domain_name" {
 }
 
 variable "admin_email" {
-  default = "m+wwadmin@ttwestrik.com"
+  default = "m+westrikworld-admin@ttwestrik.com"
 }
 
 variable "outbound_email_sender" {
