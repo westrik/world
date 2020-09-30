@@ -9,16 +9,28 @@
     dest: /etc/systemd/system/nginx.service
     mode: 0644
 
-- name: Copy nginx config file
+- name: Copy nginx config file (API)
   copy:
     src: ../../nginx/westrikworld_api.conf
     dest: /etc/nginx/sites-available/westrikworld_api.conf
     mode: 0644
 
-- name: Symlink config to sites-enabled
+- name: Symlink config to sites-enabled (API)
   file:
     src: /etc/nginx/sites-available/westrikworld_api.conf
     dest: /etc/nginx/sites-enabled/default
+    state: link
+
+- name: Copy nginx config file (consul)
+  copy:
+    src: ../../nginx/westrikworld_consul.conf
+    dest: /etc/nginx/sites-available/westrikworld_consul.conf
+    mode: 0644
+
+- name: Symlink config to sites-enabled (consul)
+  file:
+    src: /etc/nginx/sites-available/westrikworld_consul.conf
+    dest: /etc/nginx/sites-enabled/consul.internal.westrik.world
     state: link
 
 - name: Reload & enable nginx
