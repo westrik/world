@@ -19,8 +19,7 @@ resource "aws_codedeploy_deployment_group" "app_blue" {
   app_name              = aws_codedeploy_app.app.name
   deployment_group_name = "${var.project_slug}_app_${var.deploy_name}-blue"
   service_role_arn      = aws_iam_role.codedeploy.arn
-  //  deployment_config_name = "CodeDeployDefault.OneAtATime"
-  deployment_config_name = "CodeDeployDefault.AllAtOnce"
+  deployment_config_name = "CodeDeployDefault.OneAtATime"
   autoscaling_groups = [
     var.app_blue_autoscaling_group_id,
   ]
