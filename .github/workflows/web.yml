@@ -1,10 +1,9 @@
 name: Web
 
-
 on:
   push:
     paths:
-    - '/web-client/**'
+      - 'web-client/**/*'
 
 jobs:
   build-and-test:
