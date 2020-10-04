@@ -1,6 +1,6 @@
 use world_core::jobs::{errors::JobError, job_type::JobType};
 
-use crate::jobs::dummy_job::DummyJob;
+use crate::jobs::ingest_media_upload::IngestMediaUploadJob;
 use crate::jobs::send_email::SendEmailJob;
 use crate::jobs::Runnable;
 
@@ -18,7 +18,11 @@ pub async fn run_job(
 
     // TODO: run task on tokio threadpool
     match job_type {
-        JobType::DummyJob => DummyJob {}.run().await,
+        JobType::IngestMediaUpload => {
+            let payload = payload.unwrap();
+            let ingest_job: IngestMediaUploadJob = serde_json::from_value(payload).unwrap();
+            ingest_job.run().await
+        }
         JobType::SendEmail => {
             let payload = payload.unwrap();
             let email_job: SendEmailJob = serde_json::from_value(payload).unwrap();

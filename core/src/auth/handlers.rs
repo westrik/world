@@ -1,5 +1,4 @@
 use chrono::{DateTime, Utc};
-use serde_json::json;
 use warp::http::{HeaderValue, Response, StatusCode};
 use warp::Rejection;
 
@@ -10,8 +9,6 @@ use crate::errors::ApiError;
 use crate::external_services::aws::cloudfront::generate_signed_cookie::{
     generate_cloudfront_access_data, CloudFrontAccessData,
 };
-use crate::jobs::enqueue_job::enqueue_job;
-use crate::jobs::job_type::JobType;
 use crate::resource_identifier::split_resource_identifier;
 use crate::utils::api_task::run_api_task;
 use crate::utils::config::{MEDIA_DOMAIN_NAME, ROOT_DOMAIN_NAME};
@@ -70,25 +67,6 @@ fn run_sign_in(creds: SignInRequest, pool: &DbPool) -> Result<AuthenticationResp
     let user: User = User::find(creds.email_address.as_str(), creds.password.as_str(), &conn)?;
     let session: Session = Session::create(&conn, &user)?;
 
-    if let Ok(job) = enqueue_job(
-        &conn,
-        Some(user.id),
-        JobType::SendEmail,
-        Some(json!({
-            "recipients": vec!["test@example.com"],
-            "template": "LoginNotification"
-        })),
-    ) {
-        info!(
-            "enqueued email notification job [user_id={}][job_id={}]",
-            user.id, job.id
-        );
-    } else {
-        error!(
-            "failed to enqueue email notification job [user_id={}]",
-            user.id
-        );
-    }
     Ok(AuthenticationResponse {
         session: Some(session),
         user: Some(user),
