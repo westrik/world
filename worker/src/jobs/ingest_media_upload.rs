@@ -19,7 +19,7 @@ pub struct IngestMediaUploadJob {
 fn file_name_for_resized_version(file_name: &str, width: u32) -> String {
     let path_segments: Vec<&str> = file_name.split('.').into_iter().collect();
     let (file_name_stem, file_extension) = path_segments.split_at(path_segments.len() - 1);
-    if file_name_stem.len() > 0 {
+    if !file_name_stem.is_empty() {
         format!(
             "{}-{}.{}",
             file_name_stem.concat(),
