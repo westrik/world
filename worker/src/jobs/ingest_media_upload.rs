@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use image::ImageFormat;
-use std::io::Read;
+use tokio::io::AsyncReadExt;
 
 use world_core::external_services::aws::s3::{get_object::get_object, put_object::put_object};
 use world_core::jobs::errors::JobError;
@@ -19,12 +19,16 @@ pub struct IngestMediaUploadJob {
 fn file_name_for_resized_version(file_name: &str, width: u32) -> String {
     let path_segments: Vec<&str> = file_name.split('.').into_iter().collect();
     let (file_name_stem, file_extension) = path_segments.split_at(path_segments.len() - 1);
-    format!(
-        "{}-{}.{}",
-        file_name_stem.concat(),
-        width,
-        file_extension.concat()
-    )
+    if file_name_stem.len() > 0 {
+        format!(
+            "{}-{}.{}",
+            file_name_stem.concat(),
+            width,
+            file_extension.concat()
+        )
+    } else {
+        format!("{}-{}", file_extension.concat(), width,)
+    }
 }
 
 #[async_trait]
@@ -61,8 +65,9 @@ impl Runnable for IngestMediaUploadJob {
         object
             .body
             .unwrap()
-            .into_blocking_read()
+            .into_async_read()
             .read_to_end(&mut object_bytes)
+            .await
             .unwrap();
         let image =
             image::load_from_memory_with_format(&object_bytes, image_format).map_err(|e| {
@@ -93,6 +98,10 @@ pub mod ingest_media_upload_job {
         assert_eq!(
             "user_asdfasdf/asdfasdf-1000.png".to_string(),
             file_name_for_resized_version("user_asdfasdf/asdfasdf.png", 1000)
+        );
+        assert_eq!(
+            "user_asdfasdf/asdfasdf-1000".to_string(),
+            file_name_for_resized_version("user_asdfasdf/asdfasdf", 1000)
         );
     }
 }
