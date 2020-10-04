@@ -45,20 +45,27 @@ else
   echo "PASSWORD_HASH_SALT=\"$(gpg --gen-random --armor 0 32)\"" >> .env
 fi
 
-# generate self-signed certs with OpenSSL
-sudo mkdir -p /etc/ssl/{certs,private}
-if ! test -f "/etc/ssl/certs/nginx-selfsigned.crt"; then
-  sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout "/etc/ssl/private/nginx-selfsigned.key" -out "/etc/ssl/certs/nginx-selfsigned.crt"
-fi
-if ! test -f "/etc/ssl/certs/nginx-selfsigned-api.crt"; then
-  sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout "/etc/ssl/private/nginx-selfsigned-api.key" -out "/etc/ssl/certs/nginx-selfsigned-api.crt"
-fi
-if ! test -f "/etc/ssl/certs/dhparam.pem"; then
-  sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
-fi
-
-# configure nginx
 if [[ "$OSTYPE" == "darwin"* ]]; then
+  # set up certs
+  cert_path="/etc/ssl/certs/local_westrik_world.crt"
+  key_path="/etc/ssl/private/local_westrik_world.key"
+
+  if ! command -v mkcert >/dev/null 2>&1; then
+    echo "Installing mkcert & nss"
+    brew install mkcert nss
+    mkcert -install
+  fi
+
+  if ! test -f "$cert_path"; then
+    sudo mkcert -cert-file "$cert_path" -key-file "$key_path" "$ROOT_DOMAIN_NAME" "*.$ROOT_DOMAIN_NAME"
+  fi
+
+  if ! test -f "/etc/ssl/certs/dhparam.pem"; then
+    sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
+  fi
+
+  # configure nginx
+  sudo mkdir -p /Library/Logs/nginx/
   if ! test -f /usr/local/etc/nginx/selfsigned.conf; then
     sudo ln -s "$project_root_dir/infra/nginx/selfsigned.conf" /usr/local/etc/nginx/selfsigned.conf
   fi
