@@ -3,7 +3,7 @@ import { AuthContext } from '~auth/AuthContext';
 import { ApiNote } from '~models/Note';
 
 interface CreateNoteRequest {
-    title: string;
+    name: string;
 }
 
 export interface CreateNoteResponse extends ApiResponse {
@@ -12,12 +12,12 @@ export interface CreateNoteResponse extends ApiResponse {
 
 export default async function createNote(
     authContext: AuthContext,
-    title: string,
+    name: string,
     onReceiveResponse: (note: ApiNote) => void,
 ): Promise<void> {
     // TODO: check + save to localStorage
     const response = await request<CreateNoteRequest, CreateNoteResponse>(RequestMethod.POST, `/note/`, authContext, {
-        title,
+        name,
     });
     // TODO: improve error-handling
     if (response) {

@@ -12,6 +12,7 @@ use crate::utils::list_options::ListOptions;
 
 #[derive(Debug, Deserialize)]
 pub struct ApiNoteCreateSpec {
+    pub name: Option<String>,
     #[serde(rename = "contentJson")]
     pub content_json: Option<serde_json::Value>,
     #[serde(rename = "contentRaw")]
@@ -106,6 +107,7 @@ fn run_create_note(
     Ok(Note::create(
         &get_conn(&db_pool).unwrap(),
         session,
+        spec.name,
         content_json,
     )?)
 }

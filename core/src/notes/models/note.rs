@@ -186,13 +186,18 @@ impl Note {
     pub fn create(
         conn: &PgConnection,
         session: Session,
+        name: Option<String>,
         content: Option<serde_json::Value>,
     ) -> Result<Note, ApiError> {
         // TODO: move transaction handling out of this fn
         begin_txn(conn).unwrap();
         let note_result = NoteCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Note),
-            name: generate_mnemonic(DEFAULT_MNEMONIC_LENGTH),
+            name: if let Some(name) = name {
+                name
+            } else {
+                generate_mnemonic(DEFAULT_MNEMONIC_LENGTH)
+            },
             user_id: session.user_id,
         }
         .insert(conn);
