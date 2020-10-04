@@ -5,7 +5,7 @@ pub fn convert_image(image: &DynamicImage, format: ImageFormat) -> Result<Vec<u8
     let mut file = Vec::new();
     image
         .write_to(&mut file, format)
-        .map_err(|e| format!("Failed to output PNG: {:#?}", e))?;
+        .map_err(|e| format!("Failed to output image: {:#?}", e))?;
     let mut encoded_output_bytes = Vec::new();
     let mut c = file.as_slice();
     c.read_to_end(&mut encoded_output_bytes).unwrap();
