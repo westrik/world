@@ -1,10 +1,10 @@
 use image::{DynamicImage, ImageFormat};
 use std::io::Read;
 
-pub fn output_to_png(image: &DynamicImage) -> Result<Vec<u8>, String> {
+pub fn convert_image(image: &DynamicImage, format: ImageFormat) -> Result<Vec<u8>, String> {
     let mut file = Vec::new();
     image
-        .write_to(&mut file, ImageFormat::Png)
+        .write_to(&mut file, format)
         .map_err(|e| format!("Failed to output PNG: {:#?}", e))?;
     let mut encoded_output_bytes = Vec::new();
     let mut c = file.as_slice();
@@ -20,7 +20,7 @@ pub mod resize_image {
     fn test_output_png() {
         for dimensions in [(200, 100), (1, 1), (200, 1)].iter() {
             let img = DynamicImage::new_rgba8(dimensions.0, dimensions.1);
-            output_to_png(&img).unwrap();
+            convert_image(&img, ImageFormat::Png).unwrap();
         }
     }
 }

@@ -8,6 +8,7 @@ use world_core::library::models::file::FileType;
 use world_core::utils::config::CONTENT_BUCKET_NAME;
 
 use crate::jobs::Runnable;
+use crate::media_transforms::convert::convert_image;
 use crate::media_transforms::resize::constrain_image_dimensions;
 
 #[derive(Deserialize)]
@@ -77,12 +78,11 @@ impl Runnable for IngestMediaUploadJob {
         let resized_image_map = constrain_image_dimensions(image, vec![1200, 720, 360]);
         for (width, resized_image) in resized_image_map {
             let new_file_name = file_name_for_resized_version(&self.file_name, width);
-            let put_resp = put_object(
-                CONTENT_BUCKET_NAME.to_string(),
-                &new_file_name,
-                resized_image.to_bytes(),
-            )
-            .await;
+            let image_bytes = convert_image(&resized_image, image_format).map_err(|e| {
+                JobError::InternalError(format!("Failed to resize image [error={:#?}", e))
+            })?;
+            let put_resp =
+                put_object(CONTENT_BUCKET_NAME.to_string(), &new_file_name, image_bytes).await;
             info!("{:#?}", put_resp);
         }
         Ok("DONE".to_string())

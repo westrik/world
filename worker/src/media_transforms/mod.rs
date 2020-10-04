@@ -3,11 +3,11 @@ pub mod resize;
 
 #[cfg(test)]
 pub mod convert_and_resize_images {
-    use image::DynamicImage;
+    use image::{DynamicImage, ImageFormat};
     use std::collections::HashMap;
 
     use super::*;
-    use crate::media_transforms::convert::output_to_png;
+    use crate::media_transforms::convert::convert_image;
 
     use std::fs::File;
     use std::io::Read;
@@ -30,7 +30,7 @@ pub mod convert_and_resize_images {
             let mut expected_img = Vec::new();
             expected_img_file.read_to_end(&mut expected_img).unwrap();
 
-            let resized_img = output_to_png(img.1).unwrap();
+            let resized_img = convert_image(img.1, ImageFormat::Png).unwrap();
             assert_eq!(resized_img, expected_img);
         }
     }
