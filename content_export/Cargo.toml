@@ -11,6 +11,6 @@ flame = "^0.2"
 flamescope = "^0.1"
 log = "^0.4"
 pretty_env_logger = "^0.3"
-tectonic = "0.1.12"
+tectonic = "0.1.16"
 tokio = { version = "^0.2", features = ["macros", "rt-threaded"] }
 world_core = { path = "../core" }
