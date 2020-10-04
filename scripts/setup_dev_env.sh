@@ -66,8 +66,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 
   # configure nginx
   sudo mkdir -p /Library/Logs/nginx/
-  if ! test -f /usr/local/etc/nginx/selfsigned.conf; then
-    sudo ln -s "$project_root_dir/infra/nginx/selfsigned.conf" /usr/local/etc/nginx/selfsigned.conf
+  if ! test -f /usr/local/etc/nginx/ssl_config.conf; then
+    sudo ln -s "$project_root_dir/infra/nginx/ssl_config.conf" /usr/local/etc/nginx/ssl_config.conf
   fi
   if ! test -f /usr/local/etc/nginx/world.conf; then
     sudo ln -s "$project_root_dir/infra/nginx/local.conf" /usr/local/etc/nginx/world.conf
