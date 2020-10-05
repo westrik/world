@@ -5,13 +5,13 @@ use crate::auth::models::user::User;
 use crate::db::{begin_txn, commit_txn, rollback_txn};
 use crate::errors::ApiError;
 use crate::notes::models::note_version::NoteVersion;
+use crate::notes::parsing::parse_markdown_content;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::note_versions;
 use crate::schema::{notes, notes::dsl::notes as all_notes};
 use crate::utils::list_options::ListOptions;
 use crate::utils::mnemonic::{generate_mnemonic, DEFAULT_MNEMONIC_LENGTH};
 use diesel::prelude::*;
-use crate::notes::parsing::parse_markdown_content;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(User)]
@@ -125,7 +125,8 @@ fn create_version_for_note_and_commit(
                 ))
             }
         } else {
-            let default_content = serde_json::to_value(parse_markdown_content(format!("# {}", note_.name))).unwrap();
+            let default_content =
+                serde_json::to_value(parse_markdown_content(format!("# {}", note_.name))).unwrap();
             let note_version = NoteVersion::create(conn, note_.id, default_content);
             if let Ok(created_note_version) = note_version {
                 // TODO: log note version creation

@@ -4,11 +4,11 @@ import { useContext, useState } from 'preact/hooks';
 
 import Auth from '~auth/AuthContext';
 import SubmitButton from '~components/SubmitButton';
-import { Note } from '~models/Note';
+import { ApiNote } from '~models/Note';
 import createNote from '~notes/createNote';
 
 interface NoteCreateFormProps {
-    onCreateNote: (note: Note) => void;
+    onCreateNote: (note: ApiNote) => void;
 }
 
 export default function NoteCreateForm(props: NoteCreateFormProps): h.JSX.Element {
@@ -26,8 +26,12 @@ export default function NoteCreateForm(props: NoteCreateFormProps): h.JSX.Elemen
             <SubmitButton
                 text="Create note"
                 onButtonPress={async () => {
-                    // eslint-disable-next-line @typescript-eslint/no-empty-function
-                    await createNote(authContext, name, () => {});
+                    const note = await createNote(authContext, name);
+                    if (note) {
+                        props.onCreateNote(note);
+                    } else {
+                        console.log('Failed to create note!');
+                    }
                 }}
             />
         </div>

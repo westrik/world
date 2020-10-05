@@ -30,10 +30,10 @@ const SECTIONS: Array<Section> = [
         name: 'library',
         route: '/library',
     },
-    {
-        name: 'branches',
-        route: '/branches',
-    },
+    // {
+    //     name: 'branches',
+    //     route: '/branches',
+    // },
 ];
 
 function sectionClassName(section: Section): string | undefined {
