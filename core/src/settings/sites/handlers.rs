@@ -182,6 +182,7 @@ pub async fn create_site_page(
     ))
 }
 
+#[allow(dead_code)]
 fn run_update_site_page(
     session: Session,
     api_id: String,
@@ -196,6 +197,7 @@ fn run_update_site_page(
     )?)
 }
 
+#[allow(dead_code)]
 pub async fn update_site_page(
     api_id: String,
     spec: ApiSitePageUpdateSpec,

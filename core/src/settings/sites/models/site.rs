@@ -103,6 +103,19 @@ impl Site {
         Ok(items)
     }
 
+    pub fn find_by_api_id(
+        conn: &PgConnection,
+        session: Session,
+        api_id: String,
+    ) -> Result<Site, ApiError> {
+        let item: Site = all_sites
+            .filter(sites::user_id.eq(session.user_id))
+            .filter(sites::api_id.eq(api_id))
+            .get_result(conn)
+            .map_err(ApiError::DatabaseError)?;
+        Ok(item)
+    }
+
     pub fn create(
         conn: &PgConnection,
         session: Session,

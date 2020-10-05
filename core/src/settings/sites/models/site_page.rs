@@ -7,7 +7,9 @@ use crate::auth::models::user::User;
 use crate::errors::ApiError;
 use crate::notes::models::note_version::NoteVersion;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
-use crate::schema::{site_pages, site_pages::dsl::site_pages as all_site_pages};
+use crate::schema::{
+    note_versions, site_pages, site_pages::dsl::site_pages as all_site_pages, sites,
+};
 use crate::settings::sites::models::site::Site;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
@@ -23,8 +25,16 @@ pub struct SitePage {
     pub path: String,
 }
 
+#[derive(Queryable, Serialize, Deserialize, Debug)]
 pub struct LoadedSitePage {
-    pub site_page: SitePage,
+    pub id: i32,
+    pub api_id: String,
+    pub user_id: i32,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+    pub site_id: i32,
+    pub note_version_id: i32,
+    pub path: String,
     pub site_api_id: String,
     pub note_version_api_id: String,
 }
@@ -112,12 +122,12 @@ pub struct ApiSitePageUpdateSpec {
 impl From<&LoadedSitePage> for ApiSitePage {
     fn from(page: &LoadedSitePage) -> Self {
         ApiSitePage {
-            api_id: page.site_page.api_id.clone(),
-            created_at: page.site_page.created_at,
-            updated_at: page.site_page.updated_at,
+            api_id: page.api_id.clone(),
+            created_at: page.created_at,
+            updated_at: page.updated_at,
+            path: page.path.clone(),
             site_api_id: page.site_api_id.clone(),
             note_version_api_id: page.note_version_api_id.clone(),
-            path: page.site_page.path.clone(),
         }
     }
 }
@@ -130,8 +140,22 @@ impl SitePage {
     ) -> Result<Vec<LoadedSitePage>, ApiError> {
         // TODO: limit query to only pages for site with site_api_id
         // TODO: load API IDs for note_version & site associated with each site_page
-        let items: Vec<SitePage> = all_site_pages
+        let items: Vec<LoadedSitePage> = all_site_pages
             .filter(site_pages::user_id.eq(session.user_id))
+            .inner_join(note_versions::table)
+            .inner_join(sites::table)
+            .select((
+                site_pages::id,
+                site_pages::api_id,
+                site_pages::user_id,
+                site_pages::created_at,
+                site_pages::updated_at,
+                site_pages::site_id,
+                site_pages::note_version_id,
+                site_pages::path,
+                note_versions::api_id,
+                sites::api_id,
+            ))
             .load(conn)
             .map_err(ApiError::DatabaseError)?;
         Ok(items)
@@ -144,21 +168,29 @@ impl SitePage {
         note_version_api_id: String,
         path: String,
     ) -> Result<LoadedSitePage, ApiError> {
-        // TODO: load DB IDs for site_api_id & note_version_api_id
-        let (site_id, note_version_id) = (0, 0);
-        unimplemented!();
+        let site = Site::find_by_api_id(conn, session.clone(), site_api_id.clone())?;
+        let note_version =
+            NoteVersion::find_by_api_id(conn, session.clone(), note_version_api_id.clone())?;
 
         let new_page = SitePageCreateSpec {
             api_id: generate_resource_identifier(ResourceType::SitePage),
             user_id: session.user_id,
-            site_id,
-            note_version_id,
+            site_id: site.id,
+            note_version_id: note_version.id,
             path,
         };
+        let page = new_page.insert(conn)?;
         Ok(LoadedSitePage {
-            site_page: new_page.insert(conn)?,
-            site_api_id: site_api_id.clone(),
-            note_version_api_id: note_version_api_id.clone(),
+            id: page.id,
+            api_id: page.api_id,
+            user_id: page.user_id,
+            created_at: page.created_at,
+            updated_at: page.updated_at,
+            site_id: page.site_id,
+            note_version_id: page.note_version_id,
+            path: page.path,
+            site_api_id,
+            note_version_api_id,
         })
     }
 
@@ -168,20 +200,28 @@ impl SitePage {
         api_id: String,
         spec: ApiSitePageUpdateSpec,
     ) -> Result<LoadedSitePage, ApiError> {
-        // TODO: validate spec.note_version_api_id & spec.site_api_id, and load DB IDs for each
-        let (site_id, note_version_id) = (0, 0);
-        unimplemented!();
-
+        // TODO: clean this up somehow...
+        let site = Site::find_by_api_id(conn, session.clone(), spec.site_api_id.clone())?;
+        let note_version =
+            NoteVersion::find_by_api_id(conn, session.clone(), spec.note_version_api_id.clone())?;
+        let page = SitePageUpdateSpec {
+            updated_at: Utc::now(),
+            path: spec.path,
+            site_id: Some(site.id),
+            note_version_id: Some(note_version.id),
+        }
+        .update(conn, api_id, session.user_id)?;
         Ok(LoadedSitePage {
-            site_page: SitePageUpdateSpec {
-                updated_at: Utc::now(),
-                path: spec.path,
-                site_id: Some(site_id),
-                note_version_id: Some(note_version_id),
-            }
-            .update(conn, api_id, session.user_id)?,
-            site_api_id: spec.site_api_id.clone(),
-            note_version_api_id: spec.note_version_api_id.clone(),
+            id: page.id,
+            api_id: page.api_id,
+            user_id: page.user_id,
+            created_at: page.created_at,
+            updated_at: page.updated_at,
+            site_id: page.site_id,
+            note_version_id: page.note_version_id,
+            path: page.path,
+            site_api_id: spec.site_api_id,
+            note_version_api_id: spec.note_version_api_id,
         })
     }
 }
