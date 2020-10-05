@@ -29,7 +29,7 @@ export default function SiteList(): h.JSX.Element {
     return sites ? (
         <ListContainer className="notes">
             {sites.map((site, key) => (
-                <li draggable={true} className="site" key={key}>
+                <li className="site" key={key}>
                     <a href={`/sites/${stripPrefixFromId(site.id)}`}>{site.name}</a>
                 </li>
             ))}

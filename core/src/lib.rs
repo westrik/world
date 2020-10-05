@@ -22,6 +22,7 @@ pub mod utils;
 pub mod auth;
 pub mod library;
 pub mod notes;
+pub mod settings;
 pub mod tasks;
 
 pub static APPLICATION_NAME: &str = "westrikworld";
