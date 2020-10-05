@@ -34,6 +34,10 @@ const SECTIONS: Array<Section> = [
     //     name: 'branches',
     //     route: '/branches',
     // },
+    {
+        name: 'settings',
+        route: '/settings',
+    },
 ];
 
 function sectionClassName(section: Section): string | undefined {

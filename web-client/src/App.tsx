@@ -13,6 +13,7 @@ import Dashboard from '~dashboard/Dashboard';
 import LibraryItemList from '~library/LibraryItemList';
 import Note from '~notes/Note';
 import NoteList from '~notes/NoteList';
+import SettingsPage from '~settings/SettingsPage';
 import TaskList from '~tasks/TaskList';
 
 export default function App(): h.JSX.Element {
@@ -28,6 +29,7 @@ export default function App(): h.JSX.Element {
                 <AuthedRoute path="/notes/:strippedApiId" component={Note} />
                 <AuthedRoute path="/library" component={LibraryItemList} />
                 <AuthedRoute path="/branches" component={BranchList} />
+                <AuthedRoute path="/settings" component={SettingsPage} />
                 <AdminAuthedRoute path="/users" component={UserList} />
                 <Route default component={ErrorScreen} />
             </Router>
