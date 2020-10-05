@@ -70,6 +70,17 @@ table! {
 }
 
 table! {
+    sites (id) {
+        id -> Int4,
+        api_id -> Varchar,
+        user_id -> Int4,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
+        description -> Text,
+    }
+}
+
+table! {
     tasks (id) {
         id -> Int4,
         api_id -> Varchar,
@@ -103,6 +114,7 @@ joinable!(library_items -> users (user_id));
 joinable!(note_versions -> notes (note_id));
 joinable!(notes -> users (user_id));
 joinable!(sessions -> users (user_id));
+joinable!(sites -> users (user_id));
 joinable!(tasks -> users (user_id));
 
 allow_tables_to_appear_in_same_query!(
@@ -112,6 +124,7 @@ allow_tables_to_appear_in_same_query!(
     note_versions,
     notes,
     sessions,
+    sites,
     tasks,
     users,
 );

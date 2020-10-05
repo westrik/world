@@ -3,17 +3,18 @@ use rand::{thread_rng, Rng};
 use std::collections::HashMap;
 use std::fmt;
 
-#[derive(Debug, Eq, Hash, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, Hash, PartialEq)]
 pub enum ResourceType {
-    User,
     Job,
-    Note,
-    NoteVersion,
-    Task,
-    Tag,
-    Link,
     LibraryItem,
     LibraryItemVersion,
+    Link,
+    Note,
+    NoteVersion,
+    Site,
+    Tag,
+    Task,
+    User,
 }
 
 lazy_static! {
@@ -59,48 +60,28 @@ pub mod resource_identifiers {
 
     #[test]
     fn test_id_generation() {
-        let user_id = generate_resource_identifier(User);
-        assert!(Regex::new(r"^user_[A-Za-z0-9]{8}$")
-            .unwrap()
-            .is_match(&user_id));
+        for (resource_type, prefix) in [
+            (Job, "job"),
+            (LibraryItem, "li"),
+            (LibraryItemVersion, "liv"),
+            (Link, "link"),
+            (Note, "note"),
+            (NoteVersion, "nv"),
+            (Site, "site"),
+            (Tag, "tag"),
+            (Task, "task"),
+            (User, "user"),
+        ]
+        .iter()
+        {
+            let api_id = generate_resource_identifier(resource_type.clone());
+            let api_id_segments: Vec<&str> = api_id.split('_').collect();
 
-        let task_id = generate_resource_identifier(Task);
-        assert!(Regex::new(r"^task_[A-Za-z0-9]{8}$")
-            .unwrap()
-            .is_match(&task_id));
-
-        let note_id = generate_resource_identifier(Note);
-        assert!(Regex::new(r"^note_[A-Za-z0-9]{8}$")
-            .unwrap()
-            .is_match(&note_id));
-
-        let note_version_id = generate_resource_identifier(NoteVersion);
-        assert!(Regex::new(r"^nv_[A-Za-z0-9]{8}$")
-            .unwrap()
-            .is_match(&note_version_id));
-
-        let tag_id = generate_resource_identifier(Tag);
-        assert!(Regex::new(r"^tag_[A-Za-z0-9]{8}$")
-            .unwrap()
-            .is_match(&tag_id));
-
-        let link_id = generate_resource_identifier(Link);
-        assert!(Regex::new(r"^link_[A-Za-z0-9]{8}$")
-            .unwrap()
-            .is_match(&link_id));
-
-        let li_id = generate_resource_identifier(LibraryItem);
-        assert!(Regex::new(r"^li_[A-Za-z0-9]{8}$").unwrap().is_match(&li_id));
-
-        let liv_id = generate_resource_identifier(LibraryItemVersion);
-        assert!(Regex::new(r"^liv_[A-Za-z0-9]{8}$")
-            .unwrap()
-            .is_match(&liv_id));
-
-        let job_id = generate_resource_identifier(Job);
-        assert!(Regex::new(r"^job_[A-Za-z0-9]{8}$")
-            .unwrap()
-            .is_match(&job_id));
+            assert_eq!(prefix, api_id_segments.get(0).unwrap());
+            assert!(Regex::new(r"^[A-Za-z0-9]{8}$")
+                .unwrap()
+                .is_match(api_id_segments.get(1).unwrap()));
+        }
     }
 
     #[test]
