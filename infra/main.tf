@@ -130,3 +130,17 @@ module "worker_lambdas" {
   lambda_deploy_bucket = module.core_infra.lambda_deploy_bucket
   app_host_iam_role_id = module.app_cluster.app_host_iam_role_id
 }
+
+// User sites
+
+module "test_user_site" {
+  source = "./tf_modules/user_site"
+
+  aws_region       = var.aws_region
+  deploy_name      = var.deploy_name
+  project_name     = var.project_name
+  project_slug     = var.project_slug
+  root_domain_name = var.root_domain_name
+
+  alias_domain_names = ["mfw.computer"]
+}
