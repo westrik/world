@@ -25,6 +25,3 @@ flamescope.json
 
 # swift build files
 **/Pods
-
-/target/
-**/target/

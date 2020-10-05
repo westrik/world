@@ -9,6 +9,7 @@ import { ApiTask, Task } from '~models/Task';
 
 import listTasks from './listTasks';
 import TaskRow from './TaskRow';
+import TaskCreateForm from '~tasks/TaskCreateForm';
 
 function TaskList(): h.JSX.Element {
     const [tasks, setTasks] = useState<Array<Task> | null>(null);
@@ -52,6 +53,11 @@ function TaskList(): h.JSX.Element {
 
     return (
         <AppContainer>
+            <TaskCreateForm
+                onSubmit={(task: ApiTask) => {
+                    setTasks([{ ...task, childTasks: [] }, ...(tasks ?? [])]);
+                }}
+            />
             {tasks ? (
                 <ListContainer className="tasks">
                     {tasks.map((task: Task, key: number) => (

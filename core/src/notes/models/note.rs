@@ -5,6 +5,7 @@ use crate::auth::models::user::User;
 use crate::db::{begin_txn, commit_txn, rollback_txn};
 use crate::errors::ApiError;
 use crate::notes::models::note_version::NoteVersion;
+use crate::notes::parsing::parse_markdown_content;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::note_versions;
 use crate::schema::{notes, notes::dsl::notes as all_notes};
@@ -124,14 +125,29 @@ fn create_version_for_note_and_commit(
                 ))
             }
         } else {
-            Ok(Note {
-                api_id: note_.api_id,
-                created_at: note_.created_at,
-                updated_at: note_.updated_at,
-                name: note_.name,
-                version_api_id: None,
-                content: None,
-            })
+            let default_content =
+                serde_json::to_value(parse_markdown_content(format!("# {}", note_.name))).unwrap();
+            let note_version = NoteVersion::create(conn, note_.id, default_content);
+            if let Ok(created_note_version) = note_version {
+                // TODO: log note version creation
+                // TODO: move transaction handling out of this fn
+                commit_txn(conn).unwrap();
+                Ok(Note {
+                    api_id: note_.api_id,
+                    created_at: note_.created_at,
+                    updated_at: note_.updated_at,
+                    name: note_.name,
+                    version_api_id: Some(created_note_version.api_id),
+                    content: None,
+                })
+            } else {
+                // TODO: handle failure
+                // TODO: move transaction handling out of this fn
+                rollback_txn(conn).unwrap();
+                Err(ApiError::InternalError(
+                    "Failed to create note version".to_string(),
+                ))
+            }
         }
     } else {
         // TODO: move transaction handling out of this fn
@@ -186,13 +202,18 @@ impl Note {
     pub fn create(
         conn: &PgConnection,
         session: Session,
+        name: Option<String>,
         content: Option<serde_json::Value>,
     ) -> Result<Note, ApiError> {
         // TODO: move transaction handling out of this fn
         begin_txn(conn).unwrap();
         let note_result = NoteCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Note),
-            name: generate_mnemonic(DEFAULT_MNEMONIC_LENGTH),
+            name: if let Some(name) = name {
+                name
+            } else {
+                generate_mnemonic(DEFAULT_MNEMONIC_LENGTH)
+            },
             user_id: session.user_id,
         }
         .insert(conn);

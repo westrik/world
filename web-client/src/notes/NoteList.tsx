@@ -7,6 +7,7 @@ import LoadingSpinner from '~components/LoadingSpinner';
 import ListContainer from '~components/layout/ListContainer';
 import { Note } from '~models/Note';
 import listNotes from '~notes/listNotes';
+import NoteCreateForm from '~notes/NoteCreateForm';
 import { stripPrefixFromId } from '~utils/identifier';
 
 export default function NoteList(): h.JSX.Element {
@@ -28,6 +29,11 @@ export default function NoteList(): h.JSX.Element {
 
     return (
         <AppContainer>
+            <NoteCreateForm
+                onCreateNote={(note: Note) => {
+                    setNotes([note, ...(noteSummaries ?? [])]);
+                }}
+            />
             {noteSummaries ? (
                 <ListContainer className="notes">
                     {noteSummaries.map((note, key) => (

@@ -10,7 +10,7 @@ interface Props {
     onSubmit: (newTask: ApiTask) => void;
 }
 
-export default function NewTaskForm(props: Props): h.JSX.Element {
+export default function TaskCreateForm(props: Props): h.JSX.Element {
     const [description, setDescription] = useState('');
     const authContext = useContext(Auth);
     return (
