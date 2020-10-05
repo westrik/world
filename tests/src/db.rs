@@ -35,6 +35,7 @@ pub fn destroy_test_db(pool: &DbPool) {
     println!("🪓 destroying test database...");
     rollback_txn(&conn).unwrap();
     // TODO: automatically drop tables in the right order
+    conn.execute("DROP TABLE IF EXISTS sites").unwrap();
     conn.execute("DROP TABLE IF EXISTS library_item_versions")
         .unwrap();
     conn.execute("DROP TABLE IF EXISTS library_items").unwrap();

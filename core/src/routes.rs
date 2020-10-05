@@ -11,6 +11,7 @@ use crate::db::{get_conn, DbPool};
 use crate::errors::{handle_rejection, ApiError};
 use crate::library::filters::routes as library_routes;
 use crate::notes::filters::routes as note_routes;
+use crate::settings::filters::routes as settings_routes;
 use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
 use crate::tasks::filters::routes as task_routes;
 use crate::utils::api_task::run_api_task;
@@ -37,7 +38,8 @@ fn authenticated(
     authenticate_cloudfront(db_pool.clone())
         .or(task_routes(db_pool.clone()))
         .or(note_routes(db_pool.clone()))
-        .or(library_routes(db_pool))
+        .or(library_routes(db_pool.clone()))
+        .or(settings_routes(db_pool))
 }
 
 // Helpers:
