@@ -102,14 +102,18 @@ impl From<&SitePage> for ApiSitePage {
 }
 
 impl SitePage {
-    // pub fn find_all_for_site(conn: &PgConnection, session: Session, site_api_id: String) -> Result<Vec<SitePage>, ApiError> {
-    //     let items: Vec<SitePage> = all_sites
-    //         .filter(site_pages::user_id.eq(session.user_id))
-    //         .filter(site_pages::user_id.eq(session.user_id))
-    //         .load(conn)
-    //         .map_err(ApiError::DatabaseError)?;
-    //     Ok(items)
-    // }
+    pub fn find_all_for_site(
+        conn: &PgConnection,
+        session: Session,
+        _site_api_id: String,
+    ) -> Result<Vec<SitePage>, ApiError> {
+        // TODO: limit query to only pages for site with site_api_id
+        let items: Vec<SitePage> = all_site_pages
+            .filter(site_pages::user_id.eq(session.user_id))
+            .load(conn)
+            .map_err(ApiError::DatabaseError)?;
+        Ok(items)
+    }
 
     pub fn create(
         conn: &PgConnection,

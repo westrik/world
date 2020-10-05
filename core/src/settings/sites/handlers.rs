@@ -6,6 +6,7 @@ use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
 use crate::errors::ApiError;
 use crate::settings::sites::models::site::{ApiSite, ApiSiteCreateSpec, ApiSiteUpdateSpec, Site};
+use crate::settings::sites::models::site_page::{ApiSitePage, SitePage};
 use crate::utils::api_task::run_api_task;
 use crate::utils::list_options::ListOptions;
 
@@ -19,6 +20,13 @@ pub struct GetSitesResponse {
 pub struct UpdateSiteResponse {
     error: Option<String>,
     site: Option<ApiSite>,
+}
+
+#[derive(Serialize)]
+pub struct GetSitePagesResponse {
+    error: Option<String>,
+    #[serde(rename = "sitePages")]
+    site_pages: Option<Vec<ApiSitePage>>,
 }
 
 fn run_get_sites(session: Session, pool: &DbPool) -> Result<Vec<Site>, ApiError> {
@@ -104,4 +112,33 @@ pub async fn delete_site(
 ) -> Result<impl warp::Reply, Infallible> {
     debug!("delete_site: api_id={}", api_id);
     Ok(StatusCode::NO_CONTENT)
+}
+
+fn run_get_site_pages(
+    session: Session,
+    pool: &DbPool,
+    site_api_id: String,
+) -> Result<Vec<SitePage>, ApiError> {
+    Ok(SitePage::find_all_for_site(
+        &get_conn(&pool).unwrap(),
+        session,
+        site_api_id,
+    )?)
+}
+
+pub async fn list_site_pages(
+    site_api_id: String,
+    opts: ListOptions,
+    session: Session,
+    db_pool: DbPool,
+) -> Result<impl warp::Reply, Rejection> {
+    debug!("list_site_pages: opts={:?}", opts);
+    let pages = run_api_task(move || run_get_site_pages(session, &db_pool, site_api_id)).await?;
+    Ok(warp::reply::with_status(
+        warp::reply::json(&GetSitePagesResponse {
+            error: None,
+            site_pages: Some(pages.iter().map(ApiSitePage::from).collect()),
+        }),
+        StatusCode::OK,
+    ))
 }

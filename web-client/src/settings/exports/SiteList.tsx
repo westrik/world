@@ -5,7 +5,7 @@ import Auth from '~auth/AuthContext';
 import LoadingSpinner from '~components/LoadingSpinner';
 import ListContainer from '~components/layout/ListContainer';
 import { Site } from '~models/Site';
-import { stripPrefixFromId } from '~utils/identifier';
+import SiteListItem from '~settings/exports/SiteListItem';
 
 import listSites from './listSites';
 
@@ -27,11 +27,9 @@ export default function SiteList(): h.JSX.Element {
     });
 
     return sites ? (
-        <ListContainer className="notes">
+        <ListContainer className="sites">
             {sites.map((site, key) => (
-                <li className="site" key={key}>
-                    <a href={`/sites/${stripPrefixFromId(site.id)}`}>{site.description}</a>
-                </li>
+                <SiteListItem site={site} key={key} />
             ))}
         </ListContainer>
     ) : (

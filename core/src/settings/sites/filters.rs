@@ -11,7 +11,8 @@ pub fn routes(
     sites_list(db_pool.clone())
         .or(site_create(db_pool.clone()))
         .or(site_update(db_pool.clone()))
-        .or(site_delete(db_pool))
+        .or(site_delete(db_pool.clone()))
+        .or(site_pages_list(db_pool))
 }
 
 /// GET /site?offset=3&limit=5
@@ -59,4 +60,16 @@ pub fn site_delete(
         .and(with_session(db_pool.clone()))
         .and(with_db(db_pool))
         .and_then(handlers::delete_site)
+}
+
+/// GET /site/:id/page?offset=3&limit=5
+pub fn site_pages_list(
+    db_pool: DbPool,
+) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("site" / String / "page")
+        .and(warp::get())
+        .and(warp::query::<ListOptions>())
+        .and(with_session(db_pool.clone()))
+        .and(with_db(db_pool))
+        .and_then(handlers::list_site_pages)
 }

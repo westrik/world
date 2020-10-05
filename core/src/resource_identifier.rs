@@ -77,7 +77,7 @@ pub mod resource_identifiers {
         ]
         .iter()
         {
-            let api_id = generate_resource_identifier(resource_type.clone());
+            let api_id = generate_resource_identifier(*resource_type);
             let api_id_segments: Vec<&str> = api_id.split('_').collect();
 
             assert_eq!(prefix, api_id_segments.get(0).unwrap());
