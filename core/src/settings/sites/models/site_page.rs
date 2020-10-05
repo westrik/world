@@ -55,6 +55,8 @@ pub struct SitePageUpdateSpec {
     // TODO: use trigger to set updated_at automatically
     pub updated_at: DateTime<Utc>,
     pub path: Option<String>,
+    pub site_id: Option<i32>,
+    pub note_version_id: Option<i32>,
 }
 impl SitePageUpdateSpec {
     pub fn update(
@@ -62,11 +64,8 @@ impl SitePageUpdateSpec {
         conn: &PgConnection,
         api_id: String,
         user_id: i32,
-    ) -> Result<LoadedSitePage, ApiError> {
+    ) -> Result<SitePage, ApiError> {
         info!("updating site page {} with {:?}", api_id, self);
-
-        // TODO: validate note_version & site, and load API IDs for each
-
         Ok(diesel::update(
             all_site_pages
                 .filter(site_pages::api_id.eq(&api_id))
@@ -103,6 +102,10 @@ pub struct ApiSitePageCreateSpec {
 #[derive(Debug, Deserialize)]
 #[allow(clippy::option_option)]
 pub struct ApiSitePageUpdateSpec {
+    #[serde(rename = "siteId")]
+    pub site_api_id: String,
+    #[serde(rename = "noteVersionId")]
+    pub note_version_api_id: String,
     pub path: Option<String>,
 }
 
@@ -126,7 +129,7 @@ impl SitePage {
         _site_api_id: String,
     ) -> Result<Vec<LoadedSitePage>, ApiError> {
         // TODO: limit query to only pages for site with site_api_id
-
+        // TODO: load API IDs for note_version & site associated with each site_page
         let items: Vec<SitePage> = all_site_pages
             .filter(site_pages::user_id.eq(session.user_id))
             .load(conn)
@@ -137,10 +140,14 @@ impl SitePage {
     pub fn create(
         conn: &PgConnection,
         session: Session,
-        site_id: i32,
-        note_version_id: i32,
+        site_api_id: String,
+        note_version_api_id: String,
         path: String,
     ) -> Result<LoadedSitePage, ApiError> {
+        // TODO: load DB IDs for site_api_id & note_version_api_id
+        let (site_id, note_version_id) = (0, 0);
+        unimplemented!();
+
         let new_page = SitePageCreateSpec {
             api_id: generate_resource_identifier(ResourceType::SitePage),
             user_id: session.user_id,
@@ -148,7 +155,11 @@ impl SitePage {
             note_version_id,
             path,
         };
-        new_page.insert(conn)
+        Ok(LoadedSitePage {
+            site_page: new_page.insert(conn)?,
+            site_api_id: site_api_id.clone(),
+            note_version_api_id: note_version_api_id.clone(),
+        })
     }
 
     pub fn update(
@@ -157,10 +168,20 @@ impl SitePage {
         api_id: String,
         spec: ApiSitePageUpdateSpec,
     ) -> Result<LoadedSitePage, ApiError> {
-        SitePageUpdateSpec {
-            updated_at: Utc::now(),
-            path: spec.path,
-        }
-        .update(conn, api_id, session.user_id)
+        // TODO: validate spec.note_version_api_id & spec.site_api_id, and load DB IDs for each
+        let (site_id, note_version_id) = (0, 0);
+        unimplemented!();
+
+        Ok(LoadedSitePage {
+            site_page: SitePageUpdateSpec {
+                updated_at: Utc::now(),
+                path: spec.path,
+                site_id: Some(site_id),
+                note_version_id: Some(note_version_id),
+            }
+            .update(conn, api_id, session.user_id)?,
+            site_api_id: spec.site_api_id.clone(),
+            note_version_api_id: spec.note_version_api_id.clone(),
+        })
     }
 }

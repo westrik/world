@@ -157,14 +157,11 @@ fn run_create_site_page(
     pool: &DbPool,
     spec: ApiSitePageCreateSpec,
 ) -> Result<LoadedSitePage, ApiError> {
-    // TODO: load correct IDS
-    let site_id: i32 = 0;
-    let note_version_id: i32 = 0;
     Ok(SitePage::create(
         &get_conn(&pool).unwrap(),
         session,
-        site_id,
-        note_version_id,
+        spec.site_api_id,
+        spec.note_version_api_id,
         spec.path,
     )?)
 }
