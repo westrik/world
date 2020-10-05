@@ -60,11 +60,3 @@ variable "cloudfront_keypair_id" {
 variable "cloudfront_private_key" {
   type = string
 }
-
-variable "google_oidc_client_id" {
-  type = string
-}
-
-variable "google_oidc_client_secret" {
-  type = string
-}

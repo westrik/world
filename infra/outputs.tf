@@ -22,3 +22,15 @@ output "lambda_deploy_bucket" {
 output "dev_content_bucket" {
   value = module.content_buckets.dev_content_bucket
 }
+
+output "test_user_site_bucket" {
+  value = module.test_user_site.site_bucket
+}
+
+output "test_user_upload_secret" {
+  value = module.test_user_site.upload_secret
+}
+
+output "test_user_upload_access_key" {
+  value = module.test_user_site.upload_access_key
+}

@@ -26,14 +26,6 @@ resource "aws_s3_bucket" "app_deploy_cloudfront" {
   versioning {
     enabled = true
   }
-
-  cors_rule {
-    allowed_headers = ["*"]
-    allowed_methods = ["GET"]
-    allowed_origins = ["https://local.westrik.world", "https://staging.westrik.world"]
-    expose_headers  = ["ETag"]
-    max_age_seconds = 3000
-  }
 }
 
 // TODO: add lifecycle rule?

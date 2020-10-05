@@ -1,10 +1,11 @@
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 
+use crate::auth::models::session::Session;
 use crate::errors::ApiError;
 use crate::notes::models::note::Note;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
-use crate::schema::note_versions;
+use crate::schema::{note_versions, note_versions::dsl::note_versions as all_note_versions, notes};
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(Note)]
@@ -38,6 +39,20 @@ impl NoteVersionCreateSpec {
 }
 
 impl NoteVersion {
+    pub fn find_by_api_id(
+        conn: &PgConnection,
+        session: Session,
+        api_id: String,
+    ) -> Result<NoteVersion, ApiError> {
+        Ok(all_note_versions
+            .inner_join(notes::table)
+            .select(note_versions::all_columns)
+            .filter(notes::user_id.eq(session.user_id))
+            .filter(note_versions::api_id.eq(api_id))
+            .get_result(conn)
+            .map_err(ApiError::DatabaseError)?)
+    }
+
     pub fn create(
         conn: &PgConnection,
         note_id: i32,
