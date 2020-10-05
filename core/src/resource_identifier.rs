@@ -12,6 +12,7 @@ pub enum ResourceType {
     Note,
     NoteVersion,
     Site,
+    SitePage,
     Tag,
     Task,
     User,
@@ -23,6 +24,7 @@ lazy_static! {
         m.insert(ResourceType::NoteVersion, "nv");
         m.insert(ResourceType::LibraryItem, "li");
         m.insert(ResourceType::LibraryItemVersion, "liv");
+        m.insert(ResourceType::SitePage, "stpg");
         m
     };
 }
@@ -68,6 +70,7 @@ pub mod resource_identifiers {
             (Note, "note"),
             (NoteVersion, "nv"),
             (Site, "site"),
+            (SitePage, "stpg"),
             (Tag, "tag"),
             (Task, "task"),
             (User, "user"),
