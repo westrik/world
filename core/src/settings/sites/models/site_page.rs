@@ -23,6 +23,12 @@ pub struct SitePage {
     pub path: String,
 }
 
+pub struct LoadedSitePage {
+    pub site_page: SitePage,
+    pub site_api_id: String,
+    pub note_version_api_id: String,
+}
+
 #[derive(Insertable, Debug)]
 #[table_name = "site_pages"]
 pub struct SitePageCreateSpec {
@@ -56,8 +62,11 @@ impl SitePageUpdateSpec {
         conn: &PgConnection,
         api_id: String,
         user_id: i32,
-    ) -> Result<SitePage, ApiError> {
+    ) -> Result<LoadedSitePage, ApiError> {
         info!("updating site page {} with {:?}", api_id, self);
+
+        // TODO: validate note_version & site, and load API IDs for each
+
         Ok(diesel::update(
             all_site_pages
                 .filter(site_pages::api_id.eq(&api_id))
@@ -73,15 +82,22 @@ impl SitePageUpdateSpec {
 pub struct ApiSitePage {
     #[serde(rename = "id")]
     pub api_id: String,
-    pub path: String,
     #[serde(rename = "createdAt")]
     pub created_at: DateTime<Utc>,
     #[serde(rename = "updatedAt")]
     pub updated_at: DateTime<Utc>,
-    // TODO: include API IDs for Site & NoteVersion
+    #[serde(rename = "siteId")]
+    pub site_api_id: String,
+    #[serde(rename = "noteVersionId")]
+    pub note_version_api_id: String,
+    pub path: String,
 }
 #[derive(Debug, Deserialize)]
 pub struct ApiSitePageCreateSpec {
+    #[serde(rename = "siteId")]
+    pub site_api_id: String,
+    #[serde(rename = "noteVersionId")]
+    pub note_version_api_id: String,
     pub path: String,
 }
 #[derive(Debug, Deserialize)]
@@ -90,13 +106,15 @@ pub struct ApiSitePageUpdateSpec {
     pub path: Option<String>,
 }
 
-impl From<&SitePage> for ApiSitePage {
-    fn from(page: &SitePage) -> Self {
+impl From<&LoadedSitePage> for ApiSitePage {
+    fn from(page: &LoadedSitePage) -> Self {
         ApiSitePage {
-            api_id: page.api_id.clone(),
-            path: page.path.clone(),
-            created_at: page.created_at,
-            updated_at: page.updated_at,
+            api_id: page.site_page.api_id.clone(),
+            created_at: page.site_page.created_at,
+            updated_at: page.site_page.updated_at,
+            site_api_id: page.site_api_id.clone(),
+            note_version_api_id: page.note_version_api_id.clone(),
+            path: page.site_page.path.clone(),
         }
     }
 }
@@ -106,8 +124,9 @@ impl SitePage {
         conn: &PgConnection,
         session: Session,
         _site_api_id: String,
-    ) -> Result<Vec<SitePage>, ApiError> {
+    ) -> Result<Vec<LoadedSitePage>, ApiError> {
         // TODO: limit query to only pages for site with site_api_id
+
         let items: Vec<SitePage> = all_site_pages
             .filter(site_pages::user_id.eq(session.user_id))
             .load(conn)
@@ -118,15 +137,15 @@ impl SitePage {
     pub fn create(
         conn: &PgConnection,
         session: Session,
+        site_id: i32,
+        note_version_id: i32,
         path: String,
-        site: Site,
-        note_version: NoteVersion,
-    ) -> Result<SitePage, ApiError> {
+    ) -> Result<LoadedSitePage, ApiError> {
         let new_page = SitePageCreateSpec {
             api_id: generate_resource_identifier(ResourceType::SitePage),
             user_id: session.user_id,
-            site_id: site.id,
-            note_version_id: note_version.id,
+            site_id,
+            note_version_id,
             path,
         };
         new_page.insert(conn)
@@ -137,7 +156,7 @@ impl SitePage {
         session: Session,
         api_id: String,
         spec: ApiSitePageUpdateSpec,
-    ) -> Result<SitePage, ApiError> {
+    ) -> Result<LoadedSitePage, ApiError> {
         SitePageUpdateSpec {
             updated_at: Utc::now(),
             path: spec.path,

@@ -2,6 +2,7 @@ use crate::db::DbPool;
 use crate::routes::{json_body, with_db, with_session};
 use crate::settings::sites::handlers;
 use crate::settings::sites::models::site::{ApiSiteCreateSpec, ApiSiteUpdateSpec};
+use crate::settings::sites::models::site_page::ApiSitePageCreateSpec;
 use crate::utils::list_options::ListOptions;
 use warp::Filter;
 
@@ -72,4 +73,16 @@ pub fn site_pages_list(
         .and(with_session(db_pool.clone()))
         .and(with_db(db_pool))
         .and_then(handlers::list_site_pages)
+}
+
+/// POST /site/:id/page with JSON body
+pub fn site_page_create(
+    db_pool: DbPool,
+) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("site")
+        .and(warp::post())
+        .and(json_body::<ApiSitePageCreateSpec>())
+        .and(with_session(db_pool.clone()))
+        .and(with_db(db_pool))
+        .and_then(handlers::create_site_page)
 }
