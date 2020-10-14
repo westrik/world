@@ -1,38 +1,56 @@
 import { createContext } from 'preact';
 import { useContext, useEffect } from 'preact/hooks';
-import { HotKeyCommand } from '~keyboard/HotKeyCommand';
+import { HotKeyCommand, hotKeyCommandToString } from '~keyboard/HotKeyCommand';
 
 export interface HotKeyContext {
-    hotkeysToHandlers: HotKeyToHandler;
+    commandsToHandlers: { [command: string]: () => void };
     isDisabled?: boolean; // TODO: set when a vim-enabled editor is focused
 }
 
 type HotKeyToHandler = Map<HotKeyCommand, () => void>;
 
-function registerHotKey(cxt: HotKeyContext, cmd: HotKeyCommand, handler: () => void): () => void {
+function registerHotKey(ctx: HotKeyContext, cmd: HotKeyCommand, handler: () => void): () => void {
     // TODO: validate that the cmd isn't already configured
-    cxt.hotkeysToHandlers.set(cmd, handler);
-    // TODO: register handler
+    const command = hotKeyCommandToString(cmd);
+    ctx.commandsToHandlers[command] = handler;
     return () => {
-        // TODO: deregister handler
-        cxt.hotkeysToHandlers.delete(cmd);
+        delete ctx.commandsToHandlers[command];
     };
 }
 
-const HotKey = createContext<HotKeyContext>({ hotkeysToHandlers: new Map() });
+function createKeyDownHandler(ctx: HotKeyContext): (event: KeyboardEvent) => void {
+    return (event: KeyboardEvent) => {
+        const handler =
+            ctx.commandsToHandlers[
+                hotKeyCommandToString({
+                    key: event.key,
+                    alt: event.altKey,
+                    ctrl: event.ctrlKey,
+                    meta: event.metaKey,
+                    shift: event.shiftKey,
+                })
+            ];
+        if (handler) {
+            handler();
+        }
+    };
+}
+
+const HotKey = createContext<HotKeyContext>({ commandsToHandlers: {} });
 
 export default function useHotKeyContext(hotkeysToHandlers: HotKeyToHandler): void {
     const context = useContext(HotKey);
     useEffect(() => {
+        const handleKeyDown = createKeyDownHandler(context);
         const unsubscribeCallbacks: Array<() => void> = [];
         hotkeysToHandlers.forEach((handler: () => void, cmd: HotKeyCommand) => {
             unsubscribeCallbacks.push(registerHotKey(context, cmd, handler));
         });
-        // TODO: attach keyboard listener here?
+        window.addEventListener('keydown', handleKeyDown);
         return () => {
-            // TODO: detach keyboard listener here?
-            unsubscribeCallbacks.map((callback) => {
-                callback();
+            window.removeEventListener('keydown', handleKeyDown);
+            unsubscribeCallbacks.map((unsubscribe) => {
+                unsubscribe();
             });
         };
     }, [context, hotkeysToHandlers]);
