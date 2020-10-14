@@ -34,8 +34,8 @@ function createKeyDownHandler(ctx: HotKeyContext): (event: KeyboardEvent) => voi
                 })
             ];
         if (handler) {
-            handler();
             event.stopPropagation();
+            handler();            
         }
     };
 }
