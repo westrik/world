@@ -20,7 +20,7 @@ data "aws_iam_user" "admin_user" {
 }
 
 module "core_infra" {
-  source = "./modules/core_infra"
+  source = "./tf_modules/core_infra"
 
   aws_region = var.aws_region
   aws_az1    = var.aws_az1
@@ -32,7 +32,7 @@ module "core_infra" {
 }
 
 module "database" {
-  source = "./modules/database"
+  source = "./tf_modules/database"
 
   project_name                                 = var.project_name
   project_slug                                 = var.project_slug
@@ -46,7 +46,7 @@ module "database" {
 }
 
 module "content_buckets" {
-  source = "./modules/content_buckets"
+  source = "./tf_modules/content_buckets"
 
   aws_region = var.aws_region
 
@@ -59,7 +59,7 @@ module "content_buckets" {
 }
 
 module "deploy_pipeline" {
-  source = "./modules/deploy_pipeline"
+  source = "./tf_modules/deploy_pipeline"
 
   aws_region = var.aws_region
 
@@ -78,7 +78,7 @@ module "deploy_pipeline" {
 }
 
 module "app_cloudfront" {
-  source = "./modules/app_cloudfront"
+  source = "./tf_modules/app_cloudfront"
 
   aws_region = var.aws_region
 
@@ -89,7 +89,7 @@ module "app_cloudfront" {
 }
 
 module "app_cluster" {
-  source = "./modules/app_cluster"
+  source = "./tf_modules/app_cluster"
 
   aws_region = var.aws_region
   aws_az1    = var.aws_az1
@@ -113,7 +113,7 @@ module "app_cluster" {
 }
 
 module "secrets" {
-  source = "./modules/secrets"
+  source = "./tf_modules/secrets"
 
   outbound_email_sender  = var.outbound_email_sender
   project_name           = var.project_name
@@ -124,9 +124,23 @@ module "secrets" {
 }
 
 module "worker_lambdas" {
-  source = "./modules/worker_lambdas"
+  source = "./tf_modules/worker_lambdas"
 
   project_name         = var.project_name
   lambda_deploy_bucket = module.core_infra.lambda_deploy_bucket
   app_host_iam_role_id = module.app_cluster.app_host_iam_role_id
+}
+
+// User sites
+
+module "test_user_site" {
+  source = "./tf_modules/user_site"
+
+  aws_region       = var.aws_region
+  deploy_name      = var.deploy_name
+  project_name     = var.project_name
+  project_slug     = var.project_slug
+  root_domain_name = var.root_domain_name
+
+  alias_domain_names = ["mfw.computer"]
 }

@@ -22,7 +22,7 @@ prepush:
 	make fmt && make check
 
 run_server_restart_trigger:
-	cargo watch -x check -x test -s 'touch .trigger'
+	cargo watch -x check -s 'touch .trigger'
 
 run_server:
 	cargo watch --no-gitignore -w .trigger -x 'run --bin world_api_server'

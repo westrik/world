@@ -9,7 +9,7 @@ use crate::errors::ApiError;
 use crate::schema::sessions;
 use crate::schema::{users, users::dsl::users as all_users};
 
-#[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
+#[derive(Associations, Clone, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[primary_key(token)]
 #[belongs_to(User)]
 pub struct Session {
