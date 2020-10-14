@@ -5,6 +5,7 @@ import Auth from '~auth/AuthContext';
 import AppContainer from '~components/AppContainer';
 import LoadingSpinner from '~components/LoadingSpinner';
 import ListContainer from '~components/layout/ListContainer';
+import useHotKeyContext from '~keyboard/useHotKeyContext';
 import { Note } from '~models/Note';
 import listNotes from '~notes/listNotes';
 import NoteCreateForm from '~notes/NoteCreateForm';
@@ -13,6 +14,16 @@ import { stripPrefixFromId } from '~utils/identifier';
 export default function NoteList(): h.JSX.Element {
     const [noteSummaries, setNotes] = useState<Array<Note> | null>(null);
     const authContext = useContext(Auth);
+    useHotKeyContext(
+        new Map([
+            [
+                { key: 'c' },
+                () => {
+                    console.log('creating note');
+                },
+            ],
+        ]),
+    );
 
     // TODO: refactor into custom hook
     useEffect(() => {

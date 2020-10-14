@@ -20,6 +20,9 @@ function registerHotKey(ctx: HotKeyContext, cmd: HotKeyCommand, handler: () => v
 
 function createKeyDownHandler(ctx: HotKeyContext): (event: KeyboardEvent) => void {
     return (event: KeyboardEvent) => {
+        if (ctx.isDisabled) {
+            return;
+        }
         const handler =
             ctx.commandsToHandlers[
                 hotKeyCommandToString({
@@ -32,6 +35,7 @@ function createKeyDownHandler(ctx: HotKeyContext): (event: KeyboardEvent) => voi
             ];
         if (handler) {
             handler();
+            event.stopPropagation();
         }
     };
 }
