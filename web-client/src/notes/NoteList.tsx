@@ -29,11 +29,7 @@ export default function NoteList(): h.JSX.Element {
     useEffect(() => {
         if (!noteSummaries) {
             listNotes(authContext, (notes) => {
-                if (notes) {
-                    setNotes(notes);
-                } else {
-                    setNotes([]);
-                }
+                setNotes(notes ?? []);
             });
         }
     });

@@ -17,11 +17,7 @@ export default function SiteList(): h.JSX.Element {
     useEffect(() => {
         if (!sites) {
             listSites(authContext, (sites) => {
-                if (sites) {
-                    setSites(sites);
-                } else {
-                    setSites([]);
-                }
+                setSites(sites ?? []);
             });
         }
     });

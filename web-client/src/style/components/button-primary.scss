@@ -1,0 +1,7 @@
+.button-primary {
+  @extend .button-base;
+
+  background-color: var(--blue2);
+  color: var(--main-text-color); // TODO: should just be white/
+  font-weight: bold;
+}

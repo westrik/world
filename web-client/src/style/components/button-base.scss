@@ -1,0 +1,31 @@
+/* do not use this class directly */
+/* (extended by .button-primary, .button-secondary, and .button-tertiary) */
+
+.button-base {
+  background-color: var(--main-text-color);
+  color: var(--main-bg-color);
+  border: 0;
+  border-radius: 4px;
+
+  &:disabled {
+    opacity: .5;
+  }
+  &.lg {
+    font-size: 20px;
+    border-radius: 5px;
+    padding: 10px 20px;
+  }
+  &.md {
+    font-size: 16px;
+    padding: 7px 17px;
+  }
+  &.sm {
+    font-size: 14px;
+    padding: 5px 13px;
+  }
+  &.xs {
+    font-size: 12px;
+    border-radius: 3px;
+    padding: 3px 10px;
+  }
+}

@@ -22,11 +22,7 @@ export default function SiteListItem(props: SiteListItemProps): h.JSX.Element {
     useEffect(() => {
         if (!pages) {
             listSitePages(authContext, props.site.id, (pages) => {
-                if (pages) {
-                    setPages(pages);
-                } else {
-                    setPages([]);
-                }
+                setPages(pages ?? []);
             });
         }
     });

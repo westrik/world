@@ -39,18 +39,14 @@ function LibraryItemList(): h.JSX.Element {
         }
     }
 
-    // TODO: refactor into custom hook
     useEffect(() => {
         if (!authed) {
             cloudfrontAuthenticate();
         }
+        // TODO: refactor into custom hook
         if (!items) {
             listLibraryItems(authContext, (libraryItems) => {
-                if (libraryItems) {
-                    setItems(libraryItems);
-                } else {
-                    setItems([]);
-                }
+                setItems(libraryItems ?? []);
             });
         }
     });

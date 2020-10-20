@@ -1,0 +1,25 @@
+.button-tertiary {
+  @extend .button-base;
+
+  background: 0;
+  color: var(--main-text-color);
+  border-radius: 0 !important;
+  border-bottom: 1px solid var(--main-text-color);
+
+  &.lg {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  &.md {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  &.sm {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  &.xs {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
