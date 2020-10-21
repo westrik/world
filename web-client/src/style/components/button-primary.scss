@@ -4,4 +4,9 @@
   background-color: var(--blue2);
   color: var(--main-text-color); // TODO: should just be white/
   font-weight: bold;
+
+  // todo: light mode
+  //box-shadow: inset 0 1px 0 hsl(224, 84%, 74%), 0 1px 3px hsla(0, 0%, 0%, .2);
+  box-shadow: inset 0 1px 0 hsl(201, 57.1%, 65.3%), 0 1px 3px rgba(255, 255, 255, 0.3);
+
 }
