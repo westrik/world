@@ -1,7 +1,8 @@
 import { h } from 'preact';
 
-import NavBar from './NavBar';
 import useHotKeyContext from '~keyboard/useHotKeyContext';
+
+import NavSidebar from './NavSidebar';
 
 interface AppContainerProps {
     children: h.JSX.Element | Array<h.JSX.Element>;
@@ -22,7 +23,7 @@ export default function AppContainer(props: AppContainerProps): h.JSX.Element {
 
     return (
         <div className="app-container">
-            <NavBar />
+            <NavSidebar />
 
             <main className={props.contentClassName} role="main">
                 {props.children}
