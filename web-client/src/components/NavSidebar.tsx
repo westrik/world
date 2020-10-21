@@ -4,41 +4,7 @@ import { useContext } from 'preact/hooks';
 
 import Auth from '~auth/AuthContext';
 import { SITE_NAME } from '~config';
-
-export interface Section {
-    name: string;
-    route: string;
-    desktopOnly?: boolean;
-    mobileOnly?: boolean;
-}
-
-export const SECTIONS: Array<Section> = [
-    {
-        name: 'Dashboard',
-        route: '/',
-        desktopOnly: true,
-    },
-    {
-        name: 'Tasks',
-        route: '/tasks',
-    },
-    {
-        name: 'Notes',
-        route: '/notes',
-    },
-    {
-        name: 'Code',
-        route: '/branches',
-    },
-    {
-        name: 'Media',
-        route: '/library',
-    },
-    {
-        name: 'Settings',
-        route: '/settings',
-    },
-];
+import { Section, SECTIONS } from '~components/NavBar';
 
 function sectionClassName(section: Section): string | undefined {
     if (section.desktopOnly) {
@@ -48,10 +14,10 @@ function sectionClassName(section: Section): string | undefined {
     }
 }
 
-export default function NavBar(): h.JSX.Element {
+export default function NavSidebar(): h.JSX.Element {
     const authContext = useContext(Auth);
     return (
-        <header className="nav-bar">
+        <div className="nav-sidebar">
             <figure className="brand">
                 <Link activeClassName="active" href="/">
                     {SITE_NAME}
@@ -79,12 +45,12 @@ export default function NavBar(): h.JSX.Element {
                                     authContext.handleSignOut();
                                 }}
                             >
-                                sign out
+                                Sign Out
                             </button>
                         </li>
                     </ul>
                 </div>
             </nav>
-        </header>
+        </div>
     );
 }
