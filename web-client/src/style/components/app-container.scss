@@ -1,7 +1,20 @@
 .app-container {
   main {
+    // TODO: use CSS grid instead (for potentially faster layout)
     max-width: calc(100vw - 200px);
     position: relative;
     left: 200px;
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+
+  .app-container {
+    main {
+      max-width: none;
+      top: 50px;
+      left: 0;
+    }
   }
 }

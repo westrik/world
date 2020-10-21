@@ -265,6 +265,7 @@ $navigation-menu-brand-top-margin: 3px;
   .nav-sidebar {
     width: 100%;
     max-width: none;
+    z-index: 5;
 
     .menu {
       .nav-action-list {
@@ -277,7 +278,7 @@ $navigation-menu-brand-top-margin: 3px;
   }
 }
 
-@media screen and (max-height: 390px) {
+@media screen and (max-height: 375px) {
   .nav-sidebar .menu .nav-action-list {
     position: static;
   }
