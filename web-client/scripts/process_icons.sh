@@ -38,5 +38,5 @@ EOF
 done
 
 if (( num_updated_icons > 0 )); then
-  yarn prettier -w "$icon_components_dir"
+  yarn fix
 fi
