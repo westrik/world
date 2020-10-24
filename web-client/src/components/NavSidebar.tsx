@@ -5,6 +5,7 @@ import { useContext } from 'preact/hooks';
 import Auth from '~auth/AuthContext';
 import { SITE_NAME } from '~config';
 import { Section, SECTIONS } from '~components/NavBar';
+import Icon from '~components/Icon';
 
 function sectionClassName(section: Section): string | undefined {
     if (section.desktopOnly) {
@@ -33,6 +34,7 @@ export default function NavSidebar(): h.JSX.Element {
                         {SECTIONS.map((section, idx) => (
                             <li key={idx} className={sectionClassName(section)}>
                                 <Link activeClassName="active" href={section.route}>
+                                    <Icon iconType={section.iconType} />
                                     {section.name}
                                 </Link>
                             </li>

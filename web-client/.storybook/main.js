@@ -17,7 +17,27 @@ module.exports = {
                 test: /\.tsx?$/,
                 loader: 'ts-loader',
                 exclude: /node_modules/,
-            }
+            },
+            {
+                test: /\.svg$/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ['preact', 'env'],
+                        },
+                    },
+                    {
+                        loader: '@svgr/webpack',
+                        options: {
+                            babel: false,
+                            icon: true,
+                            expandProps: false,
+                            typescript: true
+                        },
+                    },
+                ],
+            },
         );
         config.resolve.extensions.push('.ts', '.tsx');
         config.resolve.plugins = [

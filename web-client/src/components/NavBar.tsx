@@ -4,12 +4,14 @@ import { useContext } from 'preact/hooks';
 
 import Auth from '~auth/AuthContext';
 import { SITE_NAME } from '~config';
+import { IconType } from '~components/Icon';
 
 export interface Section {
     name: string;
     route: string;
     desktopOnly?: boolean;
     mobileOnly?: boolean;
+    iconType: IconType;
 }
 
 export const SECTIONS: Array<Section> = [
@@ -17,26 +19,32 @@ export const SECTIONS: Array<Section> = [
         name: 'Dashboard',
         route: '/',
         desktopOnly: true,
+        iconType: IconType.HOME,
     },
     {
         name: 'Tasks',
         route: '/tasks',
+        iconType: IconType.TASKS,
     },
     {
         name: 'Notes',
         route: '/notes',
+        iconType: IconType.MARKDOWN,
     },
     {
         name: 'Code',
         route: '/branches',
+        iconType: IconType.TERMINAL,
     },
     {
         name: 'Media',
         route: '/library',
+        iconType: IconType.COLLECTION,
     },
     {
         name: 'Settings',
         route: '/settings',
+        iconType: IconType.GEAR,
     },
 ];
 
