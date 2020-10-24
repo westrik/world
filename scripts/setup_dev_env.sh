@@ -5,7 +5,7 @@ set -euo pipefail
 ROOT_DOMAIN_NAME="local.westrik.world"
 
 scripts_dir="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
-project_root_dir="$scripts_dir/.."
+project_root_dir=$(dirname "$scripts_dir")
 
 # If `sudo` does not exist, assume that we'll install it later and that we'll
 #   be able to use it without a password.

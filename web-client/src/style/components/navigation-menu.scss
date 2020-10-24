@@ -150,7 +150,7 @@ $navigation-menu-brand-top-margin: 3px;
       background-color: rgba(0, 0, 0, 0);
       color: var(--main-text-color);
 
-      &.active, &:focus, &:hover{
+      &.active, &:focus, &:hover {
         background-color: rgba(0, 0, 0, 0.2);
         color: var(--main-text-color);
       }
@@ -160,12 +160,12 @@ $navigation-menu-brand-top-margin: 3px;
   @media screen and (max-width: 768px) {
     .menu ul {
       a, button {
-        background-color: rgba(0, 0, 0, 0.2);
+        background-color: rgba(0, 0, 0, 0.5);
 
         &.active,
         &:focus,
         &:hover {
-          background-color: rgba(0, 0, 0, 0.4);
+          background-color: rgba(0, 0, 0, 0.8);
         }
       }
     }
@@ -197,38 +197,37 @@ $navigation-menu-brand-top-margin: 3px;
 }
 
 .nav-sidebar {
-  max-width: 200px;
-  width: 30%;
+  width: 200px;
   height: 100vh;
   position: fixed;
+  background-color: rgba(255, 255, 255, 0.05);
 
   .brand {
-    max-width: 200px;
+    max-width: 180px;
     font-size: 15px;
     font-weight: 900;
+    text-align: center;
     text-transform: uppercase;
     line-height: $navigation-menu-header-height - $navigation-menu-brand-top-margin;
     width: auto;
     float: left;
     z-index: 5;
-    margin: $navigation-menu-brand-top-margin 0 0 5%;
+    margin: $navigation-menu-brand-top-margin 0 0 20px;
   }
 
   .menu {
     width: 100%;
     height: calc(100vh - 75px);
     float: left;
-    text-align: left;
-    max-height: 100vh;
     overflow-y: auto;
+    overflow-x: hidden;
 
     & > div {
       display: block;
     }
 
     .nav-section-list, .nav-action-list {
-      width: 100%;
-      max-width: 200px;
+      width: 200px;
       height: 100%;
       margin: 0;
       padding: 0;
@@ -238,7 +237,8 @@ $navigation-menu-brand-top-margin: 3px;
 
       li {
         display: block;
-        height: 36px;
+        margin: 0;
+        height: 46px;
 
         &.mobile-only {
           display: none;
@@ -246,16 +246,28 @@ $navigation-menu-brand-top-margin: 3px;
       }
 
       a, button {
+        width: calc(100% - 10px);
         text-align: left;
         font-weight: bold;
-        padding-left: 10px;
-        line-height: 50px;
+        margin-left: 10px;
+        padding: 5px 10px;
+        line-height: 36px;
+        border-radius: 5px 0 0 5px;
+
+        &:focus, &:hover {
+          background-color: var(--grey1);
+        }
+        &.active{
+          background-color: var(--blue1);
+          color: var(--main-text-color);
+          box-shadow: inset 0 1px 0 var(--blue2), 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
       }
     }
 
     .nav-action-list {
       height: auto;
-      position: fixed;
+      position: absolute;
       bottom: 10px;
     }
   }
@@ -273,12 +285,18 @@ $navigation-menu-brand-top-margin: 3px;
       }
       .nav-action-list, .nav-section-list {
         max-width: none;
+        width: 100%;
+
+        a, button {
+          width: 100%;
+          border-radius: 0;
+        }
       }
     }
   }
 }
 
-@media screen and (max-height: 375px) {
+@media screen and (max-height: 410px) {
   .nav-sidebar .menu .nav-action-list {
     position: static;
   }

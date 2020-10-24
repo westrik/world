@@ -7,7 +7,7 @@
 set -euo pipefail
 
 scripts_dir="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
-project_root_dir="$scripts_dir/.."
+project_root_dir=$(dirname "$scripts_dir")
 
 sudo_prefix=""
 pg_user=""
