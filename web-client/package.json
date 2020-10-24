@@ -4,8 +4,8 @@
   "main": "App.tsx",
   "license": "MIT",
   "scripts": {
-    "start": "yarn build:icons; yarn parcel src/index.html",
-    "build": "yarn build:icons; yarn parcel build src/index.html",
+    "start": "./scripts/process_icons.sh && yarn parcel src/index.html",
+    "build": "./scripts/process_icons.sh && yarn parcel build src/index.html",
     "build:icons": "./scripts/process_icons.sh",
     "lint": "yarn lint:ts;yarn lint:style",
     "lint:ts": "yarn eslint . --ext .ts,.tsx --max-warnings=0",
