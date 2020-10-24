@@ -6,3 +6,4 @@ node_modules
 /dist/
 /out/
 storybook-static/
+src/static/img/icons/__*

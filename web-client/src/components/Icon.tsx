@@ -1,61 +1,33 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-
 import { h } from 'preact';
 
 import { fail } from '~utils/asserts';
 
-// @ts-ignore
-import BookmarkIcon from '../static/img/icons/bookmark.svg';
-// @ts-ignore
-import ChevronCompactLeftIcon from '../static/img/icons/chevron-compact-left.svg';
-// @ts-ignore
-import ChevronCompactRightIcon from '../static/img/icons/chevron-compact-right.svg';
-// @ts-ignore
-import ChevronDownIcon from '../static/img/icons/chevron-down.svg';
-// @ts-ignore
-import ChevronUpIcon from '../static/img/icons/chevron-up.svg';
-// @ts-ignore
-import CollectionIcon from '../static/img/icons/collection.svg';
-// @ts-ignore
-import DiagramIcon from '../static/img/icons/diagram-3.svg';
-// @ts-ignore
-import ExclamationIcon from '../static/img/icons/exclamation.svg';
-// @ts-ignore
-import FilterIcon from '../static/img/icons/filter.svg';
-// @ts-ignore
-import GearIcon from '../static/img/icons/gear.svg';
-// @ts-ignore
-import HomeIcon from '../static/img/icons/house.svg';
-// @ts-ignore
-import MarkdownIcon from '../static/img/icons/markdown.svg';
-// @ts-ignore
-import QuestionIcon from '../static/img/icons/question.svg';
-// @ts-ignore
-import RssIcon from '../static/img/icons/rss.svg';
-// @ts-ignore
-import SearchIcon from '../static/img/icons/search.svg';
-// @ts-ignore
-import ServerIcon from '../static/img/icons/server.svg';
-// @ts-ignore
-import ShareIcon from '../static/img/icons/share.svg';
-// @ts-ignore
-import ShieldCheckIcon from '../static/img/icons/shield-check.svg';
-// @ts-ignore
-import ShieldXIcon from '../static/img/icons/shield-x.svg';
-// @ts-ignore
-import SquareIcon from '../static/img/icons/square.svg';
-// @ts-ignore
-import SquareCheckIcon from '../static/img/icons/square-check.svg';
-// @ts-ignore
-import SquareSlashIcon from '../static/img/icons/square-slash.svg';
-// @ts-ignore
-import TagIcon from '../static/img/icons/tag.svg';
-// @ts-ignore
-import TagsIcon from '../static/img/icons/tags.svg';
-// @ts-ignore
-import TasksIcon from '../static/img/icons/kanban.svg';
-// @ts-ignore
-import TerminalIcon from '../static/img/icons/terminal.svg';
+import BookmarkIcon from '../static/img/icons/__generated/BookmarkIcon';
+import ChevronCompactLeftIcon from '../static/img/icons/__generated/ChevronCompactLeftIcon';
+import ChevronCompactRightIcon from '../static/img/icons/__generated/ChevronCompactRightIcon';
+import ChevronDownIcon from '../static/img/icons/__generated/ChevronDownIcon';
+import ChevronUpIcon from '../static/img/icons/__generated/ChevronUpIcon';
+import CollectionIcon from '../static/img/icons/__generated/CollectionIcon';
+import Diagram3Icon from '../static/img/icons/__generated/Diagram3Icon';
+import ExclamationIcon from '../static/img/icons/__generated/ExclamationIcon';
+import FilterIcon from '../static/img/icons/__generated/FilterIcon';
+import GearIcon from '../static/img/icons/__generated/GearIcon';
+import HouseIcon from '../static/img/icons/__generated/HouseIcon';
+import KanbanIcon from '../static/img/icons/__generated/KanbanIcon';
+import MarkdownIcon from '../static/img/icons/__generated/MarkdownIcon';
+import QuestionIcon from '../static/img/icons/__generated/QuestionIcon';
+import RssIcon from '../static/img/icons/__generated/RssIcon';
+import SearchIcon from '../static/img/icons/__generated/SearchIcon';
+import ServerIcon from '../static/img/icons/__generated/ServerIcon';
+import ShareIcon from '../static/img/icons/__generated/ShareIcon';
+import ShieldCheckIcon from '../static/img/icons/__generated/ShieldCheckIcon';
+import ShieldXIcon from '../static/img/icons/__generated/ShieldXIcon';
+import SquareCheckIcon from '../static/img/icons/__generated/SquareCheckIcon';
+import SquareIcon from '../static/img/icons/__generated/SquareIcon';
+import SquareSlashIcon from '../static/img/icons/__generated/SquareSlashIcon';
+import TagIcon from '../static/img/icons/__generated/TagIcon';
+import TagsIcon from '../static/img/icons/__generated/TagsIcon';
+import TerminalIcon from '../static/img/icons/__generated/TerminalIcon';
 
 export enum IconType {
     BOOKMARK = 'bookmark',
@@ -105,7 +77,7 @@ export default function Icon(props: IconProps): h.JSX.Element {
         case IconType.COLLECTION:
             return <CollectionIcon />;
         case IconType.DIAGRAM:
-            return <DiagramIcon />;
+            return <Diagram3Icon />;
         case IconType.EXCLAMATION:
             return <ExclamationIcon />;
         case IconType.FILTER:
@@ -113,7 +85,7 @@ export default function Icon(props: IconProps): h.JSX.Element {
         case IconType.GEAR:
             return <GearIcon />;
         case IconType.HOME:
-            return <HomeIcon />;
+            return <HouseIcon />;
         case IconType.MARKDOWN:
             return <MarkdownIcon />;
         case IconType.QUESTION:
@@ -141,7 +113,7 @@ export default function Icon(props: IconProps): h.JSX.Element {
         case IconType.TAGS:
             return <TagsIcon />;
         case IconType.TASKS:
-            return <TasksIcon />;
+            return <KanbanIcon />;
         case IconType.TERMINAL:
             return <TerminalIcon />;
         default:
