@@ -2,6 +2,7 @@ import { h } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
 
 import Auth from '~auth/AuthContext';
+import Button, { ButtonSize } from '~components/Button';
 import LoadingSpinner from '~components/LoadingSpinner';
 import ListContainer from '~components/layout/ListContainer';
 import { Site as SiteModel } from '~models/Site';
@@ -31,6 +32,10 @@ export default function Site(props: SiteProps): h.JSX.Element {
     return (
         <div className="site">
             <a href={`/sites/${stripPrefixFromId(props.site.id)}`}>{props.site.description}</a>
+            <br />
+            <Button title="Configure" size={ButtonSize.XSMALL} />
+            <br />
+            <Button title="Create Page" size={ButtonSize.XSMALL} />
 
             {pages ? (
                 <ListContainer className="site-pages">
