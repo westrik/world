@@ -2,6 +2,7 @@ use world_core::jobs::{errors::JobError, job_type::JobType};
 
 use crate::jobs::ingest_media_upload::IngestMediaUploadJob;
 use crate::jobs::send_email::SendEmailJob;
+use crate::jobs::sync_site_to_bucket::SyncSiteToBucketJob;
 use crate::jobs::Runnable;
 
 pub async fn run_job(
@@ -27,6 +28,11 @@ pub async fn run_job(
             let payload = payload.unwrap();
             let email_job: SendEmailJob = serde_json::from_value(payload).unwrap();
             email_job.run().await
+        }
+        JobType::SyncSiteToBucket => {
+            let payload = payload.unwrap();
+            let sync_job: SyncSiteToBucketJob = serde_json::from_value(payload).unwrap();
+            sync_job.run().await
         }
     }
 }

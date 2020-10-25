@@ -10,6 +10,7 @@ pub enum JobType {
     // NOTE: don't forget to add new types to the FromStr impl
     IngestMediaUpload,
     SendEmail,
+    SyncSiteToBucket,
 }
 
 impl fmt::Display for JobType {
