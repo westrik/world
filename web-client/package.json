@@ -2,7 +2,7 @@
   "name": "westrikworld",
   "version": "0.1.0",
   "main": "App.tsx",
-  "license": "MIT",
+  "license": "AGPL-3.0",
   "scripts": {
     "start": "./scripts/process_icons.sh && yarn parcel src/index.html",
     "build": "./scripts/process_icons.sh && yarn parcel build src/index.html",
