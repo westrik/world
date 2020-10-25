@@ -81,7 +81,9 @@ pub struct ApiSite {
     pub created_at: DateTime<Utc>,
     #[serde(rename = "updatedAt")]
     pub updated_at: DateTime<Utc>,
+    #[serde(rename = "bucketDomainName")]
     pub bucket_domain_name: Option<String>,
+    #[serde(rename = "bucketAccessKeyId")]
     pub bucket_access_key_id: Option<String>,
 }
 #[derive(Debug, Deserialize)]

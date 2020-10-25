@@ -31,7 +31,7 @@ export default function Site(props: SiteProps): h.JSX.Element {
 
     return (
         <div className="site">
-            <a href={`/sites/${stripPrefixFromId(props.site.id)}`}>{props.site.description}</a>
+            <a href={`/sites/${stripPrefixFromId(props.site.id)}`}>{props.site.title}</a>
             <br />
             <Button title="Configure" size={ButtonSize.XSMALL} />
             <br />

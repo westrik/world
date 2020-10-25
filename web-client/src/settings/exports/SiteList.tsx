@@ -5,9 +5,9 @@ import Auth from '~auth/AuthContext';
 import LoadingSpinner from '~components/LoadingSpinner';
 import ListContainer from '~components/layout/ListContainer';
 import { Site as SiteModel } from '~models/Site';
-import Site from '~settings/exports/Site';
 
 import listSites from './listSites';
+import Site from './Site';
 
 export default function SiteList(): h.JSX.Element {
     const [sites, setSites] = useState<Array<SiteModel> | null>(null);
