@@ -32,6 +32,7 @@ impl FromStr for JobType {
         match s {
             "ingest_media_upload" => Ok(JobType::IngestMediaUpload),
             "send_email" => Ok(JobType::SendEmail),
+            "sync_site_to_bucket" => Ok(JobType::SyncSiteToBucket),
             _ => Err(JobError::InvalidJob(format!("invalid job type: {}", s))),
         }
     }

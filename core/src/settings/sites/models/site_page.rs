@@ -1,10 +1,12 @@
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use diesel::PgConnection;
+use serde_json::json;
 
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
 use crate::errors::ApiError;
+use crate::jobs::{enqueue_job::enqueue_job, job_type::JobType};
 use crate::notes::models::note::Note;
 use crate::notes::models::note_version::NoteVersion;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
@@ -211,6 +213,12 @@ impl SitePage {
             path,
         };
         let page = new_page.insert(conn)?;
+        enqueue_job(
+            conn,
+            None,
+            JobType::SyncSiteToBucket,
+            Some(json!({"site_api_id": &site.api_id})),
+        )?;
         Ok(LoadedSitePage {
             id: page.id,
             api_id: page.api_id,
@@ -268,6 +276,12 @@ impl SitePage {
             },
         }
         .update(conn, api_id, session.user_id)?;
+        enqueue_job(
+            conn,
+            None,
+            JobType::SyncSiteToBucket,
+            Some(json!({"site_api_id": &site.api_id})),
+        )?;
         Ok(LoadedSitePage {
             id: page.id,
             api_id: page.api_id,

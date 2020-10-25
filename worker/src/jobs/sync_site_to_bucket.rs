@@ -3,7 +3,7 @@ use world_core::jobs::errors::JobError;
 
 use crate::jobs::Runnable;
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct SyncSiteToBucketJob {
     pub site_api_id: String,
 }

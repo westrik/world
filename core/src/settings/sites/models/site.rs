@@ -1,10 +1,13 @@
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use diesel::PgConnection;
+use serde_json::json;
 
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
 use crate::errors::ApiError;
+use crate::jobs::enqueue_job::enqueue_job;
+use crate::jobs::job_type::JobType;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{sites, sites::dsl::sites as all_sites};
 
@@ -153,13 +156,20 @@ impl Site {
         api_id: String,
         spec: ApiSiteUpdateSpec,
     ) -> Result<Site, ApiError> {
-        SiteUpdateSpec {
+        let site = SiteUpdateSpec {
             updated_at: Utc::now(),
             title: spec.title,
             bucket_domain_name: spec.bucket_domain_name,
             bucket_access_key_id: spec.bucket_access_key_id,
             bucket_access_key_secret: spec.bucket_access_key_secret,
         }
-        .update(conn, api_id, session.user_id)
+        .update(conn, api_id.clone(), session.user_id)?;
+        enqueue_job(
+            conn,
+            None,
+            JobType::SyncSiteToBucket,
+            Some(json!({ "site_api_id": &api_id })),
+        )?;
+        Ok(site)
     }
 }
