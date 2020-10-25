@@ -16,6 +16,9 @@ impl Runnable for SyncSiteToBucketJob {
             "syncing site to S3 bucket [site_api_id={}]",
             self.site_api_id
         );
+        // TODO: export all site pages to HTML
+        // TODO: populate site templates
+        // TODO: copy all files to S3 bucket
         Ok("DONE".to_string())
     }
 }
