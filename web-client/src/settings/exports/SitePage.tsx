@@ -40,12 +40,8 @@ export default function SitePage(props: SitePageProps): h.JSX.Element {
                 <tr>
                     <td>Published?</td>
                     <td>
-                        {props.page.published ? 'true' : 'false'}
-                        {props.page.published ? (
-                            <Button title="Un-Publish" size={ButtonSize.XSMALL} />
-                        ) : (
-                            <Button title="Publish" size={ButtonSize.XSMALL} />
-                        )}
+                        {props.page.published ? 'Yes' : 'No'}
+                        <Button title={props.page.published ? 'Un-Publish' : 'Publish'} size={ButtonSize.XSMALL} />
                     </td>
                 </tr>
             </table>
@@ -54,3 +50,4 @@ export default function SitePage(props: SitePageProps): h.JSX.Element {
         </div>
     );
 }
+
