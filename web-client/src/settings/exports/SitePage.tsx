@@ -50,4 +50,3 @@ export default function SitePage(props: SitePageProps): h.JSX.Element {
         </div>
     );
 }
-
