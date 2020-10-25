@@ -77,8 +77,10 @@ table! {
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
         site_id -> Int4,
+        note_id -> Int4,
         note_version_id -> Int4,
         path -> Text,
+        published -> Bool,
     }
 }
 
@@ -128,6 +130,7 @@ joinable!(note_versions -> notes (note_id));
 joinable!(notes -> users (user_id));
 joinable!(sessions -> users (user_id));
 joinable!(site_pages -> note_versions (note_version_id));
+joinable!(site_pages -> notes (note_id));
 joinable!(site_pages -> sites (site_id));
 joinable!(site_pages -> users (user_id));
 joinable!(sites -> users (user_id));

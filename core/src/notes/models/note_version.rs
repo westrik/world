@@ -3,7 +3,7 @@ use diesel::prelude::*;
 
 use crate::auth::models::session::Session;
 use crate::errors::ApiError;
-use crate::notes::models::note::Note;
+use crate::notes::models::note::NoteSummary as Note;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{note_versions, note_versions::dsl::note_versions as all_note_versions, notes};
 

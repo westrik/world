@@ -162,7 +162,7 @@ fn run_create_site_page(
         &get_conn(&pool).unwrap(),
         session,
         site_api_id,
-        spec.note_version_api_id,
+        spec.note_api_id,
         spec.path,
     )?)
 }

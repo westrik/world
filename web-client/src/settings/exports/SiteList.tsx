@@ -4,13 +4,13 @@ import { useContext, useEffect, useState } from 'preact/hooks';
 import Auth from '~auth/AuthContext';
 import LoadingSpinner from '~components/LoadingSpinner';
 import ListContainer from '~components/layout/ListContainer';
-import { Site } from '~models/Site';
-import SiteListItem from '~settings/exports/SiteListItem';
+import { Site as SiteModel } from '~models/Site';
+import Site from '~settings/exports/Site';
 
 import listSites from './listSites';
 
 export default function SiteList(): h.JSX.Element {
-    const [sites, setSites] = useState<Array<Site> | null>(null);
+    const [sites, setSites] = useState<Array<SiteModel> | null>(null);
     const authContext = useContext(Auth);
 
     // TODO: refactor into custom hook
@@ -25,7 +25,9 @@ export default function SiteList(): h.JSX.Element {
     return sites ? (
         <ListContainer className="sites">
             {sites.map((site, key) => (
-                <SiteListItem site={site} key={key} />
+                <li key={key}>
+                    <Site site={site} />
+                </li>
             ))}
         </ListContainer>
     ) : (
