@@ -63,60 +63,88 @@ interface IconProps {
 }
 
 export default function Icon(props: IconProps): h.JSX.Element {
+    let iconComponent: h.JSX.Element;
     switch (props.iconType) {
         case IconType.BOOKMARK:
-            return <BookmarkIcon />;
+            iconComponent = <BookmarkIcon />;
+            break;
         case IconType.CHEVRON_COMPACT_LEFT:
-            return <ChevronCompactLeftIcon />;
+            iconComponent = <ChevronCompactLeftIcon />;
+            break;
         case IconType.CHEVRON_COMPACT_RIGHT:
-            return <ChevronCompactRightIcon />;
+            iconComponent = <ChevronCompactRightIcon />;
+            break;
         case IconType.CHEVRON_DOWN:
-            return <ChevronDownIcon />;
+            iconComponent = <ChevronDownIcon />;
+            break;
         case IconType.CHEVRON_UP:
-            return <ChevronUpIcon />;
+            iconComponent = <ChevronUpIcon />;
+            break;
         case IconType.COLLECTION:
-            return <CollectionIcon />;
+            iconComponent = <CollectionIcon />;
+            break;
         case IconType.DIAGRAM:
-            return <Diagram3Icon />;
+            iconComponent = <Diagram3Icon />;
+            break;
         case IconType.EXCLAMATION:
-            return <ExclamationIcon />;
+            iconComponent = <ExclamationIcon />;
+            break;
         case IconType.FILTER:
-            return <FilterIcon />;
+            iconComponent = <FilterIcon />;
+            break;
         case IconType.GEAR:
-            return <GearIcon />;
+            iconComponent = <GearIcon />;
+            break;
         case IconType.HOME:
-            return <HouseIcon />;
+            iconComponent = <HouseIcon />;
+            break;
         case IconType.MARKDOWN:
-            return <MarkdownIcon />;
+            iconComponent = <MarkdownIcon />;
+            break;
         case IconType.QUESTION:
-            return <QuestionIcon />;
+            iconComponent = <QuestionIcon />;
+            break;
         case IconType.RSS:
-            return <RssIcon />;
+            iconComponent = <RssIcon />;
+            break;
         case IconType.SEARCH:
-            return <SearchIcon />;
+            iconComponent = <SearchIcon />;
+            break;
         case IconType.SERVER:
-            return <ServerIcon />;
+            iconComponent = <ServerIcon />;
+            break;
         case IconType.SHARE:
-            return <ShareIcon />;
+            iconComponent = <ShareIcon />;
+            break;
         case IconType.SHIELD_CHECK:
-            return <ShieldCheckIcon />;
+            iconComponent = <ShieldCheckIcon />;
+            break;
         case IconType.SHIELD_X:
-            return <ShieldXIcon />;
+            iconComponent = <ShieldXIcon />;
+            break;
         case IconType.SQUARE:
-            return <SquareIcon />;
+            iconComponent = <SquareIcon />;
+            break;
         case IconType.SQUARE_CHECK:
-            return <SquareCheckIcon />;
+            iconComponent = <SquareCheckIcon />;
+            break;
         case IconType.SQUARE_SLASH:
-            return <SquareSlashIcon />;
+            iconComponent = <SquareSlashIcon />;
+            break;
         case IconType.TAG:
-            return <TagIcon />;
+            iconComponent = <TagIcon />;
+            break;
         case IconType.TAGS:
-            return <TagsIcon />;
+            iconComponent = <TagsIcon />;
+            break;
         case IconType.TASKS:
-            return <KanbanIcon />;
+            iconComponent = <KanbanIcon />;
+            break;
         case IconType.TERMINAL:
-            return <TerminalIcon />;
+            iconComponent = <TerminalIcon />;
+            break;
         default:
             fail('Icon type not recognized');
     }
+    return <div className="icon">{iconComponent}</div>;
 }

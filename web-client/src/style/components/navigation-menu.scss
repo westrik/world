@@ -254,6 +254,12 @@ $navigation-menu-brand-top-margin: 3px;
         line-height: 36px;
         border-radius: 5px 0 0 5px;
 
+        .icon {
+          line-height: 16px;
+          vertical-align: middle;
+          padding-right: 8px;
+        }
+
         &:focus, &:hover {
           background-color: var(--grey1);
         }
