@@ -2,13 +2,14 @@ import { h } from 'preact';
 import { useContext, useEffect, useState } from 'preact/hooks';
 
 import Auth from '~auth/AuthContext';
+import ListContainer from '~components/layout/ListContainer';
 import AppContainer from '~components/AppContainer';
 import LoadingSpinner from '~components/LoadingSpinner';
-import ListContainer from '~components/layout/ListContainer';
 import useHotKeyContext from '~keyboard/useHotKeyContext';
+import { Code } from '~keyboard/HotKeyCommand';
 import { Note } from '~models/Note';
-import listNotes from '~notes/listNotes';
 import NoteCreateForm from '~notes/NoteCreateForm';
+import listNotes from '~notes/listNotes';
 import { stripPrefixFromId } from '~utils/identifier';
 
 export default function NoteList(): h.JSX.Element {
@@ -17,7 +18,7 @@ export default function NoteList(): h.JSX.Element {
     useHotKeyContext(
         new Map([
             [
-                { key: 'c' },
+                { code: Code.C },
                 () => {
                     console.log('creating note');
                 },

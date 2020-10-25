@@ -1,6 +1,6 @@
 import { createContext } from 'preact';
 import { useContext, useEffect } from 'preact/hooks';
-import { HotKeyCommand, hotKeyCommandToString } from '~keyboard/HotKeyCommand';
+import { Code, HotKeyCommand, hotKeyCommandToString } from '~keyboard/HotKeyCommand';
 
 export interface HotKeyContext {
     commandsToHandlers: { [command: string]: () => void };
@@ -26,7 +26,7 @@ function createKeyDownHandler(ctx: HotKeyContext): (event: KeyboardEvent) => voi
         const handler =
             ctx.commandsToHandlers[
                 hotKeyCommandToString({
-                    key: event.key,
+                    code: event.code as Code,
                     alt: event.altKey,
                     ctrl: event.ctrlKey,
                     meta: event.metaKey,

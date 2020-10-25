@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { HotKeyCommand, hotKeyCommandToString } from '~keyboard/HotKeyCommand';
+import { Code, HotKeyCommand, hotKeyCommandToString } from '~keyboard/HotKeyCommand';
 
 describe('HotKeyContext', () => {
     it('converts hotkeys to strings', () => {
@@ -7,14 +7,14 @@ describe('HotKeyContext', () => {
             meta: true,
             alt: true,
             ctrl: true,
-            key: ['a', 'b', 'c'],
+            code: [Code.A, Code.B, Code.C],
         };
         expect(hotKeyCommandToString(cmd)).equal('[ctrl]-[alt]-[meta]-a-b-c');
         cmd = {
             shift: true,
             alt: true,
             ctrl: true,
-            key: 'a',
+            code: Code.A,
         };
         expect(hotKeyCommandToString(cmd)).equal('[shift]-[ctrl]-[alt]-a');
     });

@@ -79,7 +79,7 @@ export default function TaskRow(props: Props): h.JSX.Element | null {
                     onClick={handleToggle}
                     onFocus={handleToggle}
                     onKeyDown={(e): void => {
-                        if (e.keyCode === 13 && !e.shiftKey) {
+                        if (e.code === 'Escape' && !e.shiftKey) {
                             e.preventDefault();
                             (e.target as HTMLSpanElement).blur();
                             // TODO: focus the next task
