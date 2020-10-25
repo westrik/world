@@ -13,7 +13,8 @@ pub fn routes(
         .or(site_create(db_pool.clone()))
         .or(site_update(db_pool.clone()))
         .or(site_delete(db_pool.clone()))
-        .or(site_pages_list(db_pool))
+        .or(site_pages_list(db_pool.clone()))
+        .or(site_page_create(db_pool))
 }
 
 /// GET /site?offset=3&limit=5
@@ -79,7 +80,7 @@ pub fn site_pages_list(
 pub fn site_page_create(
     db_pool: DbPool,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("site")
+    warp::path!("site" / String / "page")
         .and(warp::post())
         .and(json_body::<ApiSitePageCreateSpec>())
         .and(with_session(db_pool.clone()))

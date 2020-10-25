@@ -156,23 +156,29 @@ fn run_create_site_page(
     session: Session,
     pool: &DbPool,
     spec: ApiSitePageCreateSpec,
+    site_api_id: String,
 ) -> Result<LoadedSitePage, ApiError> {
     Ok(SitePage::create(
         &get_conn(&pool).unwrap(),
         session,
-        spec.site_api_id,
+        site_api_id,
         spec.note_version_api_id,
         spec.path,
     )?)
 }
 
 pub async fn create_site_page(
+    site_api_id: String,
     new_page: ApiSitePageCreateSpec,
     session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
-    debug!("create_site_page new_page={:?}", new_page);
-    let page = run_api_task(move || run_create_site_page(session, &db_pool, new_page)).await?;
+    debug!(
+        "create_site_page site_api_id={} new_page={:?}",
+        site_api_id, new_page
+    );
+    let page = run_api_task(move || run_create_site_page(session, &db_pool, new_page, site_api_id))
+        .await?;
     Ok(warp::reply::with_status(
         warp::reply::json(&UpdateSitePageResponse {
             error: None,

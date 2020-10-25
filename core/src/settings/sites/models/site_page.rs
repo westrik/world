@@ -103,8 +103,6 @@ pub struct ApiSitePage {
 }
 #[derive(Debug, Deserialize)]
 pub struct ApiSitePageCreateSpec {
-    #[serde(rename = "siteId")]
-    pub site_api_id: String,
     #[serde(rename = "noteVersionId")]
     pub note_version_api_id: String,
     pub path: String,
