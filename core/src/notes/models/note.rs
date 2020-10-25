@@ -32,6 +32,8 @@ pub struct NoteSummary {
 
 #[derive(Queryable, Serialize, Debug)]
 pub struct Note {
+    #[serde(skip)]
+    pub id: i32,
     #[serde(rename = "id")]
     pub api_id: String,
     #[serde(rename = "versionId")]
@@ -87,15 +89,6 @@ impl NoteUpdateSpec {
     }
 }
 
-type DbNote = (
-    String,
-    String,
-    DateTime<Utc>,
-    DateTime<Utc>,
-    String,
-    serde_json::Value,
-);
-
 fn create_version_for_note_and_commit(
     conn: &PgConnection,
     note: Result<NoteSummary, ApiError>,
@@ -109,6 +102,7 @@ fn create_version_for_note_and_commit(
                 // TODO: move transaction handling out of this fn
                 commit_txn(conn).unwrap();
                 Ok(Note {
+                    id: note_.id,
                     api_id: note_.api_id,
                     created_at: note_.created_at,
                     updated_at: note_.updated_at,
@@ -133,6 +127,7 @@ fn create_version_for_note_and_commit(
                 // TODO: move transaction handling out of this fn
                 commit_txn(conn).unwrap();
                 Ok(Note {
+                    id: note_.id,
                     api_id: note_.api_id,
                     created_at: note_.created_at,
                     updated_at: note_.updated_at,
@@ -156,6 +151,16 @@ fn create_version_for_note_and_commit(
     }
 }
 
+type LoadedNote = (
+    i32,
+    String,
+    String,
+    DateTime<Utc>,
+    DateTime<Utc>,
+    String,
+    serde_json::Value,
+);
+
 impl Note {
     pub fn list(
         conn: &PgConnection,
@@ -173,6 +178,7 @@ impl Note {
         let result = note_versions::table
             .inner_join(notes::table)
             .select((
+                notes::id,
                 notes::api_id,
                 note_versions::api_id,
                 notes::created_at,
@@ -184,18 +190,19 @@ impl Note {
             .filter(notes::api_id.eq(&api_id))
             .order(note_versions::id.desc())
             .limit(1)
-            .first::<DbNote>(conn)
+            .first::<LoadedNote>(conn)
             .map_err(|e| match e {
                 diesel::result::Error::NotFound => ApiError::NotFound(api_id.to_string()),
                 _ => ApiError::DatabaseError(e),
             })?;
         Ok(Note {
-            api_id: result.0,
-            version_api_id: Some(result.1),
-            created_at: result.2,
-            updated_at: result.3,
-            name: result.4,
-            content: Some(result.5),
+            id: result.0,
+            api_id: result.1,
+            version_api_id: Some(result.2),
+            created_at: result.3,
+            updated_at: result.4,
+            name: result.5,
+            content: Some(result.6),
         })
     }
 

@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import Router, { Route } from 'preact-router';
+import Router, { Route, RouterOnChangeArgs } from 'preact-router';
 
 import UserList from '~admin/UserList';
 import { AdminAuthedRoute } from '~auth/AdminAuthedRoute';
@@ -16,10 +16,15 @@ import NoteList from '~notes/NoteList';
 import SettingsPage from '~settings/SettingsPage';
 import TaskList from '~tasks/TaskList';
 
+async function handleRouteChange(event: RouterOnChangeArgs): Promise<void> {
+    // TODO: update context to let us decide which tab is active
+    console.log(event.url);
+}
+
 export default function App(): h.JSX.Element {
     return (
         <AuthProvider>
-            <Router>
+            <Router onChange={handleRouteChange}>
                 <Route path="/login" component={SignInForm} />
                 <Route path="/component-library" component={ComponentLibraryPreview} />
                 <AuthedRoute path="/" component={Dashboard} />

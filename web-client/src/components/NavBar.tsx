@@ -31,11 +31,11 @@ export const SECTIONS: Array<Section> = [
         route: '/notes',
         iconType: IconType.MARKDOWN,
     },
-    {
-        name: 'Code',
-        route: '/branches',
-        iconType: IconType.TERMINAL,
-    },
+    // {
+    //     name: 'Code',
+    //     route: '/branches',
+    //     iconType: IconType.TERMINAL,
+    // },
     {
         name: 'Media',
         route: '/library',

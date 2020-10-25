@@ -5,10 +5,11 @@ use diesel::PgConnection;
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
 use crate::errors::ApiError;
+use crate::notes::models::note::Note;
 use crate::notes::models::note_version::NoteVersion;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{
-    note_versions, site_pages, site_pages::dsl::site_pages as all_site_pages, sites,
+    note_versions, notes, site_pages, site_pages::dsl::site_pages as all_site_pages, sites,
 };
 use crate::settings::sites::models::site::Site;
 
@@ -21,8 +22,10 @@ pub struct SitePage {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub site_id: i32,
+    pub note_id: i32,
     pub note_version_id: i32,
     pub path: String,
+    pub published: bool,
 }
 
 #[derive(Queryable, Serialize, Deserialize, Debug)]
@@ -33,9 +36,12 @@ pub struct LoadedSitePage {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub site_id: i32,
+    pub note_id: i32,
     pub note_version_id: i32,
     pub path: String,
+    pub published: bool,
     pub site_api_id: String,
+    pub note_api_id: String,
     pub note_version_api_id: String,
 }
 
@@ -45,6 +51,7 @@ pub struct SitePageCreateSpec {
     pub api_id: String,
     pub user_id: i32,
     pub site_id: i32,
+    pub note_id: i32,
     pub note_version_id: i32,
     pub path: String,
 }
@@ -66,7 +73,9 @@ pub struct SitePageUpdateSpec {
     pub updated_at: DateTime<Utc>,
     pub path: Option<String>,
     pub site_id: Option<i32>,
+    pub note_id: Option<i32>,
     pub note_version_id: Option<i32>,
+    pub published: Option<bool>,
 }
 impl SitePageUpdateSpec {
     pub fn update(
@@ -97,16 +106,17 @@ pub struct ApiSitePage {
     pub updated_at: DateTime<Utc>,
     #[serde(rename = "siteId")]
     pub site_api_id: String,
+    #[serde(rename = "noteId")]
+    pub note_api_id: String,
     #[serde(rename = "noteVersionId")]
     pub note_version_api_id: String,
     pub path: String,
+    pub published: bool,
 }
 #[derive(Debug, Deserialize)]
 pub struct ApiSitePageCreateSpec {
-    #[serde(rename = "siteId")]
-    pub site_api_id: String,
-    #[serde(rename = "noteVersionId")]
-    pub note_version_api_id: String,
+    #[serde(rename = "noteId")]
+    pub note_api_id: String,
     pub path: String,
 }
 #[derive(Debug, Deserialize)]
@@ -114,9 +124,12 @@ pub struct ApiSitePageCreateSpec {
 pub struct ApiSitePageUpdateSpec {
     #[serde(rename = "siteId")]
     pub site_api_id: String,
+    #[serde(rename = "noteId")]
+    pub note_api_id: String,
     #[serde(rename = "noteVersionId")]
-    pub note_version_api_id: String,
+    pub note_version_api_id: Option<String>,
     pub path: Option<String>,
+    pub published: Option<bool>,
 }
 
 impl From<&LoadedSitePage> for ApiSitePage {
@@ -127,7 +140,9 @@ impl From<&LoadedSitePage> for ApiSitePage {
             updated_at: page.updated_at,
             path: page.path.clone(),
             site_api_id: page.site_api_id.clone(),
+            note_api_id: page.note_api_id.clone(),
             note_version_api_id: page.note_version_api_id.clone(),
+            published: page.published,
         }
     }
 }
@@ -136,12 +151,11 @@ impl SitePage {
     pub fn find_all_for_site(
         conn: &PgConnection,
         session: Session,
-        _site_api_id: String,
+        site_api_id: String,
     ) -> Result<Vec<LoadedSitePage>, ApiError> {
-        // TODO: limit query to only pages for site with site_api_id
-        // TODO: load API IDs for note_version & site associated with each site_page
         let items: Vec<LoadedSitePage> = all_site_pages
             .filter(site_pages::user_id.eq(session.user_id))
+            .inner_join(notes::table)
             .inner_join(note_versions::table)
             .inner_join(sites::table)
             .select((
@@ -151,11 +165,15 @@ impl SitePage {
                 site_pages::created_at,
                 site_pages::updated_at,
                 site_pages::site_id,
+                site_pages::note_id,
                 site_pages::note_version_id,
                 site_pages::path,
-                note_versions::api_id,
+                site_pages::published,
                 sites::api_id,
+                notes::api_id,
+                note_versions::api_id,
             ))
+            .filter(sites::api_id.eq(&site_api_id))
             .load(conn)
             .map_err(ApiError::DatabaseError)?;
         Ok(items)
@@ -165,17 +183,30 @@ impl SitePage {
         conn: &PgConnection,
         session: Session,
         site_api_id: String,
-        note_version_api_id: String,
+        note_api_id: String,
         path: String,
     ) -> Result<LoadedSitePage, ApiError> {
         let site = Site::find_by_api_id(conn, session.clone(), site_api_id.clone())?;
-        let note_version =
-            NoteVersion::find_by_api_id(conn, session.clone(), note_version_api_id.clone())?;
 
+        let note = Note::find(conn, session.clone(), note_api_id.clone())?;
+        let note_version = {
+            if let Some(note_version_api_id) = note.version_api_id {
+                Ok(NoteVersion::find_by_api_id(
+                    conn,
+                    session.clone(),
+                    note_version_api_id,
+                )?)
+            } else {
+                Err(ApiError::InvalidRequest(
+                    "No versions exist for that note".to_string(),
+                ))
+            }
+        }?;
         let new_page = SitePageCreateSpec {
             api_id: generate_resource_identifier(ResourceType::SitePage),
             user_id: session.user_id,
             site_id: site.id,
+            note_id: note.id,
             note_version_id: note_version.id,
             path,
         };
@@ -187,10 +218,13 @@ impl SitePage {
             created_at: page.created_at,
             updated_at: page.updated_at,
             site_id: page.site_id,
+            note_id: page.note_id,
             note_version_id: page.note_version_id,
             path: page.path,
+            published: page.published,
             site_api_id,
-            note_version_api_id,
+            note_api_id,
+            note_version_api_id: note_version.api_id,
         })
     }
 
@@ -200,15 +234,38 @@ impl SitePage {
         api_id: String,
         spec: ApiSitePageUpdateSpec,
     ) -> Result<LoadedSitePage, ApiError> {
-        // TODO: clean this up somehow...
         let site = Site::find_by_api_id(conn, session.clone(), spec.site_api_id.clone())?;
-        let note_version =
-            NoteVersion::find_by_api_id(conn, session.clone(), spec.note_version_api_id.clone())?;
+        let note = Note::find(conn, session.clone(), spec.note_api_id.clone())?;
+        let note_version = {
+            if let Some(note_version_api_id) = spec.note_version_api_id {
+                Ok(NoteVersion::find_by_api_id(
+                    conn,
+                    session.clone(),
+                    note_version_api_id,
+                )?)
+            } else if let Some(note_version_api_id) = note.version_api_id {
+                Ok(NoteVersion::find_by_api_id(
+                    conn,
+                    session.clone(),
+                    note_version_api_id,
+                )?)
+            } else {
+                Err(ApiError::InvalidRequest(
+                    "No versions exist for that note".to_string(),
+                ))
+            }
+        }?;
         let page = SitePageUpdateSpec {
             updated_at: Utc::now(),
             path: spec.path,
             site_id: Some(site.id),
+            note_id: Some(note.id),
             note_version_id: Some(note_version.id),
+            published: if let Some(published) = spec.published {
+                Some(published)
+            } else {
+                None
+            },
         }
         .update(conn, api_id, session.user_id)?;
         Ok(LoadedSitePage {
@@ -218,10 +275,13 @@ impl SitePage {
             created_at: page.created_at,
             updated_at: page.updated_at,
             site_id: page.site_id,
+            note_id: page.note_id,
             note_version_id: page.note_version_id,
             path: page.path,
+            published: page.published,
             site_api_id: spec.site_api_id,
-            note_version_api_id: spec.note_version_api_id,
+            note_api_id: note.api_id,
+            note_version_api_id: note_version.api_id,
         })
     }
 }

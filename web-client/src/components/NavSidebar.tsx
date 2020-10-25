@@ -33,6 +33,7 @@ export default function NavSidebar(): h.JSX.Element {
                     <ul className="nav-section-list">
                         {SECTIONS.map((section, idx) => (
                             <li key={idx} className={sectionClassName(section)}>
+                                {/* TODO: determine active class using context that gets updated on route changes */}
                                 <Link activeClassName="active" href={section.route}>
                                     <Icon iconType={section.iconType} />
                                     {section.name}

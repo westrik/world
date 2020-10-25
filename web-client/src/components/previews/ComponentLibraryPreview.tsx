@@ -1,5 +1,6 @@
 import { h } from 'preact';
 
+import Button from '~components/Button';
 import PageContainer from '~components/layout/PageContainer';
 import Sheet from '~components/layout/Sheet';
 import Stack, { StackOrientation } from '~components/layout/Stack';
@@ -26,7 +27,7 @@ export default function ComponentLibraryPreview(): h.JSX.Element {
                     </Stack>
                 </Sheet>
                 <Sheet>
-                    <button>This is a button</button>
+                    <Button title={'This is a button'} />
                 </Sheet>
             </Stack>
         </PageContainer>
