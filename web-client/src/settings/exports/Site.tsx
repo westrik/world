@@ -16,6 +16,10 @@ interface SiteProps {
     site: SiteModel;
 }
 
+export function FieldEditButton({ onClick }: { onClick?: () => void }): h.JSX.Element {
+    return <Button title="Edit" size={ButtonSize.XSMALL} onClick={onClick} />;
+}
+
 export default function Site(props: SiteProps): h.JSX.Element {
     const [pages, setPages] = useState<Array<SitePageModel> | null>(null);
     const authContext = useContext(Auth);
@@ -32,9 +36,20 @@ export default function Site(props: SiteProps): h.JSX.Element {
     return (
         <div className="site">
             <a href={`/sites/${stripPrefixFromId(props.site.id)}`}>{props.site.title}</a>
-            <br />
-            <Button title="Configure" size={ButtonSize.XSMALL} />
-            <br />
+            <table>
+                <tr>
+                    <td>Bucket</td>
+                    <td>
+                        {props.site.bucketDomainName ?? 'N/A'} <FieldEditButton />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Bucket Access Key</td>
+                    <td>
+                        {props.site.bucketAccessKeyId ?? 'N/A'} <FieldEditButton />
+                    </td>
+                </tr>
+            </table>
             <Button title="Add Page" size={ButtonSize.XSMALL} />
 
             {pages ? (

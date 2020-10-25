@@ -19,6 +19,7 @@ pub struct Site {
     pub title: String,
     pub bucket_domain_name: Option<String>,
     pub bucket_access_key_id: Option<String>,
+    // TODO: server-side-encrypt this column using private key stored in Secrets Manager
     pub bucket_access_key_secret: Option<String>,
 }
 

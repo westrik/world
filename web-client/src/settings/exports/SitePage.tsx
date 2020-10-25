@@ -4,6 +4,7 @@ import { h } from 'preact';
 // import Auth from '~auth/AuthContext';
 import Button, { ButtonSize } from '~components/Button';
 import { SitePage as SitePageModel } from '~models/SitePage';
+import { FieldEditButton } from '~settings/exports/Site';
 
 interface SitePageProps {
     page: SitePageModel;
@@ -23,8 +24,10 @@ export default function SitePage(props: SitePageProps): h.JSX.Element {
                     <td>{props.page.id}</td>
                 </tr>
                 <tr>
-                    <td>URL</td>
-                    <td>{props.page.path}</td>
+                    <td>Path</td>
+                    <td>
+                        {props.page.path} <FieldEditButton />
+                    </td>
                 </tr>
                 <tr>
                     <td>Note ID</td>
@@ -36,15 +39,17 @@ export default function SitePage(props: SitePageProps): h.JSX.Element {
                 </tr>
                 <tr>
                     <td>Published?</td>
-                    <td>{props.page.published ? 'true' : 'false'}</td>
+                    <td>
+                        {props.page.published ? 'true' : 'false'}
+                        {props.page.published ? (
+                            <Button title="Un-Publish" size={ButtonSize.XSMALL} />
+                        ) : (
+                            <Button title="Publish" size={ButtonSize.XSMALL} />
+                        )}
+                    </td>
                 </tr>
             </table>
             <Button title="Remove Page" size={ButtonSize.XSMALL} />
-            {props.page.published ? (
-                <Button title="Un-Publish" size={ButtonSize.XSMALL} />
-            ) : (
-                <Button title="Publish" size={ButtonSize.XSMALL} />
-            )}
             {/*{props.page.published && canUpdatePage() && <Button title="Publish Updates" />}*/}
         </div>
     );
