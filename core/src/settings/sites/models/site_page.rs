@@ -194,7 +194,7 @@ impl SitePage {
                 Ok(NoteVersion::find_by_api_id(
                     conn,
                     session.clone(),
-                    note_version_api_id.clone(),
+                    note_version_api_id,
                 )?)
             } else {
                 Err(ApiError::InvalidRequest(
@@ -241,13 +241,13 @@ impl SitePage {
                 Ok(NoteVersion::find_by_api_id(
                     conn,
                     session.clone(),
-                    note_version_api_id.clone(),
+                    note_version_api_id,
                 )?)
             } else if let Some(note_version_api_id) = note.version_api_id {
                 Ok(NoteVersion::find_by_api_id(
                     conn,
                     session.clone(),
-                    note_version_api_id.clone(),
+                    note_version_api_id,
                 )?)
             } else {
                 Err(ApiError::InvalidRequest(

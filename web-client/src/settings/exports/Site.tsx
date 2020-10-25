@@ -35,7 +35,7 @@ export default function Site(props: SiteProps): h.JSX.Element {
             <br />
             <Button title="Configure" size={ButtonSize.XSMALL} />
             <br />
-            <Button title="Create Page" size={ButtonSize.XSMALL} />
+            <Button title="Add Page" size={ButtonSize.XSMALL} />
 
             {pages ? (
                 <ListContainer className="site-pages">

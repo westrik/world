@@ -39,13 +39,13 @@ export default function SitePage(props: SitePageProps): h.JSX.Element {
                     <td>{props.page.published ? 'true' : 'false'}</td>
                 </tr>
             </table>
+            <Button title="Remove Page" size={ButtonSize.XSMALL} />
             {props.page.published ? (
                 <Button title="Un-Publish" size={ButtonSize.XSMALL} />
             ) : (
                 <Button title="Publish" size={ButtonSize.XSMALL} />
             )}
             {/*{props.page.published && canUpdatePage() && <Button title="Publish Updates" />}*/}
-            <Button title="Delete" size={ButtonSize.XSMALL} />
         </div>
     );
 }
