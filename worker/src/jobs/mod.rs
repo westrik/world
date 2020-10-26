@@ -7,5 +7,5 @@ pub mod sync_site_to_bucket;
 
 #[async_trait]
 pub trait Runnable {
-    async fn run(&self) -> Result<String, JobError>;
+    async fn run(&self, user_id: Option<i32>) -> Result<String, JobError>;
 }

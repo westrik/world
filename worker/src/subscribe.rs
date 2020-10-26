@@ -91,11 +91,12 @@ pub async fn subscribe_to_jobs(database_url: String) -> Result<(), JobError> {
             debug!("received job [id={}]", id);
             let job_type: String = row.get(5);
             let payload: Option<serde_json::Value> = row.get(6);
+            let user_id: Option<i32> = row.get(7);
 
             let job_result = match JobType::from_str(&job_type) {
                 Ok(job_type) => {
                     debug!("running '{}' job", job_type);
-                    run_job(id, job_type, payload).await
+                    run_job(id, job_type, user_id, payload).await
                 }
                 _ => Err(JobError::InvalidJob(format!(
                     "invalid job type: {}",

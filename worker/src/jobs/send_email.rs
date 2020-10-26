@@ -23,7 +23,7 @@ pub struct SendEmailJob {
 
 #[async_trait]
 impl Runnable for SendEmailJob {
-    async fn run(&self) -> Result<String, JobError> {
+    async fn run(&self, _: Option<i32>) -> Result<String, JobError> {
         // TODO: validate input
         info!(
             "sending email to {:#?} (template: {:#?})",

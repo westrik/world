@@ -215,7 +215,7 @@ impl SitePage {
         let page = new_page.insert(conn)?;
         enqueue_job(
             conn,
-            None,
+            Some(page.user_id),
             JobType::SyncSiteToBucket,
             Some(json!({"site_api_id": &site.api_id})),
         )?;
@@ -278,7 +278,7 @@ impl SitePage {
         .update(conn, api_id, session.user_id)?;
         enqueue_job(
             conn,
-            None,
+            Some(page.user_id),
             JobType::SyncSiteToBucket,
             Some(json!({"site_api_id": &site.api_id})),
         )?;

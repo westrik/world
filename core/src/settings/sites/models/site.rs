@@ -166,7 +166,7 @@ impl Site {
         .update(conn, api_id.clone(), session.user_id)?;
         enqueue_job(
             conn,
-            None,
+            Some(site.user_id),
             JobType::SyncSiteToBucket,
             Some(json!({ "site_api_id": &api_id })),
         )?;

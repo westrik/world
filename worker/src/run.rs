@@ -8,6 +8,7 @@ use crate::jobs::Runnable;
 pub async fn run_job(
     id: i32,
     job_type: JobType,
+    user_id: Option<i32>,
     payload: Option<serde_json::Value>,
 ) -> Result<String, JobError> {
     info!(
@@ -17,22 +18,22 @@ pub async fn run_job(
         payload.is_some()
     );
 
-    // TODO: run task on tokio threadpool
+    // TODO: refactor & run task on tokio threadpool (?)
     match job_type {
         JobType::IngestMediaUpload => {
             let payload = payload.unwrap();
             let ingest_job: IngestMediaUploadJob = serde_json::from_value(payload).unwrap();
-            ingest_job.run().await
+            ingest_job.run(user_id).await
         }
         JobType::SendEmail => {
             let payload = payload.unwrap();
             let email_job: SendEmailJob = serde_json::from_value(payload).unwrap();
-            email_job.run().await
+            email_job.run(user_id).await
         }
         JobType::SyncSiteToBucket => {
             let payload = payload.unwrap();
             let sync_job: SyncSiteToBucketJob = serde_json::from_value(payload).unwrap();
-            sync_job.run().await
+            sync_job.run(user_id).await
         }
     }
 }
