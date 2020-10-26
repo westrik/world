@@ -37,9 +37,9 @@ pub fn destroy_test_db(pool: &DbPool) {
     // TODO: automatically drop tables in the right order
     conn.execute("DROP TABLE IF EXISTS site_pages").unwrap();
     conn.execute("DROP TABLE IF EXISTS sites").unwrap();
-    conn.execute("DROP TABLE IF EXISTS library_item_versions")
+    conn.execute("DROP TABLE IF EXISTS media_item_versions")
         .unwrap();
-    conn.execute("DROP TABLE IF EXISTS library_items").unwrap();
+    conn.execute("DROP TABLE IF EXISTS media_items").unwrap();
     conn.execute("DROP TABLE IF EXISTS tasks").unwrap();
     conn.execute("DROP TABLE IF EXISTS note_versions").unwrap();
     conn.execute("DROP TABLE IF EXISTS notes").unwrap();

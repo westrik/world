@@ -1,29 +1,29 @@
 import { AuthContext } from '~auth/AuthContext';
 import { FileType } from '~components/FileUploadField';
-import { ApiLibraryItem, ApiLibraryItemVersion } from '~models/LibraryItem';
+import { ApiMediaItem, ApiMediaItemVersion } from '~models/MediaItem';
 import { assertCondition } from '~utils/asserts';
 import { ApiResponse, request, RequestMethod } from '~utils/network';
 
-interface BulkCreateLibraryItemsRequest {
+interface BulkCreateMediaItemsRequest {
     fileSpecs: Array<[number, FileType]>;
 }
 
-export interface BulkCreateLibraryItemsResponse extends ApiResponse {
-    libraryItems: Array<ApiLibraryItem>;
+export interface BulkCreateMediaItemsResponse extends ApiResponse {
+    mediaItems: Array<ApiMediaItem>;
 }
 
-interface CreateLibraryItemVersionRequest {
-    libraryItemId: string;
+interface CreateMediaItemVersionRequest {
+    mediaItemId: string;
 }
 
-export interface CreateLibraryItemVersionResponse extends ApiResponse {
-    libraryItemVersion: ApiLibraryItemVersion;
+export interface CreateMediaItemVersionResponse extends ApiResponse {
+    mediaItemVersion: ApiMediaItemVersion;
 }
 
-async function createLibraryItem(authContext: AuthContext, item: ApiLibraryItem, file: File): Promise<void> {
+async function createMediaItem(authContext: AuthContext, item: ApiMediaItem, file: File): Promise<void> {
     assertCondition(
         file && file.size == item.uploadedFileSizeBytes,
-        'Expected size of created library item to match file size',
+        'Expected size of created media item to match file size',
     );
     // TODO: improve error-handling
     const uploadResponse = await fetch(item.preSignedUploadUrl, {
@@ -31,12 +31,12 @@ async function createLibraryItem(authContext: AuthContext, item: ApiLibraryItem,
         method: RequestMethod.PUT,
     });
     if (uploadResponse.ok) {
-        const createVersionResponse = await request<CreateLibraryItemVersionRequest, CreateLibraryItemVersionResponse>(
+        const createVersionResponse = await request<CreateMediaItemVersionRequest, CreateMediaItemVersionResponse>(
             RequestMethod.POST,
-            '/library-item-version',
+            '/media-item-version',
             authContext,
             {
-                libraryItemId: item.id,
+                mediaItemId: item.id,
             },
         );
         console.log(createVersionResponse);
@@ -58,14 +58,14 @@ interface UploadState {
     totalBytes?: number;
 }
 
-export default async function bulkCreateLibraryItems(
+export default async function bulkCreateMediaItems(
     authContext: AuthContext,
     files: Array<File>,
     onStatusChange: (status: UploadState) => void,
 ): Promise<void> {
-    const response = await request<BulkCreateLibraryItemsRequest, BulkCreateLibraryItemsResponse>(
+    const response = await request<BulkCreateMediaItemsRequest, BulkCreateMediaItemsResponse>(
         RequestMethod.POST,
-        `/library-item:bulk-create`,
+        `/media-item:bulk-create`,
         authContext,
         {
             fileSpecs: files.map((file) => [file.size, file.type as FileType]),
@@ -74,10 +74,8 @@ export default async function bulkCreateLibraryItems(
     onStatusChange({ status: UploadStatus.COMPLETE });
     // TODO: improve error-handling
     if (response) {
-        const sortedLibraryItems = response.libraryItems.sort(
-            (a, b) => a.uploadedFileSizeBytes - b.uploadedFileSizeBytes,
-        );
+        const sortedMediaItems = response.mediaItems.sort((a, b) => a.uploadedFileSizeBytes - b.uploadedFileSizeBytes);
         const sortedFiles = files.sort((a, b) => a.size - b.size); // TODO: rate-limit & batch item creation // TODO: track progress
-        sortedLibraryItems.map((item, idx) => createLibraryItem(authContext, item, sortedFiles[idx]));
+        sortedMediaItems.map((item, idx) => createMediaItem(authContext, item, sortedFiles[idx]));
     }
 }

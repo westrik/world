@@ -2,30 +2,30 @@ import { Tag } from './Tag';
 import { Resource } from './Resource';
 import { ApiResponse } from '~utils/network';
 
-export interface ApiLibraryItemResponse extends ApiResponse {
-    note: LibraryItem | null;
+export interface ApiMediaItemResponse extends ApiResponse {
+    note: MediaItem | null;
 }
 
-export interface ApiLibraryItemSummary {
+export interface ApiMediaItemSummary {
     id: string;
     createdAt: Date;
     updatedAt: Date;
     name: string;
 }
 
-export interface ApiLibraryItem extends ApiLibraryItemSummary {
+export interface ApiMediaItem extends ApiMediaItemSummary {
     versionId: string;
     preSignedUploadUrl: string;
     uploadedFileSizeBytes: number;
 }
 
-export interface LibraryItem extends ApiLibraryItem {
+export interface MediaItem extends ApiMediaItem {
     assetUrl?: string;
     tags?: Array<Tag>;
     resources?: Array<Resource>;
 }
 
-export interface ApiLibraryItemVersion {
+export interface ApiMediaItemVersion {
     id: string;
     createdAt: Date;
     versionType: string;

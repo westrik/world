@@ -5,7 +5,7 @@ use tokio::io::AsyncReadExt;
 use world_core::db::DbPool;
 use world_core::external_services::aws::s3::{get_object::get_object, put_object::put_object};
 use world_core::jobs::errors::JobError;
-use world_core::library::models::file::FileType;
+use world_core::media::models::file::FileType;
 use world_core::utils::config::CONTENT_BUCKET_NAME;
 
 use crate::jobs::Runnable;
@@ -15,7 +15,7 @@ use crate::media_transforms::resize::constrain_image_dimensions;
 #[derive(Deserialize)]
 pub struct IngestMediaUploadJob {
     pub file_name: String,
-    pub library_version_api_id: String,
+    pub media_version_api_id: String,
 }
 
 fn file_name_for_resized_version(file_name: &str, width: u32) -> String {
@@ -36,10 +36,7 @@ fn file_name_for_resized_version(file_name: &str, width: u32) -> String {
 #[async_trait]
 impl Runnable for IngestMediaUploadJob {
     async fn run(&self, _: &DbPool, _: Option<i32>) -> Result<String, JobError> {
-        info!(
-            "Running media upload job for {}",
-            self.library_version_api_id
-        );
+        info!("Running media upload job for {}", self.media_version_api_id);
         let object = get_object(CONTENT_BUCKET_NAME.to_string(), &self.file_name)
             .await
             .map_err(|e| {

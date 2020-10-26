@@ -38,7 +38,7 @@ export const SECTIONS: Array<Section> = [
     // },
     {
         name: 'Media',
-        route: '/library',
+        route: '/media',
         iconType: IconType.COLLECTION,
     },
     {

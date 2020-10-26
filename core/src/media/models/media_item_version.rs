@@ -3,15 +3,15 @@ use diesel::prelude::*;
 
 use crate::auth::models::user::User;
 use crate::errors::ApiError;
-use crate::library::models::library_item::LibraryItemSummary;
-use crate::library::models::library_item_version_type::LibraryItemVersionType;
+use crate::media::models::media_item::MediaItemSummary;
+use crate::media::models::media_item_version_type::MediaItemVersionType;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
-use crate::schema::library_item_versions;
+use crate::schema::media_item_versions;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
-#[belongs_to(LibraryItemSummary, foreign_key = "library_item_id")]
+#[belongs_to(MediaItemSummary, foreign_key = "media_item_id")]
 #[belongs_to(User)]
-pub struct LibraryItemVersion {
+pub struct MediaItemVersion {
     #[serde(skip)]
     pub id: i32,
     #[serde(rename = "id")]
@@ -19,7 +19,7 @@ pub struct LibraryItemVersion {
     #[serde(skip)]
     pub user_id: i32,
     #[serde(skip)]
-    pub library_item_id: i32,
+    pub media_item_id: i32,
     #[serde(rename = "createdAt")]
     pub created_at: DateTime<Utc>,
     #[serde(rename = "versionType")]
@@ -33,40 +33,40 @@ pub struct LibraryItemVersion {
 }
 
 #[derive(Insertable, Debug)]
-#[table_name = "library_item_versions"]
-struct LibraryItemVersionCreateSpec {
+#[table_name = "media_item_versions"]
+struct MediaItemVersionCreateSpec {
     pub api_id: String,
     pub user_id: i32,
-    pub library_item_id: i32,
+    pub media_item_id: i32,
     pub version_type: String,
     pub asset_url: Option<String>,
     pub asset_file_size_bytes: Option<i64>,
 }
-impl LibraryItemVersionCreateSpec {
-    pub fn insert(&self, conn: &PgConnection) -> Result<LibraryItemVersion, ApiError> {
-        info!("creating library_item_version: {:?}", self);
-        Ok(diesel::insert_into(library_item_versions::table)
+impl MediaItemVersionCreateSpec {
+    pub fn insert(&self, conn: &PgConnection) -> Result<MediaItemVersion, ApiError> {
+        info!("creating media_item_version: {:?}", self);
+        Ok(diesel::insert_into(media_item_versions::table)
             .values(self)
             .get_result(conn)
             .map_err(ApiError::DatabaseError)?)
     }
 }
 
-impl LibraryItemVersion {
+impl MediaItemVersion {
     pub fn create(
         conn: &PgConnection,
         user_id: i32,
-        library_item_summary: LibraryItemSummary,
-        version_type: LibraryItemVersionType,
+        media_item_summary: MediaItemSummary,
+        version_type: MediaItemVersionType,
         asset_url: Option<String>,
-    ) -> Result<LibraryItemVersion, ApiError> {
-        LibraryItemVersionCreateSpec {
-            api_id: generate_resource_identifier(ResourceType::LibraryItemVersion),
-            library_item_id: library_item_summary.id,
+    ) -> Result<MediaItemVersion, ApiError> {
+        MediaItemVersionCreateSpec {
+            api_id: generate_resource_identifier(ResourceType::MediaItemVersion),
+            media_item_id: media_item_summary.id,
             user_id,
             asset_url,
             version_type: version_type.to_string(),
-            asset_file_size_bytes: library_item_summary.uploaded_file_size_bytes,
+            asset_file_size_bytes: media_item_summary.uploaded_file_size_bytes,
         }
         .insert(conn)
     }

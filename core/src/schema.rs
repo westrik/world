@@ -12,11 +12,11 @@ table! {
 }
 
 table! {
-    library_item_versions (id) {
+    media_item_versions (id) {
         id -> Int4,
         api_id -> Varchar,
         user_id -> Int4,
-        library_item_id -> Int4,
+        media_item_id -> Int4,
         created_at -> Timestamptz,
         version_type -> Varchar,
         asset_url -> Nullable<Varchar>,
@@ -26,7 +26,7 @@ table! {
 }
 
 table! {
-    library_items (id) {
+    media_items (id) {
         id -> Int4,
         api_id -> Varchar,
         user_id -> Int4,
@@ -126,9 +126,9 @@ table! {
 }
 
 joinable!(jobs -> users (user_id));
-joinable!(library_item_versions -> library_items (library_item_id));
-joinable!(library_item_versions -> users (user_id));
-joinable!(library_items -> users (user_id));
+joinable!(media_item_versions -> media_items (media_item_id));
+joinable!(media_item_versions -> users (user_id));
+joinable!(media_items -> users (user_id));
 joinable!(note_versions -> notes (note_id));
 joinable!(notes -> users (user_id));
 joinable!(sessions -> users (user_id));
@@ -141,8 +141,8 @@ joinable!(tasks -> users (user_id));
 
 allow_tables_to_appear_in_same_query!(
     jobs,
-    library_item_versions,
-    library_items,
+    media_item_versions,
+    media_items,
     note_versions,
     notes,
     sessions,

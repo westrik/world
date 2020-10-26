@@ -6,8 +6,8 @@ use std::fmt;
 #[derive(Copy, Clone, Debug, Eq, Hash, PartialEq)]
 pub enum ResourceType {
     Job,
-    LibraryItem,
-    LibraryItemVersion,
+    MediaItem,
+    MediaItemVersion,
     Link,
     Note,
     NoteVersion,
@@ -21,9 +21,9 @@ pub enum ResourceType {
 lazy_static! {
     static ref RESOURCE_TYPE_TO_PREFIX: HashMap<ResourceType, &'static str> = {
         let mut m = HashMap::new();
+        m.insert(ResourceType::MediaItem, "mi");
+        m.insert(ResourceType::MediaItemVersion, "miv");
         m.insert(ResourceType::NoteVersion, "nv");
-        m.insert(ResourceType::LibraryItem, "li");
-        m.insert(ResourceType::LibraryItemVersion, "liv");
         m.insert(ResourceType::SitePage, "sp");
         m
     };
@@ -64,8 +64,8 @@ pub mod resource_identifiers {
     fn test_id_generation() {
         for (resource_type, prefix) in [
             (Job, "job"),
-            (LibraryItem, "li"),
-            (LibraryItemVersion, "liv"),
+            (MediaItem, "mi"),
+            (MediaItemVersion, "miv"),
             (Link, "link"),
             (Note, "note"),
             (NoteVersion, "nv"),

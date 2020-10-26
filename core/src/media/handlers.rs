@@ -9,12 +9,10 @@ use crate::errors::ApiError;
 use crate::external_services::aws::s3::put_object::generate_presigned_upload_url;
 use crate::jobs::enqueue_job::enqueue_job;
 use crate::jobs::job_type::JobType;
-use crate::library::models::file::FileType;
-use crate::library::models::library_item::{
-    LibraryItem, LibraryItemCreateSpec, LibraryItemSummary,
-};
-use crate::library::models::library_item_version::LibraryItemVersion;
-use crate::library::models::library_item_version_type::LibraryItemVersionType;
+use crate::media::models::file::FileType;
+use crate::media::models::media_item::{MediaItem, MediaItemCreateSpec, MediaItemSummary};
+use crate::media::models::media_item_version::MediaItemVersion;
+use crate::media::models::media_item_version_type::MediaItemVersionType;
 use crate::resource_identifier::{
     generate_resource_identifier, split_resource_identifier, ResourceType,
 };
@@ -24,96 +22,95 @@ use crate::utils::list_options::ListOptions;
 use crate::utils::mnemonic::{generate_mnemonic, DEFAULT_MNEMONIC_LENGTH};
 
 #[derive(Serialize)]
-pub struct GetLibraryItemsResponse {
+pub struct GetMediaItemsResponse {
     error: Option<String>,
-    #[serde(rename = "libraryItems")]
-    library_items: Option<Vec<LibraryItem>>,
+    #[serde(rename = "mediaItems")]
+    media_items: Option<Vec<MediaItem>>,
 }
 
-fn run_list_library_items(
+fn run_list_media_items(
     session: Session,
     pool: &DbPool,
     options: ListOptions,
-) -> Result<Vec<LibraryItem>, ApiError> {
-    Ok(LibraryItem::list(
+) -> Result<Vec<MediaItem>, ApiError> {
+    Ok(MediaItem::list(
         &get_conn(&pool).unwrap(),
         session.user_id,
         options,
     )?)
 }
 
-pub async fn list_library_items(
+pub async fn list_media_items(
     session: Session,
     db_pool: DbPool,
     options: ListOptions,
 ) -> Result<impl warp::Reply, Rejection> {
     // TODO: include links to previews in response
-    debug!("list_library_items: opts={:?}", &options);
-    let library_items =
-        run_api_task(move || run_list_library_items(session, &db_pool, options)).await?;
+    debug!("list_media_items: opts={:?}", &options);
+    let media_items =
+        run_api_task(move || run_list_media_items(session, &db_pool, options)).await?;
     Ok(warp::reply::with_status(
-        warp::reply::json(&GetLibraryItemsResponse {
+        warp::reply::json(&GetMediaItemsResponse {
             error: None,
-            library_items: Some(library_items),
+            media_items: Some(media_items),
         }),
         StatusCode::OK,
     ))
 }
 
 #[derive(Serialize)]
-pub struct GetLibraryItemResponse {
+pub struct GetMediaItemResponse {
     error: Option<String>,
-    #[serde(rename = "libraryItem")]
-    library_item: Option<LibraryItem>,
+    #[serde(rename = "mediaItem")]
+    media_item: Option<MediaItem>,
 }
 
-fn run_get_library_item(
+fn run_get_media_item(
     session: Session,
     pool: &DbPool,
     api_id: String,
-) -> Result<LibraryItem, ApiError> {
-    Ok(LibraryItem::find(
+) -> Result<MediaItem, ApiError> {
+    Ok(MediaItem::find(
         &get_conn(&pool).unwrap(),
         session.user_id,
         api_id,
     )?)
 }
 
-pub async fn get_library_item(
+pub async fn get_media_item(
     api_id: String,
     session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     // TODO: include link to preview + full asset in response
-    debug!("get_library_item: api_id={:?}", api_id);
-    let library_item =
-        run_api_task(move || run_get_library_item(session, &db_pool, api_id)).await?;
+    debug!("get_media_item: api_id={:?}", api_id);
+    let media_item = run_api_task(move || run_get_media_item(session, &db_pool, api_id)).await?;
     Ok(warp::reply::with_status(
-        warp::reply::json(&GetLibraryItemResponse {
+        warp::reply::json(&GetMediaItemResponse {
             error: None,
-            library_item: Some(library_item),
+            media_item: Some(media_item),
         }),
         StatusCode::OK,
     ))
 }
 
 #[derive(Debug, Deserialize)]
-pub struct ApiLibraryItemBulkCreateSpec {
+pub struct ApiMediaItemBulkCreateSpec {
     #[serde(rename = "fileSpecs")]
     pub file_specs: Vec<(i64, FileType)>,
 }
 #[derive(Serialize)]
-pub struct BulkCreateLibraryItemsResponse {
+pub struct BulkCreateMediaItemsResponse {
     error: Option<String>,
-    #[serde(rename = "libraryItems")]
-    library_items: Option<Vec<LibraryItemSummary>>,
+    #[serde(rename = "mediaItems")]
+    media_items: Option<Vec<MediaItemSummary>>,
 }
 
-async fn run_bulk_create_library_items(
-    spec: ApiLibraryItemBulkCreateSpec,
+async fn run_bulk_create_media_items(
+    spec: ApiMediaItemBulkCreateSpec,
     session: Session,
     db_pool: &DbPool,
-) -> Result<Vec<LibraryItemSummary>, ApiError> {
+) -> Result<Vec<MediaItemSummary>, ApiError> {
     let conn = get_conn(db_pool).unwrap();
     let user = run_api_task(move || session.get_user(&conn)).await?;
     // TODO: limit number of files per request
@@ -122,7 +119,7 @@ async fn run_bulk_create_library_items(
         let mut specs = vec![];
         for (file_size, file_type) in spec.file_specs.iter() {
             let name = generate_mnemonic(DEFAULT_MNEMONIC_LENGTH);
-            let api_id = generate_resource_identifier(ResourceType::LibraryItem);
+            let api_id = generate_resource_identifier(ResourceType::MediaItem);
             let file_name = format!(
                 "{}/{}-{}.{}",
                 split_resource_identifier(&user.api_id),
@@ -136,7 +133,7 @@ async fn run_bulk_create_library_items(
                 *file_size,
             )
             .await?;
-            specs.push(LibraryItemCreateSpec {
+            specs.push(MediaItemCreateSpec {
                 api_id,
                 user_id: user.id,
                 name: name.to_string(),
@@ -149,45 +146,45 @@ async fn run_bulk_create_library_items(
     };
 
     let conn = get_conn(db_pool).unwrap();
-    Ok(run_api_task(move || LibraryItem::bulk_create(&conn, create_specs)).await?)
+    Ok(run_api_task(move || MediaItem::bulk_create(&conn, create_specs)).await?)
 }
 
-pub async fn bulk_create_library_items(
-    spec: ApiLibraryItemBulkCreateSpec,
+pub async fn bulk_create_media_items(
+    spec: ApiMediaItemBulkCreateSpec,
     session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
-    debug!("bulk_create_library_items: spec={:?}", spec);
-    let library_items = Some(run_bulk_create_library_items(spec, session, &db_pool).await?);
+    debug!("bulk_create_media_items: spec={:?}", spec);
+    let media_items = Some(run_bulk_create_media_items(spec, session, &db_pool).await?);
     Ok(warp::reply::with_status(
-        warp::reply::json(&BulkCreateLibraryItemsResponse {
+        warp::reply::json(&BulkCreateMediaItemsResponse {
             error: None,
-            library_items,
+            media_items,
         }),
         StatusCode::OK,
     ))
 }
 
 #[derive(Debug, Deserialize)]
-pub struct ApiLibraryItemUpdateSpec {
+pub struct ApiMediaItemUpdateSpec {
     pub name: Option<String>,
 }
 #[derive(Serialize)]
-pub struct UpdateLibraryItemResponse {
+pub struct UpdateMediaItemResponse {
     error: Option<String>,
-    #[serde(rename = "libraryItem")]
-    library_item: Option<LibraryItemSummary>,
+    #[serde(rename = "mediaItem")]
+    media_item: Option<MediaItemSummary>,
     #[serde(rename = "uploadUrl")]
     upload_url: Option<String>,
 }
 
-fn run_update_library_item(
+fn run_update_media_item(
     session: Session,
     api_id: String,
-    spec: ApiLibraryItemUpdateSpec,
+    spec: ApiMediaItemUpdateSpec,
     pool: &DbPool,
-) -> Result<LibraryItemSummary, ApiError> {
-    Ok(LibraryItem::update(
+) -> Result<MediaItemSummary, ApiError> {
+    Ok(MediaItem::update(
         &get_conn(&pool).unwrap(),
         session.user_id,
         api_id,
@@ -195,19 +192,19 @@ fn run_update_library_item(
     )?)
 }
 
-pub async fn update_library_item(
+pub async fn update_media_item(
     api_id: String,
-    spec: ApiLibraryItemUpdateSpec,
+    spec: ApiMediaItemUpdateSpec,
     session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
-    debug!("update_library_item: api_id={}, spec={:?}", api_id, spec);
-    let library_item =
-        run_api_task(move || run_update_library_item(session, api_id, spec, &db_pool)).await?;
+    debug!("update_media_item: api_id={}, spec={:?}", api_id, spec);
+    let media_item =
+        run_api_task(move || run_update_media_item(session, api_id, spec, &db_pool)).await?;
     Ok(warp::reply::with_status(
-        warp::reply::json(&UpdateLibraryItemResponse {
+        warp::reply::json(&UpdateMediaItemResponse {
             error: None,
-            library_item: Some(library_item),
+            media_item: Some(media_item),
             upload_url: None,
         }),
         StatusCode::OK,
@@ -215,38 +212,37 @@ pub async fn update_library_item(
 }
 
 #[derive(Debug, Deserialize)]
-pub struct ApiLibraryItemVersionCreateSpec {
-    #[serde(rename = "libraryItemId")]
-    library_item_api_id: String,
+pub struct ApiMediaItemVersionCreateSpec {
+    #[serde(rename = "mediaItemId")]
+    media_item_api_id: String,
 }
 #[derive(Serialize)]
-pub struct CreateLibraryItemVersionResponse {
+pub struct CreateMediaItemVersionResponse {
     error: Option<String>,
-    #[serde(rename = "libraryItemVersion")]
-    library_item_version: Option<LibraryItemVersion>,
+    #[serde(rename = "mediaItemVersion")]
+    media_item_version: Option<MediaItemVersion>,
 }
 
-fn run_create_library_item_version(
-    spec: ApiLibraryItemVersionCreateSpec,
+fn run_create_media_item_version(
+    spec: ApiMediaItemVersionCreateSpec,
     session: Session,
     db_pool: &DbPool,
-) -> Result<LibraryItemVersion, ApiError> {
+) -> Result<MediaItemVersion, ApiError> {
     let conn = &get_conn(&db_pool).unwrap();
-    let library_item = LibraryItemSummary::find(conn, session.user_id, spec.library_item_api_id)?;
-    let file_name = match &library_item.uploaded_file_name {
+    let media_item = MediaItemSummary::find(conn, session.user_id, spec.media_item_api_id)?;
+    let file_name = match &media_item.uploaded_file_name {
         Some(name) => Ok(name.to_string()),
         None => Err(ApiError::InvalidRequest(
-            "Can't create library item version for library item with no upload attempts"
-                .to_string(),
+            "Can't create media item version for media item with no upload attempts".to_string(),
         )),
     }?;
-    let library_item_version_url = format!("https://{}/{}", *MEDIA_DOMAIN_NAME, &file_name);
-    let library_item_version = LibraryItemVersion::create(
+    let media_item_version_url = format!("https://{}/{}", *MEDIA_DOMAIN_NAME, &file_name);
+    let media_item_version = MediaItemVersion::create(
         conn,
         session.user_id,
-        library_item,
-        LibraryItemVersionType::Original,
-        Some(library_item_version_url),
+        media_item,
+        MediaItemVersionType::Original,
+        Some(media_item_version_url),
     )?;
     if let Err(e) = enqueue_job(
         &conn,
@@ -255,7 +251,7 @@ fn run_create_library_item_version(
         // TODO: payload should be part of enum
         Some(json!({
             "file_name": &file_name,
-            "library_version_api_id": &library_item_version.api_id,
+            "media_version_api_id": &media_item_version.api_id,
         })),
     ) {
         error!(
@@ -266,31 +262,31 @@ fn run_create_library_item_version(
         );
     }
 
-    Ok(library_item_version)
+    Ok(media_item_version)
 }
 
-pub async fn create_library_item_version(
-    spec: ApiLibraryItemVersionCreateSpec,
+pub async fn create_media_item_version(
+    spec: ApiMediaItemVersionCreateSpec,
     session: Session,
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
-    debug!("create_library_item_version: spec={:?}", spec);
-    let library_item_version =
-        run_api_task(move || run_create_library_item_version(spec, session, &db_pool)).await?;
+    debug!("create_media_item_version: spec={:?}", spec);
+    let media_item_version =
+        run_api_task(move || run_create_media_item_version(spec, session, &db_pool)).await?;
     Ok(warp::reply::with_status(
-        warp::reply::json(&CreateLibraryItemVersionResponse {
+        warp::reply::json(&CreateMediaItemVersionResponse {
             error: None,
-            library_item_version: Some(library_item_version),
+            media_item_version: Some(media_item_version),
         }),
         StatusCode::OK,
     ))
 }
 
-pub async fn delete_library_item(
+pub async fn delete_media_item(
     api_id: String,
     _session: Session,
     _db_pool: DbPool,
 ) -> Result<impl warp::Reply, Infallible> {
-    debug!("delete_library_item: api_id={}", api_id);
+    debug!("delete_media_item: api_id={}", api_id);
     Ok(StatusCode::NO_CONTENT)
 }

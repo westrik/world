@@ -9,7 +9,7 @@ use crate::auth::filters::{authenticate_cloudfront, routes as auth_routes};
 use crate::auth::models::session::Session;
 use crate::db::{get_conn, DbPool};
 use crate::errors::{handle_rejection, ApiError};
-use crate::library::filters::routes as library_routes;
+use crate::media::filters::routes as media_routes;
 use crate::notes::filters::routes as note_routes;
 use crate::schema::{sessions, sessions::dsl::sessions as all_sessions};
 use crate::settings::filters::routes as settings_routes;
@@ -37,8 +37,8 @@ fn authenticated(
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     authenticate_cloudfront(db_pool.clone())
         .or(task_routes(db_pool.clone()))
+        .or(media_routes(db_pool.clone()))
         .or(note_routes(db_pool.clone()))
-        .or(library_routes(db_pool.clone()))
         .or(settings_routes(db_pool))
 }
 

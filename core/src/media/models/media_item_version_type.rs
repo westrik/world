@@ -5,12 +5,12 @@ use std::fmt;
 use crate::utils::string_transforms::ToIdentifier;
 
 #[derive(Debug, Serialize, Deserialize)]
-pub enum LibraryItemVersionType {
+pub enum MediaItemVersionType {
     Original,
     PreviewImage,
 }
 
-impl fmt::Display for LibraryItemVersionType {
+impl fmt::Display for MediaItemVersionType {
     // TODO: write macro to add Debug and this impl? or improve in some other way
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let type_str = format!("{:?}", self);
@@ -18,6 +18,6 @@ impl fmt::Display for LibraryItemVersionType {
     }
 }
 
-impl Expression for LibraryItemVersionType {
+impl Expression for MediaItemVersionType {
     type SqlType = Text;
 }

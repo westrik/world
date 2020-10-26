@@ -10,7 +10,7 @@ import BranchList from '~branches/BranchList';
 import ComponentLibraryPreview from '~components/previews/ComponentLibraryPreview';
 import ErrorScreen from '~components/ErrorScreen';
 import Dashboard from '~dashboard/Dashboard';
-import LibraryItemList from '~library/LibraryItemList';
+import MediaItemList from '~media/MediaItemList';
 import Note from '~notes/Note';
 import NoteList from '~notes/NoteList';
 import SettingsPage from '~settings/SettingsPage';
@@ -32,7 +32,7 @@ export default function App(): h.JSX.Element {
                 <AuthedRoute path="/notes" component={NoteList} />
                 <AuthedRoute path="/notes/new" component={Note} />
                 <AuthedRoute path="/notes/:strippedApiId" component={Note} />
-                <AuthedRoute path="/library" component={LibraryItemList} />
+                <AuthedRoute path="/media" component={MediaItemList} />
                 <AuthedRoute path="/branches" component={BranchList} />
                 <AuthedRoute path="/settings" component={SettingsPage} />
                 <AdminAuthedRoute path="/users" component={UserList} />

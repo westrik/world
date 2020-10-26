@@ -39,7 +39,7 @@ const HOTKEYS = new Map([
     [
         { alt: true, code: Code.FOUR },
         () => {
-            route('/library');
+            route('/media');
         },
     ],
     [

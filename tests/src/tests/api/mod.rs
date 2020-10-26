@@ -1,7 +1,7 @@
 //  TODO:
 // pub mod auth;
 //  TODO:
-// pub mod library_items;
+// pub mod media_items;
 //  TODO:
 // pub mod notes;
 //  TODO:
