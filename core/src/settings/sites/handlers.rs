@@ -58,12 +58,8 @@ pub async fn list_sites(
     ))
 }
 
-fn run_create_site(session: Session, description: String, pool: &DbPool) -> Result<Site, ApiError> {
-    Ok(Site::create(
-        &get_conn(&pool).unwrap(),
-        session,
-        description,
-    )?)
+fn run_create_site(session: Session, title: String, pool: &DbPool) -> Result<Site, ApiError> {
+    Ok(Site::create(&get_conn(&pool).unwrap(), session, title)?)
 }
 
 pub async fn create_site(
@@ -72,8 +68,7 @@ pub async fn create_site(
     db_pool: DbPool,
 ) -> Result<impl warp::Reply, Rejection> {
     debug!("create_site new_site={:?}", new_site);
-    let site =
-        run_api_task(move || run_create_site(session, new_site.description, &db_pool)).await?;
+    let site = run_api_task(move || run_create_site(session, new_site.title, &db_pool)).await?;
     Ok(warp::reply::with_status(
         warp::reply::json(&UpdateSiteResponse {
             error: None,

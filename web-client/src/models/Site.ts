@@ -2,8 +2,9 @@ export interface Site {
     id: string;
     createdAt: Date;
     updatedAt: Date;
-    // name: string;
-    description: string;
+    title: string;
+    bucketDomainName: string | null;
+    bucketAccessKeyId: string | null;
 }
 
 export type ApiSite = Site;

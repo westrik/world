@@ -1,10 +1,13 @@
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use diesel::PgConnection;
+use serde_json::json;
 
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
 use crate::errors::ApiError;
+use crate::jobs::enqueue_job::enqueue_job;
+use crate::jobs::job_type::JobType;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
 use crate::schema::{sites, sites::dsl::sites as all_sites};
 
@@ -16,7 +19,11 @@ pub struct Site {
     pub user_id: i32,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
-    pub description: String,
+    pub title: String,
+    pub bucket_domain_name: Option<String>,
+    pub bucket_access_key_id: Option<String>,
+    // TODO: server-side-encrypt this column using private key stored in Secrets Manager
+    pub bucket_access_key_secret: Option<String>,
 }
 
 #[derive(Insertable, Debug)]
@@ -24,7 +31,10 @@ pub struct Site {
 pub struct SiteCreateSpec {
     pub api_id: String,
     pub user_id: i32,
-    pub description: String,
+    pub title: String,
+    pub bucket_domain_name: Option<String>,
+    pub bucket_access_key_id: Option<String>,
+    pub bucket_access_key_secret: Option<String>,
 }
 impl SiteCreateSpec {
     pub fn insert(&self, conn: &PgConnection) -> Result<Site, ApiError> {
@@ -42,7 +52,10 @@ impl SiteCreateSpec {
 pub struct SiteUpdateSpec {
     // TODO: use trigger to set updated_at automatically
     pub updated_at: DateTime<Utc>,
-    pub description: Option<String>,
+    pub title: Option<String>,
+    pub bucket_domain_name: Option<String>,
+    pub bucket_access_key_id: Option<String>,
+    pub bucket_access_key_secret: Option<String>,
 }
 impl SiteUpdateSpec {
     pub fn update(
@@ -67,29 +80,38 @@ impl SiteUpdateSpec {
 pub struct ApiSite {
     #[serde(rename = "id")]
     pub api_id: String,
-    pub description: String,
+    pub title: String,
     #[serde(rename = "createdAt")]
     pub created_at: DateTime<Utc>,
     #[serde(rename = "updatedAt")]
     pub updated_at: DateTime<Utc>,
+    #[serde(rename = "bucketDomainName")]
+    pub bucket_domain_name: Option<String>,
+    #[serde(rename = "bucketAccessKeyId")]
+    pub bucket_access_key_id: Option<String>,
 }
 #[derive(Debug, Deserialize)]
 pub struct ApiSiteCreateSpec {
-    pub description: String,
+    pub title: String,
 }
 #[derive(Debug, Deserialize)]
 #[allow(clippy::option_option)]
 pub struct ApiSiteUpdateSpec {
-    pub description: Option<String>,
+    pub title: Option<String>,
+    pub bucket_domain_name: Option<String>,
+    pub bucket_access_key_id: Option<String>,
+    pub bucket_access_key_secret: Option<String>,
 }
 
 impl From<&Site> for ApiSite {
     fn from(site: &Site) -> Self {
         ApiSite {
             api_id: site.api_id.clone(),
-            description: site.description.clone(),
+            title: site.title.clone(),
             created_at: site.created_at,
             updated_at: site.updated_at,
+            bucket_domain_name: site.bucket_domain_name.clone(),
+            bucket_access_key_id: site.bucket_access_key_id.clone(),
         }
     }
 }
@@ -116,15 +138,14 @@ impl Site {
         Ok(item)
     }
 
-    pub fn create(
-        conn: &PgConnection,
-        session: Session,
-        description: String,
-    ) -> Result<Site, ApiError> {
+    pub fn create(conn: &PgConnection, session: Session, title: String) -> Result<Site, ApiError> {
         let new_site = SiteCreateSpec {
             api_id: generate_resource_identifier(ResourceType::Site),
             user_id: session.user_id,
-            description,
+            title,
+            bucket_domain_name: None,
+            bucket_access_key_id: None,
+            bucket_access_key_secret: None,
         };
         new_site.insert(conn)
     }
@@ -135,10 +156,20 @@ impl Site {
         api_id: String,
         spec: ApiSiteUpdateSpec,
     ) -> Result<Site, ApiError> {
-        SiteUpdateSpec {
+        let site = SiteUpdateSpec {
             updated_at: Utc::now(),
-            description: spec.description,
+            title: spec.title,
+            bucket_domain_name: spec.bucket_domain_name,
+            bucket_access_key_id: spec.bucket_access_key_id,
+            bucket_access_key_secret: spec.bucket_access_key_secret,
         }
-        .update(conn, api_id, session.user_id)
+        .update(conn, api_id.clone(), session.user_id)?;
+        enqueue_job(
+            conn,
+            Some(site.user_id),
+            JobType::SyncSiteToBucket,
+            Some(json!({ "site_api_id": &api_id })),
+        )?;
+        Ok(site)
     }
 }

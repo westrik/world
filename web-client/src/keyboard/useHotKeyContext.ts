@@ -60,13 +60,7 @@ export default function useHotKeyContext(hotkeysToHandlers: HotKeyToHandler): vo
     }, [context, hotkeysToHandlers]);
 }
 
-/*******
- - `⌘` `K` - command menu
- - `⌘` `Enter` - submit / save
-
- --------
-
- ## Navigation
+/** Navigation
 
  - `⌘` `K`  to open command menu
  then:
@@ -86,8 +80,15 @@ export default function useHotKeyContext(hotkeysToHandlers: HotKeyToHandler): vo
 
  -------
 
+ From a note editor or misc text field:
+
+ - `⌘` `Enter` - submit / save
+
+ -------
+
  From the tasks listing:
 
  - `c` - create a task at the top of the list
  - `C` - create a task at the bottom of the list
+
 *******/

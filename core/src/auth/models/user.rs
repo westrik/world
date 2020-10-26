@@ -76,6 +76,20 @@ impl User {
         Ok(user)
     }
 
+    // Not for use with authenticated API endpoints
+    pub fn find_by_id(user_id: i32, conn: &PgConnection) -> Result<User, ApiError> {
+        let user: User = all_users
+            .filter(users::id.eq(user_id))
+            .first(conn)
+            .map_err(|e| match e {
+                diesel::result::Error::NotFound => {
+                    ApiError::NotFound(format!("[user_id={}]", user_id))
+                }
+                _ => ApiError::DatabaseError(e),
+            })?;
+        Ok(user)
+    }
+
     pub fn delete_for_id(id: i32, conn: &PgConnection) -> QueryResult<usize> {
         diesel::delete(all_users.find(id)).execute(conn)
     }

@@ -91,7 +91,10 @@ table! {
         user_id -> Int4,
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
-        description -> Text,
+        title -> Varchar,
+        bucket_domain_name -> Nullable<Varchar>,
+        bucket_access_key_id -> Nullable<Varchar>,
+        bucket_access_key_secret -> Nullable<Varchar>,
     }
 }
 

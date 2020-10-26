@@ -34,7 +34,7 @@ fn file_name_for_resized_version(file_name: &str, width: u32) -> String {
 
 #[async_trait]
 impl Runnable for IngestMediaUploadJob {
-    async fn run(&self) -> Result<String, JobError> {
+    async fn run(&self, _: Option<i32>) -> Result<String, JobError> {
         info!(
             "Running media upload job for {}",
             self.library_version_api_id

@@ -10,6 +10,7 @@ pub enum JobType {
     // NOTE: don't forget to add new types to the FromStr impl
     IngestMediaUpload,
     SendEmail,
+    SyncSiteToBucket,
 }
 
 impl fmt::Display for JobType {
@@ -31,6 +32,7 @@ impl FromStr for JobType {
         match s {
             "ingest_media_upload" => Ok(JobType::IngestMediaUpload),
             "send_email" => Ok(JobType::SendEmail),
+            "sync_site_to_bucket" => Ok(JobType::SyncSiteToBucket),
             _ => Err(JobError::InvalidJob(format!("invalid job type: {}", s))),
         }
     }
