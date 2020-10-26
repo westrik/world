@@ -2,7 +2,6 @@
 
 ### High-Priority Tasks
 
-- [ ] diesel connection pool for worker tasks
 - [ ] content export to HTML
     - [ ] create site with HTML exports
     - [ ] save exported site to S3
@@ -75,6 +74,8 @@
 
 - [x] nav menu improvements
 - [x] improve keyboard shortcuts for general navigation
+- job system improvements
+    - [x] diesel connection pool for worker tasks
 
 
 ---------
