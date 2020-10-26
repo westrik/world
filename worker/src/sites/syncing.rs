@@ -1,10 +1,9 @@
+use crate::sites::render_site::render_site;
 use world_core::auth::models::session::Session;
 use world_core::auth::models::user::User;
 use world_core::db::{begin_txn, commit_txn, get_conn, DbPool};
 use world_core::jobs::errors::JobError;
-use world_core::notes::export::{html::Html, Render};
 use world_core::notes::models::note::Note;
-use world_core::notes::schema::Content;
 use world_core::settings::sites::models::site::Site;
 use world_core::settings::sites::models::site_page::{LoadedSitePage, SitePage};
 
@@ -58,12 +57,8 @@ pub async fn sync_site_to_bucket(
         );
     }
 
-    // TODO: use multiple threads for rendering + S3 network calls
-    for (_site_page, note) in pages_with_notes {
-        let content: Content = serde_json::from_value(note.content.unwrap()).unwrap();
-        let _html: Html = content.render();
-    }
-    // TODO: populate page templates
+    let _rendered_pages = render_site(pages_with_notes).await;
+
     // TODO: copy all files to S3 bucket
 
     commit_txn(&conn).map_err(JobError::from)?;
