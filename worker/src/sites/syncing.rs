@@ -44,10 +44,10 @@ pub async fn sync_site_to_bucket(
         .cloned()
         .zip(notes)
         .filter(|(page, note)| {
-            (note.content.is_some()
+            note.content.is_some()
                 && page
                     .note_version_api_id
-                    .eq(&note.version_api_id.clone().unwrap()))
+                    .eq(&note.version_api_id.clone().unwrap())
         })
         .collect();
 
