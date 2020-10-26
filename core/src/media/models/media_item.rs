@@ -5,14 +5,14 @@ use diesel::prelude::*;
 use crate::auth::models::user::User;
 use crate::errors::ApiError;
 use crate::schema::{
-    library_item_versions, library_items, library_items::dsl::library_items as all_library_items,
+    media_item_versions, media_items, media_items::dsl::media_items as all_media_items,
 };
 use crate::utils::list_options::ListOptions;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(User)]
-#[table_name = "library_items"]
-pub struct LibraryItemSummary {
+#[table_name = "media_items"]
+pub struct MediaItemSummary {
     #[serde(skip)]
     pub id: i32,
     #[serde(rename = "id")]
@@ -35,7 +35,7 @@ pub struct LibraryItemSummary {
 }
 
 #[derive(Queryable, Serialize, Debug)]
-pub struct LibraryItem {
+pub struct MediaItem {
     #[serde(skip)]
     pub id: i32,
     #[serde(rename = "id")]
@@ -52,8 +52,8 @@ pub struct LibraryItem {
 }
 
 #[derive(Insertable, Debug)]
-#[table_name = "library_items"]
-pub struct LibraryItemCreateSpec {
+#[table_name = "media_items"]
+pub struct MediaItemCreateSpec {
     pub api_id: String,
     pub user_id: i32,
     pub name: String,
@@ -63,46 +63,46 @@ pub struct LibraryItemCreateSpec {
 }
 
 #[derive(AsChangeset, Debug)]
-#[table_name = "library_items"]
-pub struct LibraryItemUpdateSpec {
+#[table_name = "media_items"]
+pub struct MediaItemUpdateSpec {
     // TODO: use trigger to set updated_at automatically
     pub updated_at: DateTime<Utc>,
     pub name: Option<String>,
 }
-impl LibraryItemUpdateSpec {
+impl MediaItemUpdateSpec {
     pub fn update(
         &self,
         conn: &PgConnection,
         api_id: String,
         user_id: i32,
-    ) -> Result<LibraryItemSummary, ApiError> {
-        info!("updating library_item {} with {:?}", api_id, self);
+    ) -> Result<MediaItemSummary, ApiError> {
+        info!("updating media_item {} with {:?}", api_id, self);
         Ok(diesel::update(
-            all_library_items
-                .filter(library_items::api_id.eq(&api_id))
-                .filter(library_items::user_id.eq(user_id)),
+            all_media_items
+                .filter(media_items::api_id.eq(&api_id))
+                .filter(media_items::user_id.eq(user_id)),
         )
         .set(self)
-        .get_result::<LibraryItemSummary>(conn)
+        .get_result::<MediaItemSummary>(conn)
         .map_err(ApiError::DatabaseError)?)
     }
 }
 
-impl LibraryItemSummary {
+impl MediaItemSummary {
     pub fn find(
         conn: &PgConnection,
         user_id: i32,
         api_id: String,
-    ) -> Result<LibraryItemSummary, ApiError> {
-        Ok(all_library_items
-            .filter(library_items::api_id.eq(&api_id))
-            .filter(library_items::user_id.eq(user_id))
-            .first::<LibraryItemSummary>(conn)
+    ) -> Result<MediaItemSummary, ApiError> {
+        Ok(all_media_items
+            .filter(media_items::api_id.eq(&api_id))
+            .filter(media_items::user_id.eq(user_id))
+            .first::<MediaItemSummary>(conn)
             .map_err(ApiError::DatabaseError)?)
     }
 }
 
-type DbLibraryItem = (
+type DbMediaItem = (
     i32,
     String,
     String,
@@ -112,35 +112,35 @@ type DbLibraryItem = (
     Option<String>,
 );
 
-impl LibraryItem {
+impl MediaItem {
     pub fn list(
         conn: &PgConnection,
         user_id: i32,
         _options: ListOptions,
-    ) -> Result<Vec<LibraryItem>, ApiError> {
+    ) -> Result<Vec<MediaItem>, ApiError> {
         // TODO: refactor this
-        let library_items: Vec<DbLibraryItem> = library_item_versions::table
-            .inner_join(library_items::table)
-            .distinct_on(library_items::id)
+        let media_items: Vec<DbMediaItem> = media_item_versions::table
+            .inner_join(media_items::table)
+            .distinct_on(media_items::id)
             .select((
-                library_items::id,
-                library_items::api_id,
-                library_item_versions::api_id,
-                library_items::created_at,
-                library_items::updated_at,
-                library_items::name,
-                library_item_versions::asset_url,
+                media_items::id,
+                media_items::api_id,
+                media_item_versions::api_id,
+                media_items::created_at,
+                media_items::updated_at,
+                media_items::name,
+                media_item_versions::asset_url,
             ))
-            .filter(library_items::user_id.eq(user_id))
-            .order((library_items::id.desc(), library_item_versions::id.desc()))
-            .load::<DbLibraryItem>(conn)
+            .filter(media_items::user_id.eq(user_id))
+            .order((media_items::id.desc(), media_item_versions::id.desc()))
+            .load::<DbMediaItem>(conn)
             .map_err(|e| {
                 println!("{:#?}", e);
                 ApiError::DatabaseError(e)
             })?;
-        Ok(library_items
+        Ok(media_items
             .into_iter()
-            .map(|item| LibraryItem {
+            .map(|item| MediaItem {
                 id: item.0,
                 api_id: item.1,
                 version_api_id: Some(item.2),
@@ -152,30 +152,26 @@ impl LibraryItem {
             .collect())
     }
 
-    pub fn find(
-        conn: &PgConnection,
-        user_id: i32,
-        api_id: String,
-    ) -> Result<LibraryItem, ApiError> {
+    pub fn find(conn: &PgConnection, user_id: i32, api_id: String) -> Result<MediaItem, ApiError> {
         // TODO: refactor this
-        let item: DbLibraryItem = library_item_versions::table
-            .inner_join(library_items::table)
+        let item: DbMediaItem = media_item_versions::table
+            .inner_join(media_items::table)
             .select((
-                library_items::id,
-                library_items::api_id,
-                library_item_versions::api_id,
-                library_items::created_at,
-                library_items::updated_at,
-                library_items::name,
-                library_item_versions::asset_url,
+                media_items::id,
+                media_items::api_id,
+                media_item_versions::api_id,
+                media_items::created_at,
+                media_items::updated_at,
+                media_items::name,
+                media_item_versions::asset_url,
             ))
-            .filter(library_items::user_id.eq(user_id))
-            .filter(library_items::api_id.eq(api_id))
-            .order(library_item_versions::id.desc())
+            .filter(media_items::user_id.eq(user_id))
+            .filter(media_items::api_id.eq(api_id))
+            .order(media_item_versions::id.desc())
             .limit(1)
-            .first::<DbLibraryItem>(conn)
+            .first::<DbMediaItem>(conn)
             .map_err(ApiError::DatabaseError)?;
-        Ok(LibraryItem {
+        Ok(MediaItem {
             id: item.0,
             api_id: item.1,
             version_api_id: Some(item.2),
@@ -188,9 +184,9 @@ impl LibraryItem {
 
     pub fn bulk_create(
         conn: &PgConnection,
-        specs: Vec<LibraryItemCreateSpec>,
-    ) -> Result<Vec<LibraryItemSummary>, ApiError> {
-        Ok(insert_into(all_library_items)
+        specs: Vec<MediaItemCreateSpec>,
+    ) -> Result<Vec<MediaItemSummary>, ApiError> {
+        Ok(insert_into(all_media_items)
             .values(specs)
             .get_results(conn)
             .map_err(ApiError::DatabaseError)?)
@@ -201,9 +197,9 @@ impl LibraryItem {
         user_id: i32,
         api_id: String,
         name: Option<String>,
-    ) -> Result<LibraryItemSummary, ApiError> {
+    ) -> Result<MediaItemSummary, ApiError> {
         // TODO: handle generating new upload URL (if needed)
-        LibraryItemUpdateSpec {
+        MediaItemUpdateSpec {
             updated_at: Utc::now(),
             name,
         }
