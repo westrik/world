@@ -2,6 +2,7 @@
 
 ### High-Priority Tasks
 
+- [ ] diesel connection pool for worker tasks
 - [ ] content export to HTML
     - [ ] create site with HTML exports
     - [ ] save exported site to S3
