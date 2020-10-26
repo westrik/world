@@ -30,7 +30,7 @@ pub struct SitePage {
     pub published: bool,
 }
 
-#[derive(Queryable, Serialize, Deserialize, Debug)]
+#[derive(Queryable, Serialize, Deserialize, Debug, Clone)]
 pub struct LoadedSitePage {
     pub id: i32,
     pub api_id: String,
