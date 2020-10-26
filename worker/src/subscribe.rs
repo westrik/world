@@ -8,12 +8,11 @@ use postgres::{Connection, TlsMode};
 use std::env;
 use std::str::FromStr;
 
-use world_core::db;
+use world_core::db::DbPool;
 use world_core::jobs::errors::JobError;
 use world_core::jobs::{job_status::JobStatus, job_type::JobType};
 
 use crate::run::run_job;
-use crate::DB_POOL_SIZE;
 
 lazy_static! {
     static ref CLAIM_PENDING_JOB_QUERY: String = format!(
@@ -76,16 +75,11 @@ fn get_connection(database_url: String) -> Result<Connection, JobError> {
 
 // TODO: gracefully handle unwrap failures
 
-pub async fn subscribe_to_jobs(database_url: String) -> Result<(), JobError> {
+pub async fn subscribe_to_jobs(database_url: String, pool: &DbPool) -> Result<(), JobError> {
     // We can't use `LISTEN` with Diesel / libpq, so we use a separate connection to subscribe.
     debug!("connecting to database (for job listening)...");
     let conn = get_connection(database_url.clone())?;
     debug!("database connection established (for job listening)");
-
-    debug!("connecting to database (for workers)...");
-    let pool =
-        db::init_pool(&database_url, DB_POOL_SIZE).expect("Failed to create DB pool (for workers)");
-    debug!("database connection established (for workers)");
 
     conn.execute("LISTEN job_updates", &[])
         .map_err(|err| JobError::DatabaseError(err.to_string()))?;

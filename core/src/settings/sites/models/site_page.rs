@@ -30,7 +30,7 @@ pub struct SitePage {
     pub published: bool,
 }
 
-#[derive(Queryable, Serialize, Deserialize, Debug)]
+#[derive(Queryable, Serialize, Deserialize, Debug, Clone)]
 pub struct LoadedSitePage {
     pub id: i32,
     pub api_id: String,
@@ -190,7 +190,8 @@ impl SitePage {
     ) -> Result<LoadedSitePage, ApiError> {
         let site = Site::find_by_api_id(conn, session.clone(), site_api_id.clone())?;
 
-        let note = Note::find(conn, session.clone(), note_api_id.clone())?;
+        let note = Note::find(conn, session.clone(), note_api_id.clone(), None)?;
+        // TODO(DRY):
         let note_version = {
             if let Some(note_version_api_id) = note.version_api_id {
                 Ok(NoteVersion::find_by_api_id(
@@ -243,15 +244,15 @@ impl SitePage {
         spec: ApiSitePageUpdateSpec,
     ) -> Result<LoadedSitePage, ApiError> {
         let site = Site::find_by_api_id(conn, session.clone(), spec.site_api_id.clone())?;
-        let note = Note::find(conn, session.clone(), spec.note_api_id.clone())?;
+        let note = Note::find(
+            conn,
+            session.clone(),
+            spec.note_api_id.clone(),
+            spec.note_version_api_id,
+        )?;
+        // TODO(DRY):
         let note_version = {
-            if let Some(note_version_api_id) = spec.note_version_api_id {
-                Ok(NoteVersion::find_by_api_id(
-                    conn,
-                    session.clone(),
-                    note_version_api_id,
-                )?)
-            } else if let Some(note_version_api_id) = note.version_api_id {
+            if let Some(note_version_api_id) = note.version_api_id {
                 Ok(NoteVersion::find_by_api_id(
                     conn,
                     session.clone(),

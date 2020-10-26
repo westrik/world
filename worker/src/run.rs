@@ -21,6 +21,7 @@ pub async fn run_job(
     );
 
     // TODO: refactor & run task on tokio threadpool (?)
+    // TODO: auto-rollback failed tasks on error
     match job_type {
         JobType::IngestMediaUpload => {
             let payload = payload.unwrap();

@@ -18,11 +18,12 @@ use std::env;
 use world_core::db;
 
 pub mod jobs;
-pub mod media_transforms;
 pub mod run;
 pub mod subscribe;
 
 mod emails;
+mod media_transforms;
+mod sites;
 
 embed_migrations!("../core/migrations");
 
@@ -37,18 +38,13 @@ async fn main() {
     pretty_env_logger::init();
 
     // TODO: load DATABASE_URL with rusoto_sts
-    // TODO: refactor db_url generation
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    let database_url_with_config = if cfg!(feature = "production") {
-        format!("{}?sslmode=verify-full", database_url)
-    } else {
-        database_url.to_string()
-    };
-    let pool =
-        db::init_pool(&database_url_with_config, DB_POOL_SIZE).expect("Failed to create pool");
+    let pool = db::init_pool(&database_url, DB_POOL_SIZE).expect("Failed to create pool");
 
     let conn = db::get_conn(&pool).unwrap();
     embedded_migrations::run_with_output(&conn, &mut std::io::stdout()).unwrap();
 
-    subscribe::subscribe_to_jobs(database_url).await.unwrap()
+    subscribe::subscribe_to_jobs(database_url, &pool)
+        .await
+        .unwrap()
 }

@@ -1,9 +1,11 @@
 use chrono::{DateTime, Utc};
+use diesel::prelude::*;
 
 use crate::auth::models::session::Session;
 use crate::auth::models::user::User;
 use crate::db::{begin_txn, commit_txn, rollback_txn};
 use crate::errors::ApiError;
+use crate::jobs::errors::JobError;
 use crate::notes::models::note_version::NoteVersion;
 use crate::notes::parsing::parse_markdown_content;
 use crate::resource_identifier::{generate_resource_identifier, ResourceType};
@@ -11,7 +13,6 @@ use crate::schema::note_versions;
 use crate::schema::{notes, notes::dsl::notes as all_notes};
 use crate::utils::list_options::ListOptions;
 use crate::utils::mnemonic::{generate_mnemonic, DEFAULT_MNEMONIC_LENGTH};
-use diesel::prelude::*;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(User)]
@@ -174,9 +175,15 @@ impl Note {
         Ok(notes)
     }
 
-    pub fn find(conn: &PgConnection, session: Session, api_id: String) -> Result<Note, ApiError> {
-        let result = note_versions::table
+    pub fn find(
+        conn: &PgConnection,
+        session: Session,
+        api_id: String,
+        version_api_id: Option<String>,
+    ) -> Result<Note, ApiError> {
+        let mut query = note_versions::table
             .inner_join(notes::table)
+            // TODO(DRY): pull these columns out into a constant somehow?
             .select((
                 notes::id,
                 notes::api_id,
@@ -188,6 +195,11 @@ impl Note {
             ))
             .filter(notes::user_id.eq(session.user_id))
             .filter(notes::api_id.eq(&api_id))
+            .into_boxed();
+        if let Some(version_api_id) = version_api_id {
+            query = query.filter(note_versions::api_id.eq(version_api_id));
+        }
+        let result = query
             .order(note_versions::id.desc())
             .limit(1)
             .first::<LoadedNote>(conn)
@@ -204,6 +216,46 @@ impl Note {
             name: result.5,
             content: Some(result.6),
         })
+    }
+
+    pub fn bulk_find(
+        conn: &PgConnection,
+        session: Session,
+        note_version_ids: Vec<i32>,
+    ) -> Result<Vec<Note>, JobError> {
+        let loaded_notes = note_versions::table
+            .inner_join(notes::table)
+            // TODO(DRY): pull these columns out into a constant somehow?
+            .select((
+                notes::id,
+                notes::api_id,
+                note_versions::api_id,
+                notes::created_at,
+                notes::updated_at,
+                notes::name,
+                note_versions::content,
+            ))
+            .filter(notes::user_id.eq(session.user_id))
+            .filter(note_versions::id.eq_any(note_version_ids))
+            .load::<LoadedNote>(conn)
+            .map_err(|e| match e {
+                diesel::result::Error::NotFound => {
+                    JobError::NotFound("bulk_find with note_version_ids".to_string())
+                }
+                _ => JobError::DatabaseError(e.to_string()),
+            })?;
+        Ok(loaded_notes
+            .into_iter()
+            .map(|result| Note {
+                id: result.0,
+                api_id: result.1,
+                version_api_id: Some(result.2),
+                created_at: result.3,
+                updated_at: result.4,
+                name: result.5,
+                content: Some(result.6),
+            })
+            .collect())
     }
 
     pub fn create(

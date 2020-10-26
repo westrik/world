@@ -68,7 +68,12 @@ pub async fn list_notes(
 }
 
 fn run_get_note(session: Session, pool: &DbPool, api_id: String) -> Result<Note, ApiError> {
-    Ok(Note::find(&get_conn(&pool).unwrap(), session, api_id)?)
+    Ok(Note::find(
+        &get_conn(&pool).unwrap(),
+        session,
+        api_id,
+        None,
+    )?)
 }
 
 pub async fn get_note(
