@@ -58,6 +58,7 @@ pub async fn sync_site_to_bucket(
         );
     }
 
+    // TODO: use multiple threads for rendering + S3 network calls
     for (_site_page, note) in pages_with_notes {
         let content: Content = serde_json::from_value(note.content.unwrap()).unwrap();
         let _html: Html = content.render();
