@@ -5,17 +5,18 @@
 - [ ] content export to HTML
     - [ ] create site with HTML exports
     - [ ] save exported site to S3
-- [ ] refactor upload flow
 - [ ] audit database indexes for all models
+- [ ] basic search by name
 
 #### Backlog
 
-- [ ] basic search by name
 - [ ] add model to track internal links
     - [ ] allow linking from markdown content to media
     - [ ] fix indexes for notes and media
+- [ ] keyword search
 - [ ] add model to track links to internal resources (notes / media)
 - [ ] add model to track links to external resources
+- [ ] refactor upload flow?
 - [ ] UI improvements
     - [ ] modal component
         - [ ] keyboard shortcut info modal (trigger w/ cmd-?)
