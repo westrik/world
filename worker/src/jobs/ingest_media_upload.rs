@@ -2,6 +2,7 @@ use async_trait::async_trait;
 use image::ImageFormat;
 use tokio::io::AsyncReadExt;
 
+use world_core::db::DbPool;
 use world_core::external_services::aws::s3::{get_object::get_object, put_object::put_object};
 use world_core::jobs::errors::JobError;
 use world_core::library::models::file::FileType;
@@ -34,7 +35,7 @@ fn file_name_for_resized_version(file_name: &str, width: u32) -> String {
 
 #[async_trait]
 impl Runnable for IngestMediaUploadJob {
-    async fn run(&self, _: Option<i32>) -> Result<String, JobError> {
+    async fn run(&self, _: &DbPool, _: Option<i32>) -> Result<String, JobError> {
         info!(
             "Running media upload job for {}",
             self.library_version_api_id

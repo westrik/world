@@ -3,8 +3,9 @@ use bytes::Bytes;
 use rusoto_core::Region;
 use rusoto_lambda::{InvocationRequest, Lambda, LambdaClient};
 use serde_json::json;
+
+use world_core::db::DbPool;
 use world_core::jobs::errors::JobError;
-// use world_core::utils::config::OUTBOUND_EMAIL_SENDER;
 use world_core::utils::config::SENDGRID_API_KEY;
 
 use crate::emails::templates::populate_email_template;
@@ -23,7 +24,7 @@ pub struct SendEmailJob {
 
 #[async_trait]
 impl Runnable for SendEmailJob {
-    async fn run(&self, _: Option<i32>) -> Result<String, JobError> {
+    async fn run(&self, _: &DbPool, _: Option<i32>) -> Result<String, JobError> {
         // TODO: validate input
         info!(
             "sending email to {:#?} (template: {:#?})",
@@ -41,6 +42,7 @@ impl Runnable for SendEmailJob {
                     "from": {"email": "no-reply@westrik.world"},
                     "subject": "Testing 1, 2, 3",
                     "content": [
+                        // TODO: send plain-text version
                         // {
                         //     "type": "text/plain",
                         //     "value": "This is a test"

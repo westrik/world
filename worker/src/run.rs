@@ -1,3 +1,4 @@
+use world_core::db::DbPool;
 use world_core::jobs::{errors::JobError, job_type::JobType};
 
 use crate::jobs::ingest_media_upload::IngestMediaUploadJob;
@@ -10,6 +11,7 @@ pub async fn run_job(
     job_type: JobType,
     user_id: Option<i32>,
     payload: Option<serde_json::Value>,
+    db_pool: &DbPool,
 ) -> Result<String, JobError> {
     info!(
         "processing job [id={:?}][type={:?}][has_payload={:?}]",
@@ -23,17 +25,17 @@ pub async fn run_job(
         JobType::IngestMediaUpload => {
             let payload = payload.unwrap();
             let ingest_job: IngestMediaUploadJob = serde_json::from_value(payload).unwrap();
-            ingest_job.run(user_id).await
+            ingest_job.run(db_pool, user_id).await
         }
         JobType::SendEmail => {
             let payload = payload.unwrap();
             let email_job: SendEmailJob = serde_json::from_value(payload).unwrap();
-            email_job.run(user_id).await
+            email_job.run(db_pool, user_id).await
         }
         JobType::SyncSiteToBucket => {
             let payload = payload.unwrap();
             let sync_job: SyncSiteToBucketJob = serde_json::from_value(payload).unwrap();
-            sync_job.run(user_id).await
+            sync_job.run(db_pool, user_id).await
         }
     }
 }
