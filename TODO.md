@@ -5,8 +5,7 @@
 - [ ] content export to HTML
     - [ ] create site with HTML exports
     - [ ] save exported site to S3
-- [ ] rename `library_item` to `media_item`
-    - [ ] refactor upload flow
+- [ ] refactor upload flow
 - [ ] audit database indexes for all models
 
 #### Backlog
@@ -76,6 +75,7 @@
 - [x] improve keyboard shortcuts for general navigation
 - job system improvements
     - [x] diesel connection pool for worker tasks
+- [x] rename `library_item` to `media_item`
 
 
 ---------
@@ -91,8 +91,8 @@ Tables to audit:
 - [ ] note_versions
 - [ ] notes
 - [ ] tasks
-- [ ] library_item_versions
-- [ ] library_items
+- [ ] media_item_versions
+- [ ] media_items
 - [ ] site_pages
 - [ ] jobs
 
@@ -112,11 +112,11 @@ Tables to audit:
 - Access patterns:
 - Indexes to add:
 
-**library_item_versions**:
+**media_item_versions**:
 - Access patterns:
 - Indexes to add:
 
-**library_items**:
+**media_items**:
 - Access patterns:
 - Indexes to add:
 

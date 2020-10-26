@@ -36,10 +36,7 @@ fn file_name_for_resized_version(file_name: &str, width: u32) -> String {
 #[async_trait]
 impl Runnable for IngestMediaUploadJob {
     async fn run(&self, _: &DbPool, _: Option<i32>) -> Result<String, JobError> {
-        info!(
-            "Running media upload job for {}",
-            self.media_version_api_id
-        );
+        info!("Running media upload job for {}", self.media_version_api_id);
         let object = get_object(CONTENT_BUCKET_NAME.to_string(), &self.file_name)
             .await
             .map_err(|e| {

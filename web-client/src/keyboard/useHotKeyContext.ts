@@ -68,7 +68,7 @@ export default function useHotKeyContext(hotkeysToHandlers: HotKeyToHandler): vo
  - `d` - go to dashboard
  - `t` - go to tasks
  - `n` - go to notes listing
- - `l` - go to library listing
+ - `m` - go to media listing
  - `s` - go to settings
  - continue typing to choose another command
 

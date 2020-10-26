@@ -4,16 +4,16 @@ import { useContext, useEffect, useState } from 'preact/hooks';
 import Auth from '~auth/AuthContext';
 import AppContainer from '~components/AppContainer';
 import FileUploadField, { FileType } from '~components/FileUploadField';
-import bulkCreateLibraryItems from '~library/bulkCreateLibraryItems';
-import { LibraryItem } from '~models/LibraryItem';
-import listLibraryItems from '~library/listLibraryItems';
+import bulkCreateMediaItems from '~media/bulkCreateMediaItems';
+import { MediaItem } from '~models/MediaItem';
+import listMediaItems from '~media/listMediaItems';
 import LoadingSpinner from '~components/LoadingSpinner';
 import { ApiResponse, request, RequestMethod } from '~utils/network';
 
 const ALLOWED_FILE_TYPES = [FileType.GIF, FileType.JPEG, FileType.PDF, FileType.PNG];
 
 // TODO: POST /authenticate:cloudfront to get auth cookies
-// TODO: query for library items
+// TODO: query for media items
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface CfAuthRequest {}
@@ -21,8 +21,8 @@ interface CfAuthResponse extends ApiResponse {
     expiresAt: string;
 }
 
-function LibraryItemList(): h.JSX.Element {
-    const [items, setItems] = useState<Array<LibraryItem> | null>(null);
+function MediaItemList(): h.JSX.Element {
+    const [items, setItems] = useState<Array<MediaItem> | null>(null);
     const [authed, setAuthed] = useState(false);
     const authContext = useContext(Auth);
 
@@ -45,8 +45,8 @@ function LibraryItemList(): h.JSX.Element {
         }
         // TODO: refactor into custom hook
         if (!items) {
-            listLibraryItems(authContext, (libraryItems) => {
-                setItems(libraryItems ?? []);
+            listMediaItems(authContext, (mediaItems) => {
+                setItems(mediaItems ?? []);
             });
         }
     });
@@ -59,7 +59,7 @@ function LibraryItemList(): h.JSX.Element {
                 allowMultiple={true}
                 onChange={(ev: Event): void => {
                     const files = Array.from((ev.target as HTMLInputElement).files ?? []);
-                    bulkCreateLibraryItems(authContext, files, (uploadState) => {
+                    bulkCreateMediaItems(authContext, files, (uploadState) => {
                         console.log(`upload is ${uploadState.status}`);
                     });
                 }}
@@ -89,4 +89,4 @@ function LibraryItemList(): h.JSX.Element {
     );
 }
 
-export default LibraryItemList;
+export default MediaItemList;
