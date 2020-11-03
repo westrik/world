@@ -22,7 +22,7 @@ log = "^0.4"
 pretty_env_logger = "^0.4"
 pulldown-cmark = "^0.7"
 rand = "^0.7"
-regex = "^1.3"
+regex = "^1.4"
 rsa = "0.3"
 # TODO: move all AWS interaction to single crate
 rusoto_core = "^0.45"
