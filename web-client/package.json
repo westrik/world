@@ -60,7 +60,7 @@
   "dependencies": {
     "@popperjs/core": "^2.1.1",
     "codemirror": "^5.55.0",
-    "preact": "^10.1.1",
+    "preact": "^10.5.7",
     "preact-router": "^3.1.0",
     "react-popper": "^2.0"
   },
