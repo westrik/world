@@ -1106,7 +1106,7 @@ dependencies = [
  "http 0.2.1",
  "indexmap",
  "slab",
- "tokio 0.2.22",
+ "tokio 0.2.23",
  "tokio-util",
  "tracing",
 ]
@@ -1334,7 +1334,7 @@ dependencies = [
  "pin-project",
  "socket2",
  "time 0.1.44",
- "tokio 0.2.22",
+ "tokio 0.2.23",
  "tower-service",
  "tracing",
  "want 0.3.0",
@@ -1362,7 +1362,7 @@ dependencies = [
  "bytes 0.5.6",
  "hyper 0.13.7",
  "native-tls",
- "tokio 0.2.22",
+ "tokio 0.2.23",
  "tokio-tls",
 ]
 
@@ -2769,7 +2769,7 @@ dependencies = [
  "rustc_version",
  "serde",
  "serde_json",
- "tokio 0.2.22",
+ "tokio 0.2.23",
  "xml-rs",
 ]
 
@@ -2789,7 +2789,7 @@ dependencies = [
  "serde",
  "serde_json",
  "shlex",
- "tokio 0.2.22",
+ "tokio 0.2.23",
  "zeroize",
 ]
 
@@ -2843,7 +2843,7 @@ dependencies = [
  "serde",
  "sha2 0.9.1",
  "time 0.2.17",
- "tokio 0.2.22",
+ "tokio 0.2.23",
 ]
 
 [[package]]
@@ -3560,9 +3560,9 @@ dependencies = [
 
 [[package]]
 name = "tokio"
-version = "0.2.22"
+version = "0.2.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d34ca54d84bf2b5b4d7d31e901a8464f7b60ac145a284fba25ceb801f2ddccd"
+checksum = "a6d7ad61edd59bfcc7e80dababf0f4aed2e6d5e0ba1659356ae889752dfc12ff"
 dependencies = [
  "bytes 0.5.6",
  "fnv",
@@ -3626,9 +3626,9 @@ dependencies = [
 
 [[package]]
 name = "tokio-macros"
-version = "0.2.5"
+version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f0c3acc6aa564495a0f2e1d59fab677cd7f81a19994cfc7f3ad0e64301560389"
+checksum = "e44da00bfc73a25f814cd8d7e57a68a5c31b74b3152a0a1d1f590c97ed06265a"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3714,7 +3714,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9a70f4fcd7b3b24fb194f837560168208f669ca8cb70d0c4b862944452396343"
 dependencies = [
  "native-tls",
- "tokio 0.2.22",
+ "tokio 0.2.23",
 ]
 
 [[package]]
@@ -3726,7 +3726,7 @@ dependencies = [
  "futures-util",
  "log",
  "pin-project",
- "tokio 0.2.22",
+ "tokio 0.2.23",
  "tungstenite",
 ]
 
@@ -3741,7 +3741,7 @@ dependencies = [
  "futures-sink",
  "log",
  "pin-project-lite",
- "tokio 0.2.22",
+ "tokio 0.2.23",
 ]
 
 [[package]]
@@ -4002,7 +4002,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_urlencoded 0.6.1",
- "tokio 0.2.22",
+ "tokio 0.2.23",
  "tokio-tungstenite",
  "tower-service",
  "tracing",
@@ -4147,7 +4147,7 @@ dependencies = [
  "dotenv 0.14.1",
  "log",
  "pretty_env_logger 0.3.1",
- "tokio 0.2.22",
+ "tokio 0.2.23",
  "warp",
  "world_core",
 ]
@@ -4162,7 +4162,7 @@ dependencies = [
  "log",
  "pretty_env_logger 0.3.1",
  "tectonic",
- "tokio 0.2.22",
+ "tokio 0.2.23",
  "world_core",
 ]
 
@@ -4193,7 +4193,7 @@ dependencies = [
  "serde_derive",
  "serde_json",
  "sha-1 0.9.1",
- "tokio 0.2.22",
+ "tokio 0.2.23",
  "warp",
 ]
 
@@ -4239,7 +4239,7 @@ dependencies = [
  "serde",
  "serde_derive",
  "serde_json",
- "tokio 0.2.22",
+ "tokio 0.2.23",
  "warp",
  "world_core",
 ]
