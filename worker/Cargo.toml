@@ -15,7 +15,7 @@ production = ["world_core/production", "postgres/with-openssl", "openssl"]
 [dependencies]
 # TODO: move all AWS interaction to single crate
 async-trait = "^0.1"
-bytes = "^0.5"
+bytes = "^0.6"
 diesel = { features = ["postgres", "r2d2", "chrono", "serde_json"], version = "^1.4" }
 diesel_migrations = "^1.4"
 dotenv = "^0.14"
