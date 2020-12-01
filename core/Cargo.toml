@@ -11,7 +11,7 @@ production = []
 
 [dependencies]
 argon2rs = "^0.2"
-base64 = "^0.12"
+base64 = "^0.13"
 chrono = { version = "0.4", features = ["serde"] }
 diesel = { features = ["postgres", "r2d2", "chrono", "serde_json"], version = "^1.4" }
 diesel_migrations = "^1.4"
