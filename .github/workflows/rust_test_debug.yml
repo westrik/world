@@ -18,7 +18,7 @@ jobs:
     - name: Set up test DB
       run: bash ./scripts/setup_test_env.sh
     - name: Load ~/.cargo in PATH
-      run: echo "::add-path::/root/.cargo/bin"
+      run: echo "/root/.cargo/bin" >> $GITHUB_PATH
     - name: Cache cargo registry
       uses: actions/cache@v1
       with:
