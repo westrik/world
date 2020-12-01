@@ -3597,9 +3597,9 @@ dependencies = [
 
 [[package]]
 name = "tectonic"
-version = "0.1.17"
+version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9a8bf2b2e63355e2fd71c79068114a933ce1acf74927c0ae5e6e16f1ad6904d0"
+checksum = "c77598ff143d43a2b9874d24e0d9b8d0c45d6a4402a1c2f20bd0b960868d7d2e"
 dependencies = [
  "app_dirs2",
  "atty",
