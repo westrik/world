@@ -8,6 +8,6 @@ if ! command -v rustup >/dev/null 2>&1; then
   source $HOME/.cargo/env
 fi
 # this seems unhygienic (TODO: configure toolchain for project instead?)
-rustup default nightly
+rustup default nightly-2020-11-25
 rustup component add clippy
 cargo install cargo-watch
