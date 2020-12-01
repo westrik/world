@@ -1,4 +1,4 @@
-use std::{env, io, process};
+use std::{env, process};
 
 use world_content_export::content_to_pdf;
 
@@ -57,7 +57,7 @@ const SAMPLE_DIAGRAM: &str = r#"
 \end{tikzpicture}
 "#;
 
-fn main() -> io::Result<()> {
+fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() != 2 {
         eprintln!("usage: md2pdf [output_filename]");
@@ -78,6 +78,4 @@ $$x=y^2$$
     content.push_str(SAMPLE_DIAGRAM);
     content.push_str(r#"\end{document}"#);
     content_to_pdf(&content, Some(&args[1]));
-
-    Ok(())
 }
