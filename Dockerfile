@@ -1,4 +1,4 @@
-FROM rust:1.47-slim-buster
+FROM rust:1.48-slim-buster
 
 COPY ./scripts/* /
 RUN bash /setup_test_env.sh
