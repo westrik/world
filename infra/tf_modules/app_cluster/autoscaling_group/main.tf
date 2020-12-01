@@ -22,7 +22,7 @@ resource "aws_launch_template" "app_cluster_instance" {
 }
 
 locals {
-  app_instance_lifetime_seconds = 60 * 60 * 24 * 7 # one week in seconds
+  app_instance_lifetime_seconds = 60 * 60 * 24 * 3 # 3 days in seconds
 }
 
 resource "aws_autoscaling_group" "app_cluster" {

@@ -109,15 +109,40 @@ resource "aws_lambda_function" "renew_certificate" {
   timeout       = 60
 }
 
+resource "aws_cloudwatch_event_rule" "every_three_days" {
+  name                = "every-three-days"
+  description         = "Fires every 72 hours"
+  schedule_expression = "rate(72 hours)"
+}
+
+locals {
+  renew_certificate_input = <<JSON
+  {
+    "domains": [${join(", ", formatlist("\"%s\"", var.api_domain_names))}],
+    "email": "${var.admin_email}",
+    "secret_id": "${aws_secretsmanager_secret.api_cert.name}"
+  }
+  JSON
+}
+
+resource "aws_cloudwatch_event_target" "try_to_renew_daily" {
+  rule      = aws_cloudwatch_event_rule.every_three_days.name
+  target_id = aws_lambda_function.renew_certificate.function_name
+  arn       = aws_lambda_function.renew_certificate.arn
+
+  input = local.renew_certificate_input
+}
+
+resource "aws_lambda_permission" "allow_cloudwatch_to_renew_certificate" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.renew_certificate.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.every_three_days.arn
+}
+
 data "aws_lambda_invocation" "renew_certificate" {
   function_name = "renew_certificate"
   depends_on    = [aws_lambda_function.renew_certificate, aws_secretsmanager_secret.api_cert]
-
-  input = <<JSON
-{
-  "domains": [${join(", ", formatlist("\"%s\"", var.api_domain_names))}],
-  "email": "${var.admin_email}",
-  "secret_id": "${aws_secretsmanager_secret.api_cert.name}"
-}
-JSON
+  input         = local.renew_certificate_input
 }

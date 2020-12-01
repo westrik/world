@@ -47,7 +47,6 @@
     - [ ] add S3 lifecycle rules where appropriate
     - [ ] save access logs for NLB to S3
     - [ ] create systemd task to periodically refresh secrets on app instances
-    - [ ] schedule lambda to refresh TLS cert every 2 weeks (?)
     - [ ] schedule lambda to rotate KMS keys for RDS
     - [ ] schedule lambda to rotate RDS root password
     - [ ] use IAM authentication to access RDS from app instances
@@ -76,6 +75,8 @@
 - job system improvements
     - [x] diesel connection pool for worker tasks
 - [x] rename `library_item` to `media_item`
+- audit infra security
+    - [x] schedule lambda to refresh TLS cert every day
 
 
 ---------
