@@ -40,7 +40,7 @@ export default function Site(props: SiteProps): h.JSX.Element {
                 <tr>
                     <td>Bucket</td>
                     <td>
-                        {props.site.bucketDomainName ?? 'N/A'} <FieldEditButton />
+                        {props.site.bucketName ?? 'N/A'} <FieldEditButton />
                     </td>
                 </tr>
                 <tr>

@@ -3,7 +3,7 @@ export interface Site {
     createdAt: Date;
     updatedAt: Date;
     title: string;
-    bucketDomainName: string | null;
+    bucketName: string | null;
     bucketAccessKeyId: string | null;
 }
 

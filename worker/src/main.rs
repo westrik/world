@@ -17,6 +17,7 @@ use std::env;
 
 use world_core::db;
 
+pub mod external_services;
 pub mod jobs;
 pub mod run;
 pub mod subscribe;

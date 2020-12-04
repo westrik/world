@@ -2,21 +2,18 @@
 
 ### High-Priority Tasks
 
-- [ ] content export to HTML
-    - [ ] create site with HTML exports
-    - [ ] save exported site to S3
 - [ ] audit database indexes for all models
-- [ ] basic search by name
-
-#### Backlog
-
+- [ ] basic keyword search
 - [ ] add model to track internal links
     - [ ] allow linking from markdown content to media
     - [ ] fix indexes for notes and media
-- [ ] keyword search
 - [ ] add model to track links to internal resources (notes / media)
 - [ ] add model to track links to external resources
+
+#### Backlog
+
 - [ ] refactor upload flow?
+- [ ] improve S3 site styling
 - [ ] UI improvements
     - [ ] modal component
         - [ ] keyboard shortcut info modal (trigger w/ cmd-?)
@@ -32,12 +29,6 @@
 - [ ] logging + metrics (set up prometheus + fluentd agents)
     - [ ] S3 & CloudWatch for logs
     - [ ] CloudWatch for metrics?
-- [ ] job system improvements
-    - [ ] dependent tasks (use pg trigger to unblock dependents)
-    - [ ] scheduled tasks
-    - [ ] one-shot tasks (scripts & migrations)
-    - [ ] refactor to share structs between app and worker
-    - [ ] write tests for job subscription + retries (make sure jobs retry on failure!)
 - [ ] improve test coverage (FE & BE)
     - [ ] [ci-tooling] code coverage reports
 - [ ] audit infra security before v0.2 release
@@ -56,6 +47,12 @@
     - [ ] audit IAM roles and lock them down where appropriate
     - [ ] clean up remaining infra TODOs
     - [ ] set `skip_final_snapshot=false` for RDS
+- [ ] job system improvements (as needed)
+    - [ ] dependent tasks (use pg trigger to unblock dependents)
+    - [ ] scheduled tasks
+    - [ ] one-shot tasks (scripts & migrations)
+    - [ ] refactor to share structs between app and worker
+    - [ ] write tests for job subscription + retries (make sure jobs retry on failure!)
 
 #### Post-v1.0
 
@@ -78,6 +75,10 @@
 - [x] rename `library_item` to `media_item`
 - audit infra security
     - [x] schedule lambda to refresh TLS cert every day
+- content export to HTML
+    - [x] render pages
+    - [x] render list page
+    - [x] save exported site to S3
 
 
 ---------

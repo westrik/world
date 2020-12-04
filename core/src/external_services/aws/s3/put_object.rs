@@ -1,13 +1,13 @@
 use chrono::Duration;
+use rusoto_core::ByteStream;
 use rusoto_s3::util::{PreSignedRequest, PreSignedRequestOption};
 use rusoto_s3::{PutObjectRequest, S3Client, S3};
 
 use crate::errors::ApiError;
 use crate::external_services::aws::{credentials::get_aws_credentials, REGION};
-use rusoto_core::ByteStream;
 
 pub async fn put_object(bucket: String, key: &str, data: Vec<u8>) -> Result<String, ApiError> {
-    let _resp = S3Client::new(REGION)
+    S3Client::new(REGION)
         .put_object(PutObjectRequest {
             bucket,
             key: key.to_string(),
