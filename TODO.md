@@ -3,56 +3,54 @@
 ### High-Priority Tasks
 
 - [ ] audit database indexes for all models
+    - [ ] add indexes for notes and media
+    - [ ] add indexes for links
 - [ ] basic keyword search
-- [ ] add model to track internal links
-    - [ ] allow linking from markdown content to media
-    - [ ] fix indexes for notes and media
-- [ ] add model to track links to internal resources (notes / media)
-- [ ] add model to track links to external resources
+- [ ] add model to track links
+    - [ ] allow linking from markdown content
+    - [ ] track links to internal resources (notes / media)
+    - [ ] track links to external resources
 
-#### Backlog
+#### Pre-v0.2
 
-- [ ] refactor upload flow?
-- [ ] improve S3 site styling
-- [ ] UI improvements
-    - [ ] modal component
-        - [ ] keyboard shortcut info modal (trigger w/ cmd-?)
-    - [ ] dashboard (at least add search bar)
-    - [ ] section headers
-        - [ ] breadcrumbs
-        - [ ] action button bars
-    - [ ] improve list and list item components
-    - [ ] pagination for note + media listings
-    - [ ] task list item dragging / reordering & dependencies
-    - [ ] manage code/preview splits (show full page, adjust split sizes)
-    - [ ] improve settings page (i.e. site list + page list)
-- [ ] logging + metrics (set up prometheus + fluentd agents)
-    - [ ] S3 & CloudWatch for logs
-    - [ ] CloudWatch for metrics?
+- [ ] add search bar to dashboard
+- [ ] add modal component
+    - [ ] keyboard shortcut info modal (trigger w/ cmd-?)
+- [ ] section headers
+    - [ ] breadcrumbs
+    - [ ] action button bars
+- [ ] improve list and list item components
+- [ ] pagination for note + media listings
+- [ ] task list item dragging / reordering & dependencies
+- [ ] manage code/preview splits (show full page, adjust split sizes)
+- [ ] improve settings page (i.e. site list + page list)
+- [ ] [infra] logging + metrics (set up prometheus + fluentd agents)
+- [ ] [infra] save access logs for NLB to S3 (and process w/ fluentd?)
+- [ ] [infra] use Fargate & Tailscale / Argo to allow SSH access from outside AWS
+    - [ ] limit SSH access for app instances to VPN subnet only
+- [ ] [infra] set `skip_final_snapshot=false` for RDS
+    
+#### Pre-v1.0
+
+- [ ] refactor upload flow
 - [ ] improve test coverage (FE & BE)
     - [ ] [ci-tooling] code coverage reports
-- [ ] audit infra security before v0.2 release
-    - [ ] disable public IPs for app instances (use egress-only internet gateway)
-    - [ ] security group: remove outbound `:80` & `:443` from app instances
-    - [ ] make sure EBS volumes are encrypted (or remove them all)
-    - [ ] make sure all S3 buckets use encryption w/ custom KMS key
-    - [ ] add S3 lifecycle rules where appropriate
-    - [ ] save access logs for NLB to S3
-    - [ ] create systemd task to periodically refresh secrets on app instances
-    - [ ] schedule lambda to rotate KMS keys for RDS
-    - [ ] schedule lambda to rotate RDS root password
-    - [ ] use IAM authentication to access RDS from app instances
-    - [ ] use Fargate & Tailscale / Argo to allow SSH access from outside AWS
-    - [ ] security group: limit SSH access for app instances to VPN subnet only
-    - [ ] audit IAM roles and lock them down where appropriate
-    - [ ] clean up remaining infra TODOs
-    - [ ] set `skip_final_snapshot=false` for RDS
-- [ ] job system improvements (as needed)
+- [ ] job system improvements
     - [ ] dependent tasks (use pg trigger to unblock dependents)
     - [ ] scheduled tasks
     - [ ] one-shot tasks (scripts & migrations)
     - [ ] refactor to share structs between app and worker
     - [ ] write tests for job subscription + retries (make sure jobs retry on failure!)
+- [ ] schedule lambda to rotate KMS keys for RDS
+- [ ] schedule lambda to rotate RDS root password
+- [ ] use IAM authentication to access RDS from app instances
+- [ ] disable public IPs for app instances (use egress-only internet gateway)
+- [ ] make sure EBS volumes are encrypted (or remove them all)
+- [ ] make sure all S3 buckets use encryption w/ custom KMS key
+- [ ] add S3 lifecycle rules where appropriate
+- [ ] audit IAM roles and lock them down where appropriate
+- [ ] security group: remove outbound `:80` & `:443` from app instances
+- [ ] clean up remaining infra TODOs
 
 #### Post-v1.0
 
