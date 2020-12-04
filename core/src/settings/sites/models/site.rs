@@ -20,7 +20,7 @@ pub struct Site {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub title: String,
-    pub bucket_domain_name: Option<String>,
+    pub bucket_name: Option<String>,
     pub bucket_access_key_id: Option<String>,
     // TODO: server-side-encrypt this column using private key stored in Secrets Manager
     pub bucket_access_key_secret: Option<String>,
@@ -32,7 +32,7 @@ pub struct SiteCreateSpec {
     pub api_id: String,
     pub user_id: i32,
     pub title: String,
-    pub bucket_domain_name: Option<String>,
+    pub bucket_name: Option<String>,
     pub bucket_access_key_id: Option<String>,
     pub bucket_access_key_secret: Option<String>,
 }
@@ -53,7 +53,7 @@ pub struct SiteUpdateSpec {
     // TODO: use trigger to set updated_at automatically
     pub updated_at: DateTime<Utc>,
     pub title: Option<String>,
-    pub bucket_domain_name: Option<String>,
+    pub bucket_name: Option<String>,
     pub bucket_access_key_id: Option<String>,
     pub bucket_access_key_secret: Option<String>,
 }
@@ -85,8 +85,8 @@ pub struct ApiSite {
     pub created_at: DateTime<Utc>,
     #[serde(rename = "updatedAt")]
     pub updated_at: DateTime<Utc>,
-    #[serde(rename = "bucketDomainName")]
-    pub bucket_domain_name: Option<String>,
+    #[serde(rename = "bucketName")]
+    pub bucket_name: Option<String>,
     #[serde(rename = "bucketAccessKeyId")]
     pub bucket_access_key_id: Option<String>,
 }
@@ -98,7 +98,7 @@ pub struct ApiSiteCreateSpec {
 #[allow(clippy::option_option)]
 pub struct ApiSiteUpdateSpec {
     pub title: Option<String>,
-    pub bucket_domain_name: Option<String>,
+    pub bucket_name: Option<String>,
     pub bucket_access_key_id: Option<String>,
     pub bucket_access_key_secret: Option<String>,
 }
@@ -110,7 +110,7 @@ impl From<&Site> for ApiSite {
             title: site.title.clone(),
             created_at: site.created_at,
             updated_at: site.updated_at,
-            bucket_domain_name: site.bucket_domain_name.clone(),
+            bucket_name: site.bucket_name.clone(),
             bucket_access_key_id: site.bucket_access_key_id.clone(),
         }
     }
@@ -143,7 +143,7 @@ impl Site {
             api_id: generate_resource_identifier(ResourceType::Site),
             user_id: session.user_id,
             title,
-            bucket_domain_name: None,
+            bucket_name: None,
             bucket_access_key_id: None,
             bucket_access_key_secret: None,
         };
@@ -159,7 +159,7 @@ impl Site {
         let site = SiteUpdateSpec {
             updated_at: Utc::now(),
             title: spec.title,
-            bucket_domain_name: spec.bucket_domain_name,
+            bucket_name: spec.bucket_name,
             bucket_access_key_id: spec.bucket_access_key_id,
             bucket_access_key_secret: spec.bucket_access_key_secret,
         }

@@ -7,7 +7,7 @@ use crate::notes::{
 };
 
 pub struct Html {
-    output: String,
+    pub output: String,
 }
 
 impl Deref for Html {

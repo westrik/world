@@ -31,7 +31,7 @@ pub struct NoteSummary {
     pub name: String,
 }
 
-#[derive(Queryable, Serialize, Debug)]
+#[derive(Clone, Queryable, Serialize, Debug)]
 pub struct Note {
     #[serde(skip)]
     pub id: i32,

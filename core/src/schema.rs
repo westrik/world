@@ -92,9 +92,9 @@ table! {
         created_at -> Timestamptz,
         updated_at -> Timestamptz,
         title -> Varchar,
-        bucket_domain_name -> Nullable<Varchar>,
         bucket_access_key_id -> Nullable<Varchar>,
         bucket_access_key_secret -> Nullable<Varchar>,
+        bucket_name -> Nullable<Varchar>,
     }
 }
 

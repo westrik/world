@@ -125,7 +125,7 @@ locals {
   JSON
 }
 
-resource "aws_cloudwatch_event_target" "try_to_renew_daily" {
+resource "aws_cloudwatch_event_target" "try_to_renew_certificate" {
   rule      = aws_cloudwatch_event_rule.every_three_days.name
   target_id = aws_lambda_function.renew_certificate.function_name
   arn       = aws_lambda_function.renew_certificate.arn
