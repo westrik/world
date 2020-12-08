@@ -12,5 +12,11 @@ CREATE TABLE links
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (note_id) REFERENCES notes (id),
     FOREIGN KEY (target_note_id) REFERENCES notes (id),
-    FOREIGN KEY (media_item_id) REFERENCES media_items (id)
+    FOREIGN KEY (media_item_id) REFERENCES media_items (id),
+    CHECK (
+        (media_item_id IS NOT NULL AND target_note_id IS NULL AND external_url IS NULL) OR
+        (media_item_id IS NULL AND target_note_id IS NOT NULL AND external_url IS NULL) OR
+        (media_item_id IS NULL AND target_note_id IS NULL AND external_url IS NOT NULL)
+    )
+
 );
