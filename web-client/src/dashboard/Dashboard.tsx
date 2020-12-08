@@ -7,6 +7,7 @@ export default function Dashboard(): h.JSX.Element {
     return (
         <AppContainer>
             <TextField
+                className="search-field"
                 labelText="Search"
                 onChange={() => {
                     console.log('updated');
