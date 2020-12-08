@@ -13,6 +13,7 @@ interface FieldProps {
     labelText: string;
     placeholderText?: string;
     onChange: (event: Event) => void;
+    value?: string;
     required?: boolean;
 }
 
@@ -26,6 +27,7 @@ function InputField(props: FieldProps & { type: FieldType }): h.JSX.Element {
                 id={fieldId}
                 tabIndex={0}
                 placeholder={props.placeholderText}
+                value={props.value}
                 required={props.required}
                 onChange={(event): void => props.onChange(event)}
             />
