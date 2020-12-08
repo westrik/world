@@ -52,7 +52,7 @@ function MediaItemList(): h.JSX.Element {
     });
 
     return (
-        <AppContainer>
+        <AppContainer sectionName="Media">
             <FileUploadField
                 labelText="Create item"
                 allowedFileTypes={ALLOWED_FILE_TYPES}
