@@ -12,6 +12,18 @@ table! {
 }
 
 table! {
+    links (id) {
+        id -> Int4,
+        user_id -> Int4,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
+        note_id -> Int4,
+        media_item_id -> Nullable<Int4>,
+        external_url -> Nullable<Varchar>,
+    }
+}
+
+table! {
     media_item_versions (id) {
         id -> Int4,
         api_id -> Varchar,
@@ -126,6 +138,9 @@ table! {
 }
 
 joinable!(jobs -> users (user_id));
+joinable!(links -> media_items (media_item_id));
+joinable!(links -> notes (note_id));
+joinable!(links -> users (user_id));
 joinable!(media_item_versions -> media_items (media_item_id));
 joinable!(media_item_versions -> users (user_id));
 joinable!(media_items -> users (user_id));
@@ -141,6 +156,7 @@ joinable!(tasks -> users (user_id));
 
 allow_tables_to_appear_in_same_query!(
     jobs,
+    links,
     media_item_versions,
     media_items,
     note_versions,
