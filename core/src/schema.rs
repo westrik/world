@@ -19,6 +19,7 @@ table! {
         updated_at -> Timestamptz,
         note_id -> Int4,
         media_item_id -> Nullable<Int4>,
+        target_note_id -> Nullable<Int4>,
         external_url -> Nullable<Varchar>,
     }
 }
@@ -139,7 +140,6 @@ table! {
 
 joinable!(jobs -> users (user_id));
 joinable!(links -> media_items (media_item_id));
-joinable!(links -> notes (note_id));
 joinable!(links -> users (user_id));
 joinable!(media_item_versions -> media_items (media_item_id));
 joinable!(media_item_versions -> users (user_id));
