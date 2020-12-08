@@ -9,6 +9,7 @@ export enum FieldType {
 }
 
 interface FieldProps {
+    className?: string;
     labelText: string;
     placeholderText?: string;
     onChange: (event: Event) => void;
@@ -18,7 +19,7 @@ interface FieldProps {
 function InputField(props: FieldProps & { type: FieldType }): h.JSX.Element {
     const fieldId = randomIdentifier();
     return (
-        <fieldset className={`${props.type}-field`}>
+        <fieldset className={`${props.type}-field ${props.className}`}>
             <label htmlFor={fieldId}>{props.labelText}</label>
             <input
                 type={props.type}
