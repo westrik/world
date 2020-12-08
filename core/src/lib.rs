@@ -20,6 +20,7 @@ pub mod schema;
 pub mod utils;
 
 pub mod auth;
+pub mod links;
 pub mod media;
 pub mod notes;
 pub mod settings;
