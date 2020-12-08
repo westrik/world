@@ -36,7 +36,7 @@ export default function NoteList(): h.JSX.Element {
     });
 
     return (
-        <AppContainer>
+        <AppContainer sectionName="Notes">
             <NoteCreateForm
                 onCreateNote={(note: Note) => {
                     setNotes([note, ...(noteSummaries ?? [])]);

@@ -52,7 +52,7 @@ function TaskList(): h.JSX.Element {
     // TODO: set up keyboard event handlers (up/down, etc.)
 
     return (
-        <AppContainer>
+        <AppContainer sectionName="Tasks">
             <TaskCreateForm
                 onSubmit={(task: ApiTask) => {
                     setTasks([{ ...task, childTasks: [] }, ...(tasks ?? [])]);

@@ -7,8 +7,9 @@ import NavSidebar from './NavSidebar';
 import { Code } from '~keyboard/HotKeyCommand';
 
 interface AppContainerProps {
-    children: h.JSX.Element | Array<h.JSX.Element>;
+    sectionName?: string;
     contentClassName?: string;
+    children: h.JSX.Element | Array<h.JSX.Element>;
 }
 
 const HOTKEYS = new Map([
@@ -58,6 +59,7 @@ export default function AppContainer(props: AppContainerProps): h.JSX.Element {
             <NavSidebar />
 
             <main className={props.contentClassName} role="main">
+                {props.sectionName ? <h2 className="section-header">{props.sectionName}</h2> : null}
                 {props.children}
             </main>
         </div>
