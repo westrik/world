@@ -14,9 +14,9 @@ table! {
 table! {
     links (id) {
         id -> Int4,
+        api_id -> Varchar,
         user_id -> Int4,
         created_at -> Timestamptz,
-        updated_at -> Timestamptz,
         note_id -> Int4,
         note_version_id -> Int4,
         media_item_id -> Nullable<Int4>,

@@ -5,10 +5,8 @@ use diesel::prelude::*;
 use crate::auth::models::user::User;
 use crate::errors::ApiError;
 use crate::notes::models::note::Note;
-use crate::schema::{
-    links, links::dsl::links as all_links,
-};
-use crate::utils::list_options::ListOptions;
+use crate::schema::{links, links::dsl::links as all_links};
+// use crate::utils::list_options::ListOptions;
 
 #[derive(Associations, Identifiable, Queryable, Serialize, Deserialize, Debug)]
 #[belongs_to(Note)]
@@ -39,14 +37,20 @@ pub struct LinkSummary {
 pub struct Link {
     #[serde(skip)]
     pub id: i32,
+    #[serde(rename = "id")]
+    pub api_id: String,
+    #[serde(skip)]
+    pub user_id: i32,
     #[serde(rename = "createdAt")]
     pub created_at: DateTime<Utc>,
-    #[serde(rename = "updatedAt")]
-    pub updated_at: DateTime<Utc>,
     #[serde(skip)]
     pub note_id: i32,
+    #[serde(rename = "noteId")]
+    pub note_api_id: String,
     #[serde(skip)]
     pub note_version_id: i32,
+    #[serde(rename = "noteVersionId")]
+    pub note_version_api_id: String,
     #[serde(rename = "mediaItemId")]
     pub media_item_api_id: Option<String>,
     #[serde(skip)]
@@ -91,7 +95,7 @@ impl Link {
     ) -> Result<Vec<LinkSummary>, ApiError> {
         Ok(insert_into(all_links)
             .values(specs)
-            .get_results(conn)
+            .get_results::<LinkSummary>(conn)
             .map_err(ApiError::DatabaseError)?)
     }
 }
