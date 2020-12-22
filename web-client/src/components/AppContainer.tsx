@@ -9,7 +9,7 @@ import { Code } from '~keyboard/HotKeyCommand';
 interface AppContainerProps {
     sectionName?: string;
     contentClassName?: string;
-    children: h.JSX.Element | Array<h.JSX.Element>;
+    children: h.JSX.Element | Array<h.JSX.Element | string | null>;
 }
 
 const HOTKEYS = new Map([
@@ -54,6 +54,8 @@ const HOTKEYS = new Map([
 export default function AppContainer(props: AppContainerProps): h.JSX.Element {
     useHotKeyContext(HOTKEYS);
 
+    // TODO: context / provider for toasts + error management
+
     return (
         <div className="app-container">
             <NavSidebar />
@@ -62,6 +64,7 @@ export default function AppContainer(props: AppContainerProps): h.JSX.Element {
                 {props.sectionName ? <h2 className="section-header">{props.sectionName}</h2> : null}
                 {props.children}
             </main>
+            {/* TODO: mount point for toasts */}
         </div>
     );
 }

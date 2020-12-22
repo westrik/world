@@ -12,7 +12,30 @@ import NoteCreateForm from '~notes/NoteCreateForm';
 import listNotes from '~notes/listNotes';
 import { stripPrefixFromId } from '~utils/identifier';
 
+enum RequestStateType {
+    LOADING = 'loading',
+    ERROR = 'error',
+    COMPLETED = 'completed',
+}
+
+interface LoadingState {
+    state: RequestStateType.LOADING;
+    // TODO: number of attempts (when retries are implemented)
+}
+
+interface ErrorState {
+    state: RequestStateType.ERROR;
+    errorMessage: string;
+}
+
+interface CompletedState {
+    state: RequestStateType.COMPLETED;
+}
+
+type RequestState = LoadingState | ErrorState | CompletedState;
+
 export default function NoteList(): h.JSX.Element {
+    const [requestState, setRequestState] = useState<RequestState>({ state: RequestStateType.LOADING });
     const [noteSummaries, setNotes] = useState<Array<Note> | null>(null);
     const authContext = useContext(Auth);
     useHotKeyContext(
@@ -29,8 +52,15 @@ export default function NoteList(): h.JSX.Element {
     // TODO: refactor into custom hook
     useEffect(() => {
         if (!noteSummaries) {
-            listNotes(authContext, (notes) => {
-                setNotes(notes ?? []);
+            listNotes({
+                authContext,
+                handleReceiveResponse: (notes) => {
+                    setRequestState({ state: RequestStateType.COMPLETED });
+                    setNotes(notes ?? []);
+                },
+            }).catch(() => {
+                setNotes([]);
+                setRequestState({ state: RequestStateType.ERROR, errorMessage: 'Failed to load notes' });
             });
         }
     });
@@ -42,16 +72,19 @@ export default function NoteList(): h.JSX.Element {
                     setNotes([note, ...(noteSummaries ?? [])]);
                 }}
             />
-            {noteSummaries ? (
+            {requestState.state === RequestStateType.COMPLETED ? (
                 <ListContainer className="notes">
-                    {noteSummaries.map((note, key) => (
-                        <li draggable={true} className="note-item" key={key}>
+                    {noteSummaries!.map((note, key) => (
+                        <li className="note-item" key={key}>
                             <a href={`/notes/${stripPrefixFromId(note.id)}`}>{note.name}</a>
                         </li>
                     ))}
                 </ListContainer>
-            ) : (
+            ) : requestState.state === RequestStateType.LOADING ? (
                 <LoadingSpinner />
+            ) : (
+                // TODO: add button to retry failed request(s)
+                <span className="error-message">{requestState.errorMessage}</span>
             )}
         </AppContainer>
     );

@@ -2,15 +2,10 @@
 
 ### Pre-v0.2
 
-- [ ] add model to track links
-    - [ ] allow linking from markdown content
-    - [ ] track links to internal resources (notes / media)
-    - [ ] track links to external resources
-- [ ] audit database indexes for all models
-    - [ ] add indexes for notes and media
-    - [ ] add indexes for links
-- [ ] basic keyword search
-- [ ] add search bar to dashboard
+- [ ] fix error response handling (FE+BE)
+    - back-end should return 401 if session has expired
+    - 401 should redirect to sign-in page
+    - [x] pages should not continue showing loading spinner on 400/500 response
 - [ ] add modal component
     - [ ] keyboard shortcut info modal (trigger w/ cmd-?)
 - [ ] section headers
@@ -19,8 +14,17 @@
 - [ ] improve list and list item components
 - [ ] pagination for note + media listings
 - [ ] task list item dragging / reordering & dependencies
-- [ ] manage code/preview splits (show full page, adjust split sizes)
+- [ ] bidirectional linking
+    - [x] create `link` model
+    - [ ] allow linking from markdown content
+    - [ ] track links to internal resources (notes / media)
+    - [ ] track links to external resources
+- [ ] audit database indexes for all models
+    - [ ] add indexes for notes and media
+    - [ ] add indexes for links
+- [ ] basic keyword search
 - [ ] improve settings page (i.e. site list + page list)
+- [ ] manage code/preview splits (show full page, adjust split sizes)
 - [ ] [infra] logging + metrics (set up prometheus + fluentd agents)
 - [ ] [infra] save access logs for NLB to S3 (and process w/ fluentd?)
 - [ ] [infra] use Fargate & Tailscale / Argo to allow SSH access from outside AWS
@@ -76,3 +80,4 @@
     - [x] render pages
     - [x] render list page
     - [x] save exported site to S3
+- [x] add search bar to dashboard
