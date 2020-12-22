@@ -29,6 +29,7 @@
 - [ ] [infra] use Fargate & Tailscale / Argo to allow SSH access from outside AWS
     - [ ] limit SSH access for app instances to VPN subnet only
 - [ ] [infra] set `skip_final_snapshot=false` for RDS
+- [ ] add screen recording MP4s to README
     
 #### Pre-v1.0
 
@@ -54,6 +55,7 @@
 
 #### Post-v1.0
 
+- [ ] extensible entity / schema system (for e.g. parts inventory)
 - [ ] [local dev] make nginx return 504 if backend is missing, then do retries on frontend
 - [ ] export content to markdown (on backend)
 - [ ] export content to LaTeX (-> PDF)
