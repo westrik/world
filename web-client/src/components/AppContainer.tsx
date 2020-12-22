@@ -80,6 +80,7 @@ export default function AppContainer(props: AppContainerProps): h.JSX.Element {
                 {props.sectionName || props.actionEls ? (
                     <SectionHeader sectionName={props.sectionName} actionEls={props.actionEls} />
                 ) : null}
+                {/* TODO: mount point for modals */}
                 {/* TODO: mount point for toasts */}
                 {props.children}
             </main>

@@ -5,17 +5,13 @@
 - [ ] fix error response handling (FE+BE)
     - back-end should return 401 if session has expired
     - 401 should redirect to sign-in page
-    - [x] pages should not continue showing loading spinner on 400/500 response
 - [ ] add modal component
     - [ ] keyboard shortcut info modal (trigger w/ cmd-?)
-- [ ] section headers
-    - [ ] breadcrumbs
-    - [ ] action button bars
+- [ ] add filters / breadcrumbs to section headers
 - [ ] improve list and list item components
 - [ ] pagination for note + media listings
 - [ ] task list item dragging / reordering & dependencies
 - [ ] bidirectional linking
-    - [x] create `link` model
     - [ ] allow linking from markdown content
     - [ ] track links to internal resources (notes / media)
     - [ ] track links to external resources
@@ -81,3 +77,8 @@
     - [x] render list page
     - [x] save exported site to S3
 - [x] add search bar to dashboard
+- [x] section header action button bar
+- improve error handling
+    - [x] pages should not continue showing loading spinner on 400/500 response
+- bidirectional linking
+    - [x] create `link` model
