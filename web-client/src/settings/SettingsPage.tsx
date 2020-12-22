@@ -5,9 +5,9 @@ import SiteList from '~settings/exports/SiteList';
 
 export default function SettingsPage(): h.JSX.Element {
     return (
-        <AppContainer>
+        <AppContainer sectionName="Settings">
             <section>
-                <h2>Sites</h2>
+                <h3>Sites</h3>
                 <SiteList />
             </section>
         </AppContainer>

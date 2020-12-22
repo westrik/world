@@ -1,5 +1,5 @@
 <p align="center">
-<a href="https://westrik.world"><img width="473" height="62" src="web-client/src/static/img/logo-github.png" alt="westrikworld"></a><br />
+<a href="https://westrik.world"><img width="473" height="62" src=".github/images/logo.svg" alt="westrikworld"></a><br />
 <a href="https://github.com/westrik/world/actions?query=workflow%3ARust"><img alt="rust build status" src="https://github.com/westrik/world/workflows/Rust/badge.svg"></a>
 <a href="https://github.com/westrik/world/actions?query=workflow%3AWeb"><img alt="web build status" src="https://github.com/westrik/world/workflows/Web/badge.svg"></a>
 </p>

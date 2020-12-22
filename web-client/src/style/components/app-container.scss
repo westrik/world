@@ -1,9 +1,18 @@
 .app-container {
-  main {
+  & > main {
     // TODO: use CSS grid instead (for potentially faster layout)
-    max-width: calc(100vw - 200px);
+    max-width: calc(100vw - 240px);
     position: relative;
     left: 200px;
+    margin: 0 20px;
+  }
+
+  .section-header {
+    margin: 0 -1em;
+    margin-bottom: 1em;
+    font-size: 1.1em;
+    padding: 2px 1em;
+    background: var(--box-bg-color);
   }
 }
 

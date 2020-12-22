@@ -22,6 +22,7 @@ export default function NoteCreateForm(props: NoteCreateFormProps): h.JSX.Elemen
                 onChange={(event) => {
                     setName((event.target as HTMLInputElement).value);
                 }}
+                value={name}
             />
             <SubmitButton
                 text="Create note"
@@ -29,6 +30,7 @@ export default function NoteCreateForm(props: NoteCreateFormProps): h.JSX.Elemen
                     const note = await createNote(authContext, name);
                     if (note) {
                         props.onCreateNote(note);
+                        setName('');
                     } else {
                         console.log('Failed to create note!');
                     }
