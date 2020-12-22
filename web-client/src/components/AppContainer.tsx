@@ -9,6 +9,7 @@ import { Code } from '~keyboard/HotKeyCommand';
 interface AppContainerProps {
     sectionName?: string;
     contentClassName?: string;
+    actionEls?: Array<h.JSX.Element>;
     children: h.JSX.Element | Array<h.JSX.Element | string | null>;
 }
 
@@ -51,6 +52,22 @@ const HOTKEYS = new Map([
     ],
 ]);
 
+function SectionHeader(props: Pick<AppContainerProps, 'sectionName' | 'actionEls'>): h.JSX.Element {
+    return (
+        <div className="section-header">
+            {props.sectionName ? <h2>{props.sectionName}</h2> : null}
+            {props.actionEls ? (
+                <ul className="actions-list">
+                    {props.actionEls.map((el, key) => (
+                        // TODO: if `el` is a Button, assert that size==SMALL
+                        <li key={key}>{el}</li>
+                    ))}
+                </ul>
+            ) : null}
+        </div>
+    );
+}
+
 export default function AppContainer(props: AppContainerProps): h.JSX.Element {
     useHotKeyContext(HOTKEYS);
 
@@ -59,12 +76,13 @@ export default function AppContainer(props: AppContainerProps): h.JSX.Element {
     return (
         <div className="app-container">
             <NavSidebar />
-
             <main className={props.contentClassName} role="main">
-                {props.sectionName ? <h2 className="section-header">{props.sectionName}</h2> : null}
+                {props.sectionName || props.actionEls ? (
+                    <SectionHeader sectionName={props.sectionName} actionEls={props.actionEls} />
+                ) : null}
+                {/* TODO: mount point for toasts */}
                 {props.children}
             </main>
-            {/* TODO: mount point for toasts */}
         </div>
     );
 }

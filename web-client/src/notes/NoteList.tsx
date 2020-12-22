@@ -11,6 +11,7 @@ import { Note } from '~models/Note';
 import NoteCreateForm from '~notes/NoteCreateForm';
 import listNotes from '~notes/listNotes';
 import { stripPrefixFromId } from '~utils/identifier';
+import Button, { ButtonSize } from '~components/Button';
 
 enum RequestStateType {
     LOADING = 'loading',
@@ -66,7 +67,10 @@ export default function NoteList(): h.JSX.Element {
     });
 
     return (
-        <AppContainer sectionName="Notes">
+        <AppContainer
+            sectionName="Notes"
+            actionEls={[<Button key="create" size={ButtonSize.SMALL} title="Create Note" />]}
+        >
             <NoteCreateForm
                 onCreateNote={(note: Note) => {
                     setNotes([note, ...(noteSummaries ?? [])]);
