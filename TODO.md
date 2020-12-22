@@ -1,18 +1,15 @@
 # TODO
 
-### High-Priority Tasks
+### Pre-v0.2
 
-- [ ] audit database indexes for all models
-    - [ ] add indexes for notes and media
-    - [ ] add indexes for links
-- [ ] basic keyword search
 - [ ] add model to track links
     - [ ] allow linking from markdown content
     - [ ] track links to internal resources (notes / media)
     - [ ] track links to external resources
-
-#### Pre-v0.2
-
+- [ ] audit database indexes for all models
+    - [ ] add indexes for notes and media
+    - [ ] add indexes for links
+- [ ] basic keyword search
 - [ ] add search bar to dashboard
 - [ ] add modal component
     - [ ] keyboard shortcut info modal (trigger w/ cmd-?)
@@ -29,10 +26,11 @@
 - [ ] [infra] use Fargate & Tailscale / Argo to allow SSH access from outside AWS
     - [ ] limit SSH access for app instances to VPN subnet only
 - [ ] [infra] set `skip_final_snapshot=false` for RDS
+- [ ] add screen recording MP4s to README
     
 #### Pre-v1.0
 
-- [ ] refactor upload flow
+- [ ] refactor media upload flow
 - [ ] improve test coverage (FE & BE)
     - [ ] [ci-tooling] code coverage reports
 - [ ] job system improvements
@@ -54,6 +52,7 @@
 
 #### Post-v1.0
 
+- [ ] extensible entity / schema system (for e.g. parts inventory)
 - [ ] [local dev] make nginx return 504 if backend is missing, then do retries on frontend
 - [ ] export content to markdown (on backend)
 - [ ] export content to LaTeX (-> PDF)
@@ -77,54 +76,3 @@
     - [x] render pages
     - [x] render list page
     - [x] save exported site to S3
-
-
----------
-
-# Notes
-
-
-#### `audit database indexes for all models`:
-
-Tables to audit:
-
-- [ ] sessions
-- [ ] note_versions
-- [ ] notes
-- [ ] tasks
-- [ ] media_item_versions
-- [ ] media_items
-- [ ] site_pages
-- [ ] jobs
-
-**sessions**:
-- Access patterns:
-- Indexes to add:
-
-**note_versions**:
-- Access patterns:
-- Indexes to add:
-
-**notes**:
-- Access patterns:
-- Indexes to add:
-
-**tasks**:
-- Access patterns:
-- Indexes to add:
-
-**media_item_versions**:
-- Access patterns:
-- Indexes to add:
-
-**media_items**:
-- Access patterns:
-- Indexes to add:
-
-**site_pages**:
-- Access patterns:
-- Indexes to add:
-
-**jobs**:
-- Access patterns:
-- Indexes to add:
