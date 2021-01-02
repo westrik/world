@@ -69,7 +69,16 @@ export default function NoteList(): h.JSX.Element {
     return (
         <AppContainer
             sectionName="Notes"
-            actionEls={[<Button key="create" size={ButtonSize.SMALL} title="Create Note" />]}
+            actionEls={[
+                <Button
+                    key="create"
+                    size={ButtonSize.SMALL}
+                    title="Create Note"
+                    onClick={() => {
+                        // TODO: trigger note creation modal
+                    }}
+                />,
+            ]}
         >
             <NoteCreateForm
                 onCreateNote={(note: Note) => {
