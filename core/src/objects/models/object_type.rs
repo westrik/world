@@ -127,7 +127,7 @@ impl ObjectType {
             updated_at: Utc::now(),
             object_name,
         }
-        .update(conn, api_id.clone(), session.user_id)?;
+        .update(conn, api_id, session.user_id)?;
         Ok(object_type)
     }
 }
