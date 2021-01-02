@@ -71,6 +71,7 @@ function SectionHeader(props: Pick<AppContainerProps, 'sectionName' | 'actionEls
 export default function AppContainer(props: AppContainerProps): h.JSX.Element {
     useHotKeyContext(HOTKEYS);
 
+    // TODO: context / provider for modals
     // TODO: context / provider for toasts + error management
 
     return (
@@ -80,10 +81,10 @@ export default function AppContainer(props: AppContainerProps): h.JSX.Element {
                 {props.sectionName || props.actionEls ? (
                     <SectionHeader sectionName={props.sectionName} actionEls={props.actionEls} />
                 ) : null}
-                {/* TODO: mount point for modals */}
-                {/* TODO: mount point for toasts */}
                 {props.children}
             </main>
+            {/* TODO: mount point for modals */}
+            {/* TODO: mount point for toasts */}
         </div>
     );
 }
