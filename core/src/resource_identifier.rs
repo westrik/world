@@ -11,6 +11,11 @@ pub enum ResourceType {
     Link,
     Note,
     NoteVersion,
+    ObjectType,
+    ObjectFieldType,
+    ObjectFieldOption,
+    Object,
+    ObjectFieldValue,
     Site,
     SitePage,
     Tag,
@@ -24,6 +29,11 @@ lazy_static! {
         m.insert(ResourceType::MediaItem, "mi");
         m.insert(ResourceType::MediaItemVersion, "miv");
         m.insert(ResourceType::NoteVersion, "nv");
+        m.insert(ResourceType::ObjectType, "objt");
+        m.insert(ResourceType::ObjectFieldType, "objft");
+        m.insert(ResourceType::ObjectFieldOption, "objfo");
+        m.insert(ResourceType::Object, "obj");
+        m.insert(ResourceType::ObjectFieldValue, "objfv");
         m.insert(ResourceType::SitePage, "sp");
         m
     };
@@ -69,6 +79,11 @@ pub mod resource_identifiers {
             (Link, "link"),
             (Note, "note"),
             (NoteVersion, "nv"),
+            (ObjectType, "objt"),
+            (ObjectFieldType, "objft"),
+            (ObjectFieldOption, "objfo"),
+            (Object, "obj"),
+            (ObjectFieldValue, "objfv"),
             (Site, "site"),
             (SitePage, "sp"),
             (Tag, "tag"),

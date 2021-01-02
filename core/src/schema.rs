@@ -75,6 +75,20 @@ table! {
 }
 
 table! {
+    object_types (id) {
+        id -> Int4,
+        api_id -> Varchar,
+        user_id -> Int4,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
+        object_name -> Varchar,
+        description -> Nullable<Varchar>,
+        barcode_prefix -> Nullable<Varchar>,
+        barcode_length -> Nullable<Int4>,
+    }
+}
+
+table! {
     sessions (token) {
         user_id -> Int4,
         token -> Text,
@@ -148,6 +162,7 @@ joinable!(media_item_versions -> users (user_id));
 joinable!(media_items -> users (user_id));
 joinable!(note_versions -> notes (note_id));
 joinable!(notes -> users (user_id));
+joinable!(object_types -> users (user_id));
 joinable!(sessions -> users (user_id));
 joinable!(site_pages -> note_versions (note_version_id));
 joinable!(site_pages -> notes (note_id));
@@ -163,6 +178,7 @@ allow_tables_to_appear_in_same_query!(
     media_items,
     note_versions,
     notes,
+    object_types,
     sessions,
     site_pages,
     sites,
